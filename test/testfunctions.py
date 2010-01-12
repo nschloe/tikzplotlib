@@ -2,19 +2,6 @@
 # -*- coding: iso-8859-1 -*-
 
 from pylab import *
-import matplotlib
-
-from matplotlib2tikz import *
-
-# =============================================================================
-def matplotlib2tikz_acidtest():
-
-	test_functions = [ basic_sin ]
-
-	for fun in test_functions:
-		fun()
-		matplotlib2tikz()
-		savefig('test.pdf')
 
 # =============================================================================
 def basic_sin():
@@ -26,7 +13,6 @@ def basic_sin():
 	ylabel("Voltage (mV)")
 	title("Easier than easy $\\frac{1}{2}$")
 	grid(True)
-	return
-# =============================================================================
 
-matplotlib2tikz_acidtest()
+	return "Simple $\sin$ plot with some labels"
+# =============================================================================

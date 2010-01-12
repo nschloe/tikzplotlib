@@ -4,11 +4,19 @@
 from pylab import *
 
 # =============================================================================
-def matplotlib2tikz():
-	handle_children( gcf() )
+def matplotlib2tikz( filepath ):
+        # open file
+	file_handle = open( filepath, "w" )
+
+	# write the contents
+        file_handle.write( "\\begin{tikzpicture}\n\n" )
+	handle_children( file_handle, gcf() )
+        file_handle.write( "\\end{tikzpicture}" )
+
+	# close file
 	return
 # =============================================================================
-def draw_axes( obj ):
+def draw_axes( file_handle, obj ):
 
         axis_options = []
 
@@ -34,19 +42,19 @@ def draw_axes( obj ):
                              + ", ymax=" + repr(ylim[1]) )
 
 	# actually print the thing
-	print "\\begin{axes}",
+	file_handle.write( "\\begin{axis}" )
         if len(axis_options)!=0:
 		options = ",\n".join( axis_options )
-		print "[\n", options, "\n]\n",      
+		file_handle.write( "[\n" + options + "\n]\n" )
 
         # TODO Use get_lines()?
-        handle_children( obj )
+        handle_children( file_handle, obj )
 
-	print "\\end{axes}"
+	file_handle.write( "\\end{axis}\n\n" )
  
 	return
 # =============================================================================
-def draw_line2d( obj ):
+def draw_line2d( file_handle, obj ):
         addplot_options = []
 
         marker = obj.get_marker()
@@ -62,17 +70,18 @@ def draw_line2d( obj ):
 		addplot_options.append( linestyle )
 
         # process options
-	print "\\addplot",
+	file_handle.write( "\\addplot" )
         if  len(addplot_options) != 0:
 		options = ", ".join( addplot_options )
-		print "[", options, "]\n",
+		file_handle.write( "[" + options + "]\n" )
 
         # print the hard numerical data
 	xdata, ydata = obj.get_data()
-        print "coordinates {"
+        file_handle.write(  "coordinates {\n" )
         for k in range(len(xdata)):
-		print "(", xdata[k], ",", ydata[k], ") ",
-        print "\n};"
+		file_handle.write( "(" + repr(xdata[k]) + ","
+                                       + repr(ydata[k]) + ") " )
+        file_handle.write( "\n};\n" )
 
         return
 # =============================================================================
@@ -93,12 +102,12 @@ def mpl_color2xcolor( color ):
 		     }
         return translator[ color ]
 # =============================================================================
-def handle_children( obj ):
+def handle_children( file_handle, obj ):
 	for child in obj.get_children():
                 if (isinstance( child, matplotlib.axes.Axes ) ):
-			draw_axes( child )
+			draw_axes( file_handle, child )
 		elif (isinstance( child, matplotlib.lines.Line2D ) ):
-			draw_line2d( child )
+			draw_line2d( file_handle, child )
 		elif (   isinstance( child, matplotlib.axis.XAxis )
 		      or isinstance( child, matplotlib.axis.YAxis )
                       or isinstance( child, matplotlib.spines.Spine )
