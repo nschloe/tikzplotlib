@@ -49,7 +49,9 @@ def acidtest():
 	return
 # =============================================================================
 def write_document_header( file_handle, figure_width ):
-	file_handle.write(   "\\documentclass{scrartcl}\n\n"
+	file_handle.write(   "\\documentclass{scrartcl}\n"
+			   + "\\pdfminorversion=5\n"
+			   + "\\pdfobjcompresslevel=2\n\n"
 			   + "\\usepackage{graphicx}\n"
 			   + "\\usepackage{subfig}\n"
 			   + "\\usepackage{tikz,pgfplots}\n"
@@ -72,10 +74,10 @@ def write_file_comparison_entry( file_handle,
 	file_handle.write(   "% test plot " + repr(test_id) + "\n"
 			   + "\\begin{figure}%\n"
 			   + "\\centering%\n"
-			   + "\\subfloat[][]{\includegraphics[width=\\figwidth]"
-                              + " {" + pdf_path + "}}%\n"
+			   + "\\subfloat[][Reference PDF figure.]{\includegraphics[width=\\figwidth]"
+                              + "{" + pdf_path + "}}%\n"
 			   + "\\qquad%\n"
-			   + "\\subfloat[][]{\input{" + tikz_path + "}}%\n"
+			   + "\\subfloat[][\\texttt{matplotlib2tikz}-generated]{\input{" + tikz_path + "}}%\n"
 			   + "\\caption{" + comment + " (test ID " + repr(test_id) + ").}%\n"
 			   + "\\end{figure}\n\n"
                          )
