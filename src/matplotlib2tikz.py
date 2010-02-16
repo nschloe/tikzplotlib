@@ -4,6 +4,13 @@
 from pylab import *
 
 # =============================================================================
+# Recursively prints the tree structure of the matplotlib object
+def print_tree( obj, indent = "" ):
+        print indent, type(obj)
+        for child in obj.get_children():
+                print_tree( child, indent + "   " )
+        return
+# =============================================================================
 def matplotlib2tikz( filepath, figurewidth=None, figureheight=None ):
 
         global fwidth
@@ -24,6 +31,26 @@ def matplotlib2tikz( filepath, figurewidth=None, figureheight=None ):
 # =============================================================================
 def draw_axes( file_handle, obj ):
 
+        # Are we dealing with an axis that hosts a colorbar?
+        # Skip then.
+        # TODO instead of testing here, rather blacklist the colorbar axis
+        #      plots as soon as they have been found, e.g., by find_associated_colorbar()
+        if extract_colorbar(obj)!=None:
+            return
+
+        # instantiation
+        nsubplots = 0
+        subplot_index = 0
+        issubplot = False
+
+        if isinstance( obj, matplotlib.axes.Subplot ):
+                issubplot = True
+                geom = obj.get_geometry()
+                nsubplots = geom[0]*geom[1]
+                subplot_index = geom[2]
+                if subplot_index==1:
+                        file_handle.write( "\\begin{groupplot}[group style={group size=%.d by %.d}]\n" % (geom[1],geom[0]) )
+ 
         axis_options = []
 
         if fwidth or fheight:
@@ -54,8 +81,22 @@ def draw_axes( file_handle, obj ):
         axis_options.append(     "ymin=" + repr(ylim[0])
                              + ", ymax=" + repr(ylim[1]) )
 
+        # find color bar
+        colorbar = find_associated_colorbar( obj )
+        if colorbar!=None:
+                clim = colorbar.get_clim()
+                axis_options.append( "colorbar=true" )
+                mycolormap = matplotlibColormap2pgfplotsColormap( colorbar.get_cmap() )
+                axis_options.append( "colormap/" + mycolormap )
+                axis_options.append( 'point meta min=' + repr(clim[0]) )
+                axis_options.append( 'point meta max=' + repr(clim[1]) )
+
         # actually print the thing
-        file_handle.write( "\\begin{axis}" )
+        if issubplot:
+              file_handle.write( "\\nextgroupplot" )
+        else:
+            file_handle.write( "\\begin{axis}" )
+
         if len(axis_options)!=0:
                 options = ",\n".join( axis_options )
                 file_handle.write( "[\n" + options + "\n]\n" )
@@ -63,9 +104,71 @@ def draw_axes( file_handle, obj ):
         # TODO Use get_lines()?
         handle_children( file_handle, obj )
 
-        file_handle.write( "\\end{axis}\n\n" )
- 
+        if not issubplot:
+                file_handle.write( "\\end{axis}\n\n" )
+        elif issubplot and nsubplots==subplot_index:
+            file_handle.write( "\\end{groupplot}\n\n" )
+
         return
+# =============================================================================
+# Converts a color map as given in matplotlib to a color map as represented
+# in Pgfplots.
+def matplotlibColormap2pgfplotsColormap( cmap ):
+        if isinstance( cmap, matplotlib.colors.LinearSegmentedColormap ):
+                if cmap.is_gray():
+                        return 'blackwhite'
+                else:
+                        segdata = cmap._segmentdata
+                        red    = segdata['red']
+                        green  = segdata['green']
+                        blue   = segdata['blue']
+                        print red
+                        print green
+                        print blue
+                        # loop over the data, stop at each spot where the linear
+                        # interpolations is interrupted, and set a color mark there
+                        # set initial color
+                        k_red   = 0
+                        k_green = 0
+                        k_blue  = 0
+                        x = 0.0
+                        color_changes = []
+                        while True:
+                                # find next x
+                                x = min( red[k_red][0], green[k_green][0], blue[k_blue][0] )
+
+                                if ( red[k_red][0]==x ):
+                                    red_part = red[k_red][1]
+                                    k_red    = k_red+1
+                                else:
+                                    red_part = linear_interpolation( x, (red[k_red-1][0],red[k_red][0]), (red[k_red-1][2],red[k_red][1]) )
+
+                                if ( green[k_green][0]==x ):
+                                    green_part = green[k_green][1]
+                                    k_green    = k_green+1
+                                else:
+                                    green_part = linear_interpolation( x, (green[k_green-1][0],green[k_green][0]), (green[k_green-1][2],green[k_green][1]) )
+                                    #print green_part
+
+                                if ( blue[k_blue][0]==x ):
+                                    blue_part = blue[k_blue][1]
+                                    k_blue    = k_blue+1
+                                else:
+                                    blue_part = linear_interpolation( x, (blue[k_blue-1][0],blue[k_blue][0]), (blue[k_blue-1][2],blue[k_blue][1]) )
+
+                                #print k
+                                color_changes.append( "rgb(%.3fcm)=(%.3f,%.3f,%.3f)" % ( x, red_part,green_part,blue_part ) )
+
+                                if x>=1.0: break
+
+                        return "{mymap}{" + "; ".join( color_changes ) + "}"
+        else :
+                print "Don't know how to handle color map. Using 'blackwhite'."
+                return 'blackwhite'
+# =============================================================================
+def linear_interpolation( x, X, Y ):
+        xRet = ( Y[1]*(x-X[0]) + Y[0]*(X[1]-x) ) / ( X[1]-X[0] )
+        return xRet
 # =============================================================================
 def draw_line2d( file_handle, obj ):
         addplot_options = []
@@ -94,7 +197,7 @@ def draw_line2d( file_handle, obj ):
         xdata, ydata = obj.get_data()
         file_handle.write(  "coordinates {\n" )
         for k in range(len(xdata)):
-                file_handle.write( "(%.3g,%.3g) " % (xdata[k], ydata[k]) )
+                file_handle.write( "(%.15g,%.15g) " % (xdata[k], ydata[k]) )
         file_handle.write( "\n};\n" )
 
         return
@@ -102,7 +205,7 @@ def draw_line2d( file_handle, obj ):
 # Translates a line style of matplotlib to the corresponding style
 # in Pgfplots.
 def mpl_linestyle2pgfp_linestyle( ls ):
-        if ls=='-':
+        if (ls=='-' or ls=='None'):
             return None
         elif ls==':':
             return 'dotted'
@@ -110,9 +213,112 @@ def mpl_linestyle2pgfp_linestyle( ls ):
             print '%Unknown line style \"' + ls + '\".'
             return None
 # =============================================================================
+def draw_image( file_handle, obj ):
+
+        global img_number
+        try:
+           img_number = img_number+1
+        except NameError, e:
+           img_number = 0
+
+        filename = "img" + repr(img_number) + ".png"
+
+        # store the image as in a file
+        arr = obj.get_array()
+        dims = arr.shape
+        if len(dims)==2: # the values are given as one real number: look at cmap
+                clims = obj.get_clim()
+                imsave( fname=filename,
+                        arr  = obj.get_array(),
+                        cmap = obj.get_cmap(),
+                        vmin = clims[0],
+                        vmax = clims[1] )
+        elif len(dims)==3: # RGB information
+                if dims[2]==4: # RGB+alpha information at each point
+                        print "Don't know how to store RGB(alpha) images yet."
+
+        # write the corresponding information to the TikZ file
+        extent = obj.get_extent()
+        file_handle.write( ("\\addplot graphics [xmin=%.15g, xmax=%.15g, ymin=%.15g, ymax=%.15g] {" + filename + "};\n")
+                            % extent )
+
+        handle_children( file_handle, obj )
+
+        return
+# =============================================================================
+def draw_polygon( file_handle, obj ):
+        # TODO do nothing for polygons?!
+        handle_children( file_handle, obj )
+        return
+# =============================================================================
+# Rather poor way of telling whether an axis has a colorbar associated:
+# Check the next axis environment, and see if it is de facto a color bar;
+# if yes, return the color bar object.
+def find_associated_colorbar( obj ):
+      for child in obj.get_children():
+              try:
+                      cbar = child.colorbar
+              except AttributeError:
+                      continue
+              if not cbar == None: # really necessary?
+                      # if fetch was successful, cbar contains
+                      # ( reference to colorbar, reference to axis containing colorbar )
+                      return cbar[0]
+      return None
+# =============================================================================
+# TODO This function contains crude logic.
+def is_colorbar( obj ):
+        if isinstance( obj, matplotlib.cm.ScalarMappable ):
+                arr = obj.get_array()
+                dims = arr.shape
+                if len(dims)==1:
+                    return True # o rly?
+                else:
+                    return False
+        else:
+                return False
+# =============================================================================
+def extract_colorbar( obj ):
+        colorbars = findobj( obj, is_colorbar )
+        if len(colorbars)==0:
+                return None
+        if not equivalent( colorbars ):
+                print "More than one color bar found. Use first one."
+        return colorbars[0]
+# =============================================================================
+# checks if the vectors consists of all the same objects
+def equivalent( array ):
+        if len(array)==0:
+                return False
+        else:
+                for elem in array:
+                        if elem!=array[0]:
+                                return False
+
+        return True
+# =============================================================================
+def draw_polycollection( file_handle, obj ):
+        print "matplotlib2tikz: Don't know how to draw a PolyCollection."
+        return
+# =============================================================================
 # Translates a matplotlib color specification into a proper LaTeX
 # xcolor.
 def mpl_color2xcolor( color ):
+        try: # is the color a gray-scale value?
+              alpha = float(color)
+              if alpha==0.0:
+                    return 'black'
+              elif alpha==0.5:
+                    return 'gray'
+              elif alpha==0.75:
+                    return 'lightgray'
+              elif alpha==1.0:
+                    return None
+              else:
+                    return color
+        except ValueError:
+              pass
+
         if color=='r':
             return 'red'
         elif color=='g':
@@ -127,10 +333,16 @@ def mpl_color2xcolor( color ):
 # =============================================================================
 def handle_children( file_handle, obj ):
         for child in obj.get_children():
-                if (isinstance( child, matplotlib.axes.Axes ) ):
+                if ( isinstance( child, matplotlib.axes.Axes ) ):
                         draw_axes( file_handle, child )
-                elif (isinstance( child, matplotlib.lines.Line2D ) ):
+                elif ( isinstance( child, matplotlib.lines.Line2D ) ):
                         draw_line2d( file_handle, child )
+                elif ( isinstance( child, matplotlib.image.AxesImage ) ):
+                        draw_image( file_handle, child )
+                elif ( isinstance( child, matplotlib.patches.Polygon ) ):
+                        draw_polygon( file_handle, child )
+                elif ( isinstance( child, matplotlib.collections.PolyCollection ) ):
+                        draw_polycollection( file_handle, child )
                 elif (   isinstance( child, matplotlib.axis.XAxis )
                       or isinstance( child, matplotlib.axis.YAxis )
                       or isinstance( child, matplotlib.spines.Spine )
@@ -139,12 +351,6 @@ def handle_children( file_handle, obj ):
                      ):
                         pass
                 else:
-                        print "Don't know how to handle object ", type(child), "."
-        return
-# =============================================================================
-def plot_tree( obj, indent ):
-        print indent, type(obj)
-        for child in obj.get_children():
-                plot_tree( child, indent + "   " )
+                        print "matplotlib2tikz: Don't know how to handle object ", type(child), "."
         return
 # =============================================================================

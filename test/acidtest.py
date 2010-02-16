@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 
 from pylab import *
 import matplotlib
@@ -20,7 +20,7 @@ def acidtest():
 
         write_document_header( file_handle, figure_width )
 
-        test_functions = [ basic_sin, subplots ]
+        test_functions = [ basic_sin, subplots, image_plot, subplot_plot ]
         k = 0
         for fun in test_functions:
                 k = k+1
