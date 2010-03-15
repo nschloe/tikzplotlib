@@ -91,37 +91,57 @@ def draw_axes( file_handle, obj ):
     xticks = obj.get_xticks()
     xticklabels = obj.get_xticklabels()    
     pgfplots_xtick = []
-    pgfplots_xticklabel = []
+    pgfplots_xticklabels = []
+    is_label_necessary = []
     for i in range(0, len(xticks)):
         pgfplots_xtick.append( xticks[i] )
-        if len( xticklabels[i].get_text() ) != 0:
-            pgfplots_xticklabel.append( xticklabels[i] )
-            
+        # store the label anyway
+        label = xticklabels[i].get_text()
+        pgfplots_xticklabels.append( label )
+        # Check if the label is necessary.
+        # If *one* of the labels is, then all of them must
+        # appear in the TikZ plot (which is why we store
+        # them all in the first place).
+        if len( label )==0  or label==repr(xticks[i]):
+            is_label_necessary.append( False )
+        else:
+            is_label_necessary.append( True )
+
     if len(pgfplots_xtick)==0:
         axis_options.append( "xtick=\\empty" )
     else:
         axis_options.append( "xtick={" +  ",".join(["%s" % el for el in pgfplots_xtick]) + "}" )
-        
-    if len(pgfplots_xticklabel)!=0:
-        axis_options.append( "xticklabel={" + ",".join(pgfplots_xticklabel) + "}" )
+
+    if any(is_label_necessary):
+        axis_options.append( "xticklabels={" + ",".join(pgfplots_xticklabels) + "}" )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # get y ticks
     yticks = obj.get_yticks()
-    yticklabels = obj.get_yticklabels()    
+    yticklabels = obj.get_yticklabels()
     pgfplots_ytick = []
-    pgfplots_yticklabel = []
+    pgfplots_yticklabels = []
+    is_label_necessary = []
     for i in range(0, len(yticks)):
         pgfplots_ytick.append( yticks[i] )
-        if len( yticklabels[i].get_text() ) != 0:
-            pgfplots_yticklabel.append( yticklabels[i] )
-            
+        # store the label anyway
+        label = yticklabels[i].get_text()
+        pgfplots_yticklabels.append( label )
+        # Check if the label is necessary.
+        # If *one* of the labels is, then all of them must
+        # appear in the TikZ plot (which is why we store
+        # them all in the first place).
+        if len( label )==0  or label==repr(yticks[i]):
+            is_label_necessary.append( False )
+        else:
+            is_label_necessary.append( True )
+
     if len(pgfplots_ytick)==0:
         axis_options.append( "ytick=\\empty" )
     else:
         axis_options.append( "ytick={" +  ",".join(["%s" % el for el in pgfplots_ytick]) + "}" )
-        
-    if len(pgfplots_yticklabel)!=0:
-        axis_options.append( "yticklabel={" + ",".join(pgfplots_yticklabel) + "}" )
+
+    if any(is_label_necessary):
+        axis_options.append( "yticklabels={" + ",".join(pgfplots_yticklabels) + "}" )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # x grid lines
     xgridlines = obj.get_xgridlines()
@@ -329,7 +349,10 @@ def draw_image( file_handle, obj ):
 
     # write the corresponding information to the TikZ file
     extent = obj.get_extent()
-    rel_filepath = path.join( rel_data_path,  path.basename(filename) )
+    if rel_data_path:
+        rel_filepath = path.join( rel_data_path,  path.basename(filename) )
+    else:
+        rel_filepath = path.basename(filename)
     file_handle.write( ("\\addplot graphics [xmin=%.15g, xmax=%.15g, ymin=%.15g, ymax=%.15g] {" + rel_filepath + "};\n")
                         % extent )
 
