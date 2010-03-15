@@ -73,11 +73,12 @@ def draw_axes( file_handle, obj ):
     if fheight:
         axis_options.append( "height="+fheight )
 
-    # get axes title
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # get plot title
     title = obj.get_title()
     if len(title) != 0 :
         axis_options.append( "title={" + title + "}" )
-
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # get axes titles
     xlabel = obj.get_xlabel()
     if len(xlabel) != 0 :
@@ -85,7 +86,7 @@ def draw_axes( file_handle, obj ):
     ylabel = obj.get_ylabel()
     if len(ylabel) != 0 :
         axis_options.append( "ylabel={" + ylabel + "}" )
-        
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # get x ticks
     xticks = obj.get_xticks()
     xticklabels = obj.get_xticklabels()    
@@ -103,8 +104,7 @@ def draw_axes( file_handle, obj ):
         
     if len(pgfplots_xticklabel)!=0:
         axis_options.append( "xticklabel={" + ",".join(pgfplots_xticklabel) + "}" )
-        
-        
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # get y ticks
     yticks = obj.get_yticks()
     yticklabels = obj.get_yticklabels()    
@@ -122,8 +122,14 @@ def draw_axes( file_handle, obj ):
         
     if len(pgfplots_yticklabel)!=0:
         axis_options.append( "yticklabel={" + ",".join(pgfplots_yticklabel) + "}" )
-
-
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # x grid lines
+    xgridlines = obj.get_xgridlines()
+#    for g in xgridlines:
+#        print g.get_xdata()
+#        print g.get_ydata()
+#        print g.get_data()
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # axes limits
     xlim = obj.get_xlim()
     axis_options.append(     "xmin=" + repr(xlim[0])
@@ -131,7 +137,7 @@ def draw_axes( file_handle, obj ):
     ylim = obj.get_ylim()
     axis_options.append(     "ymin=" + repr(ylim[0])
                          + ", ymax=" + repr(ylim[1]) )
-
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # find color bar
     colorbar = find_associated_colorbar( obj )
     if colorbar!=None:
@@ -141,7 +147,7 @@ def draw_axes( file_handle, obj ):
         axis_options.append( "colormap/" + mycolormap )
         axis_options.append( 'point meta min=' + repr(clim[0]) )
         axis_options.append( 'point meta max=' + repr(clim[1]) )
-
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # actually print the thing
     if issubplot:
         file_handle.write( "\\nextgroupplot" )
@@ -224,10 +230,6 @@ def linear_interpolation( x, X, Y ):
 def draw_line2d( file_handle, obj ):
     addplot_options = []
 
-    marker = obj.get_marker()
-    if marker!="None":
-        print "%TODO Implement markers."
-
     # get line color
     color = obj.get_color()
     xcolor = mpl_color2xcolor(color)
@@ -237,6 +239,23 @@ def draw_line2d( file_handle, obj ):
     linestyle = mpl_linestyle2pgfp_linestyle( obj.get_linestyle() )
     if linestyle:
         addplot_options.append( linestyle )
+        
+    marker = mpl_marker2pgfp_marker( obj.get_marker() )
+    if marker:
+        addplot_options.append( "mark=" + marker )
+        
+        # handle mark options
+        mark_options = []
+        marker_face_color = obj.get_markerfacecolor()
+        if marker_face_color:
+            col = mpl_color2xcolor( marker_face_color )
+            mark_options.append( "fill=" + col )
+        if len(mark_options)!=0:
+            addplot_options.append( "mark options={" + ",".join(mark_options) + "}" )
+        
+
+    if marker and not linestyle:
+        addplot_options.append( "only marks" )
 
     # process options
     file_handle.write( "\\addplot " )
@@ -253,6 +272,19 @@ def draw_line2d( file_handle, obj ):
 
     return
 # =============================================================================
+# Translates a marker style of matplotlib to the corresponding style
+# in Pgfplots.
+def mpl_marker2pgfp_marker( marker ):
+    if marker=='None':
+        return None
+    elif marker=='o':
+        return 'o'
+    elif marker=='.':
+        return '.'
+    else:
+        print '%Unknown marker \"' + marker + '\".'
+        return None
+# =============================================================================
 # Translates a line style of matplotlib to the corresponding style
 # in Pgfplots.
 def mpl_linestyle2pgfp_linestyle( ls ):
@@ -260,6 +292,8 @@ def mpl_linestyle2pgfp_linestyle( ls ):
         return None
     elif ls==':':
         return 'dotted'
+    elif ls=='--':
+        return 'dashed'
     else:
         print '%Unknown line style \"' + ls + '\".'
         return None
@@ -378,7 +412,7 @@ def mpl_color2xcolor( color ):
 
     if color=='r':
         return 'red'
-    elif color=='g':
+    elif color=='g' or color=='green':
         return 'green'
     elif color=='b':
         return 'blue'
