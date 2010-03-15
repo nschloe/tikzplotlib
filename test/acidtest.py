@@ -6,11 +6,13 @@ import matplotlib
 
 from os import path
 
+import sys
+
 from matplotlib2tikz import *
 from testfunctions import *
 
 # =============================================================================
-def acidtest():
+def acidtest():    
     tex_file_path = "./tex/acid.tex"
     data_dir = "./data" # directory where all the generated files will end up
     tex_relative_path_to_data = "../data" # how to get from the LaTeX file to the data
@@ -23,6 +25,25 @@ def acidtest():
     write_document_header( file_handle, figure_width )
 
     test_functions = [ basic_sin, subplots, image_plot, subplot_plot ]
+    
+    # see if the command line options tell which subset of the
+    # tests are to be run
+    test_list = []
+    for arg in sys.argv:
+        try:
+            test_list.append( int(arg) )
+        except:
+            pass
+    
+    if len(test_list)!=0: # actually treat a sublist of test_functions
+        # remove duplicates:
+        test_list = list(set(test_list))
+        # create the sublist
+        tmp = test_functions
+        test_functions = []
+        for i in test_list:
+            test_functions.append( tmp[i] )
+
     k = 0
     for fun in test_functions:
         k = k+1
