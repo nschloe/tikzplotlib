@@ -11,14 +11,21 @@ def print_tree( obj, indent = "" ):
         print_tree( child, indent + "   " )
     return
 # =============================================================================
-def matplotlib2tikz( filepath, figurewidth=None, figureheight=None ):
+def matplotlib2tikz( filepath, figurewidth=None, figureheight=None, tex_relative_path_to_data=None ):
+    from os import path
+    
     global fwidth
     fwidth = figurewidth
     global fheight
     fheight = figureheight
+    global rel_data_path
+    rel_data_path = tex_relative_path_to_data
     
     global pgfplots_libs
     pgfplots_libs = []
+    
+    global output_dir
+    output_dir = path.dirname(filepath)
 
     # open file
     file_handle = open( filepath, "w" )
@@ -220,31 +227,38 @@ def mpl_linestyle2pgfp_linestyle( ls ):
         return None
 # =============================================================================
 def draw_image( file_handle, obj ):
+    from os import path
+    
     global img_number
     try:
        img_number = img_number+1
     except NameError, e:
        img_number = 0
 
-    filename = "img" + repr(img_number) + ".png"
+    filename = path.join( output_dir, 
+                          "img" + repr(img_number) + ".png" )
 
     # store the image as in a file
-    arr = obj.get_array()
-    dims = arr.shape
+    img_array = obj.get_array()
+    dims = img_array.shape
     if len(dims)==2: # the values are given as one real number: look at cmap
         clims = obj.get_clim()
-        imsave( fname=filename,
-                arr  = obj.get_array(),
-                cmap = obj.get_cmap(),
-                vmin = clims[0],
-                vmax = clims[1] )
+        imsave( fname = filename,
+                arr   = img_array ,
+                cmap  = obj.get_cmap(),
+                vmin  = clims[0],
+                vmax  = clims[1] )
     elif len(dims)==3: # RGB information
         if dims[2]==4: # RGB+alpha information at each point
-            print "Don't know how to store RGB(alpha) images yet."
+            import Image
+            # convert to PIL image (after upside-down flip)
+            im = Image.fromarray( flipud(img_array), 'RGBA' )
+            im.save( filename )
 
     # write the corresponding information to the TikZ file
     extent = obj.get_extent()
-    file_handle.write( ("\\addplot graphics [xmin=%.15g, xmax=%.15g, ymin=%.15g, ymax=%.15g] {" + filename + "};\n")
+    rel_filepath = path.join( rel_data_path,  path.basename(filename) )
+    file_handle.write( ("\\addplot graphics [xmin=%.15g, xmax=%.15g, ymin=%.15g, ymax=%.15g] {" + rel_filepath + "};\n")
                         % extent )
 
     handle_children( file_handle, obj )
