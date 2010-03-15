@@ -85,6 +85,44 @@ def draw_axes( file_handle, obj ):
     ylabel = obj.get_ylabel()
     if len(ylabel) != 0 :
         axis_options.append( "ylabel={" + ylabel + "}" )
+        
+    # get x ticks
+    xticks = obj.get_xticks()
+    xticklabels = obj.get_xticklabels()    
+    pgfplots_xtick = []
+    pgfplots_xticklabel = []
+    for i in range(0, len(xticks)):
+        pgfplots_xtick.append( xticks[i] )
+        if len( xticklabels[i].get_text() ) != 0:
+            pgfplots_xticklabel.append( xticklabels[i] )
+            
+    if len(pgfplots_xtick)==0:
+        axis_options.append( "xtick=\\empty" )
+    else:
+        axis_options.append( "xtick={" +  ",".join(["%s" % el for el in pgfplots_xtick]) + "}" )
+        
+    if len(pgfplots_xticklabel)!=0:
+        axis_options.append( "xticklabel={" + ",".join(pgfplots_xticklabel) + "}" )
+        
+        
+    # get y ticks
+    yticks = obj.get_yticks()
+    yticklabels = obj.get_yticklabels()    
+    pgfplots_ytick = []
+    pgfplots_yticklabel = []
+    for i in range(0, len(yticks)):
+        pgfplots_ytick.append( yticks[i] )
+        if len( yticklabels[i].get_text() ) != 0:
+            pgfplots_yticklabel.append( yticklabels[i] )
+            
+    if len(pgfplots_ytick)==0:
+        axis_options.append( "ytick=\\empty" )
+    else:
+        axis_options.append( "ytick={" +  ",".join(["%s" % el for el in pgfplots_ytick]) + "}" )
+        
+    if len(pgfplots_yticklabel)!=0:
+        axis_options.append( "yticklabel={" + ",".join(pgfplots_yticklabel) + "}" )
+
 
     # axes limits
     xlim = obj.get_xlim()
