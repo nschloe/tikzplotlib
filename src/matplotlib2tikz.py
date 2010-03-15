@@ -17,6 +17,9 @@ def matplotlib2tikz( filepath, figurewidth=None, figureheight=None ):
         fwidth = figurewidth
         global fheight
         fheight = figureheight
+        
+        global pgfplots_libs
+        pgfplots_libs = []
 
         # open file
         file_handle = open( filepath, "w" )
@@ -27,6 +30,10 @@ def matplotlib2tikz( filepath, figurewidth=None, figureheight=None ):
         file_handle.write( "\\end{tikzpicture}" )
 
         # close file
+        file_handle.close()
+        
+        # print message about necessary pgfplot libs to command line
+        print_pgfplot_libs_message()
         return
 # =============================================================================
 def draw_axes( file_handle, obj ):
@@ -50,6 +57,7 @@ def draw_axes( file_handle, obj ):
                 subplot_index = geom[2]
                 if subplot_index==1:
                         file_handle.write( "\\begin{groupplot}[group style={group size=%.d by %.d}]\n" % (geom[1],geom[0]) )
+                        pgfplots_libs.append( "groupplots" )
  
         axis_options = []
 
@@ -353,4 +361,18 @@ def handle_children( file_handle, obj ):
                 else:
                         print "matplotlib2tikz: Don't know how to handle object ", type(child), "."
         return
+# =============================================================================
+def print_pgfplot_libs_message():
+    # remove duplicates
+    clean_pgfplots_libs = list(set(pgfplots_libs) ) 
+    libs = ",".join( clean_pgfplots_libs )
+    
+    print "========================================================="
+    print "Please add the following line to your LaTeX preamble:\n"
+    print "\usepackage{pgfplots}"
+    if len(clean_pgfplots_libs)!=0:
+        print "\usepgfplotslibrary{" + libs + "}"
+    print "========================================================="
+
+    return
 # =============================================================================

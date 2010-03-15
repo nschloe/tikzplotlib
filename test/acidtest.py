@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from pylab import *
@@ -54,7 +54,8 @@ def write_document_header( file_handle, figure_width ):
                            + "\\pdfobjcompresslevel=2\n\n"
                            + "\\usepackage{graphicx}\n"
                            + "\\usepackage{subfig}\n"
-                           + "\\usepackage{tikz,pgfplots}\n"
+                           + "\\usepackage{pgfplots}\n"
+                           + "\\usepgfplotslibrary{groupplots}\n"
                            + "\\pgfplotsset{compat=newest}\n\n"
                            + "\\newlength\\figwidth\n"
                            + "\\setlength\\figwidth{" + figure_width +"}\n\n"
