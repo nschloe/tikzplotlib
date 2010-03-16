@@ -113,13 +113,23 @@ def draw_axes( file_handle, obj ):
         axis_options.append( "width="+fwidth )
         if aspect_num:
             alpha = aspect_num * (ylim[1]-ylim[0])/(xlim[1]-xlim[0])
-            fheight = fwidth * alpha
+            if alpha!=1.0:
+                # Concatenate the literals, as fwidth could as well be
+                # a LaTeX length variable such as \figurewidth.
+                fheight = repr(alpha) + "*" + fwidth
+            else:
+                fheight = fwidth
             axis_options.append( "height="+fheight )
     elif fheight: # only fheight given. calculate width by the aspect ratio
         axis_options.append( "height="+fheight )
         if aspect_num:
             alpha = aspect_num * (ylim[1]-ylim[0])/(xlim[1]-xlim[0])
-            fwidth = 1.0/ ( alpha * fheight )
+            if alpha!=1.0:
+                # Concatenate the literals, as fheight could as well be
+                # a LaTeX length variable such as \figureheight.
+                fwidth = repr(1.0/alpha) + "*" + fheight
+            else:
+                fwidth = fheight
             axis_options.append( "width="+fwidth )
     else:
         if aspect_num:
