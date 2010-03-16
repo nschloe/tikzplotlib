@@ -167,6 +167,10 @@ def draw_axes( file_handle, obj ):
         axis_options.append( "colormap/" + mycolormap )
         axis_options.append( 'point meta min=' + repr(clim[0]) )
         axis_options.append( 'point meta max=' + repr(clim[1]) )
+        colorbar_styles = []
+        cbar_yticks = colorbar.ax.get_yticks()
+        colorbar_styles.append( "ytick={" + ",".join(["%s" % el for el in cbar_yticks]) + "}" )
+        axis_options.append( "colorbar style={" + ",".join(colorbar_styles) +"}" )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # actually print the thing
     if issubplot:
