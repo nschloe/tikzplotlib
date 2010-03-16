@@ -66,13 +66,6 @@ def draw_axes( file_handle, obj ):
 
     axis_options = []
 
-    if fwidth or fheight:
-        axis_options.append( "scale only axis" )
-    if fwidth:
-        axis_options.append( "width="+fwidth )
-    if fheight:
-        axis_options.append( "height="+fheight )
-
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # get plot title
     title = obj.get_title()
@@ -86,6 +79,51 @@ def draw_axes( file_handle, obj ):
     ylabel = obj.get_ylabel()
     if len(ylabel) != 0 :
         axis_options.append( "ylabel={" + ylabel + "}" )
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # axes limits
+    xlim = obj.get_xlim()
+    axis_options.append(     "xmin=" + repr(xlim[0])
+                         + ", xmax=" + repr(xlim[1]) )
+    ylim = obj.get_ylim()
+    axis_options.append(     "ymin=" + repr(ylim[0])
+                         + ", ymax=" + repr(ylim[1]) )
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # aspect ratio, plot width/height
+    aspect = obj.get_aspect()
+    if aspect=="auto" or aspect=="normal":
+        aspect_num = None; # just take the given width/height values
+    elif aspect=="equal":
+        aspect_num = 1.0
+    else:
+        try:
+            aspect_num = float(aspect)
+        except ValueError:
+            print "aspect was not a number!"
+
+    global fwidth
+    global fheight
+
+    if fwidth or fheight:
+        axis_options.append( "scale only axis" )
+
+    if fwidth and fheight: # width and height overwrite aspect ratio
+        axis_options.append( "width="+fwidth )
+        axis_options.append( "height="+fheight )
+    elif fwidth: # only fwidth given. calculate height by the aspect ratio
+        axis_options.append( "width="+fwidth )
+        if aspect_num:
+            alpha = aspect_num * (ylim[1]-ylim[0])/(xlim[1]-xlim[0])
+            fheight = fwidth * alpha
+            axis_options.append( "height="+fheight )
+    elif fheight: # only fheight given. calculate width by the aspect ratio
+        axis_options.append( "height="+fheight )
+        if aspect_num:
+            alpha = aspect_num * (ylim[1]-ylim[0])/(xlim[1]-xlim[0])
+            fwidth = 1.0/ ( alpha * fheight )
+            axis_options.append( "width="+fwidth )
+    else:
+        if aspect_num:
+            print   "Non-automatic aspect ratio demanded, but neither height nor width of the plot are given. Discard aspect ratio."
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # get x ticks
     xticks = obj.get_xticks()
@@ -149,14 +187,6 @@ def draw_axes( file_handle, obj ):
 #        print g.get_xdata()
 #        print g.get_ydata()
 #        print g.get_data()
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    # axes limits
-    xlim = obj.get_xlim()
-    axis_options.append(     "xmin=" + repr(xlim[0])
-                         + ", xmax=" + repr(xlim[1]) )
-    ylim = obj.get_ylim()
-    axis_options.append(     "ymin=" + repr(ylim[0])
-                         + ", ymax=" + repr(ylim[1]) )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # find color bar
     colorbar = find_associated_colorbar( obj )
