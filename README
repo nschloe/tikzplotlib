@@ -1,0 +1,61 @@
+This is matplotlib2tikz, a Python script for converting matplotlib figures into native
+TikZ figures.
+
+To download matplotlibtikz, go to its page on GitHub
+http://github.com/nicki/matplotlib2tikz.
+
+The workflow is as follows.
+
+  0.) a) Place the matplotlib2tikz script in a directory where Python can find it
+         (e.g., $PYTHONPATH).
+      b) Make sure that your LaTeX installation includes the packages
+
+            tikz (aka pgf, >=2.00)
+
+	 and
+
+	    pgfplots (>=1.3).
+
+  1.) Generate your matplotlib plot.
+
+  2.) Instead of pyplot.show(), invoke matplotlib2tikz by
+
+        matplotlib2tikz( 'myfile.tikz' );
+
+      to store the TikZ file as myfile.tikz. Don't forget to load the libary:
+
+        from matplotlib2tikz import matplotlib2tikz
+
+      Optional:
+      The scripts accepts several options, for example 'height', 'width', 'encoding', and some more. Invoke by
+
+        matplotlib2tikz( 'myfile.tikz', figureheight='4cm', figurewidth='3in' )
+
+      To specify the dimension of the plot from within the LaTeX document, try
+        
+	matplotlib2tikz( 'myfile.tikz', figureheight='\figureheight', figurewidth='\figurewidth' )
+
+      and in the LaTeX source
+ 
+        \newlength\figureheight
+        \newlength\figurewith
+        \setlength\figureheight{4cm}
+	\setlength\figurewidth{6cm}
+	\input{myfile.tikz}
+
+  3.) Add the contents of myfile.tikz into your LaTeX source code; a
+      convenient way of doing so is to use \input{/path/to/myfile.tikz}.
+      Also make sure that at the header of your document the packages tikz and
+      pgfplots are included:
+
+          \usepackage{pgfplots}
+
+      and optionally (as of Pgfplots 1.3)
+
+          \pgfplotsset{compat=newest}
+
+
+If you would like to contribute, experience bugs, have nice examples of
+what matplotlib2tikz can do, or if you are just looking for more
+information, then please visit the web page of
+matplotlib2tikz http://github.com/nicki/matlab2tikz.

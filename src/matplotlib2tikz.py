@@ -3,6 +3,8 @@
 
 from pylab import *
 
+import types
+
 # =============================================================================
 # Recursively prints the tree structure of the matplotlib object
 def print_tree( obj, indent = "" ):
@@ -11,7 +13,11 @@ def print_tree( obj, indent = "" ):
         print_tree( child, indent + "   " )
     return
 # =============================================================================
-def matplotlib2tikz( filepath, figurewidth=None, figureheight=None, tex_relative_path_to_data=None ):
+def matplotlib2tikz( filepath,
+                     figurewidth=None,
+                     figureheight=None,
+                     tex_relative_path_to_data=None ):
+
     from os import path
     
     global fwidth
@@ -51,18 +57,19 @@ def draw_axes( file_handle, obj ):
         return
 
     # instantiation
-    nsubplots = 0
+    nsubplots = 1
     subplot_index = 0
     issubplot = False
 
     if isinstance( obj, matplotlib.axes.Subplot ):
-        issubplot = True
         geom = obj.get_geometry()
         nsubplots = geom[0]*geom[1]
-        subplot_index = geom[2]
-        if subplot_index==1:
-            file_handle.write( "\\begin{groupplot}[group style={group size=%.d by %.d}]\n" % (geom[1],geom[0]) )
-            pgfplots_libs.append( "groupplots" )
+        if nsubplots>1:
+            issubplot = True
+            subplot_index = geom[2]
+            if subplot_index==1:
+                file_handle.write( "\\begin{groupplot}[group style={group size=%.d by %.d}]\n" % (geom[1],geom[0]) )
+                pgfplots_libs.append( "groupplots" )
 
     axis_options = []
 
@@ -393,6 +400,11 @@ def draw_image( file_handle, obj ):
 
     # write the corresponding information to the TikZ file
     extent = obj.get_extent()
+
+    # the format specification will only accept tuples, not lists
+    if isinstance(extent, list): # convert to () list
+        extent = tuple(extent)
+
     if rel_data_path:
         rel_filepath = path.join( rel_data_path,  path.basename(filename) )
     else:
@@ -462,6 +474,23 @@ def draw_polycollection( file_handle, obj ):
 # Translates a matplotlib color specification into a proper LaTeX
 # xcolor.
 def mpl_color2xcolor( color ):
+
+    if type(color)==types.TupleType:
+        if len(color)!=3:
+           print "Unknown color \"", color ,"\". Giving up."
+           return None;
+        if color==(0,0,0):
+           return 'black'
+        elif color==(1,0,0):
+           return 'red'
+        elif color==(0,1,0):
+           return 'green'
+        elif color==(0,0,1):
+           return 'blue'
+        else:
+           print "Unknown color tuple \"", color ,"\". Giving up."
+           return None
+
     try: # is the color a gray-scale value?
         alpha = float(color)
         if alpha==0.0:
@@ -476,6 +505,9 @@ def mpl_color2xcolor( color ):
             return color
     except ValueError:
       pass
+    except TypeError:
+      print 
+      print color.length
 
     if color=='r':
         return 'red'
