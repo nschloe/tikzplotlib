@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from pylab import *
-import matplotlib
 
 from os import path
 
@@ -24,7 +23,7 @@ def acidtest():
 
     write_document_header( file_handle, figure_width )
 
-    test_functions = [ basic_sin, subplots, image_plot, subplot_plot ]
+    test_functions = [ basic_sin, subplots, image_plot, subplot_plot, colorbar ]
     
     # see if the command line options tell which subset of the
     # tests are to be run
@@ -74,17 +73,17 @@ def acidtest():
     return
 # =============================================================================
 def write_document_header( file_handle, figure_width ):
-    file_handle.write(   "\\documentclass{scrartcl}\n"
-                       + "\\pdfminorversion=5\n"
-                       + "\\pdfobjcompresslevel=2\n\n"
-                       + "\\usepackage{graphicx}\n"
-                       + "\\usepackage{subfig}\n"
-                       + "\\usepackage{pgfplots}\n"
-                       + "\\usepgfplotslibrary{groupplots}\n"
-                       + "\\pgfplotsset{compat=newest}\n\n"
-                       + "\\newlength\\figwidth\n"
-                       + "\\setlength\\figwidth{" + figure_width +"}\n\n"
-                       + "\\begin{document}\n\n"
+    file_handle.write( "\\documentclass{scrartcl}\n \
+                        \\pdfminorversion=5\n \
+                        \\pdfobjcompresslevel=2\n\n \
+                        \\usepackage{graphicx}\n \
+                        \\usepackage{subfig}\n \
+                        \\usepackage{pgfplots}\n \
+                        \\usepgfplotslibrary{groupplots}\n \
+                        \\pgfplotsset{compat=newest}\n\n \
+                        \\newlength\\figwidth\n \
+                        \\setlength\\figwidth{" + figure_width +"}\n\n \
+                        \\begin{document}\n\n"
                      )
     return
 # =============================================================================
@@ -109,6 +108,7 @@ def write_file_comparison_entry( file_handle,
                      )
     return
 # =============================================================================
-
-# execute the test
-acidtest()
+if __name__=="__main__":
+    # execute the test
+    acidtest()
+# =============================================================================

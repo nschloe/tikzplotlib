@@ -87,13 +87,15 @@ def draw_axes( file_handle, obj ):
     if len(ylabel) != 0 :
         axis_options.append( "ylabel={" + ylabel + "}" )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    # axes limits
-    xlim = obj.get_xlim()
-    axis_options.append(     "xmin=" + repr(xlim[0])
-                         + ", xmax=" + repr(xlim[1]) )
-    ylim = obj.get_ylim()
-    axis_options.append(     "ymin=" + repr(ylim[0])
-                         + ", ymax=" + repr(ylim[1]) )
+    # Axes limits.
+    # Sort the limits so make sure that the smaller of the two is actually
+    # *min.
+    xlim = sorted( list( obj.get_xlim() ) )
+    axis_options.append(     "xmin=" + str(xlim[0])
+                         + ", xmax=" + str(xlim[1]) )
+    ylim = sorted( list( obj.get_ylim() ) )
+    axis_options.append(     "ymin=" + str(ylim[0])
+                         + ", ymax=" + str(ylim[1]) )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # aspect ratio, plot width/height
     aspect = obj.get_aspect()
@@ -123,7 +125,7 @@ def draw_axes( file_handle, obj ):
             if alpha!=1.0:
                 # Concatenate the literals, as fwidth could as well be
                 # a LaTeX length variable such as \figurewidth.
-                fheight = repr(alpha) + "*" + fwidth
+                fheight = str(alpha) + "*" + fwidth
             else:
                 fheight = fwidth
             axis_options.append( "height="+fheight )
@@ -134,7 +136,7 @@ def draw_axes( file_handle, obj ):
             if alpha!=1.0:
                 # Concatenate the literals, as fheight could as well be
                 # a LaTeX length variable such as \figureheight.
-                fwidth = repr(1.0/alpha) + "*" + fheight
+                fwidth = str(1.0/alpha) + "*" + fheight
             else:
                 fwidth = fheight
             axis_options.append( "width="+fwidth )
@@ -157,7 +159,7 @@ def draw_axes( file_handle, obj ):
         # If *one* of the labels is, then all of them must
         # appear in the TikZ plot (which is why we store
         # them all in the first place).
-        if len( label )==0  or label==repr(xticks[i]):
+        if len( label )==0  or label==str(xticks[i]):
             is_label_necessary.append( False )
         else:
             is_label_necessary.append( True )
@@ -185,7 +187,7 @@ def draw_axes( file_handle, obj ):
         # If *one* of the labels is, then all of them must
         # appear in the TikZ plot (which is why we store
         # them all in the first place).
-        if len( label )==0  or label==repr(yticks[i]):
+        if len( label )==0  or label==str(yticks[i]):
             is_label_necessary.append( False )
         else:
             is_label_necessary.append( True )
@@ -200,10 +202,16 @@ def draw_axes( file_handle, obj ):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # x grid lines
     xgridlines = obj.get_xgridlines()
-#    for g in xgridlines:
-#        print g.get_xdata()
-#        print g.get_ydata()
-#        print g.get_data()
+    print xgridlines
+    for g in xgridlines:
+        print g
+        print g.get_xdata()
+        print g.get_ydata()
+        #print g.get_data()
+
+    print obj.yaxis.get_gridlines()
+    for g in xgridlines:
+        print g.get_linestyle()
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # find color bar
     colorbar = find_associated_colorbar( obj )
@@ -211,9 +219,9 @@ def draw_axes( file_handle, obj ):
         clim = colorbar.get_clim()
         axis_options.append( "colorbar=true" )
         mycolormap = matplotlibColormap2pgfplotsColormap( colorbar.get_cmap() )
-        axis_options.append( "colormap/" + mycolormap )
-        axis_options.append( 'point meta min=' + repr(clim[0]) )
-        axis_options.append( 'point meta max=' + repr(clim[1]) )
+        axis_options.append( "colormap=" + mycolormap )
+        axis_options.append( 'point meta min=' + str(clim[0]) )
+        axis_options.append( 'point meta max=' + str(clim[1]) )
         colorbar_styles = []
         cbar_yticks = colorbar.ax.get_yticks()
         colorbar_styles.append( "ytick={" + ",".join(["%s" % el for el in cbar_yticks]) + "}" )
@@ -379,10 +387,11 @@ def draw_image( file_handle, obj ):
        img_number = 0
 
     filename = path.join( output_dir, 
-                          "img" + repr(img_number) + ".png" )
+                          "img" + str(img_number) + ".png" )
 
     # store the image as in a file
     img_array = obj.get_array()
+
     dims = img_array.shape
     if len(dims)==2: # the values are given as one real number: look at cmap
         clims = obj.get_clim()
