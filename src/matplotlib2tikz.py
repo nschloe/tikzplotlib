@@ -14,9 +14,9 @@ def print_tree( obj, indent = "" ):
     return
 # =============================================================================
 def matplotlib2tikz( filepath,
-                     figurewidth=None,
-                     figureheight=None,
-                     tex_relative_path_to_data=None ):
+                     figurewidth = None,
+                     figureheight = None,
+                     tex_relative_path_to_data = None ):
 
     from os import path
     
@@ -200,18 +200,19 @@ def draw_axes( file_handle, obj ):
     if any(is_label_necessary):
         axis_options.append( "yticklabels={" + ",".join(pgfplots_yticklabels) + "}" )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    # x grid lines
-    xgridlines = obj.get_xgridlines()
-    print xgridlines
-    for g in xgridlines:
-        print g
-        print g.get_xdata()
-        print g.get_ydata()
-        #print g.get_data()
+    # Don't use get_{x,y}gridlines for gridlines; see discussion on
+    # <http://sourceforge.net/mailarchive/forum.php?thread_name=AANLkTima87pQkZmJhU2oNb8uxD2dfeV-Pa-uXWAFc2-v%40mail.gmail.com&forum_name=matplotlib-users>
+    # Coordinate of the lines are entirely meaningless, but styles (colors,...
+    # are respected.
+    if obj.xaxis._gridOnMajor:
+        axis_options.append( "xmajorgrids" )
+    elif obj.xaxis._gridOnMinor:
+        axis_options.append( "xminorgrids" )
 
-    print obj.yaxis.get_gridlines()
-    for g in xgridlines:
-        print g.get_linestyle()
+    if obj.yaxis._gridOnMajor:
+        axis_options.append( "ymajorgrids" )
+    elif obj.yaxis._gridOnMinor:
+        axis_options.append( "yminorgrids" )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # find color bar
     colorbar = find_associated_colorbar( obj )
@@ -293,7 +294,7 @@ def matplotlibColormap2pgfplotsColormap( cmap ):
                     blue_part = linear_interpolation( x, (blue[k_blue-1][0],blue[k_blue][0]), (blue[k_blue-1][2],blue[k_blue][1]) )
     
                 #print k
-                color_changes.append( "rgb(%.3fcm)=(%.3f,%.3f,%.3f)" % ( x, red_part,green_part,blue_part ) )
+                color_changes.append( "rgb(%.3fpt)=(%.3f,%.3f,%.3f)" % ( x, red_part,green_part,blue_part ) )
     
                 if x>=1.0: break
     
