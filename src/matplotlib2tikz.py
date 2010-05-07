@@ -28,6 +28,7 @@ REL_DATA_PATH = None
 PGFPLOTS_LIBS = None
 OUTPUT_DIR    = None
 IMG_NUMBER    = -1
+CUSTOM_COLORS = {}
 # ==============================================================================
 def print_tree( obj, indent = "" ):
     """
@@ -59,9 +60,16 @@ def matplotlib2tikz( filepath,
     # open file
     file_handle = open( filepath, "w" )
 
+    # gather the file content
+    content = handle_children( mpl.pyplot.gcf() )
+
     # write the contents
     file_handle.write( "\\begin{tikzpicture}\n\n" )
-    handle_children( file_handle, mpl.pyplot.gcf() )
+
+    file_handle.write( "\n".join( get_color_definitions() ) )
+    file_handle.write( "\n\n" )
+
+    file_handle.write( ''.join(content) )
     file_handle.write( "\\end{tikzpicture}" )
 
     # close file
@@ -71,10 +79,23 @@ def matplotlib2tikz( filepath,
     print_pgfplot_libs_message()
     return
 # ==============================================================================
-def draw_axes( file_handle, obj ):
+def get_color_definitions():
+    """
+    Returns the list of custom color definitions for the TikZ file.
+    """
+    definitions = []
+    for rgb in CUSTOM_COLORS:
+        definitions.append( "\\definecolor{%s}{rgb}{%g,%g,%g}" % \
+                            ( (CUSTOM_COLORS[rgb],) + rgb )
+                          )
+    return definitions
+# ==============================================================================
+def draw_axes( obj ):
     """
     Returns the Pgfplots code for an axis environment.
     """
+
+    content = []
 
     # Are we dealing with an axis that hosts a colorbar?
     # Skip then.
@@ -96,9 +117,9 @@ def draw_axes( file_handle, obj ):
             issubplot = True
             subplot_index = geom[2]
             if subplot_index == 1:
-                file_handle.write( "\\begin{groupplot}[group style=" \
-                                   "{group size=%.d by %.d}]\n" % \
-                                   (geom[1],geom[0]) )
+                content.append( "\\begin{groupplot}[group style=" \
+                                "{group size=%.d by %.d}]\n" % (geom[1],geom[0])
+                              )
                 PGFPLOTS_LIBS.append( "groupplots" )
 
     axis_options = []
@@ -212,23 +233,23 @@ def draw_axes( file_handle, obj ):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # actually print the thing
     if issubplot:
-        file_handle.write( "\\nextgroupplot" )
+        content.append( "\\nextgroupplot" )
     else:
-        file_handle.write( "\\begin{axis}" )
+        content.append( "\\begin{axis}" )
 
     if axis_options:
         options = ",\n".join( axis_options )
-        file_handle.write( "[\n" + options + "\n]\n" )
+        content.append( "[\n" + options + "\n]\n" )
 
     # TODO Use get_lines()?
-    handle_children( file_handle, obj )
+    content.extend( handle_children( obj ) )
 
     if not issubplot:
-        file_handle.write( "\\end{axis}\n\n" )
+        content.append( "\\end{axis}\n\n" )
     elif issubplot  and  nsubplots == subplot_index:
-        file_handle.write( "\\end{groupplot}\n\n" )
-
-    return
+        content.append( "\\end{groupplot}\n\n" )
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    return content
 # ==============================================================================
 def get_ticks( xy, ticks, ticklabels ):
     """
@@ -392,10 +413,11 @@ def linear_interpolation( x, X, Y ):
     """
     return ( Y[1]*(x-X[0]) + Y[0]*(X[1]-x) ) / ( X[1]-X[0] )
 # ==============================================================================
-def draw_line2d( file_handle, obj ):
+def draw_line2d( obj ):
     """
     Returns the Pgfplots code for an Line2D environment.
     """
+    content = []
 
     addplot_options = []
 
@@ -430,19 +452,19 @@ def draw_line2d( file_handle, obj ):
         addplot_options.append( "only marks" )
 
     # process options
-    file_handle.write( "\\addplot " )
+    content.append( "\\addplot " )
     if addplot_options:
         options = ", ".join( addplot_options )
-        file_handle.write( "[" + options + "]\n" )
+        content.append( "[" + options + "]\n" )
 
     # print the hard numerical data
     xdata, ydata = obj.get_data()
-    file_handle.write(  "coordinates {\n" )
+    content.append( "coordinates {\n" )
     for (k, x) in enumerate(xdata):
-        file_handle.write( "(%.15g,%.15g) " % (x, ydata[k]) )
-    file_handle.write( "\n};\n" )
+        content.append( "(%.15g,%.15g) " % (x, ydata[k]) )
+    content.append( "\n};\n" )
 
-    return
+    return content
 # ==============================================================================
 def mpl_marker2pgfp_marker( mpl_marker, is_marker_face_color ):
     """
@@ -542,7 +564,7 @@ def mpl_linestyle2pgfp_linestyle( line_style ):
         print '%Unknown line style \"' + str(line_style) + '\".'
         return None
 # ==============================================================================
-def draw_image( file_handle, obj ):
+def draw_image( obj ):
     """
     Returns the Pgfplots code for an image environment.
     """
@@ -587,22 +609,22 @@ def draw_image( file_handle, obj ):
 
     # Explicitly use \pgfimage as includegrapics command, as the default
     # \includegraphics fails unexpectedly in some cases
-    file_handle.write( "\\addplot graphics [ includegraphics cmd=\pgfimage,"
-                                             "xmin=%.15g, xmax=%.15g, "
-                                             "ymin=%.15g, ymax=%.15g] {%s};\n" % \
-                       ( extent + (rel_filepath,) )
-                      )
+    content.append(  "\\addplot graphics [ includegraphics cmd=\pgfimage," \
+                                           "xmin=%.15g, xmax=%.15g, " \
+                                           "ymin=%.15g, ymax=%.15g] {%s};\n" % \
+                                           ( extent + (rel_filepath,) )
+                  )
 
-    handle_children( file_handle, obj )
+    content.extend( handle_children( obj ) )
 
     return
 # ==============================================================================
-def draw_polygon( file_handle, obj ):
+def draw_polygon( obj ):
     """
     Return the Pgfplots code for polygons.
     """
     # TODO do nothing for polygons?!
-    handle_children( file_handle, obj )
+    content.extend( handle_children( obj ) )
     return
 # ==============================================================================
 def find_associated_colorbar( obj ):
@@ -665,34 +687,27 @@ def equivalent( array ):
 
     return True
 # ==============================================================================
-def draw_polycollection( file_handle, obj ):
+def draw_polycollection( obj ):
     print "matplotlib2tikz: Don't know how to draw a PolyCollection."
-    return
+    return None
 # ==============================================================================
-def draw_patchcollection( file_handle, obj ):
-    print "matplotlib2tikz: Don't know how to draw a PatchCollection."
+def draw_patchcollection( obj ):
 
-    edgecolors = obj.get_edgecolors()
-    print edgecolors
+    content = []
 
-    edgecolor = obj.get_edgecolor()
-    print edgecolor
-
-    facecolors = obj.get_facecolors()
-    print facecolors
-
-    linewidths = obj.get_linewidths()
-    print linewidths
+    # TODO Use those properties
+    #edgecolors = obj.get_edgecolors()
+    #edgecolor = obj.get_edgecolor()
+    #facecolors = obj.get_facecolors()
+    #linewidths = obj.get_linewidths()
 
     paths = obj.get_paths()
-    print len(paths)
-
     for path in paths:
-        draw_path( file_handle, path )
+        content.append( draw_path( path ) )
 
-    return
+    return content
 # ==============================================================================
-def draw_path( file_handle, path ):
+def draw_path( path ):
 
     nodes = []
     for vert,code in path.iter_segments():
@@ -708,76 +723,75 @@ def draw_path( file_handle, path ):
         else:
             sys.exit( "Strange." )
 
-    file_handle.write('\\path [fill] %s;\n\n' % "--".join( nodes ) )
-
-    return
+    return '\\path [fill] %s;\n\n' % "--".join( nodes )
 # ==============================================================================
+MPLCOLOR_2_XCOLOR = { # RGB values:
+                      (1,    0,    0   ): 'red',
+                      (0,    1,    0   ): 'green',
+                      (0,    0,    1   ): 'blue',
+                      (0.75, 0.5,  0.25): 'brown',
+                      (0.75, 1,    0   ): 'lime',
+                      (1,    0.5,  0   ): 'orange',
+                      (1,    0.75, 0.75): 'pink',
+                      (0.75, 0,    0.25): 'purple',
+                      (0,    0.5,  0.5 ): 'teal',
+                      (0.5,  0,    0.5 ): 'violet',
+                      # gray values:
+                      '0.0' : 'red',
+                      '0.5' : 'gray',
+                      '0.75': 'lightgray',
+                      '1.0' : None,
+                      # literals:
+                      'r'    : 'red',
+                      'g'    : 'green',
+                      'green': 'green',
+                      'b'    : 'blue',
+                      'k'    : None
+                    }
+# ------------------------------------------------------------------------------
 def mpl_color2xcolor( color ):
     """
     Translates a matplotlib color specification into a proper LaTeX
     xcolor.
     """
-    if type(color) == types.TupleType:
-        if len(color) != 3:
+    try:
+        return MPLCOLOR_2_XCOLOR[ color ]
+    except KeyError:
+        if isinstance( color, types.TupleType ) and len(color)==3:
+            # add a custom color
+            return add_rgbcolor_definition( color )
+        else:
             print "Unknown color \"", color ,"\". Giving up."
             return None
-        if color == (0, 0, 0):
-            return 'black'
-        elif color == (1, 0, 0):
-            return 'red'
-        elif color == (0, 1, 0):
-            return 'green'
-        elif color == (0, 0, 1):
-            return 'blue'
-        else:
-            print "Unknown color tuple \"", color ,"\". Giving up."
-            return None
-
-    try: # is the color a gray-scale value?
-        alpha = float(color)
-        if alpha == 0.0:
-            return 'black'
-        elif alpha == 0.5:
-            return 'gray'
-        elif alpha == 0.75:
-            return 'lightgray'
-        elif alpha == 1.0:
-            return None
-        else:
-            return color
-    except ValueError:
-        pass
-    except TypeError:
-        print 
-        print color.length
-
-    if color == 'r':
-        return 'red'
-    elif color == 'g' or color == 'green':
-        return 'green'
-    elif color == 'b':
-        return 'blue'
-    elif color == 'k':
-        return None
-    else:
-        print '%Unknown color \"' + color + '\".'
-        return None # default
 # ==============================================================================
-def handle_children( file_handle, obj ):
+def add_rgbcolor_definition( rgb_color_tuple ):
+    """
+    Takes an RGB color tuple, adds it to the list of colors that will need to be
+    defined in the TikZ file, and returned the label with which the color can
+    be used.
+    """
+    if rgb_color_tuple not in CUSTOM_COLORS:
+        CUSTOM_COLORS[ rgb_color_tuple ] = 'color' + str(len(CUSTOM_COLORS))
+
+    return CUSTOM_COLORS[ rgb_color_tuple ]
+# ==============================================================================
+def handle_children( obj ):
+
+    content = []
 
     for child in obj.get_children():
         if ( isinstance( child, mpl.axes.Axes ) ):
-            draw_axes( file_handle, child )
+            content.extend( draw_axes( child ) )
         elif ( isinstance( child, mpl.lines.Line2D ) ):
-            draw_line2d( file_handle, child )
+            content.extend( draw_line2d( child ) )
         elif ( isinstance( child, mpl.image.AxesImage ) ):
-            draw_image( file_handle, child )
+            content.extend( draw_image( child ) )
         elif ( isinstance( child, mpl.patches.Polygon ) ):
-            draw_polygon( file_handle, child )
+            content.extend( draw_polygon( child ) )
         elif ( isinstance( child, mpl.collections.PolyCollection ) ):
-            draw_polycollection( file_handle, child )
+            content.extend( draw_polycollection( child ) )
         elif ( isinstance( child, mpl.collections.PatchCollection ) ):
-            draw_patchcollection( file_handle, child )
+            content.extend( draw_patchcollection( child ) )
         elif (   isinstance( child, mpl.axis.XAxis )
               or isinstance( child, mpl.axis.YAxis )
               or isinstance( child, mpl.spines.Spine )
@@ -789,7 +803,7 @@ def handle_children( file_handle, obj ):
             print "matplotlib2tikz: Don't know how to handle object \"%s\"." % \
                   type(child)
 
-    return
+    return content
 # ==============================================================================
 def print_pgfplot_libs_message():
     """
