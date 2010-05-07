@@ -810,6 +810,16 @@ def add_rgbcolor_definition( rgb_color_tuple ):
 
     return CUSTOM_COLORS[ rgb_color_tuple ]
 # ==============================================================================
+def draw_legend( obj ):
+
+    texts = []
+    for text in obj.texts:
+        texts.append( "%s" % text.get_text() )
+
+    EXTRA_AXIS_OPTIONS.add( 'legend entries={%s}' % ",".join( texts )  )
+
+    return
+# ==============================================================================
 def handle_children( obj ):
 
     content = []
@@ -827,6 +837,8 @@ def handle_children( obj ):
             content.extend( draw_polycollection( child ) )
         elif ( isinstance( child, mpl.collections.PatchCollection ) ):
             content.extend( draw_patchcollection( child ) )
+        elif ( isinstance( child, mpl.legend.Legend ) ):
+            draw_legend( child )
         elif (   isinstance( child, mpl.axis.XAxis )
               or isinstance( child, mpl.axis.YAxis )
               or isinstance( child, mpl.spines.Spine )
