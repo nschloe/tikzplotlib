@@ -272,7 +272,7 @@ def get_ticks( xy, ticks, ticklabels ):
         # Check if the label is necessary.
         # If *one* of the labels is, then all of them must
         # appear in the TikZ plot.
-        is_label_necessary  =  label!=str(tick)
+        is_label_necessary  =  label and label!=str(tick)
 
     axis_options = []
 
