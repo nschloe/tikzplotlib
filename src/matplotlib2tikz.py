@@ -426,6 +426,30 @@ def draw_line2d( obj ):
 
     addplot_options = []
 
+    # --------------------------------------------------------------------------
+    # get the linewidth (in pt)
+    line_width = obj.get_linewidth()
+    mpl_default_line_width = 1.0
+
+    # try to use the Pgfplots line width literals where appropriate
+    if line_width == 0.125*mpl_default_line_width:
+        addplot_options.append( "ultra thin" )
+    elif line_width == 0.25*mpl_default_line_width:
+        addplot_options.append( "very thin" )
+    elif line_width == 0.5*mpl_default_line_width:
+        addplot_options.append( "thin" )
+    elif line_width == 0.5*mpl_default_line_width:
+        pass # normal line width
+    elif line_width == 2*mpl_default_line_width:
+        addplot_options.append( "thick" )
+    elif line_width == 4*mpl_default_line_width:
+        addplot_options.append( "very thick" )
+    elif line_width == 8*mpl_default_line_width:
+        addplot_options.append( "ultra thick" )
+    else:
+        # explicit line width
+        addplot_options.append( "line width=%spt" % line_width )
+    # --------------------------------------------------------------------------
     # get line color
     color = obj.get_color()
     xcolor = mpl_color2xcolor(color)
@@ -476,22 +500,6 @@ def draw_line2d( obj ):
     content.append( "\n};\n" )
 
     return content
-# ==============================================================================
-def split_list_by_nans( numeric_list ):
-    """
-    Splits a given numeric_list into sublists by the NaN elements in
-    numeric_list.
-    """
-    from math import isnan
-
-    for entry in numeric_list:
-        print ">>" + str(entry) + "<<"
-        if str(entry) == '--':
-            'a'
-        if isnan(entry):
-            'b'
-    #print numeric_list
-    return [numeric_list]
 # ==============================================================================
 def mpl_marker2pgfp_marker( mpl_marker, is_marker_face_color ):
     """
