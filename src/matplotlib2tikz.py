@@ -29,6 +29,7 @@ PGFPLOTS_LIBS = None
 OUTPUT_DIR    = None
 IMG_NUMBER    = -1
 CUSTOM_COLORS = {}
+EXTRA_AXIS_OPTIONS = set()
 # ==============================================================================
 def print_tree( obj, indent = "" ):
     """
@@ -237,12 +238,16 @@ def draw_axes( obj ):
     else:
         content.append( "\\begin{axis}" )
 
+    # Run through the children objects, gather the content, and give them the
+    # opportunity to contributethe EXTRA_AXIS_OPTIONS.
+    children_content = handle_children( obj )
+
+    axis_options.extend( EXTRA_AXIS_OPTIONS )
     if axis_options:
         options = ",\n".join( axis_options )
         content.append( "[\n" + options + "\n]\n" )
 
-    # TODO Use get_lines()?
-    content.extend( handle_children( obj ) )
+    content.extend( children_content )
 
     if not issubplot:
         content.append( "\\end{axis}\n\n" )
@@ -459,12 +464,34 @@ def draw_line2d( obj ):
 
     # print the hard numerical data
     xdata, ydata = obj.get_data()
+    if ydata.mask.any():
+        # matplotlib jumps at masked images, while Pgfplots by default
+        # interpolates. Hence, if we have a masked plot, make sure that Pgfplots
+        # jump as well.
+        EXTRA_AXIS_OPTIONS.add( 'unbounded coords=jump' )
+  
     content.append( "coordinates {\n" )
     for (k, x) in enumerate(xdata):
         content.append( "(%.15g,%.15g) " % (x, ydata[k]) )
     content.append( "\n};\n" )
 
     return content
+# ==============================================================================
+def split_list_by_nans( numeric_list ):
+    """
+    Splits a given numeric_list into sublists by the NaN elements in
+    numeric_list.
+    """
+    from math import isnan
+
+    for entry in numeric_list:
+        print ">>" + str(entry) + "<<"
+        if str(entry) == '--':
+            'a'
+        if isnan(entry):
+            'b'
+    #print numeric_list
+    return [numeric_list]
 # ==============================================================================
 def mpl_marker2pgfp_marker( mpl_marker, is_marker_face_color ):
     """
