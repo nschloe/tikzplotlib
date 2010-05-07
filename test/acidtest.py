@@ -23,7 +23,7 @@ def acidtest():
 
     write_document_header( file_handle, figure_width )
 
-    test_functions = [ basic_sin, subplots, image_plot, subplot_plot, colorbar ]
+    test_functions = [ basic_sin, subplots, image_plot, subplot_plot, noise, patches ]
     
     # see if the command line options tell which subset of the
     # tests are to be run
@@ -45,8 +45,6 @@ def acidtest():
 
     k = 0
     for fun in test_functions:
-        k = k+1
-
         # plot the test example
         comment = fun()
 
@@ -66,6 +64,7 @@ def acidtest():
                                      path.join( tex_relative_path_to_data,  path.basename(tikz_path) ),
                                      k,
                                      comment )
+        k = k+1
 
     write_document_closure( file_handle )
     file_handle.close()

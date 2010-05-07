@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from pylab import *
@@ -41,21 +42,23 @@ def subplots():
         return "Two subplots on top of each other"
 # =============================================================================
 def image_plot():
-        try:
-            import Image
-        except ImportError, exc:
-            raise SystemExit("PIL must be installed to run this example")
+    try:
+        import Image
+    except ImportError, exc:
+        raise SystemExit("PIL must be installed to run this example")
 
-        lena = Image.open('lena.png')
-        dpi = rcParams['figure.dpi']
-        figsize = lena.size[0]/dpi, lena.size[1]/dpi
+    lena = Image.open('lena.png')
+    dpi = rcParams['figure.dpi']
+    figsize = lena.size[0]/dpi, lena.size[1]/dpi
 
-        figure(figsize=figsize)
-        ax = axes([0,0,1,1], frameon=False)
-        ax.set_axis_off()
-        im = imshow(lena, origin='lower')
+    figure(figsize=figsize)
+    ax = axes([0,0,1,1], frameon=False)
+    ax.set_axis_off()
+    im = imshow(lena, origin='lower')
 
-        return "An \\texttt{imshow} plot"
+    colorbar()
+
+    return "An \\texttt{imshow} plot"
 # =============================================================================
 def subplot_plot():
         def f(t):
@@ -79,9 +82,13 @@ def subplot_plot():
         xlabel('time (s)')
         ylabel('Undamped')
 
-        return "Two subplot on top of each other"
+        return "Two subplots on top of each other"
 # =============================================================================
-def colorbar():
+def noise():
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    from numpy.random import randn
 
     # Make plot with vertical (default) colorbar
     fig = plt.figure()
@@ -108,5 +115,56 @@ def colorbar():
     cbar = fig.colorbar(cax, ticks=[-1, 0, 1], orientation='horizontal')
     cbar.ax.set_xticklabels(['Low', 'Medium', 'High'])# horizontal colorbar
 
-    return "Plot with colorbar"
+    return "Noise with a color bar"
+# =============================================================================
+def patches():
+
+    from matplotlib.patches import Circle, Wedge, Polygon
+    from matplotlib.collections import PatchCollection
+
+    fig=figure()
+    ax=fig.add_subplot(111)
+
+    resolution = 50 # the number of vertices
+    N = 3
+    x       = rand(N)
+    y       = rand(N)
+    radii   = 0.1*rand(N)
+    patches = []
+    for x1,y1,r in zip(x, y, radii):
+        circle = Circle((x1,y1), r)
+        patches.append(circle)
+
+    x       = rand(N)
+    y       = rand(N)
+    radii   = 0.1*rand(N)
+    theta1  = 360.0*rand(N)
+    theta2  = 360.0*rand(N)
+    for x1,y1,r,t1,t2 in zip(x, y, radii, theta1, theta2):
+        wedge = Wedge((x1,y1), r, t1, t2)
+        patches.append(wedge)
+
+    # Some limiting conditions on Wedge
+    patches += [
+        Wedge((.3,.7), .1, 0, 360),             # Full circle
+        Wedge((.7,.8), .2, 0, 360, width=0.05), # Full ring
+        Wedge((.8,.3), .2, 0, 45),              # Full sector
+        Wedge((.8,.3), .2, 45, 90, width=0.10), # Ring sector
+    ]
+
+    for i in range(N):
+        polygon = Polygon(rand(N,2), True)
+        patches.append(polygon)
+
+    colors = 100*rand(len(patches))
+    p = PatchCollection(patches, cmap=matplotlib.cm.jet, alpha=0.4)
+    p.set_array(array(colors))
+    ax.add_collection(p)
+    colorbar(p)
+
+    return "Some patches and a color bar"
+# =============================================================================
+if __name__ == 'main':
+    patches()
+    show()
 # =============================================================================
