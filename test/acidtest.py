@@ -23,7 +23,8 @@ def acidtest():
 
     write_document_header( file_handle, figure_width )
 
-    test_functions = [ basic_sin, subplots, image_plot, subplot_plot, noise, patches, legends, legends2, logplot, subplot4x4 ]
+    test_functions = [ basic_sin, subplots, image_plot,
+                       noise, patches, legends, legends2, logplot, subplot4x4 ]
     
     # see if the command line options tell which subset of the
     # tests are to be run

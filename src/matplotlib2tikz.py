@@ -10,6 +10,8 @@ Insert proper documentation
 import matplotlib as mpl
 import numpy
 import types
+from os import path
+from itertools import izip
 # ==============================================================================
 # meta info
 __author__     = "Nico Schlömer"
@@ -48,9 +50,6 @@ def matplotlib2tikz( filepath,
     Main function. Here, the recursion into the image starts and the contents
     are picked up. The actual file gets written in this routine.
     """
-
-    from os import path
-
     global FWIDTH    
     FWIDTH        = figurewidth
     global FHEIGHT
@@ -175,13 +174,10 @@ def draw_axes( obj ):
         try:
             aspect_num = float(aspect)
         except ValueError:
-            print "aspect was not a number!"
+            print "Aspect ratio not a number?!"
 
     global FWIDTH
     global FHEIGHT
-    if FWIDTH or FHEIGHT:
-        axis_options.append( "scale only axis" )
-
     if FWIDTH and FHEIGHT: # width and height overwrite aspect ratio
         axis_options.append( "width="+FWIDTH )
         axis_options.append( "height="+FHEIGHT )
@@ -213,8 +209,10 @@ def draw_axes( obj ):
                   "nor width of the plot are given. Discard aspect ratio."
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # get ticks
-    axis_options += get_ticks( 'x', obj.get_xticks(), obj.get_xticklabels() )
-    axis_options += get_ticks( 'y', obj.get_yticks(), obj.get_yticklabels() )
+    axis_options.extend( get_ticks( 'x', obj.get_xticks(),
+                                         obj.get_xticklabels() ) )
+    axis_options.extend( get_ticks( 'y', obj.get_yticks(),
+                                         obj.get_yticklabels() ) )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # Don't use get_{x,y}gridlines for gridlines; see discussion on
     # <http://sourceforge.net/mailarchive/forum.php?thread_name=AANLkTima87pQkZmJhU2oNb8uxD2dfeV-Pa-uXWAFc2-v%40mail.gmail.com&forum_name=matplotlib-users>
@@ -232,21 +230,36 @@ def draw_axes( obj ):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # find color bar
     colorbar = find_associated_colorbar( obj )
-    if colorbar != None:
-        clim = colorbar.get_clim()
-        axis_options.append( "colorbar=true" )
+    if colorbar:
+        colorbar_styles = []
+
+        orientation = colorbar.orientation
+        if orientation == 'horizontal':
+            axis_options.append( "colorbar horizontal" )
+            colorbar_ticks = colorbar.ax.get_xticks()
+            colorbar_ticklabels = colorbar.ax.get_xticklabels()
+            colorbar_styles.extend( get_ticks( 'x', colorbar_ticks,
+                                                    colorbar_ticklabels ) )
+            limits = colorbar.ax.get_xlim()
+        elif orientation == 'vertical':
+            axis_options.append( "colorbar" )
+            colorbar_ticks = colorbar.ax.get_yticks()
+            colorbar_ticklabels = colorbar.ax.get_yticklabels()
+            colorbar_styles.extend( get_ticks( 'y', colorbar_ticks,
+                                                    colorbar_ticklabels ) )
+            limits = colorbar.ax.get_ylim()
+        else:
+            sys.exit( "Unknown color bar orientation \"%s\". Abort" % \
+                      orientation )
+
+
         mycolormap = mpl_cmap2pgf_cmap( colorbar.get_cmap() )
         axis_options.append( "colormap=" + mycolormap )
-        axis_options.append( 'point meta min=' + str(clim[0]) )
-        axis_options.append( 'point meta max=' + str(clim[1]) )
-        colorbar_styles = []
-        cbar_yticks = colorbar.ax.get_yticks()
-        colorbar_styles.append( "ytick={%s}" % \
-                                ",".join(["%s" % el for el in cbar_yticks])
-                              )
-        axis_options.append( "colorbar style={%s}" % \
-                             ",".join(colorbar_styles)
-                           )
+        clim = colorbar.get_clim()
+        axis_options.append( 'point meta min=' + str(limits[0]) )
+        axis_options.append( 'point meta max=' + str(limits[1]) )
+
+        axis_options.append( "colorbar style={%s}" % ",".join(colorbar_styles) )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # actually print the thing
     if is_subplot:
@@ -280,15 +293,16 @@ def get_ticks( xy, ticks, ticklabels ):
     pgfplots_ticks = []
     pgfplots_ticklabels = []
     is_label_necessary = False
-    for (k, tick) in enumerate(ticks):
+    for (tick, ticklabel) in izip(ticks, ticklabels):
         pgfplots_ticks.append( tick )
         # store the label anyway
-        label = ticklabels[k].get_text()
+        label = ticklabel.get_text()
         pgfplots_ticklabels.append( label )
         # Check if the label is necessary.
         # If *one* of the labels is, then all of them must
         # appear in the TikZ plot.
         is_label_necessary  =  (label and label != str(tick))
+        # TODO This seems not quite to be the test whether labels are necessary.
 
     axis_options = []
 
@@ -515,8 +529,8 @@ def draw_line2d( obj ):
         EXTRA_AXIS_OPTIONS.add( 'unbounded coords=jump' )
   
     content.append( "coordinates {\n" )
-    for (k, x) in enumerate(xdata):
-        content.append( "(%.15g,%.15g) " % (x, ydata[k]) )
+    for (x,y) in izip(xdata,ydata):
+        content.append( "(%.15g,%.15g) " % (x, y) )
     content.append( "\n};\n" )
 
     return content
@@ -627,8 +641,6 @@ def draw_image( obj ):
     """
     Returns the Pgfplots code for an image environment.
     """
-    from os import path
-
     content = []
 
     global IMG_NUMBER
