@@ -44,6 +44,10 @@ def matplotlib2tikz( filepath,
                      figurewidth = None,
                      figureheight = None,
                      tex_relative_path_to_data = None ):
+    """
+    Main function. Here, the recursion into the image starts and the contents
+    are picked up. The actual file gets written in this routine.
+    """
 
     from os import path
 
@@ -152,11 +156,11 @@ def draw_axes( obj ):
     # axes scaling
     xscale = obj.get_xscale()
     yscale = obj.get_yscale()
-    if xscale=='log' and yscale=='log':
+    if xscale == 'log'  and  yscale == 'log':
         env = 'loglog'
-    elif xscale=='log':
+    elif xscale == 'log':
         env = 'semilogxaxis'
-    elif yscale=='log':
+    elif yscale == 'log':
         env = 'semilogyaxis'
     else:
         env = 'axis'
@@ -284,7 +288,7 @@ def get_ticks( xy, ticks, ticklabels ):
         # Check if the label is necessary.
         # If *one* of the labels is, then all of them must
         # appear in the TikZ plot.
-        is_label_necessary  =  label and label!=str(tick)
+        is_label_necessary  =  (label and label != str(tick))
 
     axis_options = []
 
@@ -421,7 +425,7 @@ def gcd( a, b ):
       Find the greatest number h such that a and b are integer multiples of h.
     """
     while a > 1.0e-10:
-            a, b = b % a, a
+        a, b = b % a, a
     return b
 # ==============================================================================
 def linear_interpolation( x, X, Y ):
@@ -501,9 +505,9 @@ def draw_line2d( obj ):
     # print the hard numerical data
     xdata, ydata = obj.get_data()
     try:
-       has_mask = ydata.mask.any()
+        has_mask = ydata.mask.any()
     except AttributeError:
-       has_mask = 0
+        has_mask = 0
     if has_mask:
         # matplotlib jumps at masked images, while Pgfplots by default
         # interpolates. Hence, if we have a masked plot, make sure that Pgfplots
@@ -542,25 +546,25 @@ def mpl_marker2pgfp_marker( mpl_marker, is_marker_face_color ):
     else:  # the following markers are only available with PGF's
            # plotmarks library
         print 'Make sure to load \\usetikzlibrary{plotmarks} in the preamble.'
-        if mpl_marker in ['v','1']: # triangle down
+        if mpl_marker in ['v', '1']: # triangle down
             marker_options = 'rotate=180'
             if is_marker_face_color:
                 pgfplots_marker = 'triangle*'
             else:
                 pgfplots_marker = 'triangle'
-        elif mpl_marker in ['^','2']: # triangle up
+        elif mpl_marker in ['^', '2']: # triangle up
             if is_marker_face_color:
                 pgfplots_marker = 'triangle*'
             else:
                 pgfplots_marker = 'triangle'
-        elif mpl_marker in ['<','3']: # triangle left
-            marker_opions = 'rotate=270'
+        elif mpl_marker in ['<', '3']: # triangle left
+            marker_options = 'rotate=270'
             if is_marker_face_color:
                 pgfplots_marker = 'triangle*'
             else:
                 pgfplots_marker = 'triangle'
-        elif mpl_marker in ['>','4']: # triangle right
-            marker_opions = 'rotate=90'
+        elif mpl_marker in ['>', '4']: # triangle right
+            marker_options = 'rotate=90'
             if is_marker_face_color:
                 pgfplots_marker = 'triangle*'
             else:
@@ -577,12 +581,12 @@ def mpl_marker2pgfp_marker( mpl_marker, is_marker_face_color ):
                 pgfplots_marker = 'pentagon'
         elif mpl_marker == '*': # star
             pgfplots_marker = 'asterisk'
-        elif mpl_marker in ['h','H']: # hexagon 1, hexagon 2
+        elif mpl_marker in ['h', 'H']: # hexagon 1, hexagon 2
             if is_marker_face_color:
                 pgfplots_marker = 'star*'
             else:
                 pgfplots_marker = 'star'
-        elif mpl_marker in ['D','d']: # diamond, thin diamond
+        elif mpl_marker in ['D', 'd']: # diamond, thin diamond
             if is_marker_face_color:
                 pgfplots_marker = 'diamond*'
             else:
@@ -624,11 +628,12 @@ def draw_image( obj ):
     Returns the Pgfplots code for an image environment.
     """
     from os import path
-    
+
+    content = []
+
     global IMG_NUMBER
     IMG_NUMBER = IMG_NUMBER+1
 
-    global OUTPUT_DIR
     filename = path.join( OUTPUT_DIR,
                           "img" + str(IMG_NUMBER) + ".png" )
 
@@ -672,13 +677,14 @@ def draw_image( obj ):
 
     content.extend( handle_children( obj ) )
 
-    return
+    return content
 # ==============================================================================
 def draw_polygon( obj ):
     """
     Return the Pgfplots code for polygons.
     """
     # TODO do nothing for polygons?!
+    content = []
     content.extend( handle_children( obj ) )
     return
 # ==============================================================================
@@ -743,10 +749,17 @@ def equivalent( array ):
     return True
 # ==============================================================================
 def draw_polycollection( obj ):
+    """
+    Returns Pgfplots code for a number of polygons.
+    Currently empty.
+    """
     print "matplotlib2tikz: Don't know how to draw a PolyCollection."
     return None
 # ==============================================================================
 def draw_patchcollection( obj ):
+    """
+    Returns Pgfplots code for a number of patch objects.
+    """
 
     content = []
 
@@ -763,14 +776,17 @@ def draw_patchcollection( obj ):
     return content
 # ==============================================================================
 def draw_path( path ):
+    """
+    Adds code for drawing an ordinary path in Pgfplots (TikZ).
+    """
 
     nodes = []
-    for vert,code in path.iter_segments():
+    for vert, code in path.iter_segments():
         # TODO respect the path code,
         #      <http://matplotlib.sourceforge.net/api/path_api.html#matplotlib.path.Path>
-        if len(vert)==2:
+        if len(vert) == 2:
             nodes.append( '(axis cs:%s,%s)' % ( str(vert[0]), str(vert[1]) ) )
-        elif len(vert)==6:
+        elif len(vert) == 6:
             # This is actually a Bezier curve, but can't deal with this yet.
             nodes.append( '(axis cs:%s,%s)' % ( str(vert[0]), str(vert[1]) ) )
             nodes.append( '(axis cs:%s,%s)' % ( str(vert[2]), str(vert[3]) ) )
@@ -837,7 +853,9 @@ def add_rgbcolor_definition( rgb_color_tuple ):
     return CUSTOM_COLORS[ rgb_color_tuple ]
 # ==============================================================================
 def draw_legend( obj ):
-
+    """
+    Adds legend code to the EXTRA_AXIS_OPTIONS.
+    """
     texts = []
     for text in obj.texts:
         texts.append( "%s" % text.get_text() )
@@ -847,6 +865,10 @@ def draw_legend( obj ):
     return
 # ==============================================================================
 def handle_children( obj ):
+    """
+    Iterates over all children of the current object, gathers the contents
+    contributing to the resulting Pgfplots file, and returns those.
+    """
 
     content = []
 
