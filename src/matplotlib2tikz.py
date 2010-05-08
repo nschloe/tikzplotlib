@@ -473,6 +473,14 @@ def linear_interpolation( x, X, Y ):
     """
     return ( Y[1]*(x-X[0]) + Y[0]*(X[1]-x) ) / ( X[1]-X[0] )
 # ==============================================================================
+TIKZ_LINEWIDTHS = { 0.1: 'ultra thin',
+                    0.2: 'very thin',
+                    0.4: 'thin',
+                    0.6: 'semithick',
+                    0.8: 'thick',
+                    1.2: 'very thick',
+                    1.6: 'ultra thick' }
+# ------------------------------------------------------------------------------
 def draw_line2d( obj ):
     """
     Returns the Pgfplots code for an Line2D environment.
@@ -484,26 +492,35 @@ def draw_line2d( obj ):
     # --------------------------------------------------------------------------
     # get the linewidth (in pt)
     line_width = obj.get_linewidth()
-    mpl_default_line_width = 1.0
 
-    # try to use the Pgfplots line width literals where appropriate
-    if line_width == 0.125*mpl_default_line_width:
+    # The default line width in matplotlib is 1.0pt, in Pgfplots 0.4pt ("thin").
+    # Match the two defaults, and scale for the rest.
+    scaled_line_width = line_width / 1.0  # scale by default line width
+    if scaled_line_width == 0.25:
         addplot_options.append( "ultra thin" )
-    elif line_width == 0.25*mpl_default_line_width:
+    elif scaled_line_width == 0.5:
         addplot_options.append( "very thin" )
-    elif line_width == 0.5*mpl_default_line_width:
-        addplot_options.append( "thin" )
-    elif line_width == mpl_default_line_width:
-        pass # normal line width
-    elif line_width == 2*mpl_default_line_width:
+    elif scaled_line_width == 1.0:
+        pass # Pgfplots default line width, "thin"
+    elif scaled_line_width == 1.5:
+        addplot_options.append( "semithick" )
+    elif scaled_line_width == 2:
         addplot_options.append( "thick" )
-    elif line_width == 4*mpl_default_line_width:
+    elif scaled_line_width == 3:
         addplot_options.append( "very thick" )
-    elif line_width == 8*mpl_default_line_width:
+    elif scaled_line_width == 4:
         addplot_options.append( "ultra thick" )
     else:
         # explicit line width
-        addplot_options.append( "line width=%spt" % line_width )
+        addplot_options.append( "line width=%spt" % 0.4*line_width )
+
+    # The following is an alternative approach to line widths. It takes the
+    # matplotlib linewidths, and just writes translates them into Pgfplots.
+    #try:
+        #addplot_options.append( TIKZ_LINEWIDTHS[ line_width ] )
+    #except KeyError:
+        ## explicit line width
+        #addplot_options.append( "line width=%spt" % line_width )
     # --------------------------------------------------------------------------
     # get line color
     color = obj.get_color()
@@ -516,6 +533,7 @@ def draw_line2d( obj ):
         addplot_options.append( linestyle )
 
     marker_face_color = obj.get_markerfacecolor()
+    marker_edge_color = obj.get_markeredgecolor()
     marker, extra_mark_options = mpl_marker2pgfp_marker( obj.get_marker(),
                                                          marker_face_color )
     if marker:
@@ -527,6 +545,9 @@ def draw_line2d( obj ):
         if marker_face_color:
             col = mpl_color2xcolor( marker_face_color )
             mark_options.append( "fill=" + col )
+        if marker_edge_color and marker_edge_color!=marker_face_color:
+            col = mpl_color2xcolor( marker_edge_color )
+            mark_options.append( "draw=" + col )
         if mark_options:
             addplot_options.append( "mark options={%s}" % \
                                     ",".join(mark_options)
