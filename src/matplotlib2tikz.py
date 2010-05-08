@@ -874,7 +874,10 @@ def handle_children( obj ):
 
     for child in obj.get_children():
         if ( isinstance( child, mpl.axes.Axes ) ):
-            content.extend( draw_axes( child ) )
+            try:
+                content.extend( draw_axes( child ) )
+            except TypeError: # draw_axes() probably returned None
+                pass
         elif ( isinstance( child, mpl.lines.Line2D ) ):
             content.extend( draw_line2d( child ) )
         elif ( isinstance( child, mpl.image.AxesImage ) ):

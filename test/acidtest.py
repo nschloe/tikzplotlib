@@ -23,7 +23,7 @@ def acidtest():
 
     write_document_header( file_handle, figure_width )
 
-    test_functions = [ basic_sin, subplots, image_plot, subplot_plot, noise, patches, legends, legends2, logplot ]
+    test_functions = [ basic_sin, subplots, image_plot, subplot_plot, noise, patches, legends, legends2, logplot, subplot4x4 ]
     
     # see if the command line options tell which subset of the
     # tests are to be run
@@ -95,14 +95,14 @@ def write_file_comparison_entry( file_handle,
                                  tikz_path,
                                  test_id,
                                  comment ):
-    file_handle.write(   "% test plot " + repr(test_id) + "\n"
+    file_handle.write(   "% test plot " + str(test_id) + "\n"
                        + "\\begin{figure}%\n"
                        + "\\centering%\n"
                        + "\\subfloat[][Reference PDF figure.]{\includegraphics[width=\\figwidth]"
-                          + "{" + pdf_path + "}}%\n"
+                          + "{" + str(pdf_path) + "}}%\n"
                        + "\\qquad%\n"
-                       + "\\subfloat[][\\texttt{matplotlib2tikz}-generated]{\input{" + tikz_path + "}}%\n"
-                       + "\\caption{" + comment + " (test ID " + repr(test_id) + ").}%\n"
+                       + "\\subfloat[][\\texttt{matplotlib2tikz}-generated]{\input{" + str(tikz_path) + "}}%\n"
+                       + "\\caption{" + str(comment) + " (test ID " + str(test_id) + ").}%\n"
                        + "\\end{figure}\n\n"
                      )
     return
