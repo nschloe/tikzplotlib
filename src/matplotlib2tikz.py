@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Insert proper documentation
+Script to convert Matplotlib generated figures into TikZ/Pgfplots figures.
 """
 
 # ==============================================================================
@@ -10,17 +10,18 @@ Insert proper documentation
 import matplotlib as mpl
 import numpy
 import types
-from os import path
+import os
+from sys import exit
 from itertools import izip
 # ==============================================================================
 # meta info
 __author__     = "Nico Schlömer"
 __copyright__  = "Copyright (c) 2010, Nico Schlömer <nico.schloemer@gmail.com>"
-__credits__    = ["Nico Schlömer"]
+__credits__    = []
 __license__    = "GNU Lesser General Public License (LGPL), Version 3"
-__version__    = "0.1.0_pre"
+__version__    = "0.1.0"
 __maintainer__ = "Nico Schlömer"
-__email__      = "nico.schloeme@gmail.com"
+__email__      = "nico.schloemer@gmail.com"
 __status__     = "Development"
 # ==============================================================================
 # global variables
@@ -61,7 +62,7 @@ def matplotlib2tikz( filepath,
     global PGFPLOTS_LIBS
     PGFPLOTS_LIBS = []
     global OUTPUT_DIR
-    OUTPUT_DIR    = path.dirname(filepath)
+    OUTPUT_DIR    = os.path.dirname(filepath)
     global STRICT
     STRICT = strict
 
@@ -278,8 +279,7 @@ def draw_axes( obj ):
             colorbar_styles.extend( get_ticks( 'y', colorbar_ticks,
                                                     colorbar_ticklabels ) )
         else:
-            sys.exit( "Unknown color bar orientation \"%s\". Abort" % \
-                      orientation )
+            exit( "Unknown color bar orientation \"%s\". Abort." % orientation )
 
 
         mycolormap = mpl_cmap2pgf_cmap( colorbar.get_cmap() )
@@ -554,7 +554,7 @@ def draw_line2d( obj ):
         if marker_face_color:
             col = mpl_color2xcolor( marker_face_color )
             mark_options.append( "fill=" + col )
-        if marker_edge_color and marker_edge_color!=marker_face_color:
+        if marker_edge_color  and  marker_edge_color != marker_face_color:
             col = mpl_color2xcolor( marker_edge_color )
             mark_options.append( "draw=" + col )
         if mark_options:
@@ -584,13 +584,13 @@ def draw_line2d( obj ):
         # interpolates. Hence, if we have a masked plot, make sure that Pgfplots
         # jump as well.
         EXTRA_AXIS_OPTIONS.add( 'unbounded coords=jump' )
-        for (x,y,is_masked) in izip(xdata,ydata,ydata.mask):
+        for (x, y, is_masked) in izip(xdata, ydata, ydata.mask):
             if is_masked:
                 content.append( "(%.15g,nan) " % x )
             else:
                 content.append( "(%.15g,%.15g) " % (x, y) )
     else:
-        for (x,y) in izip(xdata,ydata):
+        for (x, y) in izip(xdata, ydata):
             content.append( "(%.15g,%.15g) " % (x, y) )
     content.append( "\n};\n" )
 
@@ -707,8 +707,8 @@ def draw_image( obj ):
     global IMG_NUMBER
     IMG_NUMBER = IMG_NUMBER+1
 
-    filename = path.join( OUTPUT_DIR,
-                          "img" + str(IMG_NUMBER) + ".png" )
+    filename = os.path.join( OUTPUT_DIR,
+                             "img" + str(IMG_NUMBER) + ".png" )
 
     # store the image as in a file
     img_array = obj.get_array()
@@ -736,9 +736,9 @@ def draw_image( obj ):
         extent = tuple(extent)
 
     if REL_DATA_PATH:
-        rel_filepath = path.join( REL_DATA_PATH,  path.basename(filename) )
+        rel_filepath = os.path.join( REL_DATA_PATH, os.path.basename(filename) )
     else:
-        rel_filepath = path.basename(filename)
+        rel_filepath = os.path.basename(filename)
 
     # Explicitly use \pgfimage as includegrapics command, as the default
     # \includegraphics fails unexpectedly in some cases
