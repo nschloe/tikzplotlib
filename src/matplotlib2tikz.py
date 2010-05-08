@@ -32,6 +32,7 @@ OUTPUT_DIR    = None
 IMG_NUMBER    = -1
 CUSTOM_COLORS = {}
 EXTRA_AXIS_OPTIONS = set()
+STRICT        = False
 # ==============================================================================
 def print_tree( obj, indent = "" ):
     """
@@ -45,7 +46,8 @@ def print_tree( obj, indent = "" ):
 def matplotlib2tikz( filepath,
                      figurewidth = None,
                      figureheight = None,
-                     tex_relative_path_to_data = None ):
+                     tex_relative_path_to_data = None,
+                     strict = False ):
     """
     Main function. Here, the recursion into the image starts and the contents
     are picked up. The actual file gets written in this routine.
@@ -60,6 +62,8 @@ def matplotlib2tikz( filepath,
     PGFPLOTS_LIBS = []
     global OUTPUT_DIR
     OUTPUT_DIR    = path.dirname(filepath)
+    global STRICT
+    STRICT = strict
 
     # open file
     file_handle = open( filepath, "w" )
@@ -315,6 +319,7 @@ def get_ticks( xy, ticks, ticklabels ):
     Gets a {'x','y'}, a number of ticks and ticks labels, and returns the
     necessary axis options for the given configuration.
     """
+    axis_options = []
     pgfplots_ticks = []
     pgfplots_ticklabels = []
     is_label_necessary = False
@@ -329,20 +334,21 @@ def get_ticks( xy, ticks, ticklabels ):
         is_label_necessary  =  (label and label != str(tick))
         # TODO This seems not quite to be the test whether labels are necessary.
 
-    axis_options = []
+    # Leave the ticks to Pgfplots if not in STRICT mode and if there are no
+    # explicit labels.
+    if STRICT or is_label_necessary:
+        if pgfplots_ticks:
+            axis_options.append( "%stick={%s}" % \
+                                ( xy,
+                                  ",".join(["%s" % el for el in pgfplots_ticks]) )
+                              )
+        else:
+            axis_options.append( "%stick=\\empty" % xy )
 
-    if pgfplots_ticks:
-        axis_options.append( "%stick={%s}" % \
-                             ( xy,
-                               ",".join(["%s" % el for el in pgfplots_ticks]) )
-                           )
-    else:
-        axis_options.append( "%stick=\\empty" % xy )
-
-    if is_label_necessary:
-        axis_options.append( "%sticklabels={%s}" % \
-                             ( xy, ",".join( pgfplots_ticklabels ) )
-                           )
+        if is_label_necessary:
+            axis_options.append( "%sticklabels={%s}" % \
+                                ( xy, ",".join( pgfplots_ticklabels ) )
+                              )
     return axis_options
 # ==============================================================================
 def mpl_cmap2pgf_cmap( cmap ):
@@ -493,34 +499,37 @@ def draw_line2d( obj ):
     # get the linewidth (in pt)
     line_width = obj.get_linewidth()
 
-    # The default line width in matplotlib is 1.0pt, in Pgfplots 0.4pt ("thin").
-    # Match the two defaults, and scale for the rest.
-    scaled_line_width = line_width / 1.0  # scale by default line width
-    if scaled_line_width == 0.25:
-        addplot_options.append( "ultra thin" )
-    elif scaled_line_width == 0.5:
-        addplot_options.append( "very thin" )
-    elif scaled_line_width == 1.0:
-        pass # Pgfplots default line width, "thin"
-    elif scaled_line_width == 1.5:
-        addplot_options.append( "semithick" )
-    elif scaled_line_width == 2:
-        addplot_options.append( "thick" )
-    elif scaled_line_width == 3:
-        addplot_options.append( "very thick" )
-    elif scaled_line_width == 4:
-        addplot_options.append( "ultra thick" )
+    if STRICT:
+        # Takes the matplotlib linewidths, and just translate them
+        # into Pgfplots.
+        try:
+            addplot_options.append( TIKZ_LINEWIDTHS[ line_width ] )
+        except KeyError:
+            # explicit line width
+            addplot_options.append( "line width=%spt" % line_width )
     else:
-        # explicit line width
-        addplot_options.append( "line width=%spt" % 0.4*line_width )
-
-    # The following is an alternative approach to line widths. It takes the
-    # matplotlib linewidths, and just writes translates them into Pgfplots.
-    #try:
-        #addplot_options.append( TIKZ_LINEWIDTHS[ line_width ] )
-    #except KeyError:
-        ## explicit line width
-        #addplot_options.append( "line width=%spt" % line_width )
+        # The following is an alternative approach to line widths.
+        # The default line width in matplotlib is 1.0pt, in Pgfplots 0.4pt
+        # ("thin").
+        # Match the two defaults, and scale for the rest.
+        scaled_line_width = line_width / 1.0  # scale by default line width
+        if scaled_line_width == 0.25:
+            addplot_options.append( "ultra thin" )
+        elif scaled_line_width == 0.5:
+            addplot_options.append( "very thin" )
+        elif scaled_line_width == 1.0:
+            pass # Pgfplots default line width, "thin"
+        elif scaled_line_width == 1.5:
+            addplot_options.append( "semithick" )
+        elif scaled_line_width == 2:
+            addplot_options.append( "thick" )
+        elif scaled_line_width == 3:
+            addplot_options.append( "very thick" )
+        elif scaled_line_width == 4:
+            addplot_options.append( "ultra thick" )
+        else:
+            # explicit line width
+            addplot_options.append( "line width=%spt" % 0.4*line_width )
     # --------------------------------------------------------------------------
     # get line color
     color = obj.get_color()
@@ -562,6 +571,8 @@ def draw_line2d( obj ):
         options = ", ".join( addplot_options )
         content.append( "[" + options + "]\n" )
 
+    content.append( "coordinates {\n" )
+
     # print the hard numerical data
     xdata, ydata = obj.get_data()
     try:
@@ -573,10 +584,14 @@ def draw_line2d( obj ):
         # interpolates. Hence, if we have a masked plot, make sure that Pgfplots
         # jump as well.
         EXTRA_AXIS_OPTIONS.add( 'unbounded coords=jump' )
-  
-    content.append( "coordinates {\n" )
-    for (x,y) in izip(xdata,ydata):
-        content.append( "(%.15g,%.15g) " % (x, y) )
+        for (x,y,is_masked) in izip(xdata,ydata,ydata.mask):
+            if is_masked:
+                content.append( "(%.15g,nan) " % x )
+            else:
+                content.append( "(%.15g,%.15g) " % (x, y) )
+    else:
+        for (x,y) in izip(xdata,ydata):
+            content.append( "(%.15g,%.15g) " % (x, y) )
     content.append( "\n};\n" )
 
     return content
