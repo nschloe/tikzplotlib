@@ -234,20 +234,45 @@ def draw_axes( obj ):
         colorbar_styles = []
 
         orientation = colorbar.orientation
+        limits = colorbar.get_clim()
         if orientation == 'horizontal':
             axis_options.append( "colorbar horizontal" )
+
             colorbar_ticks = colorbar.ax.get_xticks()
+            axis_limits = colorbar.ax.get_xlim()
+
+            # In matplotlib, the colorbar color limits are determined by
+            # get_clim(), and the tick positions are as usual with respect to
+            # {x,y}lim. In Pgfplots, however, they are mixed together.
+            # Hence, scale the tick positions just like {x,y}lim are scaled
+            # to clim.
+            colorbar_ticks = (colorbar_ticks - axis_limits[0]) \
+                             / (axis_limits[1] - axis_limits[0]) \
+                             * (limits[1] - limits[0]) \
+                             + limits[0]
+
             colorbar_ticklabels = colorbar.ax.get_xticklabels()
             colorbar_styles.extend( get_ticks( 'x', colorbar_ticks,
                                                     colorbar_ticklabels ) )
-            limits = colorbar.ax.get_xlim()
+            
         elif orientation == 'vertical':
             axis_options.append( "colorbar" )
             colorbar_ticks = colorbar.ax.get_yticks()
+            axis_limits = colorbar.ax.get_ylim()
+
+            # In matplotlib, the colorbar color limits are determined by
+            # get_clim(), and the tick positions are as usual with respect to
+            # {x,y}lim. In Pgfplots, however, they are mixed together.
+            # Hence, scale the tick positions just like {x,y}lim are scaled
+            # to clim.
+            colorbar_ticks = (colorbar_ticks - axis_limits[0]) \
+                             / (axis_limits[1] - axis_limits[0]) \
+                             * (limits[1] - limits[0]) \
+                             + limits[0]
+
             colorbar_ticklabels = colorbar.ax.get_yticklabels()
             colorbar_styles.extend( get_ticks( 'y', colorbar_ticks,
                                                     colorbar_ticklabels ) )
-            limits = colorbar.ax.get_ylim()
         else:
             sys.exit( "Unknown color bar orientation \"%s\". Abort" % \
                       orientation )
@@ -255,7 +280,7 @@ def draw_axes( obj ):
 
         mycolormap = mpl_cmap2pgf_cmap( colorbar.get_cmap() )
         axis_options.append( "colormap=" + mycolormap )
-        clim = colorbar.get_clim()
+
         axis_options.append( 'point meta min=' + str(limits[0]) )
         axis_options.append( 'point meta max=' + str(limits[1]) )
 
