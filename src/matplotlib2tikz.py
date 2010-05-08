@@ -109,13 +109,13 @@ def draw_axes( obj ):
     # instantiation
     nsubplots = 1
     subplot_index = 0
-    issubplot = False
+    is_subplot = False
 
     if isinstance( obj, mpl.axes.Subplot ):
         geom = obj.get_geometry()
         nsubplots = geom[0]*geom[1]
         if nsubplots > 1:
-            issubplot = True
+            is_subplot = True
             subplot_index = geom[2]
             if subplot_index == 1:
                 content.append( "\\begin{groupplot}[group style=" \
@@ -148,6 +148,18 @@ def draw_axes( obj ):
     ylim = sorted( list( obj.get_ylim() ) )
     axis_options.append(     "ymin=" + str(ylim[0])
                          + ", ymax=" + str(ylim[1]) )
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # axes scaling
+    xscale = obj.get_xscale()
+    yscale = obj.get_yscale()
+    if xscale=='log' and yscale=='log':
+        env = 'loglog'
+    elif xscale=='log':
+        env = 'semilogxaxis'
+    elif yscale=='log':
+        env = 'semilogyaxis'
+    else:
+        env = 'axis'
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # aspect ratio, plot width/height
     aspect = obj.get_aspect()
@@ -233,10 +245,10 @@ def draw_axes( obj ):
                            )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # actually print the thing
-    if issubplot:
+    if is_subplot:
         content.append( "\\nextgroupplot" )
     else:
-        content.append( "\\begin{axis}" )
+        content.append( "\\begin{%s}" % env )
 
     # Run through the children objects, gather the content, and give them the
     # opportunity to contributethe EXTRA_AXIS_OPTIONS.
@@ -249,9 +261,9 @@ def draw_axes( obj ):
 
     content.extend( children_content )
 
-    if not issubplot:
-        content.append( "\\end{axis}\n\n" )
-    elif issubplot  and  nsubplots == subplot_index:
+    if not is_subplot:
+        content.append( "\\end{%s}\n\n" % env )
+    elif is_subplot  and  nsubplots == subplot_index:
         content.append( "\\end{groupplot}\n\n" )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     return content
@@ -438,7 +450,7 @@ def draw_line2d( obj ):
         addplot_options.append( "very thin" )
     elif line_width == 0.5*mpl_default_line_width:
         addplot_options.append( "thin" )
-    elif line_width == 0.5*mpl_default_line_width:
+    elif line_width == mpl_default_line_width:
         pass # normal line width
     elif line_width == 2*mpl_default_line_width:
         addplot_options.append( "thick" )
@@ -488,7 +500,11 @@ def draw_line2d( obj ):
 
     # print the hard numerical data
     xdata, ydata = obj.get_data()
-    if ydata.mask.any():
+    try:
+       has_mask = ydata.mask.any()
+    except AttributeError:
+       has_mask = 0
+    if has_mask:
         # matplotlib jumps at masked images, while Pgfplots by default
         # interpolates. Hence, if we have a masked plot, make sure that Pgfplots
         # jump as well.
@@ -584,19 +600,23 @@ def mpl_marker2pgfp_marker( mpl_marker, is_marker_face_color ):
 
     return ( pgfplots_marker, marker_options )
 # ==============================================================================
+MPLLINESTYLE_2_PGFPLOTSLINESTYLE = { '-'   : None,
+                                     'None': None,
+                                     ':'   : 'dotted',
+                                     '--'  : 'dashed',
+                                     '-.'  : 'dash pattern=on 1pt off 3pt ' \
+                                             'on 3pt off 3pt'
+                                   }
+# ------------------------------------------------------------------------------
 def mpl_linestyle2pgfp_linestyle( line_style ):
     """
     Translates a line style of matplotlib to the corresponding style
     in Pgfplots.
     """
-    if (line_style == '-' or line_style == 'None'):
-        return None
-    elif line_style == ':':
-        return 'dotted'
-    elif line_style == '--':
-        return 'dashed'
-    else:
-        print '%Unknown line style \"' + str(line_style) + '\".'
+    try:
+        return MPLLINESTYLE_2_PGFPLOTSLINESTYLE[ line_style ]
+    except KeyError:
+        print 'Unknown line style \"' + str(line_style) + '\".'
         return None
 # ==============================================================================
 def draw_image( obj ):
@@ -777,11 +797,17 @@ MPLCOLOR_2_XCOLOR = { # RGB values:
                       '0.75': 'lightgray',
                       '1.0' : None,
                       # literals:
-                      'r'    : 'red',
+                      'b'    : 'blue',
+                      'blue' : 'blue',
                       'g'    : 'green',
                       'green': 'green',
-                      'b'    : 'blue',
-                      'k'    : None
+                      'r'    : 'red',
+                      'red'  : 'red',
+                      'c'    : 'cyan',
+                      'm'    : 'magenta',
+                      'y'    : 'yellow',
+                      'k'    : 'black',
+                      'w'    : 'white'
                     }
 # ------------------------------------------------------------------------------
 def mpl_color2xcolor( color ):
@@ -796,7 +822,7 @@ def mpl_color2xcolor( color ):
             # add a custom color
             return add_rgbcolor_definition( color )
         else:
-            print "Unknown color \"", color ,"\". Giving up."
+            print "Unknown color \"" + color  + "\". Giving up."
             return None
 # ==============================================================================
 def add_rgbcolor_definition( rgb_color_tuple ):
