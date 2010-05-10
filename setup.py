@@ -9,5 +9,6 @@ setup( name='matplotlib2tikz',
        author = 'Nico Schl"omer',
        author_email = 'nico.schloemer@gmail.com',
        description = '',
-       license = 'GNU Lesser General Public License (LGPL), Version 3'
+       license = 'GNU Lesser General Public License (LGPL), Version 3',
+       platform='any'
      )
