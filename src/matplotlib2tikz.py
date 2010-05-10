@@ -1,7 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-Script to convert Matplotlib generated figures into TikZ/Pgfplots figures.
+"""Script to convert Matplotlib generated figures into TikZ/Pgfplots figures.
 """
 
 # ==============================================================================
@@ -74,8 +72,10 @@ def matplotlib2tikz( filepath,
     # write the contents
     file_handle.write( "\\begin{tikzpicture}\n\n" )
 
-    file_handle.write( "\n".join( get_color_definitions() ) )
-    file_handle.write( "\n\n" )
+    coldefs = get_color_definitions()
+    if coldefs:
+        file_handle.write( "\n".join( get_color_definitions() ) )
+        file_handle.write( "\n\n" )
 
     file_handle.write( ''.join(content) )
     file_handle.write( "\\end{tikzpicture}" )
@@ -255,6 +255,9 @@ def draw_axes( obj ):
                              * (limits[1] - limits[0]) \
                              + limits[0]
 
+            # Getting the labels via get_* might not actually be suitable:
+            # they might not reflect the current state.
+            # http://sourceforge.net/mailarchive/message.php?msg_name=AANLkTikdNFwSAhMIlLjnd4Ai8-XIdJYGmrwq6PrHkbgi%40mail.gmail.com
             colorbar_ticklabels = colorbar.ax.get_xticklabels()
             colorbar_styles.extend( get_ticks( 'x', colorbar_ticks,
                                                     colorbar_ticklabels ) )
@@ -274,6 +277,9 @@ def draw_axes( obj ):
                              * (limits[1] - limits[0]) \
                              + limits[0]
 
+            # Getting the labels via get_* might not actually be suitable:
+            # they might not reflect the current state.
+            # http://sourceforge.net/mailarchive/message.php?msg_name=AANLkTikdNFwSAhMIlLjnd4Ai8-XIdJYGmrwq6PrHkbgi%40mail.gmail.com
             colorbar_ticklabels = colorbar.ax.get_yticklabels()
             colorbar_styles.extend( get_ticks( 'y', colorbar_ticks,
                                                     colorbar_ticklabels ) )
@@ -281,13 +287,17 @@ def draw_axes( obj ):
             exit( "Unknown color bar orientation \"%s\". Abort." % orientation )
 
 
-        mycolormap = mpl_cmap2pgf_cmap( colorbar.get_cmap() )
-        axis_options.append( "colormap=" + mycolormap )
+        mycolormap, is_custom_cmap = mpl_cmap2pgf_cmap( colorbar.get_cmap() )
+        if is_custom_cmap:
+            axis_options.append( "colormap=" + mycolormap )
+        else:
+            axis_options.append( "colormap/" + mycolormap )
 
         axis_options.append( 'point meta min=' + str(limits[0]) )
         axis_options.append( 'point meta max=' + str(limits[1]) )
 
-        axis_options.append( "colorbar style={%s}" % ",".join(colorbar_styles) )
+        if colorbar_styles:
+            axis_options.append( "colorbar style={%s}" % ",".join(colorbar_styles) )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # actually print the thing
     if is_subplot:
@@ -355,94 +365,95 @@ def mpl_cmap2pgf_cmap( cmap ):
     Converts a color map as given in matplotlib to a color map as represented
     in Pgfplots.
     """
-    if isinstance( cmap, mpl.colors.LinearSegmentedColormap ):
-        if cmap.is_gray():
-            return 'blackwhite'
-        else:
-            segdata = cmap._segmentdata
-            red    = segdata['red']
-            green  = segdata['green']
-            blue   = segdata['blue']
-
-            # loop over the data, stop at each spot where the linear
-            # interpolations is interrupted, and set a color mark there
-            # set initial color
-            k_red   = 0
-            k_green = 0
-            k_blue  = 0
-            x = 0.0
-            colors = []
-            X = numpy.array([])
-            while True:
-                # find next x
-                x = min( red[k_red][0], green[k_green][0], blue[k_blue][0] )
-    
-                if ( red[k_red][0]==x ):
-                    red_comp = red[k_red][1]
-                    k_red    = k_red+1
-                else:
-                    red_comp = linear_interpolation( x,
-                                                     ( red[k_red-1][0],
-                                                       red[k_red]  [0]  ),
-                                                     ( red[k_red-1][2],
-                                                       red[k_red]  [1]  )
-                                                   )
-    
-                if ( green[k_green][0]==x ):
-                    green_comp = green[k_green][1]
-                    k_green    = k_green+1
-                else:
-                    green_comp = linear_interpolation( x,
-                                                       ( green[k_green-1][0],
-                                                         green[k_green]  [0]  ),
-                                                       ( green[k_green-1][2],
-                                                         green[k_green]  [1]  )
-                                                     )
-    
-                if ( blue[k_blue][0]==x ):
-                    blue_comp = blue[k_blue][1]
-                    k_blue    = k_blue+1
-                else:
-                    blue_comp = linear_interpolation( x,
-                                                      ( blue[k_blue-1][0],
-                                                        blue[k_blue]  [0]  ),
-                                                      ( blue[k_blue-1][2],
-                                                        blue[k_blue]  [1]  )
-                                                    )
-                   
-                X = numpy.append( X, x )
-                colors.append( (red_comp, green_comp, blue_comp) )
-    
-                if x >= 1.0:
-                    break
-
-
-            # The Pgfplots color map has an actual physical scale, like
-            # (0cm,10cm), and the points where the colors change is also given
-            # in those units. As of now (2010-05-06) it is crucial for Pgfplots
-            # that the difference between two successive points is an integer
-            # multiple of a given unity (parameter to the colormap; e.g., 1cm).
-            # At the same time, TeX suffers from significant round-off errors,
-            # so make sure that this unit is not too small such that the round-
-            # off errors don't play much of a role. A unit of 1pt, e.g., does
-            # most often not work
-            unit = 'pt'
-
-            # Scale to integer
-            X = scale_to_int( X )
-
-            color_changes = []
-            for (k, x) in enumerate(X):
-                color_changes.append( "rgb(%d%s)=(%.3f,%.3f,%.3f)" % \
-                                      ( ( x, unit ) + colors[k] )
-                                    )
-          
-            return "{mymap}{[1%s] %s }" % \
-                   ( unit, "; ".join( color_changes ) )
-
-    else :
+    if not isinstance( cmap, mpl.colors.LinearSegmentedColormap ):
         print "Don't know how to handle color map. Using 'blackwhite'."
-        return 'blackwhite'
+        is_custom_colormap = False
+        return ('blackwhite', is_custom_colormap)
+
+    if cmap.is_gray():
+        is_custom_colormap = False
+        return ('blackwhite', is_custom_colormap)
+
+
+    segdata = cmap._segmentdata
+    red    = segdata['red']
+    green  = segdata['green']
+    blue   = segdata['blue']
+
+    # loop over the data, stop at each spot where the linear
+    # interpolations is interrupted, and set a color mark there
+    # set initial color
+    k_red   = 0
+    k_green = 0
+    k_blue  = 0
+    x = 0.0
+    colors = []
+    X = numpy.array([])
+    while True:
+        # find next x
+        x = min( red[k_red][0], green[k_green][0], blue[k_blue][0] )
+
+        if ( red[k_red][0]==x ):
+            red_comp = red[k_red][1]
+            k_red    = k_red+1
+        else:
+            red_comp = linear_interpolation( x,
+                                             ( red[k_red-1][0], red[k_red][0] ),
+                                             ( red[k_red-1][2], red[k_red][1] )
+                                            )
+
+        if ( green[k_green][0]==x ):
+            green_comp = green[k_green][1]
+            k_green    = k_green+1
+        else:
+            green_comp = linear_interpolation( x,
+                                                ( green[k_green-1][0],
+                                                  green[k_green]  [0]  ),
+                                                ( green[k_green-1][2],
+                                                  green[k_green]  [1]  )
+                                              )
+
+        if ( blue[k_blue][0]==x ):
+            blue_comp = blue[k_blue][1]
+            k_blue    = k_blue+1
+        else:
+            blue_comp = linear_interpolation( x,
+                                              ( blue[k_blue-1][0],
+                                                blue[k_blue]  [0]  ),
+                                              ( blue[k_blue-1][2],
+                                                blue[k_blue]  [1]  )
+                                            )
+
+        X = numpy.append( X, x )
+        colors.append( (red_comp, green_comp, blue_comp) )
+
+        if x >= 1.0:
+            break
+
+    # The Pgfplots color map has an actual physical scale, like
+    # (0cm,10cm), and the points where the colors change is also given
+    # in those units. As of now (2010-05-06) it is crucial for Pgfplots
+    # that the difference between two successive points is an integer
+    # multiple of a given unity (parameter to the colormap; e.g., 1cm).
+    # At the same time, TeX suffers from significant round-off errors,
+    # so make sure that this unit is not too small such that the round-
+    # off errors don't play much of a role. A unit of 1pt, e.g., does
+    # most often not work
+    unit = 'pt'
+
+    # Scale to integer
+    X = scale_to_int( X )
+
+    color_changes = []
+    for (k, x) in enumerate(X):
+        color_changes.append( "rgb(%d%s)=(%.3f,%.3f,%.3f)" % \
+                              ( ( x, unit ) + colors[k] )
+                            )
+
+    colormap_string = "{mymap}{[1%s] %s }" % \
+                      ( unit, "; ".join( color_changes ) )
+    is_custom_colormap = True
+    return ( colormap_string, is_custom_colormap )
 # ==============================================================================
 def scale_to_int( X ):
     """
@@ -468,7 +479,11 @@ def gcd( a, b ):
     This algoritm also works for real numbers:
       Find the greatest number h such that a and b are integer multiples of h.
     """
-    while a > 1.0e-10:
+    # Keep the tolerance somewhat significantly about machine precision,
+    # as otherwise round-off errors will be accounted for, returning 1.0e-10
+    # instead of 1 for the values
+    #   [ 1.0, 2.0000000001, 3.0, 4.0 ].
+    while a > 1.0e-5:
         a, b = b % a, a
     return b
 # ==============================================================================
@@ -741,10 +756,10 @@ def draw_image( obj ):
 
     # Explicitly use \pgfimage as includegrapics command, as the default
     # \includegraphics fails unexpectedly in some cases
-    content.append(  "\\addplot graphics [ includegraphics cmd=\pgfimage," \
-                                           "xmin=%.15g, xmax=%.15g, " \
-                                           "ymin=%.15g, ymax=%.15g] {%s};\n" % \
-                                           ( extent + (rel_filepath,) )
+    content.append(  "\\addplot graphics [includegraphics cmd=\pgfimage," \
+                                          "xmin=%.15g, xmax=%.15g, " \
+                                          "ymin=%.15g, ymax=%.15g] {%s};\n" % \
+                                          ( extent + (rel_filepath,) )
                   )
 
     content.extend( handle_children( obj ) )
