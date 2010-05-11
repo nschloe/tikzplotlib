@@ -8,7 +8,7 @@ import matplotlib as mpl
 import numpy
 import types
 import os
-from sys import exit
+import sys
 from itertools import izip
 # ==============================================================================
 # meta info
@@ -25,21 +25,12 @@ __status__     = "Development"
 FWIDTH        = None
 FHEIGHT       = None
 REL_DATA_PATH = None
-PGFPLOTS_LIBS = None
+PGFPLOTS_LIBS = set()
 OUTPUT_DIR    = None
 IMG_NUMBER    = -1
 CUSTOM_COLORS = {}
 EXTRA_AXIS_OPTIONS = set()
 STRICT        = False
-# ==============================================================================
-def print_tree( obj, indent = "" ):
-    """
-    Recursively prints the tree structure of the matplotlib object.
-    """
-    print indent, type(obj)
-    for child in obj.get_children():
-        print_tree( child, indent + "   " )
-    return
 # ==============================================================================
 def matplotlib2tikz( filepath,
                      figurewidth = None,
@@ -56,8 +47,6 @@ def matplotlib2tikz( filepath,
     FHEIGHT       = figureheight
     global REL_DATA_PATH
     REL_DATA_PATH = tex_relative_path_to_data
-    global PGFPLOTS_LIBS
-    PGFPLOTS_LIBS = []
     global OUTPUT_DIR
     OUTPUT_DIR    = os.path.dirname(filepath)
     global STRICT
@@ -67,14 +56,14 @@ def matplotlib2tikz( filepath,
     file_handle = open( filepath, "w" )
 
     # gather the file content
-    content = handle_children( mpl.pyplot.gcf() )
+    content = _handle_children( mpl.pyplot.gcf() )
 
     # write the contents
     file_handle.write( "\\begin{tikzpicture}\n\n" )
 
-    coldefs = get_color_definitions()
+    coldefs = _get_color_definitions()
     if coldefs:
-        file_handle.write( "\n".join( get_color_definitions() ) )
+        file_handle.write( "\n".join( _get_color_definitions() ) )
         file_handle.write( "\n\n" )
 
     file_handle.write( ''.join(content) )
@@ -84,10 +73,19 @@ def matplotlib2tikz( filepath,
     file_handle.close()
     
     # print message about necessary pgfplot libs to command line
-    print_pgfplot_libs_message()
+    _print_pgfplot_libs_message()
     return
 # ==============================================================================
-def get_color_definitions():
+def _print_tree( obj, indent = "" ):
+    """
+    Recursively prints the tree structure of the matplotlib object.
+    """
+    print indent, type(obj)
+    for child in obj.get_children():
+        _print_tree( child, indent + "   " )
+    return
+# ==============================================================================
+def _get_color_definitions():
     """
     Returns the list of custom color definitions for the TikZ file.
     """
@@ -98,10 +96,11 @@ def get_color_definitions():
                           )
     return definitions
 # ==============================================================================
-def draw_axes( obj ):
+def _draw_axes( obj ):
     """
     Returns the Pgfplots code for an axis environment.
     """
+    global PGFPLOTS_LIBS
 
     content = []
 
@@ -109,8 +108,8 @@ def draw_axes( obj ):
     # Skip then.
     # TODO instead of testing here, rather blacklist the colorbar axis
     #      plots as soon as they have been found, e.g., by
-    #      find_associated_colorbar()
-    if extract_colorbar(obj):
+    #      _find_associated_colorbar()
+    if _extract_colorbar(obj):
         return
 
     # instantiation
@@ -128,7 +127,7 @@ def draw_axes( obj ):
                 content.append( "\\begin{groupplot}[group style=" \
                                 "{group size=%.d by %.d}]\n" % (geom[1],geom[0])
                               )
-                PGFPLOTS_LIBS.append( "groupplots" )
+                PGFPLOTS_LIBS.add( "groupplots" )
 
     axis_options = []
 
@@ -213,9 +212,9 @@ def draw_axes( obj ):
                   "nor width of the plot are given. Discard aspect ratio."
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # get ticks
-    axis_options.extend( get_ticks( 'x', obj.get_xticks(),
+    axis_options.extend( _get_ticks( 'x', obj.get_xticks(),
                                          obj.get_xticklabels() ) )
-    axis_options.extend( get_ticks( 'y', obj.get_yticks(),
+    axis_options.extend( _get_ticks( 'y', obj.get_yticks(),
                                          obj.get_yticklabels() ) )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # Don't use get_{x,y}gridlines for gridlines; see discussion on
@@ -233,7 +232,7 @@ def draw_axes( obj ):
         axis_options.append( "yminorgrids" )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # find color bar
-    colorbar = find_associated_colorbar( obj )
+    colorbar = _find_associated_colorbar( obj )
     if colorbar:
         colorbar_styles = []
 
@@ -259,7 +258,7 @@ def draw_axes( obj ):
             # they might not reflect the current state.
             # http://sourceforge.net/mailarchive/message.php?msg_name=AANLkTikdNFwSAhMIlLjnd4Ai8-XIdJYGmrwq6PrHkbgi%40mail.gmail.com
             colorbar_ticklabels = colorbar.ax.get_xticklabels()
-            colorbar_styles.extend( get_ticks( 'x', colorbar_ticks,
+            colorbar_styles.extend( _get_ticks( 'x', colorbar_ticks,
                                                     colorbar_ticklabels ) )
             
         elif orientation == 'vertical':
@@ -281,13 +280,14 @@ def draw_axes( obj ):
             # they might not reflect the current state.
             # http://sourceforge.net/mailarchive/message.php?msg_name=AANLkTikdNFwSAhMIlLjnd4Ai8-XIdJYGmrwq6PrHkbgi%40mail.gmail.com
             colorbar_ticklabels = colorbar.ax.get_yticklabels()
-            colorbar_styles.extend( get_ticks( 'y', colorbar_ticks,
+            colorbar_styles.extend( _get_ticks( 'y', colorbar_ticks,
                                                     colorbar_ticklabels ) )
         else:
-            exit( "Unknown color bar orientation \"%s\". Abort." % orientation )
+            sys.exit( "Unknown color bar orientation \"%s\". Abort." % \
+                      orientation )
 
 
-        mycolormap, is_custom_cmap = mpl_cmap2pgf_cmap( colorbar.get_cmap() )
+        mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap( colorbar.get_cmap() )
         if is_custom_cmap:
             axis_options.append( "colormap=" + mycolormap )
         else:
@@ -307,7 +307,7 @@ def draw_axes( obj ):
 
     # Run through the children objects, gather the content, and give them the
     # opportunity to contributethe EXTRA_AXIS_OPTIONS.
-    children_content = handle_children( obj )
+    children_content = _handle_children( obj )
 
     axis_options.extend( EXTRA_AXIS_OPTIONS )
     if axis_options:
@@ -323,7 +323,7 @@ def draw_axes( obj ):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     return content
 # ==============================================================================
-def get_ticks( xy, ticks, ticklabels ):
+def _get_ticks( xy, ticks, ticklabels ):
     """
     Gets a {'x','y'}, a number of ticks and ticks labels, and returns the
     necessary axis options for the given configuration.
@@ -360,7 +360,7 @@ def get_ticks( xy, ticks, ticklabels ):
                               )
     return axis_options
 # ==============================================================================
-def mpl_cmap2pgf_cmap( cmap ):
+def _mpl_cmap2pgf_cmap( cmap ):
     """
     Converts a color map as given in matplotlib to a color map as represented
     in Pgfplots.
@@ -397,7 +397,7 @@ def mpl_cmap2pgf_cmap( cmap ):
             red_comp = red[k_red][1]
             k_red    = k_red+1
         else:
-            red_comp = linear_interpolation( x,
+            red_comp = _linear_interpolation( x,
                                              ( red[k_red-1][0], red[k_red][0] ),
                                              ( red[k_red-1][2], red[k_red][1] )
                                             )
@@ -406,7 +406,7 @@ def mpl_cmap2pgf_cmap( cmap ):
             green_comp = green[k_green][1]
             k_green    = k_green+1
         else:
-            green_comp = linear_interpolation( x,
+            green_comp = _linear_interpolation( x,
                                                 ( green[k_green-1][0],
                                                   green[k_green]  [0]  ),
                                                 ( green[k_green-1][2],
@@ -417,7 +417,7 @@ def mpl_cmap2pgf_cmap( cmap ):
             blue_comp = blue[k_blue][1]
             k_blue    = k_blue+1
         else:
-            blue_comp = linear_interpolation( x,
+            blue_comp = _linear_interpolation( x,
                                               ( blue[k_blue-1][0],
                                                 blue[k_blue]  [0]  ),
                                               ( blue[k_blue-1][2],
@@ -442,7 +442,7 @@ def mpl_cmap2pgf_cmap( cmap ):
     unit = 'pt'
 
     # Scale to integer
-    X = scale_to_int( X )
+    X = _scale_to_int( X )
 
     color_changes = []
     for (k, x) in enumerate(X):
@@ -455,25 +455,25 @@ def mpl_cmap2pgf_cmap( cmap ):
     is_custom_colormap = True
     return ( colormap_string, is_custom_colormap )
 # ==============================================================================
-def scale_to_int( X ):
+def _scale_to_int( X ):
     """
     Scales the array X such that i contains only integers.
     """
-    X = X / gcd_array( X )
+    X = X / _gcd_array( X )
     return [int(entry) for entry in X]
 # ==============================================================================
-def gcd_array( X ):
+def _gcd_array( X ):
     """
     Return the largest real value h such that all elements in x are integer
     multiples of h.
     """
     greatest_common_divisor = 0.0
     for x in X:
-        greatest_common_divisor = gcd( greatest_common_divisor, x )
+        greatest_common_divisor = _gcd( greatest_common_divisor, x )
 
     return greatest_common_divisor
 # ==============================================================================
-def gcd( a, b ):
+def _gcd( a, b ):
     """
     Euclidean algorithm for calculating the GCD of two numbers a, b.
     This algoritm also works for real numbers:
@@ -487,7 +487,7 @@ def gcd( a, b ):
         a, b = b % a, a
     return b
 # ==============================================================================
-def linear_interpolation( x, X, Y ):
+def _linear_interpolation( x, X, Y ):
     """
     Given two data points [X,Y], linearly interpolate those at x.
     """
@@ -501,7 +501,7 @@ TIKZ_LINEWIDTHS = { 0.1: 'ultra thin',
                     1.2: 'very thick',
                     1.6: 'ultra thick' }
 # ------------------------------------------------------------------------------
-def draw_line2d( obj ):
+def _draw_line2d( obj ):
     """
     Returns the Pgfplots code for an Line2D environment.
     """
@@ -547,17 +547,17 @@ def draw_line2d( obj ):
     # --------------------------------------------------------------------------
     # get line color
     color = obj.get_color()
-    xcolor = mpl_color2xcolor(color)
+    xcolor = _mpl_color2xcolor(color)
     if xcolor:
         addplot_options.append( xcolor )
 
-    linestyle = mpl_linestyle2pgfp_linestyle( obj.get_linestyle() )
+    linestyle = _mpl_linestyle2pgfp_linestyle( obj.get_linestyle() )
     if linestyle:
         addplot_options.append( linestyle )
 
     marker_face_color = obj.get_markerfacecolor()
     marker_edge_color = obj.get_markeredgecolor()
-    marker, extra_mark_options = mpl_marker2pgfp_marker( obj.get_marker(),
+    marker, extra_mark_options = _mpl_marker2pgfp_marker( obj.get_marker(),
                                                          marker_face_color )
     if marker:
         addplot_options.append( "mark=" + marker )
@@ -566,10 +566,10 @@ def draw_line2d( obj ):
         if extra_mark_options:
             mark_options.append( extra_mark_options )
         if marker_face_color:
-            col = mpl_color2xcolor( marker_face_color )
+            col = _mpl_color2xcolor( marker_face_color )
             mark_options.append( "fill=" + col )
         if marker_edge_color  and  marker_edge_color != marker_face_color:
-            col = mpl_color2xcolor( marker_edge_color )
+            col = _mpl_color2xcolor( marker_edge_color )
             mark_options.append( "draw=" + col )
         if mark_options:
             addplot_options.append( "mark options={%s}" % \
@@ -610,88 +610,68 @@ def draw_line2d( obj ):
 
     return content
 # ==============================================================================
-def mpl_marker2pgfp_marker( mpl_marker, is_marker_face_color ):
+# for matplotlib markers, see
+# http://matplotlib.sourceforge.net/api/artist_api.html#matplotlib.lines.Line2D.set_marker
+MP_MARKER2PGF_MARKER = { '.'   : '*', # point
+                         'o'   : 'o', # circle
+                         '+'   : '+', # plus
+                         'x'   : 'x', # x
+                         'None': None,
+                         ' '   : None,
+                         ''    : None
+                       }
+# the following markers are only available with PGF's plotmarks library
+MP_MARKER2PLOTMARKS = { 'v' : ('triangle', 'rotate=180'), # triangle down
+                        '1' : ('triangle', 'rotate=180'), 
+                        '^' : ('triangle', None), # triangle up
+                        '2' : ('triangle', None),
+                        '<' : ('triangle', 'rotate=270'), # triangle left
+                        '3' : ('triangle', 'rotate=270'),
+                        '>' : ('triangle', 'rotate=90'), # triangle right
+                        '4' : ('triangle', 'rotate=90'),
+                        's' : ('square', None),
+                        'p' : ('pentagon', None),
+                        '*' : ('asterisk', None),
+                        'h' : ('star', None), # hexagon 1
+                        'H' : ('star', None), # hexagon 2
+                        'd' : ('diamond', None), # diamond
+                        'D' : ('diamond', None), # thin diamond
+                        '|' : ('|', None), # vertical line
+                        '_' : ('_', None)  # horizontal line
+                      }
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+def _mpl_marker2pgfp_marker( mpl_marker, is_marker_face_color ):
     """
     Translates a marker style of matplotlib to the corresponding style
     in Pgfplots.
     """
-    marker_options = None
-
-    # for matplotlib markers, see
-    # http://matplotlib.sourceforge.net/api/artist_api.html#matplotlib.lines.Line2D.set_marker
-    if mpl_marker == '.': # point
-        pgfplots_marker = '*'
-    elif mpl_marker == 'o': # circle
-        if is_marker_face_color:
+    # try default list
+    try:
+        pgfplots_marker = MP_MARKER2PGF_MARKER[ mpl_marker ]
+        if is_marker_face_color and pgfplots_marker == 'o':
             pgfplots_marker = '*'
-        else:
-            pgfplots_marker = 'o' # only with plotmarks
-    elif mpl_marker == '+': # plus
-        pgfplots_marker = '+'
-    elif mpl_marker == 'x': # x
-        pgfplots_marker = 'x'
-    elif mpl_marker in [ 'None', ' ', '' ] : # nothing
-        pgfplots_marker = None
-    else:  # the following markers are only available with PGF's
-           # plotmarks library
-        print 'Make sure to load \\usetikzlibrary{plotmarks} in the preamble.'
-        if mpl_marker in ['v', '1']: # triangle down
-            marker_options = 'rotate=180'
-            if is_marker_face_color:
-                pgfplots_marker = 'triangle*'
-            else:
-                pgfplots_marker = 'triangle'
-        elif mpl_marker in ['^', '2']: # triangle up
-            if is_marker_face_color:
-                pgfplots_marker = 'triangle*'
-            else:
-                pgfplots_marker = 'triangle'
-        elif mpl_marker in ['<', '3']: # triangle left
-            marker_options = 'rotate=270'
-            if is_marker_face_color:
-                pgfplots_marker = 'triangle*'
-            else:
-                pgfplots_marker = 'triangle'
-        elif mpl_marker in ['>', '4']: # triangle right
-            marker_options = 'rotate=90'
-            if is_marker_face_color:
-                pgfplots_marker = 'triangle*'
-            else:
-                pgfplots_marker = 'triangle'
-        elif mpl_marker == 's': # square
-            if is_marker_face_color:
-                pgfplots_marker = 'square*'
-            else:
-                pgfplots_marker = 'square'
-        elif mpl_marker == 'p': # pentagon
-            if is_marker_face_color:
-                pgfplots_marker = 'pentagon*'
-            else:
-                pgfplots_marker = 'pentagon'
-        elif mpl_marker == '*': # star
-            pgfplots_marker = 'asterisk'
-        elif mpl_marker in ['h', 'H']: # hexagon 1, hexagon 2
-            if is_marker_face_color:
-                pgfplots_marker = 'star*'
-            else:
-                pgfplots_marker = 'star'
-        elif mpl_marker in ['D', 'd']: # diamond, thin diamond
-            if is_marker_face_color:
-                pgfplots_marker = 'diamond*'
-            else:
-                pgfplots_marker = 'diamond'
-        elif mpl_marker == '|': # vertical line
-            pgfplots_marker = '|'
-        elif mpl_marker == '_': # horizontal line
-            pgfplots_marker = '_'
-        elif mpl_marker in [',']: # pixel
-            print 'Unsupported marker \"' + mpl_marker + '\".'
-            pgfplots_marker = None
-        else:
-            print 'Unknown marker \"' + mpl_marker + '\".'
-            pgfplots_marker = None
+            PGFPLOTS_LIBS.add( 'plotmarks' )
+        marker_options = None
+        return ( pgfplots_marker, marker_options )
+    except KeyError:
+        pass
 
-    return ( pgfplots_marker, marker_options )
+    # try plotmarks list    
+    try:
+        PGFPLOTS_LIBS.add( 'plotmarks' )
+        pgfplots_marker, marker_options = MP_MARKER2PLOTMARKS[ mpl_marker ]
+        if is_marker_face_color and not pgfplots_marker in ['|', '_']:
+            pgfplots_marker += '*'
+        return ( pgfplots_marker, marker_options )
+    except KeyError:
+        pass
+
+    if mpl_marker == ',': # pixel
+        print 'Unsupported marker \"' + mpl_marker + '\".'
+    else:
+        print 'Unknown marker \"' + mpl_marker + '\".'
+
+    return ( None, None )
 # ==============================================================================
 MPLLINESTYLE_2_PGFPLOTSLINESTYLE = { '-'   : None,
                                      'None': None,
@@ -701,7 +681,7 @@ MPLLINESTYLE_2_PGFPLOTSLINESTYLE = { '-'   : None,
                                              'on 3pt off 3pt'
                                    }
 # ------------------------------------------------------------------------------
-def mpl_linestyle2pgfp_linestyle( line_style ):
+def _mpl_linestyle2pgfp_linestyle( line_style ):
     """
     Translates a line style of matplotlib to the corresponding style
     in Pgfplots.
@@ -712,7 +692,7 @@ def mpl_linestyle2pgfp_linestyle( line_style ):
         print 'Unknown line style \"' + str(line_style) + '\".'
         return None
 # ==============================================================================
-def draw_image( obj ):
+def _draw_image( obj ):
     """
     Returns the Pgfplots code for an image environment.
     """
@@ -735,12 +715,14 @@ def draw_image( obj ):
                            cmap  = obj.get_cmap(),
                            vmin  = clims[0],
                            vmax  = clims[1] )
-    elif len(dims) == 3: # RGB information
-        if dims[2] == 4: # RGB+alpha information at each point
-            import Image
-            # convert to PIL image (after upside-down flip)
-            image = Image.fromarray( numpy.flipud(img_array), 'RGBA' )
-            image.save( filename )
+    elif len(dims) == 3 and dims[2] in [3, 4]:
+        # RGB (+alpha) information at each point
+        import Image
+        # convert to PIL image (after upside-down flip)
+        image = Image.fromarray( numpy.flipud(img_array) )
+        image.save( filename )
+    else:
+        sys.exit( 'Unable to store image array.' )
 
     # write the corresponding information to the TikZ file
     extent = obj.get_extent()
@@ -762,20 +744,20 @@ def draw_image( obj ):
                                           ( extent + (rel_filepath,) )
                   )
 
-    content.extend( handle_children( obj ) )
+    content.extend( _handle_children( obj ) )
 
     return content
 # ==============================================================================
-def draw_polygon( obj ):
+def _draw_polygon( obj ):
     """
     Return the Pgfplots code for polygons.
     """
     # TODO do nothing for polygons?!
     content = []
-    content.extend( handle_children( obj ) )
+    content.extend( _handle_children( obj ) )
     return
 # ==============================================================================
-def find_associated_colorbar( obj ):
+def _find_associated_colorbar( obj ):
     """
     Rather poor way of telling whether an axis has a colorbar associated:
     Check the next axis environment, and see if it is de facto a color bar;
@@ -793,7 +775,7 @@ def find_associated_colorbar( obj ):
             return cbar[0]
     return None
 # ==============================================================================
-def is_colorbar( obj ):
+def _is_colorbar( obj ):
     """
     Returns 'True' if 'obj' is a  color bar, and 'False' otherwise.
     """
@@ -808,21 +790,21 @@ def is_colorbar( obj ):
     else:
         return False
 # ==============================================================================
-def extract_colorbar( obj ):
+def _extract_colorbar( obj ):
     """
     Search for color bars as subobjects of obj, and return the first found.
     If none is found, return None.
     """
-    colorbars = mpl.pyplot.findobj( obj, is_colorbar )
+    colorbars = mpl.pyplot.findobj( obj, _is_colorbar )
 
     if not colorbars:
         return None
-    if not equivalent( colorbars ):
+    if not _equivalent( colorbars ):
         print "More than one color bar found. Use first one."
 
     return colorbars[0]
 # ==============================================================================
-def equivalent( array ):
+def _equivalent( array ):
     """
     Checks if the vectors consists of all the same objects.
     """
@@ -835,7 +817,7 @@ def equivalent( array ):
 
     return True
 # ==============================================================================
-def draw_polycollection( obj ):
+def _draw_polycollection( obj ):
     """
     Returns Pgfplots code for a number of polygons.
     Currently empty.
@@ -843,7 +825,7 @@ def draw_polycollection( obj ):
     print "matplotlib2tikz: Don't know how to draw a PolyCollection."
     return None
 # ==============================================================================
-def draw_patchcollection( obj ):
+def _draw_patchcollection( obj ):
     """
     Returns Pgfplots code for a number of patch objects.
     """
@@ -858,11 +840,11 @@ def draw_patchcollection( obj ):
 
     paths = obj.get_paths()
     for path in paths:
-        content.append( draw_path( path ) )
+        content.append( _draw_path( path ) )
 
     return content
 # ==============================================================================
-def draw_path( path ):
+def _draw_path( path ):
     """
     Adds code for drawing an ordinary path in Pgfplots (TikZ).
     """
@@ -913,7 +895,7 @@ MPLCOLOR_2_XCOLOR = { # RGB values:
                       'w'    : 'white'
                     }
 # ------------------------------------------------------------------------------
-def mpl_color2xcolor( color ):
+def _mpl_color2xcolor( color ):
     """
     Translates a matplotlib color specification into a proper LaTeX
     xcolor.
@@ -923,12 +905,12 @@ def mpl_color2xcolor( color ):
     except KeyError:
         if isinstance( color, types.TupleType ) and len(color)==3:
             # add a custom color
-            return add_rgbcolor_definition( color )
+            return _add_rgbcolor_definition( color )
         else:
             print "Unknown color \"" + color  + "\". Giving up."
             return None
 # ==============================================================================
-def add_rgbcolor_definition( rgb_color_tuple ):
+def _add_rgbcolor_definition( rgb_color_tuple ):
     """
     Takes an RGB color tuple, adds it to the list of colors that will need to be
     defined in the TikZ file, and returned the label with which the color can
@@ -939,7 +921,7 @@ def add_rgbcolor_definition( rgb_color_tuple ):
 
     return CUSTOM_COLORS[ rgb_color_tuple ]
 # ==============================================================================
-def draw_legend( obj ):
+def _draw_legend( obj ):
     """
     Adds legend code to the EXTRA_AXIS_OPTIONS.
     """
@@ -951,7 +933,7 @@ def draw_legend( obj ):
 
     return
 # ==============================================================================
-def handle_children( obj ):
+def _handle_children( obj ):
     """
     Iterates over all children of the current object, gathers the contents
     contributing to the resulting Pgfplots file, and returns those.
@@ -962,21 +944,21 @@ def handle_children( obj ):
     for child in obj.get_children():
         if ( isinstance( child, mpl.axes.Axes ) ):
             try:
-                content.extend( draw_axes( child ) )
-            except TypeError: # draw_axes() probably returned None
+                content.extend( _draw_axes( child ) )
+            except TypeError: # _draw_axes() probably returned None
                 pass
         elif ( isinstance( child, mpl.lines.Line2D ) ):
-            content.extend( draw_line2d( child ) )
+            content.extend( _draw_line2d( child ) )
         elif ( isinstance( child, mpl.image.AxesImage ) ):
-            content.extend( draw_image( child ) )
+            content.extend( _draw_image( child ) )
         elif ( isinstance( child, mpl.patches.Polygon ) ):
-            content.extend( draw_polygon( child ) )
+            content.extend( _draw_polygon( child ) )
         elif ( isinstance( child, mpl.collections.PolyCollection ) ):
-            content.extend( draw_polycollection( child ) )
+            content.extend( _draw_polycollection( child ) )
         elif ( isinstance( child, mpl.collections.PatchCollection ) ):
-            content.extend( draw_patchcollection( child ) )
+            content.extend( _draw_patchcollection( child ) )
         elif ( isinstance( child, mpl.legend.Legend ) ):
-            draw_legend( child )
+            _draw_legend( child )
         elif (   isinstance( child, mpl.axis.XAxis )
               or isinstance( child, mpl.axis.YAxis )
               or isinstance( child, mpl.spines.Spine )
@@ -990,17 +972,16 @@ def handle_children( obj ):
 
     return content
 # ==============================================================================
-def print_pgfplot_libs_message():
+def _print_pgfplot_libs_message():
     """
     Prints message to screen indicating the use of Pgfplots and its libraries.
     """
-    clean_pgfplots_libs = list( set(PGFPLOTS_LIBS) )
-    libs = ",".join( clean_pgfplots_libs )
+    libs = ",".join( list( PGFPLOTS_LIBS ) )
     
     print "========================================================="
     print "Please add the following line to your LaTeX preamble:\n"
     print "\usepackage{pgfplots}"
-    if clean_pgfplots_libs:
+    if libs:
         print "\usepgfplotslibrary{" + libs + "}"
     print "========================================================="
 
