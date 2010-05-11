@@ -73,17 +73,17 @@ def acidtest():
     return
 # =============================================================================
 def write_document_header( file_handle, figure_width ):
-    file_handle.write( "\\documentclass{scrartcl}\n \
-                        \\pdfminorversion=5\n \
-                        \\pdfobjcompresslevel=2\n\n \
-                        \\usepackage{graphicx}\n \
-                        \\usepackage{subfig}\n \
-                        \\usepackage{pgfplots}\n \
-                        \\usepgfplotslibrary{groupplots}\n \
-                        \\pgfplotsset{compat=newest}\n\n \
-                        \\newlength\\figwidth\n \
-                        \\setlength\\figwidth{" + figure_width +"}\n\n \
-                        \\begin{document}\n\n"
+    file_handle.write( "\\documentclass{scrartcl}\n"
+                       "\\pdfminorversion=5\n"
+                       "\\pdfobjcompresslevel=2\n\n"
+                       "\\usepackage{graphicx}\n"
+                       "\\usepackage{subfig}\n"
+                       "\\usepackage{pgfplots}\n"
+                       "\\usepgfplotslibrary{groupplots}\n"
+                       "\\pgfplotsset{compat=newest}\n\n"
+                       "\\newlength\\figwidth\n"
+                       "\\setlength\\figwidth{" + figure_width +"}\n\n"
+                       "\\begin{document}\n\n"
                      )
     return
 # =============================================================================
