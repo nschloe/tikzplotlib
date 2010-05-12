@@ -51,11 +51,11 @@ CUSTOM_COLORS = {}
 EXTRA_AXIS_OPTIONS = set()
 STRICT        = False
 # ==============================================================================
-def matplotlib2tikz( filepath,
-                     figurewidth = None,
-                     figureheight = None,
-                     tex_relative_path_to_data = None,
-                     strict = False ):
+def save( filepath,
+          figurewidth = None,
+          figureheight = None,
+          tex_relative_path_to_data = None,
+          strict = False ):
     """Main function. Here, the recursion into the image starts and the contents
     are picked up. The actual file gets written in this routine.
 
