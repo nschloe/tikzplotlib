@@ -11,9 +11,8 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-chaptir
+Methods
 =======
-balbal
 
 .. automodule:: matplotlib2tikz
   :members:

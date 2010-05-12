@@ -56,9 +56,46 @@ def matplotlib2tikz( filepath,
                      figureheight = None,
                      tex_relative_path_to_data = None,
                      strict = False ):
-    """
-    Main function. Here, the recursion into the image starts and the contents
+    """Main function. Here, the recursion into the image starts and the contents
     are picked up. The actual file gets written in this routine.
+
+    :param filepath: The file to which the TikZ output will be written.
+    :type filepath: str.
+
+    :param figurewidth: If not ``None``, this will be used as figure width
+                        within the TikZ/Pgfplot output. If ``figureheight``
+                        is not given, ``matplotlib2tikz`` will try to preserve
+                        the original width/height ratio.
+                        Note that ``figurewidth`` can be a string literal,
+                        such as ``'\\figurewidth'``.
+    :type figurewidth: str.
+
+    :param figureheight: If not ``None``, this will be used as figure height
+                         within the TikZ/Pgfplot output. If ``figurewidth`` is
+                         not given, ``matplotlib2tikz`` will try to preserve the
+                         original width/height ratio.
+                         Note that ``figurewidth`` can be a string literal,
+                         such as ``'\\figureheight'``.
+    :type figureheight: str.
+
+    :param tex_relative_path_to_data: In some cases, the TikZ file will have to
+                                      refer to another file, e.g., a PNG for
+                                      image plots. When ``\\input`` into a
+                                      regular LaTeX document, the additional
+                                      file is looked for in a folder relative
+                                      to the LaTeX file, not the TikZ file.
+                                      This arguments optionally sets the
+                                      relative path from the LaTeX file to the
+                                      data.
+    :type tex_relative_path_to_data: str.
+
+    :param strict: Whether or not to strictly stick to matplotlib's appearance.
+                   This influences, for example, whether tick marks are set
+                   exactly as in the matplotlib plot, or if TikZ/Pgfplots
+                   can decide where to put the ticks.
+    :type strict: bool.
+
+    :returns: None.
     """
     global FWIDTH    
     FWIDTH        = figurewidth
