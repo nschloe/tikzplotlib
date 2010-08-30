@@ -8,6 +8,10 @@ The workflow is as follows.
 
   0.) a) Place the matplotlib2tikz script in a directory where Python can find it
          (e.g., $PYTHONPATH).
+
+	 You can install it with sudo python setup.py install or place the script
+	 matplotlib2tikz.py into the directory where you are plotting with python.
+
       b) Make sure that your LaTeX installation includes the packages
 
             tikz (aka pgf, >=2.00)
@@ -20,25 +24,25 @@ The workflow is as follows.
 
   2.) Instead of pyplot.show(), invoke matplotlib2tikz by
 
-        matplotlib2tikz( 'myfile.tikz' );
+        tikz_save( 'myfile.tikz' );
 
-      to store the TikZ file as myfile.tikz. Don't forget to load the libary:
+      to store the TikZ file as myfile.tikz. Load the libary with:
 
-        from matplotlib2tikz import matplotlib2tikz
+        from matplotlib2tikz import save as tikz_save
 
       Optional:
       The scripts accepts several options, for example 'height', 'width', 'encoding', and some more. Invoke by
 
-        matplotlib2tikz( 'myfile.tikz', figureheight='4cm', figurewidth='3in' )
+        tikz_save( 'myfile.tikz', figureheight='4cm', figurewidth='3cm' )
 
       To specify the dimension of the plot from within the LaTeX document, try
         
-	matplotlib2tikz( 'myfile.tikz', figureheight='\figureheight', figurewidth='\figurewidth' )
+	tikz_save( 'myfile.tikz', figureheight='\\figureheight', figurewidth='\\figurewidth' )
 
       and in the LaTeX source
  
         \newlength\figureheight
-        \newlength\figurewith
+        \newlength\figurewidth
         \setlength\figureheight{4cm}
 	\setlength\figurewidth{6cm}
 	\input{myfile.tikz}
@@ -48,7 +52,8 @@ The workflow is as follows.
       Also make sure that at the header of your document the packages tikz and
       pgfplots are included:
 
-          \usepackage{pgfplots}
+          \usepackage{tikz}
+	  \usepackage{pgfplots}
 
       and optionally (as of Pgfplots 1.3)
 

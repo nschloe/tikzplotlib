@@ -23,7 +23,7 @@ from distutils.core import setup
 
 setup( name='matplotlib2tikz',
        version='0.1.0',
-       py_modules=['matplotlib2tikz'],
+       py_modules=['src/matplotlib2tikz'],
        url = 'http://github.com/nicki/matplotlib2tikz',
        download_url='http://github.com/nicki/matplotlib2tikz/downloads',
        author = 'Nico Schl"omer',
