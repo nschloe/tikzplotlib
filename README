@@ -14,11 +14,11 @@ The workflow is as follows.
 
       b) Make sure that your LaTeX installation includes the packages
 
-            tikz (aka pgf, >=2.00)
+        tikz (aka pgf, >=2.00)
 
-	 and
+      and
 
-	    pgfplots (>=1.3).
+        pgfplots (>=1.3).
 
   1.) Generate your matplotlib plot.
 
@@ -33,31 +33,38 @@ The workflow is as follows.
       Optional:
       The scripts accepts several options, for example 'height', 'width', 'encoding', and some more. Invoke by
 
-        tikz_save( 'myfile.tikz', figureheight='4cm', figurewidth='3cm' )
+        tikz_save( 'myfile.tikz', figureheight='4cm', figurewidth='6cm' )
+
+
+      IMPORTANT: The height and width must be set big enough, when set to low it will result in an compilation failure like:
+      - Dimension Too Large
+      - Arithmetic Overflow
+      (see information about these errors in the manual for pgfplots)
+
 
       To specify the dimension of the plot from within the LaTeX document, try
         
-	tikz_save( 'myfile.tikz', figureheight='\\figureheight', figurewidth='\\figurewidth' )
+        tikz_save( 'myfile.tikz', figureheight='\\figureheight', figurewidth='\\figurewidth' )
 
       and in the LaTeX source
  
         \newlength\figureheight
         \newlength\figurewidth
         \setlength\figureheight{4cm}
-	\setlength\figurewidth{6cm}
-	\input{myfile.tikz}
+        \setlength\figurewidth{6cm}
+        \input{myfile.tikz}
 
   3.) Add the contents of myfile.tikz into your LaTeX source code; a
       convenient way of doing so is to use \input{/path/to/myfile.tikz}.
       Also make sure that at the header of your document the packages tikz and
       pgfplots are included:
 
-          \usepackage{tikz}
-	  \usepackage{pgfplots}
+        \usepackage{tikz}
+        \usepackage{pgfplots}
 
-      and optionally (as of Pgfplots 1.3)
+      and optionally, to use features of the latest Pgfplots package (as of Pgfplots 1.3)
 
-          \pgfplotsset{compat=newest}
+        \pgfplotsset{compat=newest}
 
 
 If you would like to contribute, experience bugs, have nice examples of
