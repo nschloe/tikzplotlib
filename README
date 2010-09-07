@@ -9,18 +9,18 @@ The workflow is as follows.
   0.) a) Place the matplotlib2tikz script in a directory where Python can find it
          (e.g., $PYTHONPATH).
 
-	 You can install it with sudo python setup.py install or place the script
-	 matplotlib2tikz.py into the directory where you are plotting with python.
+	 You can install it systemwide with
+
+           sudo python setup.py install
+
+         or place the script matplotlib2tikz.py into the directory where you intend to use it.
 
       b) Make sure that your LaTeX installation includes the packages
 
-        tikz (aka pgf, >=2.00)
+          * TikZ (aka PGF, >=2.00), and
+          * Pgfplots (>=1.3).
 
-      and
-
-        pgfplots (>=1.3).
-
-  1.) Generate your matplotlib plot.
+  1.) Generate your matplotlib plot as usual.
 
   2.) Instead of pyplot.show(), invoke matplotlib2tikz by
 
@@ -31,16 +31,16 @@ The workflow is as follows.
         from matplotlib2tikz import save as tikz_save
 
       Optional:
-      The scripts accepts several options, for example 'height', 'width', 'encoding', and some more. Invoke by
+      The scripts accepts several options, for example 'height', 'width', 'encoding', and some others. Invoke by
 
         tikz_save( 'myfile.tikz', figureheight='4cm', figurewidth='6cm' )
 
 
-      IMPORTANT: The height and width must be set big enough, when set to low it will result in an compilation failure like:
-      - Dimension Too Large
-      - Arithmetic Overflow
-      (see information about these errors in the manual for pgfplots)
-
+      IMPORTANT:
+      Height and width must be set large enough; setting it too low it may result in a LaTeX compilation failure such as 
+        - Dimension Too Large, or
+        - Arithmetic Overflow
+      (see information about these errors in the manual of Pgfplots)
 
       To specify the dimension of the plot from within the LaTeX document, try
         
@@ -56,18 +56,18 @@ The workflow is as follows.
 
   3.) Add the contents of myfile.tikz into your LaTeX source code; a
       convenient way of doing so is to use \input{/path/to/myfile.tikz}.
-      Also make sure that at the header of your document the packages tikz and
-      pgfplots are included:
+      Also make sure that at the header of your document the packages TikZ and
+      Pgfplots are included:
 
         \usepackage{tikz}
         \usepackage{pgfplots}
 
-      and optionally, to use features of the latest Pgfplots package (as of Pgfplots 1.3)
+      Optionally, to use features of the latest Pgfplots package (as of Pgfplots 1.3), insert
 
         \pgfplotsset{compat=newest}
 
 
-If you would like to contribute, experience bugs, have nice examples of
+If you experience bugs, would like to contribute, have nice examples of
 what matplotlib2tikz can do, or if you are just looking for more
 information, then please visit the web page of
 matplotlib2tikz http://github.com/nicki/matlab2tikz.
