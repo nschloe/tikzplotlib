@@ -80,10 +80,11 @@ def acidtest():
 
         # convert to TikZ
         tikz_path = data_dir + "/test" + repr(k) + ".tikz"
-        matplotlib2tikz.matplotlib2tikz( tikz_path,
-                                         figurewidth=figure_width, 
-                                         tex_relative_path_to_data = \
-                                                     tex_relative_path_to_data )
+        matplotlib2tikz.save( tikz_path,
+                              figurewidth=figure_width,
+                              tex_relative_path_to_data = \
+                                                     tex_relative_path_to_data
+                            )
 
         # plot reference figure
         pdf_path  = data_dir + "/test" + repr(k) + ".pdf"
@@ -96,7 +97,8 @@ def acidtest():
                                      path.join( tex_relative_path_to_data,
                                                 path.basename(tikz_path) ),
                                      k,
-                                     comment )
+                                     comment
+                                   )
         k = k+1
 
     write_document_closure( file_handle )
