@@ -215,7 +215,7 @@ def _draw_axes( obj ):
     xscale = obj.get_xscale()
     yscale = obj.get_yscale()
     if xscale == 'log'  and  yscale == 'log':
-        env = 'loglog'
+        env = 'loglogaxis'
     elif xscale == 'log':
         env = 'semilogxaxis'
     elif yscale == 'log':
