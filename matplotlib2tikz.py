@@ -1006,6 +1006,20 @@ def _draw_legend( obj ):
 
     return
 # ==============================================================================
+def _draw_text( obj ):  
+    """
+    Paints text on the graph
+    """
+    content = []
+    properties = []
+    proto = "\\node at (axis cs:%e,%e)[%s]{%s};\n"
+    pos = obj.get_position()
+    text = obj.get_text()
+    properties.append("rotate=%.1f"%obj.get_rotation())
+    content.append(proto%(pos[0],pos[1],",".join(properties),text))
+    return content
+
+# ==============================================================================
 def _handle_children( obj ):
     """
     Iterates over all children of the current object, gathers the contents
@@ -1013,7 +1027,6 @@ def _handle_children( obj ):
     """
 
     content = []
-
     for child in obj.get_children():
         if ( isinstance( child, mpl.axes.Axes ) ):
             try:
@@ -1042,6 +1055,11 @@ def _handle_children( obj ):
         else:
             print "matplotlib2tikz: Don't know how to handle object \"%s\"." % \
                   type(child)
+
+    # XXX: This is ugly
+    if isinstance(obj, mpl.axes.Subplot) or isinstance(obj,mpl.figure.Figure):
+        for text in obj.texts:
+            content.extend(_draw_text(text))
 
     return content
 # ==============================================================================

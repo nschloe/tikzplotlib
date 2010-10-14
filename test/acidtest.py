@@ -29,6 +29,12 @@ import matplotlib as mpl
 import matplotlib2tikz
 import testfunctions as tf
 # ==============================================================================
+# XXX: There seems to be an issue with the legends that do not
+# appear in the pdf versions. The old legends are carried over from
+# the previous run and are transfered to the next run. I believe this is
+# a problem with the testing method, because if one adds print text in
+# _draw_legend pyplot returns the correct legends when this test is run
+# ==============================================================================
 def acidtest():    
     tex_file_path = "./tex/acid.tex"
 
@@ -54,7 +60,9 @@ def acidtest():
                        tf.legends2,
                        tf.logplot,
                        tf.loglogplot,
-                       tf.subplot4x4 ]
+                       tf.subplot4x4,
+                       tf.text_overlay
+                       ]
 
     # see if the command line options tell which subset of the
     # tests are to be run
@@ -76,6 +84,8 @@ def acidtest():
 
     k = 0
     for fun in test_functions:
+        mpl.pyplot.cla()
+        mpl.pyplot.clf()
         # plot the test example
         comment = fun()
 
@@ -142,7 +152,7 @@ def write_file_comparison_entry( file_handle,
                                             "\input{" + str(tikz_path) + "}}%\n"
                        + "\\caption{" + str(comment) + " (test ID " \
                        + str(test_id) + ").}%\n"
-                       + "\\end{figure}\n\n"
+                       + "\\end{figure}\\clearpage\n\n"
                      )
     return
 # ==============================================================================
