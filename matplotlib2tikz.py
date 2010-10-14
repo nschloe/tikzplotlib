@@ -55,7 +55,9 @@ def save( filepath,
           figurewidth = None,
           figureheight = None,
           tex_relative_path_to_data = None,
-          strict = False ):
+          strict = False,
+          wrap = True,
+          extra = None):
     """Main function. Here, the recursion into the image starts and the contents
     are picked up. The actual file gets written in this routine.
 
@@ -95,6 +97,15 @@ def save( filepath,
                    can decide where to put the ticks.
     :type strict: bool.
 
+    :param wrap: Whether ``'\\begin{tikzpicture}'`` and ``'\\end{tikzpicture}'``
+                 will be written. One might need to provide custom arguments to
+                 the environment (eg. scale= etc.). Default is ``True``
+    :type wrap: bool.
+
+    :param extra: Extra axis options to be passed (as a dict) to pgfplots. Default
+                  is ``None``.
+    :type extra: dict.
+
     :returns: None.
     """
     global FWIDTH    
@@ -108,6 +119,10 @@ def save( filepath,
     global STRICT
     STRICT = strict
 
+    if extra is not None:
+        for key,val in extra.items():
+            EXTRA_AXIS_OPTIONS.add("%s=%s"%(key,val))
+
     # open file
     file_handle = open( filepath, "w" )
 
@@ -115,7 +130,8 @@ def save( filepath,
     content = _handle_children( mpl.pyplot.gcf() )
 
     # write the contents
-    file_handle.write( "\\begin{tikzpicture}\n\n" )
+    if wrap:
+        file_handle.write( "\\begin{tikzpicture}\n\n" )
 
     coldefs = _get_color_definitions()
     if coldefs:
@@ -123,7 +139,8 @@ def save( filepath,
         file_handle.write( "\n\n" )
 
     file_handle.write( ''.join(content) )
-    file_handle.write( "\\end{tikzpicture}" )
+    if wrap:
+        file_handle.write( "\\end{tikzpicture}" )
 
     # close file
     file_handle.close()
