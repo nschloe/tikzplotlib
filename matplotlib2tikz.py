@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 #
-# Copyright (C) 2010 Nico Schlömer
+# Copyright (C) 2010 Nico Schl"omer
 #
 # This file is part of matplotlib2tikz.
 #
@@ -31,14 +31,14 @@ import sys
 from itertools import izip
 # ==============================================================================
 # meta info
-__author__     = "Nico Schlömer"
-__copyright__  = "Copyright (c) 2010, Nico Schlömer <nico.schloemer@gmail.com>"
+__author__     = 'Nico Schl"omer'
+__copyright__  = 'Copyright (c) 2010, Nico Schl"omer <nico.schloemer@gmail.com>'
 __credits__    = []
-__license__    = "GNU Lesser General Public License (LGPL), Version 3"
-__version__    = "0.1.0"
-__maintainer__ = "Nico Schlömer"
-__email__      = "nico.schloemer@gmail.com"
-__status__     = "Development"
+__license__    = 'GNU Lesser General Public License (LGPL), Version 3'
+__version__    = '0.1.0'
+__maintainer__ = 'Nico Schl"omer'
+__email__      = 'nico.schloemer@gmail.com'
+__status__     = 'Development'
 # ==============================================================================
 # global variables
 FWIDTH        = None
@@ -205,11 +205,11 @@ def _draw_axes( obj ):
     # Sort the limits so make sure that the smaller of the two is actually
     # *min.
     xlim = sorted( list( obj.get_xlim() ) )
-    axis_options.append(     "xmin=" + str(xlim[0])
-                         + ", xmax=" + str(xlim[1]) )
+    axis_options.append(     "xmin=%e" % xlim[0]
+                         + ", xmax=%e" % xlim[1] )
     ylim = sorted( list( obj.get_ylim() ) )
-    axis_options.append(     "ymin=" + str(ylim[0])
-                         + ", ymax=" + str(ylim[1]) )
+    axis_options.append(     "ymin=%e" % ylim[0]
+                         + ", ymax=%e" % ylim[1] )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # axes scaling
     xscale = obj.get_xscale()
@@ -316,7 +316,7 @@ def _draw_axes( obj ):
             colorbar_ticklabels = colorbar.ax.get_xticklabels()
             colorbar_styles.extend( _get_ticks( 'x', colorbar_ticks,
                                                     colorbar_ticklabels ) )
-            
+
         elif orientation == 'vertical':
             axis_options.append( "colorbar" )
             colorbar_ticks = colorbar.ax.get_yticks()
@@ -349,8 +349,8 @@ def _draw_axes( obj ):
         else:
             axis_options.append( "colormap/" + mycolormap )
 
-        axis_options.append( 'point meta min=' + str(limits[0]) )
-        axis_options.append( 'point meta max=' + str(limits[1]) )
+        axis_options.append( 'point meta min=%e' % limits[0] )
+        axis_options.append( 'point meta max=%e' % limits[1] )
 
         if colorbar_styles:
             axis_options.append( "colorbar style={%s}" % ",".join(colorbar_styles) )
@@ -405,7 +405,7 @@ def _get_ticks( xy, ticks, ticklabels ):
         if pgfplots_ticks:
             axis_options.append( "%stick={%s}" % \
                                 ( xy,
-                                  ",".join(["%s" % el for el in pgfplots_ticks]) )
+                                  ",".join(["%e" % el for el in pgfplots_ticks]) )
                               )
         else:
             axis_options.append( "%stick=\\empty" % xy )
@@ -656,12 +656,12 @@ def _draw_line2d( obj ):
         EXTRA_AXIS_OPTIONS.add( 'unbounded coords=jump' )
         for (x, y, is_masked) in izip(xdata, ydata, ydata.mask):
             if is_masked:
-                content.append( "(%.15g,nan) " % x )
+                content.append( "(%e,nan) " % x )
             else:
-                content.append( "(%.15g,%.15g) " % (x, y) )
+                content.append( "(%e,%e) " % (x, y) )
     else:
         for (x, y) in izip(xdata, ydata):
-            content.append( "(%.15g,%.15g) " % (x, y) )
+            content.append( "(%e,%e) " % (x, y) )
     content.append( "\n};\n" )
 
     return content
@@ -795,8 +795,8 @@ def _draw_image( obj ):
     # Explicitly use \pgfimage as includegrapics command, as the default
     # \includegraphics fails unexpectedly in some cases
     content.append(  "\\addplot graphics [includegraphics cmd=\pgfimage," \
-                                          "xmin=%.15g, xmax=%.15g, " \
-                                          "ymin=%.15g, ymax=%.15g] {%s};\n" % \
+                                          "xmin=%e, xmax=%e, " \
+                                          "ymin=%e, ymax=%e] {%s};\n" % \
                                           ( extent + (rel_filepath,) )
                   )
 
@@ -1033,7 +1033,7 @@ def _print_pgfplot_libs_message():
     Prints message to screen indicating the use of Pgfplots and its libraries.
     """
     libs = ",".join( list( PGFPLOTS_LIBS ) )
-    
+
     print "========================================================="
     print "Please add the following line to your LaTeX preamble:\n"
     print "\usepackage{pgfplots}"

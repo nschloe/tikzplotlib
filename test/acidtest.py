@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 #
-# Copyright (C) 2010 Nico Schlömer
+# Copyright (C) 2010 Nico Schl"omer
 #
 # This file is part of matplotlib2tikz.
 #
@@ -53,8 +53,9 @@ def acidtest():
                        tf.legends,
                        tf.legends2,
                        tf.logplot,
+                       tf.loglogplot,
                        tf.subplot4x4 ]
-    
+
     # see if the command line options tell which subset of the
     # tests are to be run
     test_list = []
@@ -63,7 +64,7 @@ def acidtest():
             test_list.append( int(arg) )
         except ValueError:
             pass
-    
+
     if len(test_list)!=0: # actually treat a sublist of test_functions
         # remove duplicates:
         test_list = list(set(test_list))

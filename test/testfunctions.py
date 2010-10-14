@@ -203,6 +203,13 @@ def logplot():
 
     line, = ax.semilogy(a, color='blue', lw=2)
     return "Log scaled plot"
+# =============================================================================
+def loglogplot():
+
+    x = logspace( 0, 6, num=5 )
+    loglog( x, x**2 )
+
+    return "Loglog plot with large ticks dimensions"
 # ==============================================================================
 def subplot4x4():
     an = linspace(0,2*pi,100)
@@ -228,6 +235,8 @@ def subplot4x4():
     axis([-3,3,-3,3])
     plot([0,4],[0,4])
     title('still equal after adding line',fontsize=10)
+
+    return '4x4 subplots'
 # ==============================================================================
 if __name__ == 'main':
     patches()
