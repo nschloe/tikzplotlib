@@ -513,7 +513,7 @@ def _mpl_cmap2pgf_cmap( cmap ):
 # ==============================================================================
 def _scale_to_int( X ):
     """
-    Scales the array X such that i contains only integers.
+    Scales the array X such that it contains only integers.
     """
     X = X / _gcd_array( X )
     return [int(entry) for entry in X]
