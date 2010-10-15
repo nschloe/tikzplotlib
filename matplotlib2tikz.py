@@ -45,6 +45,7 @@ FWIDTH        = None
 FHEIGHT       = None
 REL_DATA_PATH = None
 PGFPLOTS_LIBS = set()
+TIKZ_LIBS     = set()
 OUTPUT_DIR    = None
 IMG_NUMBER    = -1
 CUSTOM_COLORS = {}
@@ -55,7 +56,9 @@ def save( filepath,
           figurewidth = None,
           figureheight = None,
           tex_relative_path_to_data = None,
-          strict = False ):
+          strict = False,
+          wrap = True,
+          extra = None):
     """Main function. Here, the recursion into the image starts and the contents
     are picked up. The actual file gets written in this routine.
 
@@ -95,6 +98,15 @@ def save( filepath,
                    can decide where to put the ticks.
     :type strict: bool.
 
+    :param wrap: Whether ``'\\begin{tikzpicture}'`` and ``'\\end{tikzpicture}'``
+                 will be written. One might need to provide custom arguments to
+                 the environment (eg. scale= etc.). Default is ``True``
+    :type wrap: bool.
+
+    :param extra: Extra axis options to be passed (as a dict) to pgfplots. Default
+                  is ``None``.
+    :type extra: dict.
+
     :returns: None.
     """
     global FWIDTH    
@@ -107,6 +119,11 @@ def save( filepath,
     OUTPUT_DIR    = os.path.dirname(filepath)
     global STRICT
     STRICT = strict
+    global TIKZ_LIBS
+
+    if extra is not None:
+        for key,val in extra.items():
+            EXTRA_AXIS_OPTIONS.add("%s=%s"%(key,val))
 
     # open file
     file_handle = open( filepath, "w" )
@@ -115,7 +132,8 @@ def save( filepath,
     content = _handle_children( mpl.pyplot.gcf() )
 
     # write the contents
-    file_handle.write( "\\begin{tikzpicture}\n\n" )
+    if wrap:
+        file_handle.write( "\\begin{tikzpicture}\n\n" )
 
     coldefs = _get_color_definitions()
     if coldefs:
@@ -123,7 +141,8 @@ def save( filepath,
         file_handle.write( "\n\n" )
 
     file_handle.write( ''.join(content) )
-    file_handle.write( "\\end{tikzpicture}" )
+    if wrap:
+        file_handle.write( "\\end{tikzpicture}" )
 
     # close file
     file_handle.close()
@@ -989,6 +1008,85 @@ def _draw_legend( obj ):
 
     return
 # ==============================================================================
+def _draw_text( obj ):  
+    """
+    Paints text on the graph
+    """
+    content = []
+    properties = []
+    style = []
+    # 1: coordinates in axis system
+    # 2: properties (shapes, rotation, etc)
+    # 3: text style
+    # 4: the text
+    #                   ------ 1 -------2---3--4--
+    proto = "\\node at (axis cs:%e,%e)[%s]{%s %s};\n"
+    pos = obj.get_position()
+    text = obj.get_text()
+    bbox = obj.get_bbox_patch()
+    bbox_style = bbox.get_boxstyle()
+    converter = mpl.colors.ColorConverter()
+    if bbox.get_fill():
+        properties.append("fill=%s"%_mpl_color2xcolor(bbox.get_facecolor()))
+    # Rounded boxes
+    if( isinstance(bbox_style, mpl.patches.BoxStyle.Round) ):
+        properties.append("rounded corners")
+    elif( isinstance(bbox_style, mpl.patches.BoxStyle.RArrow) ):
+        TIKZ_LIBS.add("shapes.arrows")
+        properties.append("single arrow")
+    elif( isinstance(bbox_style, mpl.patches.BoxStyle.LArrow) ):
+        TIKZ_LIBS.add("shapes.arrows")
+        properties.append("single arrow")
+        properties.append("shape border rotate=180")
+    # Sawtooth, Roundtooth or Round4 not supported atm
+    # Round4 should be easy with "rounded rectangle"
+    # directive though.
+    else:
+        pass # Rectangle
+    # Line style
+    if(bbox.get_ls() == "dotted"):
+        properties.append("dotted")
+    elif(bbox.get_ls() == "dashed"):
+        properties.append("dashed")
+    # TODO: Fix this
+    elif(bbox.get_ls() == "dashdot"):
+        pass
+    else:
+        pass # solid
+
+    ha = obj.get_ha()
+    va = obj.get_va()
+    anchor = _transform_positioning(ha,va)
+    if anchor is not None:
+        properties.append(anchor)
+    properties.append("draw=%s"%_mpl_color2xcolor(bbox.get_edgecolor()))
+    properties.append("text=%s"%_mpl_color2xcolor( converter.to_rgb(obj.get_color()) ))
+    properties.append("rotate=%.1f"%obj.get_rotation())
+    properties.append("line width=%g"%(bbox.get_lw()*0.4)) # XXX: Ugly as hell
+    if obj.get_style() <> "normal":
+        style.append("\\itshape")
+    content.append(proto%(pos[0],pos[1],",".join(properties)," ".join(style),text))
+    return content
+
+def _transform_positioning(ha, va):
+    """
+    Converts matplotlib positioning to pgf node positioning.
+    Not quite accurate but the results are equivalent more or less
+    """
+    if (ha == "center" and va == "center"):
+        return None
+    else:
+        ha_mpl_to_tikz = {'right':'east',
+                          'left':'west',
+                          'center':''}
+        va_mpl_to_tikz = {'top':'north',
+                          'bottom':'south',
+                          'center':'',
+                          'baseline':'base'}
+        return "anchor=%s %s"%(va_mpl_to_tikz[va],ha_mpl_to_tikz[ha])
+
+
+# ==============================================================================
 def _handle_children( obj ):
     """
     Iterates over all children of the current object, gathers the contents
@@ -996,7 +1094,6 @@ def _handle_children( obj ):
     """
 
     content = []
-
     for child in obj.get_children():
         if ( isinstance( child, mpl.axes.Axes ) ):
             try:
@@ -1026,19 +1123,27 @@ def _handle_children( obj ):
             print "matplotlib2tikz: Don't know how to handle object \"%s\"." % \
                   type(child)
 
+    # XXX: This is ugly
+    if isinstance(obj, mpl.axes.Subplot) or isinstance(obj,mpl.figure.Figure):
+        for text in obj.texts:
+            content.extend(_draw_text(text))
+
     return content
 # ==============================================================================
 def _print_pgfplot_libs_message():
     """
     Prints message to screen indicating the use of Pgfplots and its libraries.
     """
-    libs = ",".join( list( PGFPLOTS_LIBS ) )
+    pgfplotslibs = ",".join( list( PGFPLOTS_LIBS ) )
+    tikzlibs = ",".join( list( TIKZ_LIBS ) )
 
     print "========================================================="
     print "Please add the following line to your LaTeX preamble:\n"
     print "\usepackage{pgfplots}"
-    if libs:
-        print "\usepgfplotslibrary{" + libs + "}"
+    if tikzlibs:
+        print "\usetikzlibrary{"+ tikzlibs +"}"
+    if pgfplotslibs:
+        print "\usepgfplotslibrary{" + pgfplotslibs + "}"
     print "========================================================="
 
     return

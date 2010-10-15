@@ -211,6 +211,30 @@ def loglogplot():
 
     return "Loglog plot with large ticks dimensions"
 # ==============================================================================
+def text_overlay():
+    xxx = linspace(0,5)
+    yyy = xxx**2
+
+    text(1, 5, "test1", size=50, rotation=30.,
+         ha="center", va="bottom", color="r", style="italic",
+         bbox = dict(boxstyle="round, pad=0.3",
+                     ec=(1., 0.5, 0.5),
+                     fc=(1., 0.8, 0.8),
+                     )
+         )
+
+    text(3, 6, "test2", size=50, rotation=-30.,
+         ha="center", va="center", color="b",
+         bbox = dict(boxstyle="square",
+                     ec=(1., 0.5, 0.5),
+                     fc=(1., 0.8, 0.8),
+                     )
+         )
+    plot(xxx,yyy,label="graph")
+    legend()
+    return "Regular plot with overlay text"
+
+# ==============================================================================
 def subplot4x4():
     an = linspace(0,2*pi,100)
 
@@ -242,3 +266,4 @@ if __name__ == 'main':
     patches()
     show()
 # ==============================================================================
+
