@@ -1027,7 +1027,7 @@ def _draw_text( obj ):
     # 2: properties (shapes, rotation, etc)
     # 3: text style
     # 4: the text
-    #                   ------ 1 -------2---3--4--
+    #                   -------1--------2---3--4--
     proto = "\\node at (axis cs:%e,%e)[%s]{%s %s};\n"
     pos = obj.get_position()
     text = obj.get_text()
@@ -1035,6 +1035,8 @@ def _draw_text( obj ):
     bbox = obj.get_bbox_patch()
     bbox_style = bbox.get_boxstyle()
     converter = mpl.colors.ColorConverter()
+    scaling = 0.55*size/FONT_SIZE  # XXX: This is ugly
+    properties.append("scale=%g" % scaling )
     if bbox.get_fill():
         properties.append("fill=%s"%_mpl_color2xcolor(bbox.get_facecolor()))
     # Rounded boxes
@@ -1057,11 +1059,13 @@ def _draw_text( obj ):
         properties.append("dotted")
     elif(bbox.get_ls() == "dashed"):
         properties.append("dashed")
-    # TODO: Fix this
+    # XXX: Is there any way to extract the dashdot
+    # pattern from matplotlib instead of hardcoding
+    # an approximation?
     elif(bbox.get_ls() == "dashdot"):
-        pass
-    else:
-        pass # solid
+        properties.append("dash pattern=on %.3gpt off %.3gpt on %.3gpt off %.3gpt"%\
+                          (1.0/scaling, 3.0/scaling, 6.0/scaling, 3.0/scaling))
+    else: pass # solid
 
     ha = obj.get_ha()
     va = obj.get_va()
@@ -1071,13 +1075,20 @@ def _draw_text( obj ):
     properties.append("draw=%s"%_mpl_color2xcolor(bbox.get_edgecolor()))
     properties.append("text=%s"%_mpl_color2xcolor( converter.to_rgb(obj.get_color()) ))
     properties.append("rotate=%.1f"%obj.get_rotation())
-    properties.append("line width=%g"%(bbox.get_lw()*0.4)) # XXX: Ugly as hell
-    scaling = 0.55*size/FONT_SIZE                          # XXX: This too
-    properties.append("scale=%g" % scaling )
-    properties.append("inner sep=%gpt" % (0.55*bbox_style.pad*size/scaling) )
+    properties.append("line width=%gpt"%(bbox.get_lw()*0.4)) # XXX: This is ugly, too
+    properties.append("inner sep=%gpt" % (bbox_style.pad*FONT_SIZE) )
     if obj.get_style() <> "normal":
         style.append("\\itshape")
-    content.append(proto%(pos[0],pos[1],",".join(properties)," ".join(style),text))
+    try:
+        if int(obj.get_weight()) > 550:
+            style.append('\\bfseries')
+    except: # Not numeric
+        vals = ['semibold','demibold','demi','bold','heavy','extra bold','black']
+        if str(obj.get_weight()) in vals:
+            style.append('\\bfseries')
+    content.append(proto%(pos[0],pos[1],
+                          ",".join(properties),
+                          " ".join(style),text))
     return content
 
 def _transform_positioning(ha, va):

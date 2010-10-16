@@ -217,14 +217,15 @@ def text_overlay():
 
     text(1, 5, "test1", size=50, rotation=30.,
          ha="center", va="bottom", color="r", style="italic",
-         bbox = dict(boxstyle="round, pad=0.3",
+         bbox = dict(boxstyle="round, pad=0.2",
                      ec=(1., 0.5, 0.5),
                      fc=(1., 0.8, 0.8),
+                     ls="dashdot"
                      )
          )
 
     text(3, 6, "test2", size=50, rotation=-30.,
-         ha="center", va="center", color="b",
+         ha="center", va="center", color="b", weight='bold',
          bbox = dict(boxstyle="square",
                      ec=(1., 0.5, 0.5),
                      fc=(1., 0.8, 0.8),
