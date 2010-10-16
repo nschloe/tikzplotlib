@@ -44,6 +44,7 @@ __status__     = 'Development'
 FWIDTH        = None
 FHEIGHT       = None
 REL_DATA_PATH = None
+FONT_SIZE     = None
 PGFPLOTS_LIBS = set()
 TIKZ_LIBS     = set()
 OUTPUT_DIR    = None
@@ -55,6 +56,7 @@ STRICT        = False
 def save( filepath,
           figurewidth = None,
           figureheight = None,
+          textsize = 10.0,
           tex_relative_path_to_data = None,
           strict = False,
           wrap = True,
@@ -80,6 +82,10 @@ def save( filepath,
                          Note that ``figurewidth`` can be a string literal,
                          such as ``'\\figureheight'``.
     :type figureheight: str.
+
+    :param textsize: The text size (in pt) that the target latex document is using.
+                     Default is 10.0.
+    :type textsize: float.
 
     :param tex_relative_path_to_data: In some cases, the TikZ file will have to
                                       refer to another file, e.g., a PNG for
@@ -120,6 +126,8 @@ def save( filepath,
     global STRICT
     STRICT = strict
     global TIKZ_LIBS
+    global FONT_SIZE
+    FONT_SIZE = 10.0
 
     if extra is not None:
         for key,val in extra.items():
@@ -1023,6 +1031,7 @@ def _draw_text( obj ):
     proto = "\\node at (axis cs:%e,%e)[%s]{%s %s};\n"
     pos = obj.get_position()
     text = obj.get_text()
+    size = obj.get_size()
     bbox = obj.get_bbox_patch()
     bbox_style = bbox.get_boxstyle()
     converter = mpl.colors.ColorConverter()
@@ -1063,6 +1072,9 @@ def _draw_text( obj ):
     properties.append("text=%s"%_mpl_color2xcolor( converter.to_rgb(obj.get_color()) ))
     properties.append("rotate=%.1f"%obj.get_rotation())
     properties.append("line width=%g"%(bbox.get_lw()*0.4)) # XXX: Ugly as hell
+    scaling = 0.55*size/FONT_SIZE                          # XXX: This too
+    properties.append("scale=%g" % scaling )
+    properties.append("inner sep=%gpt" % (0.55*bbox_style.pad*size/scaling) )
     if obj.get_style() <> "normal":
         style.append("\\itshape")
     content.append(proto%(pos[0],pos[1],",".join(properties)," ".join(style),text))
