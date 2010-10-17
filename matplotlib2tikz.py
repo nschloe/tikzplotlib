@@ -1070,7 +1070,7 @@ def _draw_text( obj ):
     size = obj.get_size()
     bbox = obj.get_bbox_patch()
     converter = mpl.colors.ColorConverter()
-    scaling = 0.55*size/FONT_SIZE  # XXX: This is ugly
+    scaling = 0.5*size/FONT_SIZE  # XXX: This is ugly
     properties.append("scale=%g" % scaling )
     if bbox is not None:
         bbox_style = bbox.get_boxstyle()
