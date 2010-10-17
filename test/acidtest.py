@@ -61,7 +61,8 @@ def acidtest():
                        tf.logplot,
                        tf.loglogplot,
                        tf.subplot4x4,
-                       tf.text_overlay
+                       tf.text_overlay,
+                       tf.annotate
                        ]
 
     # see if the command line options tell which subset of the

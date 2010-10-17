@@ -1029,6 +1029,36 @@ def _draw_text( obj ):
     content = []
     properties = []
     style = []
+    if( isinstance(obj, mpl.text.Annotation) ):
+        ann_xy = obj.xy
+        ann_xycoords = obj.xycoords
+        ann_xytext = obj.xytext
+        ann_textcoords = obj.textcoords
+        if ann_xycoords != "data" or ann_textcoords != "data":
+            print("Warning: Anything else except for explicit positioning "+
+                  "is not supported for annotations yet :(")
+            return content
+        else: # Create a basic tikz arrow
+            arrow_style = []
+            if obj.arrowprops is not None:
+                if obj.arrowprops['arrowstyle'] is not None:
+                    if obj.arrowprops['arrowstyle'] in ['-','->','<-','<->']:
+                        arrow_style.append(obj.arrowprops['arrowstyle'])
+                        arrow_style.append(_mpl_color2xcolor(obj.arrow_patch.get_ec()))
+                    elif obj.arrowprops['ec'] is not None:
+                        arrow_style.append(_mpl_color2xcolor(obj.arrowprops['ec']))
+                    elif obj.arrowprops['edgecolor'] is not None:
+                        arrow_style.append(_mpl_color2xcolor(obj.arrowprops['edgecolor']))
+                    else: pass
+
+            arrow_proto = "\\draw[%s] (axis cs:%e,%e) -- (axis cs:%e,%e);\n"
+            the_arrow = arrow_proto%(",".join(arrow_style),
+                                     ann_xytext[0],
+                                     ann_xytext[1],
+                                     ann_xy[0],
+                                     ann_xy[1])
+            content.append(the_arrow)
+    
     # 1: coordinates in axis system
     # 2: properties (shapes, rotation, etc)
     # 3: text style
