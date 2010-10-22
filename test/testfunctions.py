@@ -232,8 +232,8 @@ def text_overlay():
          )
     plot(xxx,yyy,label="graph")
     legend()
-    return "Regular plot with overlay text"
 
+    return "Regular plot with overlay text"
 # ==============================================================================
 def subplot4x4():
     an = linspace(0,2*pi,100)
