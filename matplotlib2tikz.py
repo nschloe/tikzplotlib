@@ -44,6 +44,7 @@ __status__     = 'Development'
 FWIDTH        = None
 FHEIGHT       = None
 REL_DATA_PATH = None
+FONT_SIZE     = None
 PGFPLOTS_LIBS = set()
 TIKZ_LIBS     = set()
 OUTPUT_DIR    = None
@@ -55,6 +56,7 @@ STRICT        = False
 def save( filepath,
           figurewidth = None,
           figureheight = None,
+          textsize = 10.0,
           tex_relative_path_to_data = None,
           strict = False,
           wrap = True,
@@ -80,6 +82,10 @@ def save( filepath,
                          Note that ``figurewidth`` can be a string literal,
                          such as ``'\\figureheight'``.
     :type figureheight: str.
+
+    :param textsize: The text size (in pt) that the target latex document is using.
+                     Default is 10.0.
+    :type textsize: float.
 
     :param tex_relative_path_to_data: In some cases, the TikZ file will have to
                                       refer to another file, e.g., a PNG for
@@ -120,6 +126,8 @@ def save( filepath,
     global STRICT
     STRICT = strict
     global TIKZ_LIBS
+    global FONT_SIZE
+    FONT_SIZE = 10.0
 
     if extra is not None:
         for key,val in extra.items():
@@ -957,17 +965,18 @@ MPLCOLOR_2_XCOLOR = { # RGB values:
                       '0.75': 'lightgray',
                       '1.0' : None,
                       # literals:
-                      'b'    : 'blue',
-                      'blue' : 'blue',
-                      'g'    : 'green',
-                      'green': 'green',
-                      'r'    : 'red',
-                      'red'  : 'red',
-                      'c'    : 'cyan',
-                      'm'    : 'magenta',
-                      'y'    : 'yellow',
-                      'k'    : 'black',
-                      'w'    : 'white'
+                      'b'     : 'blue',
+                      'blue'  : 'blue',
+                      'g'     : 'green',
+                      'green' : 'green',
+                      'purple': 'purple',
+                      'r'     : 'red',
+                      'red'   : 'red',
+                      'c'     : 'cyan',
+                      'm'     : 'magenta',
+                      'y'     : 'yellow',
+                      'k'     : 'black',
+                      'w'     : 'white'
                     }
 # ------------------------------------------------------------------------------
 def _mpl_color2xcolor( color ):
@@ -982,8 +991,13 @@ def _mpl_color2xcolor( color ):
             # add a custom color
             return _add_rgbcolor_definition( color )
         else:
-            print "Unknown color \"" + color  + "\". Giving up."
-            return None
+            converter = mpl.colors.ColorConverter()
+            rgb_col = converter.to_rgb(color)
+            # try to lookup the color again
+            try: return MPLCOLOR_2_XCOLOR[ rgb_col ]
+            # lookup failed add a generic rgb color
+            except KeyError:
+                return _add_rgbcolor_definition(rgb_col)
 # ==============================================================================
 def _add_rgbcolor_definition( rgb_color_tuple ):
     """
@@ -1015,57 +1029,107 @@ def _draw_text( obj ):
     content = []
     properties = []
     style = []
+    if( isinstance(obj, mpl.text.Annotation) ):
+        ann_xy = obj.xy
+        ann_xycoords = obj.xycoords
+        ann_xytext = obj.xytext
+        ann_textcoords = obj.textcoords
+        if ann_xycoords != "data" or ann_textcoords != "data":
+            print("Warning: Anything else except for explicit positioning "+
+                  "is not supported for annotations yet :(")
+            return content
+        else: # Create a basic tikz arrow
+            arrow_style = []
+            if obj.arrowprops is not None:
+                if obj.arrowprops['arrowstyle'] is not None:
+                    if obj.arrowprops['arrowstyle'] in ['-','->','<-','<->']:
+                        arrow_style.append(obj.arrowprops['arrowstyle'])
+                        arrow_style.append(_mpl_color2xcolor(obj.arrow_patch.get_ec()))
+                    elif obj.arrowprops['ec'] is not None:
+                        arrow_style.append(_mpl_color2xcolor(obj.arrowprops['ec']))
+                    elif obj.arrowprops['edgecolor'] is not None:
+                        arrow_style.append(_mpl_color2xcolor(obj.arrowprops['edgecolor']))
+                    else: pass
+
+            arrow_proto = "\\draw[%s] (axis cs:%e,%e) -- (axis cs:%e,%e);\n"
+            the_arrow = arrow_proto%(",".join(arrow_style),
+                                     ann_xytext[0],
+                                     ann_xytext[1],
+                                     ann_xy[0],
+                                     ann_xy[1])
+            content.append(the_arrow)
+    
     # 1: coordinates in axis system
     # 2: properties (shapes, rotation, etc)
     # 3: text style
     # 4: the text
-    #                   ------ 1 -------2---3--4--
-    proto = "\\node at (axis cs:%e,%e)[%s]{%s %s};\n"
+    #                   -------1--------2---3--4--
+    proto = "\\node at (axis cs:%e,%e)[\n  %s\n]{%s %s};\n"
     pos = obj.get_position()
     text = obj.get_text()
+    size = obj.get_size()
     bbox = obj.get_bbox_patch()
-    bbox_style = bbox.get_boxstyle()
     converter = mpl.colors.ColorConverter()
-    if bbox.get_fill():
-        properties.append("fill=%s"%_mpl_color2xcolor(bbox.get_facecolor()))
-    # Rounded boxes
-    if( isinstance(bbox_style, mpl.patches.BoxStyle.Round) ):
-        properties.append("rounded corners")
-    elif( isinstance(bbox_style, mpl.patches.BoxStyle.RArrow) ):
-        TIKZ_LIBS.add("shapes.arrows")
-        properties.append("single arrow")
-    elif( isinstance(bbox_style, mpl.patches.BoxStyle.LArrow) ):
-        TIKZ_LIBS.add("shapes.arrows")
-        properties.append("single arrow")
-        properties.append("shape border rotate=180")
-    # Sawtooth, Roundtooth or Round4 not supported atm
-    # Round4 should be easy with "rounded rectangle"
-    # directive though.
-    else:
-        pass # Rectangle
-    # Line style
-    if(bbox.get_ls() == "dotted"):
-        properties.append("dotted")
-    elif(bbox.get_ls() == "dashed"):
-        properties.append("dashed")
-    # TODO: Fix this
-    elif(bbox.get_ls() == "dashdot"):
-        pass
-    else:
-        pass # solid
+    scaling = 0.5*size/FONT_SIZE  # XXX: This is ugly
+    properties.append("scale=%g" % scaling )
+    if bbox is not None:
+        bbox_style = bbox.get_boxstyle()
+        if bbox.get_fill():
+            fc = _mpl_color2xcolor(bbox.get_facecolor())
+            if fc:
+                properties.append("fill=%s"%_mpl_color2xcolor(bbox.get_facecolor()))
+        ec = _mpl_color2xcolor(bbox.get_edgecolor())
+        if ec:
+            properties.append("draw=%s"%_mpl_color2xcolor(bbox.get_edgecolor()))
+        properties.append("line width=%gpt"%(bbox.get_lw()*0.4)) # XXX: This is ugly, too
+        properties.append("inner sep=%gpt" % (bbox_style.pad*FONT_SIZE) )
+        # Rounded boxes
+        if( isinstance(bbox_style, mpl.patches.BoxStyle.Round) ):
+            properties.append("rounded corners")
+        elif( isinstance(bbox_style, mpl.patches.BoxStyle.RArrow) ):
+            TIKZ_LIBS.add("shapes.arrows")
+            properties.append("single arrow")
+        elif( isinstance(bbox_style, mpl.patches.BoxStyle.LArrow) ):
+            TIKZ_LIBS.add("shapes.arrows")
+            properties.append("single arrow")
+            properties.append("shape border rotate=180")
+        # Sawtooth, Roundtooth or Round4 not supported atm
+        # Round4 should be easy with "rounded rectangle"
+        # directive though.
+        else:
+            pass # Rectangle
+        # Line style
+        if(bbox.get_ls() == "dotted"):
+            properties.append("dotted")
+        elif(bbox.get_ls() == "dashed"):
+            properties.append("dashed")
+        # XXX: Is there any way to extract the dashdot
+        # pattern from matplotlib instead of hardcoding
+        # an approximation?
+        elif(bbox.get_ls() == "dashdot"):
+            properties.append("dash pattern=on %.3gpt off %.3gpt on %.3gpt off %.3gpt"%\
+                              (1.0/scaling, 3.0/scaling, 6.0/scaling, 3.0/scaling))
+        else: pass # solid
 
     ha = obj.get_ha()
     va = obj.get_va()
     anchor = _transform_positioning(ha,va)
     if anchor is not None:
         properties.append(anchor)
-    properties.append("draw=%s"%_mpl_color2xcolor(bbox.get_edgecolor()))
     properties.append("text=%s"%_mpl_color2xcolor( converter.to_rgb(obj.get_color()) ))
     properties.append("rotate=%.1f"%obj.get_rotation())
-    properties.append("line width=%g"%(bbox.get_lw()*0.4)) # XXX: Ugly as hell
-    if obj.get_style() <> "normal":
+    if obj.get_style() != "normal":
         style.append("\\itshape")
-    content.append(proto%(pos[0],pos[1],",".join(properties)," ".join(style),text))
+    try:
+        if int(obj.get_weight()) > 550:
+            style.append('\\bfseries')
+    except: # Not numeric
+        vals = ['semibold','demibold','demi','bold','heavy','extra bold','black']
+        if str(obj.get_weight()) in vals:
+            style.append('\\bfseries')
+    content.append(proto%(pos[0],pos[1],
+                          ",\n  ".join(properties),
+                          " ".join(style),text))
     return content
 
 def _transform_positioning(ha, va):
@@ -1083,7 +1147,7 @@ def _transform_positioning(ha, va):
                           'bottom':'south',
                           'center':'',
                           'baseline':'base'}
-        return "anchor=%s %s"%(va_mpl_to_tikz[va],ha_mpl_to_tikz[ha])
+        return ("anchor=%s %s"%(va_mpl_to_tikz[va],ha_mpl_to_tikz[ha])).strip()
 
 
 # ==============================================================================

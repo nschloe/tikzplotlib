@@ -44,7 +44,7 @@ def acidtest():
     # how to get from the LaTeX file to the data
     tex_relative_path_to_data = "../data"
 
-    figure_width = "5cm"
+    figure_width = "7.5cm"
 
     # open file for writing
     file_handle = open( tex_file_path, "w" )
@@ -61,7 +61,8 @@ def acidtest():
                        tf.logplot,
                        tf.loglogplot,
                        tf.subplot4x4,
-                       tf.text_overlay
+                       tf.text_overlay,
+                       tf.annotate
                        ]
 
     # see if the command line options tell which subset of the
@@ -147,7 +148,8 @@ def write_file_comparison_entry( file_handle,
                        + "\\subfloat[][Reference PDF figure.]{" \
                                             "\includegraphics[width=\\figwidth]"
                           + "{" + str(pdf_path) + "}}%\n"
-                       + "\\qquad%\n"
+                       #+ "\\qquad%\n"
+                       + "\\\\"
                        + "\\subfloat[][\\texttt{matplotlib2tikz}-generated]{" \
                                             "\input{" + str(tikz_path) + "}}%\n"
                        + "\\caption{" + str(comment) + " (test ID " \
