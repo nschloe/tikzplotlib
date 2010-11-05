@@ -187,7 +187,7 @@ def annotate():
     line, = ax.plot(t, s, color='blue')
     ann1 = ax.annotate('text', xy=(4., 1.),  xycoords='data',
                 xytext=(4.5, 1.5), textcoords='data',
-			    arrowprops=dict(arrowstyle="->",ec="r"))
+                arrowprops=dict(arrowstyle="->",ec="r"))
 
     ann2 = ax.annotate('arrowstyle', xy=(0, 1),  xycoords='data',
                 xytext=(-50, 30), textcoords='offset points',
