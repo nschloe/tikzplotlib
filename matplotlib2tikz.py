@@ -927,6 +927,13 @@ def _draw_patchcollection( obj ):
 
     return content
 # ==============================================================================
+def _draw_rectangle( obj ):
+    """
+    Returns Pgfplots code for a rectangle.
+    """
+    return _draw_path( obj.get_patch_transform().transform_path( obj.get_path() ),
+        fill_color=obj.get_facecolor(), edge_color=obj.get_edgecolor() )
+# ==============================================================================
 def _draw_path( path, fill_color=None, edge_color=None ):
     """
     Adds code for drawing an ordinary path in Pgfplots (TikZ).
@@ -1201,10 +1208,11 @@ def _handle_children( obj ):
             content.extend( _draw_patchcollection( child ) )
         elif ( isinstance( child, mpl.legend.Legend ) ):
             _draw_legend( child )
+        elif ( isinstance( child, mpl.patches.Rectangle ) ):
+            content.extend( _draw_rectangle( child ) )
         elif (   isinstance( child, mpl.axis.XAxis )
               or isinstance( child, mpl.axis.YAxis )
               or isinstance( child, mpl.spines.Spine )
-              or isinstance( child, mpl.patches.Rectangle )
               or isinstance( child, mpl.text.Text )
              ):
             pass
