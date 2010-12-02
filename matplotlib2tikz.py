@@ -927,7 +927,7 @@ def _draw_patchcollection( obj ):
 
     return content
 # ==============================================================================
-def _draw_path( path ):
+def _draw_path( path, fill_color=None, edge_color=None ):
     """
     Adds code for drawing an ordinary path in Pgfplots (TikZ).
     """
@@ -946,7 +946,32 @@ def _draw_path( path ):
         else:
             sys.exit( "Strange." )
 
-    return '\\path [fill] %s;\n\n' % "--".join( nodes )
+    content = []
+    
+    # draw filled path with fill color
+    if isinstance( fill_color, numpy.ndarray):
+        fill_color = tuple(fill_color)
+    if isinstance( edge_color, numpy.ndarray):
+        edge_color = tuple(edge_color)
+    
+    if fill_color is not None:
+        fill_xcolor = "=%s" % _mpl_color2xcolor( fill_color )
+    else:
+        fill_xcolor = ""
+    content.append( '\\path [fill%s] %s;\n\n' % ( fill_xcolor, "--".join( nodes ) ) )
+    
+    # draw edge path if a color for it is given and different to the face color
+    if edge_color is not None:
+        
+        if edge_color != fill_color:
+            try:
+                edge_xcolor = _mpl_color2xcolor(  edge_color )
+                content.append( '\\path [draw,%s] %s;\n\n' % ( edge_xcolor, "--".join( nodes ) ) )
+            except:
+                pass
+
+    
+    return ''.join( content )
 # ==============================================================================
 MPLCOLOR_2_XCOLOR = { # RGB values:
                       (1,    0,    0   ): 'red',
