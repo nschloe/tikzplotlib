@@ -1,2 +1,4 @@
 *.pyc
 *.swp
+test/data/
+test/tex/acid.tex
