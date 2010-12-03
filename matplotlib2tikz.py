@@ -16,7 +16,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+# along with matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 # ==============================================================================
 """Script to convert Matplotlib generated figures into TikZ/Pgfplots figures.
