@@ -20,13 +20,18 @@
 # along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #
 # ==============================================================================
-from os import path
+from os import path, mkdir
 
 import sys
 
 import matplotlib as mpl
 
+# Prepend matplotlib2tikz source directory to search path, to
+# make sure the current source version is tested instead of a
+# potentially installed version.
+sys.path.insert(0, "..")
 import matplotlib2tikz
+
 import testfunctions as tf
 # ==============================================================================
 # XXX: There seems to be an issue with the legends that do not
@@ -40,7 +45,12 @@ def acidtest():
 
     # directory where all the generated files will end up
     data_dir = "./data"
-
+    # make sure this directory exists
+    try:
+        mkdir( data_dir )
+    except OSError:
+        pass
+    
     # how to get from the LaTeX file to the data
     tex_relative_path_to_data = "../data"
 
