@@ -215,6 +215,11 @@ def _draw_axes( obj ):
     axis_options = []
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # check if axes need to be displayed at all
+    if not obj.axison:
+      axis_options.append( "hide x axis" )
+      axis_options.append( "hide y axis" )
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # get plot title
     title = obj.get_title()
     if title:
