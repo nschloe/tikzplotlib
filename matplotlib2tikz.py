@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 #
-# Copyright (C) 2010 Nico Schl"omer
+# Copyright (C) 2010-2011 Nico Schl"omer
 #
 # This file is part of matplotlib2tikz.
 #
@@ -249,6 +249,9 @@ def _draw_axes( obj ):
         env = 'semilogyaxis'
     else:
         env = 'axis'
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    if not obj.get_axisbelow():
+        axis_options.append( "axis on top" )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # aspect ratio, plot width/height
     aspect = obj.get_aspect()

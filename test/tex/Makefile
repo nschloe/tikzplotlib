@@ -21,6 +21,7 @@ main:
 
 clean:
 	$(LATEXMK) -C
-	@rm -f $(TARGET)-blx.bib
-	@rm -f missfont.log
+	@rm -f $(TARGET)-blx.bib \
+	missfont.log \
+	x.log
 	@rm -f *~
