@@ -35,7 +35,11 @@ import testfunctions as tf
 # a problem with the testing method, because if one adds print text in
 # _draw_legend pyplot returns the correct legends when this test is run
 # ==============================================================================
-def acidtest():    
+def _main():
+
+    # get command line arguments
+    test_list = _parse_options()
+
     tex_file_path = "./tex/acid.tex"
 
     # directory where all the generated files will end up
@@ -62,19 +66,11 @@ def acidtest():
                        tf.loglogplot,
                        tf.subplot4x4,
                        tf.text_overlay,
-                       tf.annotate
+                       tf.annotate,
+                       tf.histogram
                        ]
 
-    # see if the command line options tell which subset of the
-    # tests are to be run
-    test_list = []
-    for arg in sys.argv:
-        try:
-            test_list.append( int(arg) )
-        except ValueError:
-            pass
-
-    if len(test_list)!=0: # actually treat a sublist of test_functions
+    if not test_list is None: # actually treat a sublist of test_functions
         # remove duplicates:
         test_list = list(set(test_list))
         # create the sublist
@@ -158,7 +154,24 @@ def write_file_comparison_entry( file_handle,
                      )
     return
 # ==============================================================================
+def _parse_options():
+    '''Parse input options.'''
+    import argparse
+
+    parser = argparse.ArgumentParser( description = 'Acid test for matplotlib2tikz.' )
+
+    parser.add_argument( '--tests', '-t',
+                         metavar = 'TEST_INDICES',
+                         nargs   = '+',
+                         type    = int,
+                         help    = 'tests to perform'
+                       )
+
+    args = parser.parse_args()
+
+    return args.tests
+# ==============================================================================
 if __name__ == "__main__":
     # execute the test
-    acidtest()
+    _main()
 # ==============================================================================

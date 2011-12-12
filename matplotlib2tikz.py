@@ -19,8 +19,8 @@
 # along with matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 # ==============================================================================
-"""Script to convert Matplotlib generated figures into TikZ/Pgfplots figures.
-"""
+'''Script to convert Matplotlib generated figures into TikZ/Pgfplots figures.
+'''
 # ==============================================================================
 # imported modules
 import matplotlib as mpl
@@ -32,7 +32,7 @@ from itertools import izip
 # ==============================================================================
 # meta info
 __author__     = 'Nico Schl"omer'
-__copyright__  = 'Copyright (c) 2010, Nico Schl"omer <nico.schloemer@gmail.com>'
+__copyright__  = 'Copyright (c) 2010, 2011, Nico Schl"omer <nico.schloemer@gmail.com>'
 __credits__    = []
 __license__    = 'GNU Lesser General Public License (LGPL), Version 3'
 __version__    = '0.1.0'
@@ -61,7 +61,7 @@ def save( filepath,
           strict = False,
           wrap = True,
           extra = None):
-    """Main function. Here, the recursion into the image starts and the contents
+    '''Main function. Here, the recursion into the image starts and the contents
     are picked up. The actual file gets written in this routine.
 
     :param filepath: The file to which the TikZ output will be written.
@@ -114,7 +114,7 @@ def save( filepath,
     :type extra: dict.
 
     :returns: None.
-    """
+    '''
     global FWIDTH    
     FWIDTH        = figurewidth
     global FHEIGHT
@@ -160,18 +160,18 @@ def save( filepath,
     return
 # ==============================================================================
 def _print_tree( obj, indent = "" ):
-    """
+    '''
     Recursively prints the tree structure of the matplotlib object.
-    """
+    '''
     print indent, type(obj)
     for child in obj.get_children():
         _print_tree( child, indent + "   " )
     return
 # ==============================================================================
 def _get_color_definitions():
-    """
+    '''
     Returns the list of custom color definitions for the TikZ file.
-    """
+    '''
     definitions = []
     for rgb in CUSTOM_COLORS:
         definitions.append( "\\definecolor{%s}{rgb}{%g,%g,%g}" % \
@@ -180,9 +180,9 @@ def _get_color_definitions():
     return definitions
 # ==============================================================================
 def _draw_axes( obj ):
-    """
+    '''
     Returns the Pgfplots code for an axis environment.
-    """
+    '''
     global PGFPLOTS_LIBS
 
     content = []
@@ -415,10 +415,10 @@ def _draw_axes( obj ):
     return content
 # ==============================================================================
 def _get_ticks( xy, ticks, ticklabels ):
-    """
+    '''
     Gets a {'x','y'}, a number of ticks and ticks labels, and returns the
     necessary axis options for the given configuration.
-    """
+    '''
     axis_options = []
     pgfplots_ticks = []
     pgfplots_ticklabels = []
@@ -452,10 +452,10 @@ def _get_ticks( xy, ticks, ticklabels ):
     return axis_options
 # ==============================================================================
 def _mpl_cmap2pgf_cmap( cmap ):
-    """
+    '''
     Converts a color map as given in matplotlib to a color map as represented
     in Pgfplots.
-    """
+    '''
     if not isinstance( cmap, mpl.colors.LinearSegmentedColormap ):
         print "Don't know how to handle color map. Using 'blackwhite'."
         is_custom_colormap = False
@@ -547,17 +547,17 @@ def _mpl_cmap2pgf_cmap( cmap ):
     return ( colormap_string, is_custom_colormap )
 # ==============================================================================
 def _scale_to_int( X ):
-    """
+    '''
     Scales the array X such that it contains only integers.
-    """
+    '''
     X = X / _gcd_array( X )
     return [int(entry) for entry in X]
 # ==============================================================================
 def _gcd_array( X ):
-    """
+    '''
     Return the largest real value h such that all elements in x are integer
     multiples of h.
-    """
+    '''
     greatest_common_divisor = 0.0
     for x in X:
         greatest_common_divisor = _gcd( greatest_common_divisor, x )
@@ -565,11 +565,11 @@ def _gcd_array( X ):
     return greatest_common_divisor
 # ==============================================================================
 def _gcd( a, b ):
-    """
+    '''
     Euclidean algorithm for calculating the GCD of two numbers a, b.
     This algoritm also works for real numbers:
       Find the greatest number h such that a and b are integer multiples of h.
-    """
+    '''
     # Keep the tolerance somewhat significantly about machine precision,
     # as otherwise round-off errors will be accounted for, returning 1.0e-10
     # instead of 1 for the values
@@ -579,9 +579,9 @@ def _gcd( a, b ):
     return b
 # ==============================================================================
 def _linear_interpolation( x, X, Y ):
-    """
+    '''
     Given two data points [X,Y], linearly interpolate those at x.
-    """
+    '''
     return ( Y[1]*(x-X[0]) + Y[0]*(X[1]-x) ) / ( X[1]-X[0] )
 # ==============================================================================
 TIKZ_LINEWIDTHS = { 0.1: 'ultra thin',
@@ -593,9 +593,9 @@ TIKZ_LINEWIDTHS = { 0.1: 'ultra thin',
                     1.6: 'ultra thick' }
 # ------------------------------------------------------------------------------
 def _draw_line2d( obj ):
-    """
+    '''
     Returns the Pgfplots code for an Line2D environment.
-    """
+    '''
     content = []
 
     addplot_options = []
@@ -732,10 +732,10 @@ MP_MARKER2PLOTMARKS = { 'v' : ('triangle', 'rotate=180'), # triangle down
                       }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def _mpl_marker2pgfp_marker( mpl_marker, is_marker_face_color ):
-    """
+    '''
     Translates a marker style of matplotlib to the corresponding style
     in Pgfplots.
-    """
+    '''
     # try default list
     try:
         pgfplots_marker = MP_MARKER2PGF_MARKER[ mpl_marker ]
@@ -773,10 +773,10 @@ MPLLINESTYLE_2_PGFPLOTSLINESTYLE = { '-'   : None,
                                    }
 # ------------------------------------------------------------------------------
 def _mpl_linestyle2pgfp_linestyle( line_style ):
-    """
+    '''
     Translates a line style of matplotlib to the corresponding style
     in Pgfplots.
-    """
+    '''
     try:
         return MPLLINESTYLE_2_PGFPLOTSLINESTYLE[ line_style ]
     except KeyError:
@@ -784,9 +784,9 @@ def _mpl_linestyle2pgfp_linestyle( line_style ):
         return None
 # ==============================================================================
 def _draw_image( obj ):
-    """
+    '''
     Returns the Pgfplots code for an image environment.
-    """
+    '''
     content = []
 
     global IMG_NUMBER
@@ -840,20 +840,20 @@ def _draw_image( obj ):
     return content
 # ==============================================================================
 def _draw_polygon( obj ):
-    """
+    '''
     Return the Pgfplots code for polygons.
-    """
+    '''
     # TODO do nothing for polygons?!
     content = []
     content.extend( _handle_children( obj ) )
     return
 # ==============================================================================
 def _find_associated_colorbar( obj ):
-    """
+    '''
     Rather poor way of telling whether an axis has a colorbar associated:
     Check the next axis environment, and see if it is de facto a color bar;
     if yes, return the color bar object.
-    """
+    '''
     for child in obj.get_children():
         try:
             cbar = child.colorbar
@@ -867,9 +867,9 @@ def _find_associated_colorbar( obj ):
     return None
 # ==============================================================================
 def _is_colorbar( obj ):
-    """
+    '''
     Returns 'True' if 'obj' is a  color bar, and 'False' otherwise.
-    """
+    '''
     # TODO Are the colorbars exactly the l.collections.PolyCollection's?
     if isinstance( obj, mpl.collections.PolyCollection ):
         arr = obj.get_array()
@@ -882,10 +882,10 @@ def _is_colorbar( obj ):
         return False
 # ==============================================================================
 def _extract_colorbar( obj ):
-    """
+    '''
     Search for color bars as subobjects of obj, and return the first found.
     If none is found, return None.
-    """
+    '''
     colorbars = mpl.pyplot.findobj( obj, _is_colorbar )
 
     if not colorbars:
@@ -896,9 +896,9 @@ def _extract_colorbar( obj ):
     return colorbars[0]
 # ==============================================================================
 def _equivalent( array ):
-    """
+    '''
     Checks if the vectors consists of all the same objects.
-    """
+    '''
     if not array:
         return False
     else:
@@ -909,17 +909,17 @@ def _equivalent( array ):
     return True
 # ==============================================================================
 def _draw_polycollection( obj ):
-    """
+    '''
     Returns Pgfplots code for a number of polygons.
     Currently empty.
-    """
+    '''
     print "matplotlib2tikz: Don't know how to draw a PolyCollection."
     return None
 # ==============================================================================
 def _draw_patchcollection( obj ):
-    """
+    '''
     Returns Pgfplots code for a number of patch objects.
-    """
+    '''
 
     content = []
 
@@ -936,9 +936,9 @@ def _draw_patchcollection( obj ):
     return content
 # ==============================================================================
 def _draw_path( path ):
-    """
+    '''
     Adds code for drawing an ordinary path in Pgfplots (TikZ).
-    """
+    '''
 
     nodes = []
     for vert, code in path.iter_segments():
@@ -988,10 +988,10 @@ MPLCOLOR_2_XCOLOR = { # RGB values:
                     }
 # ------------------------------------------------------------------------------
 def _mpl_color2xcolor( color ):
-    """
+    '''
     Translates a matplotlib color specification into a proper LaTeX
     xcolor.
-    """
+    '''
     try:
         return MPLCOLOR_2_XCOLOR[ color ]
     except KeyError:
@@ -1008,20 +1008,20 @@ def _mpl_color2xcolor( color ):
                 return _add_rgbcolor_definition(rgb_col)
 # ==============================================================================
 def _add_rgbcolor_definition( rgb_color_tuple ):
-    """
+    '''
     Takes an RGB color tuple, adds it to the list of colors that will need to be
     defined in the TikZ file, and returned the label with which the color can
     be used.
-    """
+    '''
     if rgb_color_tuple not in CUSTOM_COLORS:
         CUSTOM_COLORS[ rgb_color_tuple ] = 'color' + str(len(CUSTOM_COLORS))
 
     return CUSTOM_COLORS[ rgb_color_tuple ]
 # ==============================================================================
 def _draw_legend( obj ):
-    """
+    '''
     Adds legend code to the EXTRA_AXIS_OPTIONS.
-    """
+    '''
     texts = []
     for text in obj.texts:
         texts.append( "%s" % text.get_text() )
@@ -1031,9 +1031,9 @@ def _draw_legend( obj ):
     return
 # ==============================================================================
 def _draw_text( obj ):  
-    """
+    '''
     Paints text on the graph
-    """
+    '''
     content = []
     properties = []
     style = []
@@ -1141,10 +1141,8 @@ def _draw_text( obj ):
     return content
 
 def _transform_positioning(ha, va):
-    """
-    Converts matplotlib positioning to pgf node positioning.
-    Not quite accurate but the results are equivalent more or less
-    """
+    '''Converts matplotlib positioning to pgf node positioning.
+    Not quite accurate but the results are equivalent more or less.'''
     if (ha == "center" and va == "center"):
         return None
     else:
@@ -1160,10 +1158,8 @@ def _transform_positioning(ha, va):
 
 # ==============================================================================
 def _handle_children( obj ):
-    """
-    Iterates over all children of the current object, gathers the contents
-    contributing to the resulting Pgfplots file, and returns those.
-    """
+    '''Iterates over all children of the current object, gathers the contents
+    contributing to the resulting Pgfplots file, and returns those.'''
 
     content = []
     for child in obj.get_children():
@@ -1203,9 +1199,9 @@ def _handle_children( obj ):
     return content
 # ==============================================================================
 def _print_pgfplot_libs_message():
-    """
+    '''
     Prints message to screen indicating the use of Pgfplots and its libraries.
-    """
+    '''
     pgfplotslibs = ",".join( list( PGFPLOTS_LIBS ) )
     tikzlibs = ",".join( list( TIKZ_LIBS ) )
 

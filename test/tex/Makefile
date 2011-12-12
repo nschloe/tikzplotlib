@@ -2,8 +2,8 @@
 
 # ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 
-LATEXMK:=latexmk
-LATEXMK_OPTIONS:=-pdf
+LATEX:=pdflatex
+LATEX_OPTIONS:=
 
 # ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 
@@ -15,13 +15,16 @@ TARGET:=acid
 default: main
 
 main:
-	@$(LATEXMK) $(LATEXMK_OPTIONS) $(TARGET)
+	@$(LATEX) $(LATEX_OPTIONS) $(TARGET)
 
 .PHONY: clean
 
 clean:
-	$(LATEXMK) -C
-	@rm -f $(TARGET)-blx.bib \
-	missfont.log \
-	x.log
+	@rm -f \
+	    $(TARGET)-blx.bib \
+	    $(TARGET).pdf \
+	    $(TARGET).log \
+	    $(TARGET).aux \
+	    missfont.log \
+	    x.log
 	@rm -f *~
