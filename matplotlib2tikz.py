@@ -966,12 +966,18 @@ def _draw_path( data, path,
 
     nodes = []
     for vert, code in path.iter_segments():
-        # TODO respect the path code,
+        # For path codes see
         #      <http://matplotlib.sourceforge.net/api/path_api.html#matplotlib.path.Path>
-        if len(vert) == 2:
+        if code == mpl.path.Path.LINETO:
             nodes.append( '(axis cs:%s,%s)' % ( str(vert[0]), str(vert[1]) ) )
-        elif len(vert) == 6:
-            # This is actually a Bezier curve, but can't deal with this yet.
+        elif code == mpl.path.Path.CURVE3:
+            # This is actually a quadratic Bezier curve,
+            # but can't deal with this yet.
+            nodes.append( '(axis cs:%s,%s)' % ( str(vert[0]), str(vert[1]) ) )
+            nodes.append( '(axis cs:%s,%s)' % ( str(vert[2]), str(vert[3]) ) )
+        elif code == mpl.path.Path.CURVE4:
+            # This is actually a cubic Bezier curve,
+            # but can't deal with this yet.
             nodes.append( '(axis cs:%s,%s)' % ( str(vert[0]), str(vert[1]) ) )
             nodes.append( '(axis cs:%s,%s)' % ( str(vert[2]), str(vert[3]) ) )
             nodes.append( '(axis cs:%s,%s)' % ( str(vert[4]), str(vert[5]) ) )
