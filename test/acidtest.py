@@ -78,6 +78,7 @@ def _main():
         test_list = xrange( 0, len(test_functions) )
 
     for k in test_list:
+        print 'Test function %d...' % k,
         mpl.pyplot.cla()
         mpl.pyplot.clf()
         # plot the test example
@@ -104,6 +105,7 @@ def _main():
                                      k,
                                      comment
                                    )
+        print 'done.'
 
     write_document_closure( file_handle )
     file_handle.close()

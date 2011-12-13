@@ -40,19 +40,6 @@ __maintainer__ = 'Nico Schl"omer'
 __email__      = 'nico.schloemer@gmail.com'
 __status__     = 'Development'
 # ==============================================================================
-# global variables
-FWIDTH        = None
-FHEIGHT       = None
-REL_DATA_PATH = None
-FONT_SIZE     = None
-PGFPLOTS_LIBS = set()
-TIKZ_LIBS     = set()
-OUTPUT_DIR    = None
-IMG_NUMBER    = -1
-CUSTOM_COLORS = {}
-EXTRA_AXIS_OPTIONS = set()
-STRICT        = False
-# ==============================================================================
 def save( filepath,
           figurewidth = None,
           figureheight = None,
@@ -115,37 +102,34 @@ def save( filepath,
 
     :returns: None.
     '''
-    global FWIDTH    
-    FWIDTH        = figurewidth
-    global FHEIGHT
-    FHEIGHT       = figureheight
-    global REL_DATA_PATH
-    REL_DATA_PATH = tex_relative_path_to_data
-    global OUTPUT_DIR
-    OUTPUT_DIR    = os.path.dirname(filepath)
-    global STRICT
-    STRICT = strict
-    global TIKZ_LIBS
-    global FONT_SIZE
-    FONT_SIZE = 10.0
-
-    if extra is not None:
-        for key,val in extra.items():
-            EXTRA_AXIS_OPTIONS.add("%s=%s"%(key,val))
+    data = {}
+    data['fwidth']  = figurewidth
+    data['fheight'] = figureheight
+    data['rel data path'] = tex_relative_path_to_data
+    data['output dir'] = os.path.dirname(filepath)
+    data['strict'] = strict
+    data['tikz libs'] = set()
+    data['pgfplots libs'] = set()
+    data['font size'] = textsize
+    data['custom colors'] = {}
+    if extra:
+        data['extra axis options'] = extra
+    else:
+        data['extra axis options'] = set()
 
     # open file
     file_handle = open( filepath, "w" )
 
     # gather the file content
-    content = _handle_children( mpl.pyplot.gcf() )
+    data, content = _handle_children( data, mpl.pyplot.gcf() )
 
     # write the contents
     if wrap:
         file_handle.write( "\\begin{tikzpicture}\n\n" )
 
-    coldefs = _get_color_definitions()
+    coldefs = _get_color_definitions( data )
     if coldefs:
-        file_handle.write( "\n".join( _get_color_definitions() ) )
+        file_handle.write( "\n".join( coldefs ) )
         file_handle.write( "\n\n" )
 
     file_handle.write( ''.join(content) )
@@ -156,35 +140,30 @@ def save( filepath,
     file_handle.close()
     
     # print message about necessary pgfplot libs to command line
-    _print_pgfplot_libs_message()
+    _print_pgfplot_libs_message( data )
     return
 # ==============================================================================
 def _print_tree( obj, indent = "" ):
-    '''
-    Recursively prints the tree structure of the matplotlib object.
+    '''Recursively prints the tree structure of the matplotlib object.
     '''
     print indent, type(obj)
     for child in obj.get_children():
         _print_tree( child, indent + "   " )
     return
 # ==============================================================================
-def _get_color_definitions():
-    '''
-    Returns the list of custom color definitions for the TikZ file.
+def _get_color_definitions( data ):
+    '''Returns the list of custom color definitions for the TikZ file.
     '''
     definitions = []
-    for rgb in CUSTOM_COLORS:
+    for ( rgb, name ) in data['custom colors'].items():
         definitions.append( "\\definecolor{%s}{rgb}{%g,%g,%g}" % \
-                            ( (CUSTOM_COLORS[rgb],) + rgb )
+                            ( (name,) + rgb  )
                           )
     return definitions
 # ==============================================================================
-def _draw_axes( obj ):
+def _draw_axes( data, obj ):
+    '''Returns the Pgfplots code for an axis environment.
     '''
-    Returns the Pgfplots code for an axis environment.
-    '''
-    global PGFPLOTS_LIBS
-
     content = []
 
     # Are we dealing with an axis that hosts a colorbar?
@@ -210,15 +189,15 @@ def _draw_axes( obj ):
                 content.append( "\\begin{groupplot}[group style=" \
                                 "{group size=%.d by %.d}]\n" % (geom[1],geom[0])
                               )
-                PGFPLOTS_LIBS.add( "groupplots" )
+                data['pgfplots libs'].add( "groupplots" )
 
     axis_options = []
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # check if axes need to be displayed at all
     if not obj.axison:
-      axis_options.append( "hide x axis" )
-      axis_options.append( "hide y axis" )
+        axis_options.append( "hide x axis" )
+        axis_options.append( "hide y axis" )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # get plot title
     title = obj.get_title()
@@ -270,42 +249,40 @@ def _draw_axes( obj ):
         except ValueError:
             print "Aspect ratio not a number?!"
 
-    global FWIDTH
-    global FHEIGHT
-    if FWIDTH and FHEIGHT: # width and height overwrite aspect ratio
-        axis_options.append( "width="+FWIDTH )
-        axis_options.append( "height="+FHEIGHT )
-    elif FWIDTH: # only FWIDTH given. calculate height by the aspect ratio
-        axis_options.append( "width="+FWIDTH )
+    if data['fwidth'] and data['fheight']: # width and height overwrite aspect ratio
+        axis_options.append( "width="+data['fwidth'] )
+        axis_options.append( "height="+data['fheight'] )
+    elif data['fwidth']: # only data['fwidth'] given. calculate height by the aspect ratio
+        axis_options.append( "width="+data['fwidth'] )
         if aspect_num:
             alpha = aspect_num * (ylim[1]-ylim[0])/(xlim[1]-xlim[0])
             if alpha != 1.0:
-                # Concatenate the literals, as FWIDTH could as well be
+                # Concatenate the literals, as data['fwidth'] could as well be
                 # a LaTeX length variable such as \figurewidth.
-                FHEIGHT = str(alpha) + "*" + FWIDTH
+                data['fheight'] = str(alpha) + "*" + data['fwidth']
             else:
-                FHEIGHT = FWIDTH
-            axis_options.append( "height="+FHEIGHT )
-    elif FHEIGHT: # only FHEIGHT given. calculate width by the aspect ratio
-        axis_options.append( "height="+FHEIGHT )
+                data['fheight'] = data['fwidth']
+            axis_options.append( "height="+data['fheight'] )
+    elif data['fheight']: # only data['fheight'] given. calculate width by the aspect ratio
+        axis_options.append( "height="+data['fheight'] )
         if aspect_num:
             alpha = aspect_num * (ylim[1]-ylim[0])/(xlim[1]-xlim[0])
             if alpha != 1.0:
-                # Concatenate the literals, as FHEIGHT could as well be
+                # Concatenate the literals, as data['fheight'] could as well be
                 # a LaTeX length variable such as \figureheight.
-                FWIDTH = str(1.0/alpha) + "*" + FHEIGHT
+                data['fwidth'] = str(1.0/alpha) + "*" + data['fheight']
             else:
-                FWIDTH = FHEIGHT
-            axis_options.append( "width="+FWIDTH )
+                data['fwidth'] = data['fheight']
+            axis_options.append( "width="+data['fwidth'] )
     else:
         if aspect_num:
             print "Non-automatic aspect ratio demanded, but neither height " \
                   "nor width of the plot are given. Discard aspect ratio."
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # get ticks
-    axis_options.extend( _get_ticks( 'x', obj.get_xticks(),
+    axis_options.extend( _get_ticks( data, 'x', obj.get_xticks(),
                                          obj.get_xticklabels() ) )
-    axis_options.extend( _get_ticks( 'y', obj.get_yticks(),
+    axis_options.extend( _get_ticks( data, 'y', obj.get_yticks(),
                                          obj.get_yticklabels() ) )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # Don't use get_{x,y}gridlines for gridlines; see discussion on
@@ -349,7 +326,7 @@ def _draw_axes( obj ):
             # they might not reflect the current state.
             # http://sourceforge.net/mailarchive/message.php?msg_name=AANLkTikdNFwSAhMIlLjnd4Ai8-XIdJYGmrwq6PrHkbgi%40mail.gmail.com
             colorbar_ticklabels = colorbar.ax.get_xticklabels()
-            colorbar_styles.extend( _get_ticks( 'x', colorbar_ticks,
+            colorbar_styles.extend( _get_ticks( data, 'x', colorbar_ticks,
                                                     colorbar_ticklabels ) )
 
         elif orientation == 'vertical':
@@ -371,7 +348,7 @@ def _draw_axes( obj ):
             # they might not reflect the current state.
             # http://sourceforge.net/mailarchive/message.php?msg_name=AANLkTikdNFwSAhMIlLjnd4Ai8-XIdJYGmrwq6PrHkbgi%40mail.gmail.com
             colorbar_ticklabels = colorbar.ax.get_yticklabels()
-            colorbar_styles.extend( _get_ticks( 'y', colorbar_ticks,
+            colorbar_styles.extend( _get_ticks( data, 'y', colorbar_ticks,
                                                     colorbar_ticklabels ) )
         else:
             sys.exit( "Unknown color bar orientation \"%s\". Abort." % \
@@ -397,10 +374,12 @@ def _draw_axes( obj ):
         content.append( "\\begin{%s}" % env )
 
     # Run through the children objects, gather the content, and give them the
-    # opportunity to contributethe EXTRA_AXIS_OPTIONS.
-    children_content = _handle_children( obj )
+    # opportunity to contribute to data['extra axis options'].
+    data, children_content = _handle_children( data, obj )
 
-    axis_options.extend( EXTRA_AXIS_OPTIONS )
+    if data['extra axis options']:
+        axis_options.extend( data['extra axis options'] )
+
     if axis_options:
         options = ",\n".join( axis_options )
         content.append( "[\n" + options + "\n]\n" )
@@ -412,9 +391,9 @@ def _draw_axes( obj ):
     elif is_subplot  and  nsubplots == subplot_index:
         content.append( "\\end{groupplot}\n\n" )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    return content
+    return data, content
 # ==============================================================================
-def _get_ticks( xy, ticks, ticklabels ):
+def _get_ticks( data, xy, ticks, ticklabels ):
     '''
     Gets a {'x','y'}, a number of ticks and ticks labels, and returns the
     necessary axis options for the given configuration.
@@ -436,7 +415,7 @@ def _get_ticks( xy, ticks, ticklabels ):
 
     # Leave the ticks to Pgfplots if not in STRICT mode and if there are no
     # explicit labels.
-    if STRICT or is_label_necessary:
+    if data['strict'] or is_label_necessary:
         if pgfplots_ticks:
             axis_options.append( "%stick={%s}" % \
                                 ( xy,
@@ -452,8 +431,7 @@ def _get_ticks( xy, ticks, ticklabels ):
     return axis_options
 # ==============================================================================
 def _mpl_cmap2pgf_cmap( cmap ):
-    '''
-    Converts a color map as given in matplotlib to a color map as represented
+    '''Converts a color map as given in matplotlib to a color map as represented
     in Pgfplots.
     '''
     if not isinstance( cmap, mpl.colors.LinearSegmentedColormap ):
@@ -565,10 +543,9 @@ def _gcd_array( X ):
     return greatest_common_divisor
 # ==============================================================================
 def _gcd( a, b ):
-    '''
-    Euclidean algorithm for calculating the GCD of two numbers a, b.
+    '''Euclidean algorithm for calculating the GCD of two numbers a, b.
     This algoritm also works for real numbers:
-      Find the greatest number h such that a and b are integer multiples of h.
+    Find the greatest number h such that a and b are integer multiples of h.
     '''
     # Keep the tolerance somewhat significantly about machine precision,
     # as otherwise round-off errors will be accounted for, returning 1.0e-10
@@ -579,8 +556,7 @@ def _gcd( a, b ):
     return b
 # ==============================================================================
 def _linear_interpolation( x, X, Y ):
-    '''
-    Given two data points [X,Y], linearly interpolate those at x.
+    '''Given two data points [X,Y], linearly interpolate those at x.
     '''
     return ( Y[1]*(x-X[0]) + Y[0]*(X[1]-x) ) / ( X[1]-X[0] )
 # ==============================================================================
@@ -592,19 +568,17 @@ TIKZ_LINEWIDTHS = { 0.1: 'ultra thin',
                     1.2: 'very thick',
                     1.6: 'ultra thick' }
 # ------------------------------------------------------------------------------
-def _draw_line2d( obj ):
-    '''
-    Returns the Pgfplots code for an Line2D environment.
+def _draw_line2d( data, obj ):
+    '''Returns the Pgfplots code for an Line2D environment.
     '''
     content = []
-
     addplot_options = []
 
     # --------------------------------------------------------------------------
     # get the linewidth (in pt)
     line_width = obj.get_linewidth()
 
-    if STRICT:
+    if data['strict']:
         # Takes the matplotlib linewidths, and just translate them
         # into Pgfplots.
         try:
@@ -638,7 +612,7 @@ def _draw_line2d( obj ):
     # --------------------------------------------------------------------------
     # get line color
     color = obj.get_color()
-    xcolor = _mpl_color2xcolor(color)
+    data, xcolor = _mpl_color2xcolor( data, color )
     if xcolor:
         addplot_options.append( xcolor )
 
@@ -648,8 +622,8 @@ def _draw_line2d( obj ):
 
     marker_face_color = obj.get_markerfacecolor()
     marker_edge_color = obj.get_markeredgecolor()
-    marker, extra_mark_options = _mpl_marker2pgfp_marker( obj.get_marker(),
-                                                         marker_face_color )
+    data, marker, extra_mark_options = \
+        _mpl_marker2pgfp_marker( data, obj.get_marker(), marker_face_color )
     if marker:
         addplot_options.append( "mark=" + marker )
 
@@ -657,10 +631,10 @@ def _draw_line2d( obj ):
         if extra_mark_options:
             mark_options.append( extra_mark_options )
         if marker_face_color:
-            col = _mpl_color2xcolor( marker_face_color )
+            data, col = _mpl_color2xcolor( data, marker_face_color )
             mark_options.append( "fill=" + col )
         if marker_edge_color  and  marker_edge_color != marker_face_color:
-            col = _mpl_color2xcolor( marker_edge_color )
+            data, col = _mpl_color2xcolor( data, marker_edge_color )
             mark_options.append( "draw=" + col )
         if mark_options:
             addplot_options.append( "mark options={%s}" % \
@@ -678,17 +652,19 @@ def _draw_line2d( obj ):
 
     content.append( "coordinates {\n" )
 
+
     # print the hard numerical data
     xdata, ydata = obj.get_data()
     try:
         has_mask = ydata.mask.any()
     except AttributeError:
         has_mask = 0
+
     if has_mask:
         # matplotlib jumps at masked images, while Pgfplots by default
         # interpolates. Hence, if we have a masked plot, make sure that Pgfplots
         # jump as well.
-        EXTRA_AXIS_OPTIONS.add( 'unbounded coords=jump' )
+        data['extra axis options'].add( 'unbounded coords=jump' )
         for (x, y, is_masked) in izip(xdata, ydata, ydata.mask):
             if is_masked:
                 content.append( "(%e,nan) " % x )
@@ -699,7 +675,7 @@ def _draw_line2d( obj ):
             content.append( "(%e,%e) " % (x, y) )
     content.append( "\n};\n" )
 
-    return content
+    return data, content
 # ==============================================================================
 # for matplotlib markers, see
 # http://matplotlib.sourceforge.net/api/artist_api.html#matplotlib.lines.Line2D.set_marker
@@ -731,7 +707,7 @@ MP_MARKER2PLOTMARKS = { 'v' : ('triangle', 'rotate=180'), # triangle down
                         '_' : ('_', None)  # horizontal line
                       }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-def _mpl_marker2pgfp_marker( mpl_marker, is_marker_face_color ):
+def _mpl_marker2pgfp_marker( data, mpl_marker, is_marker_face_color ):
     '''
     Translates a marker style of matplotlib to the corresponding style
     in Pgfplots.
@@ -741,19 +717,19 @@ def _mpl_marker2pgfp_marker( mpl_marker, is_marker_face_color ):
         pgfplots_marker = MP_MARKER2PGF_MARKER[ mpl_marker ]
         if is_marker_face_color and pgfplots_marker == 'o':
             pgfplots_marker = '*'
-            PGFPLOTS_LIBS.add( 'plotmarks' )
+            data['pgfplots libs'].add( 'plotmarks' )
         marker_options = None
-        return ( pgfplots_marker, marker_options )
+        return ( data, pgfplots_marker, marker_options )
     except KeyError:
         pass
 
     # try plotmarks list    
     try:
-        PGFPLOTS_LIBS.add( 'plotmarks' )
+        data['pgfplots libs'].add( 'plotmarks' )
         pgfplots_marker, marker_options = MP_MARKER2PLOTMARKS[ mpl_marker ]
         if is_marker_face_color and not pgfplots_marker in ['|', '_']:
             pgfplots_marker += '*'
-        return ( pgfplots_marker, marker_options )
+        return ( data, pgfplots_marker, marker_options )
     except KeyError:
         pass
 
@@ -762,7 +738,7 @@ def _mpl_marker2pgfp_marker( mpl_marker, is_marker_face_color ):
     else:
         print 'Unknown marker \"' + mpl_marker + '\".'
 
-    return ( None, None )
+    return ( data, None, None )
 # ==============================================================================
 MPLLINESTYLE_2_PGFPLOTSLINESTYLE = { '-'   : None,
                                      'None': None,
@@ -773,8 +749,7 @@ MPLLINESTYLE_2_PGFPLOTSLINESTYLE = { '-'   : None,
                                    }
 # ------------------------------------------------------------------------------
 def _mpl_linestyle2pgfp_linestyle( line_style ):
-    '''
-    Translates a line style of matplotlib to the corresponding style
+    '''Translates a line style of matplotlib to the corresponding style
     in Pgfplots.
     '''
     try:
@@ -783,17 +758,24 @@ def _mpl_linestyle2pgfp_linestyle( line_style ):
         print 'Unknown line style \"' + str(line_style) + '\".'
         return None
 # ==============================================================================
-def _draw_image( obj ):
-    '''
-    Returns the Pgfplots code for an image environment.
+def _draw_image( data, obj ):
+    '''Returns the Pgfplots code for an image environment.
     '''
     content = []
 
-    global IMG_NUMBER
-    IMG_NUMBER = IMG_NUMBER+1
+    if not 'img number' in data.keys():
+        data['img number'] = 0
 
-    filename = os.path.join( OUTPUT_DIR,
-                             "img" + str(IMG_NUMBER) + ".png" )
+    # Make sure not to overwrite anything.
+    file_exists = True
+    while file_exists:
+        data['img number'] = data['img number'] + 1
+        filename = os.path.join( data['output dir'],
+                                 "img" + str(data['img number']) + ".png"
+                               )
+        file_exists = os.path.isfile( filename )
+        
+      
 
     # store the image as in a file
     img_array = obj.get_array()
@@ -808,8 +790,8 @@ def _draw_image( obj ):
                            vmax  = clims[1] )
     elif len(dims) == 3 and dims[2] in [3, 4]:
         # RGB (+alpha) information at each point
-        import Image
         # convert to PIL image (after upside-down flip)
+        import Image
         image = Image.fromarray( numpy.flipud(img_array) )
         image.save( filename )
     else:
@@ -822,8 +804,8 @@ def _draw_image( obj ):
     if isinstance(extent, list): # convert to () list
         extent = tuple(extent)
 
-    if REL_DATA_PATH:
-        rel_filepath = os.path.join( REL_DATA_PATH, os.path.basename(filename) )
+    if data['rel data path']:
+        rel_filepath = os.path.join( data['rel data path'], os.path.basename(filename) )
     else:
         rel_filepath = os.path.basename(filename)
 
@@ -835,22 +817,19 @@ def _draw_image( obj ):
                                           ( extent + (rel_filepath,) )
                   )
 
-    content.extend( _handle_children( obj ) )
+    data, cont = _handle_children( data, obj )
+    content.extend( cont )
 
-    return content
+    return data, content
 # ==============================================================================
-def _draw_polygon( obj ):
-    '''
-    Return the Pgfplots code for polygons.
+def _draw_polygon( data, obj ):
+    '''Return the Pgfplots code for polygons.
     '''
     # TODO do nothing for polygons?!
-    content = []
-    content.extend( _handle_children( obj ) )
-    return
+    return _handle_children( data, obj )
 # ==============================================================================
 def _find_associated_colorbar( obj ):
-    '''
-    Rather poor way of telling whether an axis has a colorbar associated:
+    ''' Rather poor way of telling whether an axis has a colorbar associated:
     Check the next axis environment, and see if it is de facto a color bar;
     if yes, return the color bar object.
     '''
@@ -908,17 +887,14 @@ def _equivalent( array ):
 
     return True
 # ==============================================================================
-def _draw_polycollection( obj ):
-    '''
-    Returns Pgfplots code for a number of polygons.
-    Currently empty.
+def _draw_polycollection( data, obj ):
+    '''Returns Pgfplots code for a number of polygons. Currently empty.
     '''
     print "matplotlib2tikz: Don't know how to draw a PolyCollection."
-    return None
+    return data, ''
 # ==============================================================================
-def _draw_patchcollection( obj ):
-    '''
-    Returns Pgfplots code for a number of patch objects.
+def _draw_patchcollection( data, obj ):
+    '''Returns Pgfplots code for a number of patch objects.
     '''
 
     content = []
@@ -931,13 +907,13 @@ def _draw_patchcollection( obj ):
 
     paths = obj.get_paths()
     for path in paths:
-        content.append( _draw_path( path ) )
+        data, cont = _draw_path( data, path )
+        content.append( cont )
 
-    return content
+    return data, content
 # ==============================================================================
-def _draw_path( path ):
-    '''
-    Adds code for drawing an ordinary path in Pgfplots (TikZ).
+def _draw_path( data, path ):
+    '''Adds code for drawing an ordinary path in Pgfplots (TikZ).
     '''
 
     nodes = []
@@ -954,7 +930,7 @@ def _draw_path( path ):
         else:
             sys.exit( "Strange." )
 
-    return '\\path [fill] %s;\n\n' % "--".join( nodes )
+    return data, '\\path [fill] %s;\n\n' % "--".join( nodes )
 # ==============================================================================
 MPLCOLOR_2_XCOLOR = { # RGB values:
                       (1,    0,    0   ): 'red',
@@ -987,52 +963,52 @@ MPLCOLOR_2_XCOLOR = { # RGB values:
                       'w'     : 'white'
                     }
 # ------------------------------------------------------------------------------
-def _mpl_color2xcolor( color ):
-    '''
-    Translates a matplotlib color specification into a proper LaTeX
-    xcolor.
+def _mpl_color2xcolor( data, color ):
+    '''Translates a matplotlib color specification into a proper LaTeX xcolor.
     '''
     try:
-        return MPLCOLOR_2_XCOLOR[ color ]
+        return data, MPLCOLOR_2_XCOLOR[ color ]
     except KeyError:
         if isinstance( color, types.TupleType ) and len(color)==3:
             # add a custom color
-            return _add_rgbcolor_definition( color )
+            return _add_rgbcolor_definition( data, color )
         else:
-            converter = mpl.colors.ColorConverter()
-            rgb_col = converter.to_rgb(color)
-            # try to lookup the color again
-            try: return MPLCOLOR_2_XCOLOR[ rgb_col ]
-            # lookup failed add a generic rgb color
+            #converter = mpl.colors.ColorConverter()
+            rgb_col = mpl.colors.ColorConverter().to_rgb(color)
+            try:
+                # try to lookup the color again
+                return data, MPLCOLOR_2_XCOLOR[ rgb_col ]
             except KeyError:
-                return _add_rgbcolor_definition(rgb_col)
+                # lookup failed add a generic rgb color
+                return _add_rgbcolor_definition( data, rgb_col )
 # ==============================================================================
-def _add_rgbcolor_definition( rgb_color_tuple ):
-    '''
-    Takes an RGB color tuple, adds it to the list of colors that will need to be
-    defined in the TikZ file, and returned the label with which the color can
+def _add_rgbcolor_definition( data, rgb_color_tuple ):
+    '''Takes an RGB color tuple, adds it to the list of colors that will need to
+    be defined in the TikZ file, and returned the label with which the color can
     be used.
     '''
-    if rgb_color_tuple not in CUSTOM_COLORS:
-        CUSTOM_COLORS[ rgb_color_tuple ] = 'color' + str(len(CUSTOM_COLORS))
+    if rgb_color_tuple not in data['custom colors']:
+        data['custom colors'][ rgb_color_tuple ] = 'color' + str(len(data['custom colors']))
 
-    return CUSTOM_COLORS[ rgb_color_tuple ]
+    return data, data['custom colors'][ rgb_color_tuple ]
 # ==============================================================================
-def _draw_legend( obj ):
-    '''
-    Adds legend code to the EXTRA_AXIS_OPTIONS.
+def _draw_legend( data, obj ):
+    '''Adds legend code to the EXTRA_AXIS_OPTIONS.
     '''
     texts = []
     for text in obj.texts:
         texts.append( "%s" % text.get_text() )
 
-    EXTRA_AXIS_OPTIONS.add( 'legend entries={%s}' % ",".join( texts )  )
+    cont = 'legend entries={%s}' % ",".join( texts )
+    if data['extra axis options']:
+        data['extra axis options'].add( cont )
+    else:
+        data['extra axis options'] = [ cont ]
 
-    return
+    return data
 # ==============================================================================
-def _draw_text( obj ):  
-    '''
-    Paints text on the graph
+def _draw_text( data, obj ):
+    '''Paints text on the graph.
     '''
     content = []
     properties = []
@@ -1043,29 +1019,40 @@ def _draw_text( obj ):
         ann_xytext = obj.xytext
         ann_textcoords = obj.textcoords
         if ann_xycoords != "data" or ann_textcoords != "data":
-            print("Warning: Anything else except for explicit positioning "+
-                  "is not supported for annotations yet :(")
-            return content
+            print( "Warning: Anything else except for explicit positioning " +
+                   "is not supported for annotations yet :(" )
+            return data, content
         else: # Create a basic tikz arrow
             arrow_style = []
             if obj.arrowprops is not None:
                 if obj.arrowprops['arrowstyle'] is not None:
-                    if obj.arrowprops['arrowstyle'] in ['-','->','<-','<->']:
+                    if obj.arrowprops['arrowstyle'] in ['-', '->', '<-', '<->']:
                         arrow_style.append(obj.arrowprops['arrowstyle'])
-                        arrow_style.append(_mpl_color2xcolor(obj.arrow_patch.get_ec()))
+                        data, col = _mpl_color2xcolor( data,
+                                                       obj.arrow_patch.get_ec()
+                                                     )
+                        arrow_style.append( col )
                     elif obj.arrowprops['ec'] is not None:
-                        arrow_style.append(_mpl_color2xcolor(obj.arrowprops['ec']))
+                        data, col = _mpl_color2xcolor( data,
+                                                       obj.arrowprops['ec']
+                                                     )
+                        arrow_style.append( col )
                     elif obj.arrowprops['edgecolor'] is not None:
-                        arrow_style.append(_mpl_color2xcolor(obj.arrowprops['edgecolor']))
-                    else: pass
+                        data, col = _mpl_color2xcolor( data,
+                                                       obj.arrowprops['edgecolor']
+                                                     )
+                        arrow_style.append( col )
+                    else:
+                        pass
 
             arrow_proto = "\\draw[%s] (axis cs:%e,%e) -- (axis cs:%e,%e);\n"
-            the_arrow = arrow_proto%(",".join(arrow_style),
-                                     ann_xytext[0],
-                                     ann_xytext[1],
-                                     ann_xy[0],
-                                     ann_xy[1])
-            content.append(the_arrow)
+            the_arrow = arrow_proto % ( ",".join(arrow_style),
+                                        ann_xytext[0],
+                                        ann_xytext[1],
+                                        ann_xy[0],
+                                        ann_xy[1]
+                                      )
+            content.append( the_arrow )
     
     # 1: coordinates in axis system
     # 2: properties (shapes, rotation, etc)
@@ -1078,27 +1065,29 @@ def _draw_text( obj ):
     size = obj.get_size()
     bbox = obj.get_bbox_patch()
     converter = mpl.colors.ColorConverter()
-    scaling = 0.5*size/FONT_SIZE  # XXX: This is ugly
+    scaling = 0.5*size / data['font size']  # XXX: This is ugly
     properties.append("scale=%g" % scaling )
     if bbox is not None:
         bbox_style = bbox.get_boxstyle()
         if bbox.get_fill():
-            fc = _mpl_color2xcolor(bbox.get_facecolor())
+            data, fc = _mpl_color2xcolor( data, bbox.get_facecolor() )
             if fc:
-                properties.append("fill=%s"%_mpl_color2xcolor(bbox.get_facecolor()))
-        ec = _mpl_color2xcolor(bbox.get_edgecolor())
+                properties.append("fill=%s" % fc)
+        data, ec = _mpl_color2xcolor( data, bbox.get_edgecolor() )
         if ec:
-            properties.append("draw=%s"%_mpl_color2xcolor(bbox.get_edgecolor()))
+            properties.append("draw=%s" % ec )
         properties.append("line width=%gpt"%(bbox.get_lw()*0.4)) # XXX: This is ugly, too
-        properties.append("inner sep=%gpt" % (bbox_style.pad*FONT_SIZE) )
+        properties.append( "inner sep=%gpt" %
+                           (bbox_style.pad * data['font size'])
+                         )
         # Rounded boxes
         if( isinstance(bbox_style, mpl.patches.BoxStyle.Round) ):
             properties.append("rounded corners")
         elif( isinstance(bbox_style, mpl.patches.BoxStyle.RArrow) ):
-            TIKZ_LIBS.add("shapes.arrows")
+            data['tikz libs'].add("shapes.arrows")
             properties.append("single arrow")
         elif( isinstance(bbox_style, mpl.patches.BoxStyle.LArrow) ):
-            TIKZ_LIBS.add("shapes.arrows")
+            data['tikz libs'].add("shapes.arrows")
             properties.append("single arrow")
             properties.append("shape border rotate=180")
         # Sawtooth, Roundtooth or Round4 not supported atm
@@ -1107,84 +1096,100 @@ def _draw_text( obj ):
         else:
             pass # Rectangle
         # Line style
-        if(bbox.get_ls() == "dotted"):
-            properties.append("dotted")
-        elif(bbox.get_ls() == "dashed"):
+        if bbox.get_ls() == "dotted":
+            properties.append( "dotted" )
+        elif bbox.get_ls() == "dashed":
             properties.append("dashed")
         # XXX: Is there any way to extract the dashdot
         # pattern from matplotlib instead of hardcoding
         # an approximation?
         elif(bbox.get_ls() == "dashdot"):
-            properties.append("dash pattern=on %.3gpt off %.3gpt on %.3gpt off %.3gpt"%\
+            properties.append("dash pattern=on %.3gpt off %.3gpt on %.3gpt off %.3gpt" % \
                               (1.0/scaling, 3.0/scaling, 6.0/scaling, 3.0/scaling))
         else: pass # solid
 
     ha = obj.get_ha()
     va = obj.get_va()
-    anchor = _transform_positioning(ha,va)
+    anchor = _transform_positioning( ha, va )
     if anchor is not None:
         properties.append(anchor)
-    properties.append("text=%s"%_mpl_color2xcolor( converter.to_rgb(obj.get_color()) ))
-    properties.append("rotate=%.1f"%obj.get_rotation())
+    data, col = _mpl_color2xcolor( data, converter.to_rgb(obj.get_color()) )
+    properties.append( "text=%s" % col )
+    properties.append( "rotate=%.1f" % obj.get_rotation() )
     if obj.get_style() != "normal":
         style.append("\\itshape")
     try:
         if int(obj.get_weight()) > 550:
             style.append('\\bfseries')
     except: # Not numeric
-        vals = ['semibold','demibold','demi','bold','heavy','extra bold','black']
+        vals = [ 'semibold',
+                 'demibold',
+                 'demi',
+                 'bold',
+                 'heavy',
+                 'extra bold',
+                 'black'
+               ]
         if str(obj.get_weight()) in vals:
             style.append('\\bfseries')
-    content.append(proto%(pos[0],pos[1],
-                          ",\n  ".join(properties),
-                          " ".join(style),text))
-    return content
+    content.append( proto %
+                    ( pos[0], pos[1],
+                      ",\n  ".join(properties), " ".join(style), text
+                    )
+                  )
 
-def _transform_positioning(ha, va):
+    return data, content
+# ==============================================================================
+def _transform_positioning( ha, va ):
     '''Converts matplotlib positioning to pgf node positioning.
     Not quite accurate but the results are equivalent more or less.'''
-    if (ha == "center" and va == "center"):
+    if ha == "center" and va == "center":
         return None
     else:
-        ha_mpl_to_tikz = {'right':'east',
-                          'left':'west',
-                          'center':''}
-        va_mpl_to_tikz = {'top':'north',
-                          'bottom':'south',
-                          'center':'',
-                          'baseline':'base'}
-        return ("anchor=%s %s"%(va_mpl_to_tikz[va],ha_mpl_to_tikz[ha])).strip()
-
-
+        ha_mpl_to_tikz = { 'right' : 'east',
+                           'left'  : 'west',
+                           'center': ''
+                         }
+        va_mpl_to_tikz = { 'top'     : 'north',
+                           'bottom'  : 'south',
+                           'center'  : '',
+                           'baseline': 'base'
+                         }
+        return ( "anchor=%s %s" % ( va_mpl_to_tikz[va], ha_mpl_to_tikz[ha] )
+               ).strip()
 # ==============================================================================
-def _handle_children( obj ):
+def _handle_children( data, obj ):
     '''Iterates over all children of the current object, gathers the contents
     contributing to the resulting Pgfplots file, and returns those.'''
 
     content = []
     for child in obj.get_children():
         if ( isinstance( child, mpl.axes.Axes ) ):
-            try:
-                content.extend( _draw_axes( child ) )
-            except TypeError: # _draw_axes() probably returned None
-                pass
+            data, cont = _draw_axes( data, child )
+            content.extend( cont )
         elif ( isinstance( child, mpl.lines.Line2D ) ):
-            content.extend( _draw_line2d( child ) )
+            data, cont = _draw_line2d( data, child )
+            content.extend( cont )
         elif ( isinstance( child, mpl.image.AxesImage ) ):
-            content.extend( _draw_image( child ) )
+            data, cont = _draw_image( data, child )
+            content.extend( cont )
         elif ( isinstance( child, mpl.patches.Polygon ) ):
-            content.extend( _draw_polygon( child ) )
+            data, cont = _draw_polygon( data, child )
+            content.extend( cont )
         elif ( isinstance( child, mpl.collections.PolyCollection ) ):
-            content.extend( _draw_polycollection( child ) )
+            data, cont = _draw_polycollection( data, child )
+            content.extend( cont )
         elif ( isinstance( child, mpl.collections.PatchCollection ) ):
-            content.extend( _draw_patchcollection( child ) )
+            data, cont = _draw_patchcollection( data, child )
+            content.extend( cont )
         elif ( isinstance( child, mpl.legend.Legend ) ):
-            _draw_legend( child )
+            data = _draw_legend( data, child )
         elif (   isinstance( child, mpl.axis.XAxis )
               or isinstance( child, mpl.axis.YAxis )
               or isinstance( child, mpl.spines.Spine )
               or isinstance( child, mpl.patches.Rectangle )
               or isinstance( child, mpl.text.Text )
+              or isinstance( child, mpl.collections.QuadMesh )
              ):
             pass
         else:
@@ -1192,18 +1197,19 @@ def _handle_children( obj ):
                   type(child)
 
     # XXX: This is ugly
-    if isinstance(obj, mpl.axes.Subplot) or isinstance(obj,mpl.figure.Figure):
+    if isinstance(obj, mpl.axes.Subplot) or isinstance(obj, mpl.figure.Figure):
         for text in obj.texts:
-            content.extend(_draw_text(text))
+            data, cont = _draw_text( data, text )
+            content.extend( cont )
 
-    return content
+    return data, content
 # ==============================================================================
-def _print_pgfplot_libs_message():
+def _print_pgfplot_libs_message( data ):
     '''
     Prints message to screen indicating the use of Pgfplots and its libraries.
     '''
-    pgfplotslibs = ",".join( list( PGFPLOTS_LIBS ) )
-    tikzlibs = ",".join( list( TIKZ_LIBS ) )
+    pgfplotslibs = ",".join( list( data['pgfplots libs'] ) )
+    tikzlibs = ",".join( list( data['tikz libs'] ) )
 
     print "========================================================="
     print "Please add the following line to your LaTeX preamble:\n"
