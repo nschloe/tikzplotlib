@@ -2,7 +2,7 @@ This is matplotlib2tikz, a Python script for converting matplotlib figures into 
 TikZ figures.
 
 To download matplotlibtikz, go to its page on GitHub
-http://github.com/nicki/matplotlib2tikz.
+https://github.com/nschloe/matplotlib2tikz.
 
 The workflow is as follows.
 
@@ -70,4 +70,4 @@ The workflow is as follows.
 If you experience bugs, would like to contribute, have nice examples of
 what matplotlib2tikz can do, or if you are just looking for more
 information, then please visit the web page of
-matplotlib2tikz http://github.com/nicki/matlab2tikz.
+matplotlib2tikz https://github.com/nschloe/matlab2tikz.
