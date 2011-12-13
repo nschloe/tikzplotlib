@@ -46,8 +46,10 @@ def save( filepath,
           textsize = 10.0,
           tex_relative_path_to_data = None,
           strict = False,
+          draw_rectangles = False,
           wrap = True,
-          extra = None):
+          extra = None
+        ):
     '''Main function. Here, the recursion into the image starts and the contents
     are picked up. The actual file gets written in this routine.
 
@@ -91,6 +93,16 @@ def save( filepath,
                    can decide where to put the ticks.
     :type strict: bool.
 
+    :param draw_rectangles: Whether or not to draw Rectangle objects.
+                            You normally don't want that as legend, axes, and
+                            other entities which are natively taken care of by
+                            Pgfplots are represented as rectangles in
+                            matplotlib. Some plot types (such as bar plots)
+                            cannot otherwise be represented though.
+                            Don't expect working or clean output when using
+                            this option.
+    :type draw_rectangles: bool.
+
     :param wrap: Whether ``'\\begin{tikzpicture}'`` and ``'\\end{tikzpicture}'``
                  will be written. One might need to provide custom arguments to
                  the environment (eg. scale= etc.). Default is ``True``
@@ -108,6 +120,7 @@ def save( filepath,
     data['rel data path'] = tex_relative_path_to_data
     data['output dir'] = os.path.dirname(filepath)
     data['strict'] = strict
+    data['draw rectangles'] = draw_rectangles
     data['tikz libs'] = set()
     data['pgfplots libs'] = set()
     data['font size'] = textsize
@@ -155,10 +168,19 @@ def _get_color_definitions( data ):
     '''Returns the list of custom color definitions for the TikZ file.
     '''
     definitions = []
-    for ( rgb, name ) in data['custom colors'].items():
-        definitions.append( "\\definecolor{%s}{rgb}{%g,%g,%g}" % \
-                            ( (name,) + rgb  )
-                          )
+    for ( color, name ) in data['custom colors'].items():
+        if len(color) == 3:
+            definitions.append( "\\definecolor{%s}{rgb}{%g,%g,%g}" % \
+                                ( (name,) + color  )
+                              )
+        elif len(color) == 4:
+            definitions.append( "\\definecolor{%s}{cmyk}{%g,%g,%g,%g}" % \
+                                ( (name,) + color  )
+                              )
+        else:
+            print 'Don''t know how to handle color', color, '. Draw it red.'
+            definitions.append( "\\definecolor{%s}{rgb}{1,0,0}" % ((name,)) )
+
     return definitions
 # ==============================================================================
 def _draw_axes( data, obj ):
@@ -912,7 +934,33 @@ def _draw_patchcollection( data, obj ):
 
     return data, content
 # ==============================================================================
-def _draw_path( data, path ):
+def _draw_pathcollection( data, obj ):
+    '''Returns Pgfplots code for a number of patch objects.
+    '''
+    content = []
+
+    # TODO Use those properties
+    #edgecolors = obj.get_edgecolors()
+    #edgecolor = obj.get_edgecolor()
+    #linewidths = obj.get_linewidths()
+    facecolors = obj.get_facecolors()
+
+    paths = obj.get_paths()
+    k = 0
+    for path in paths:
+        data, cont = _draw_path( data, path,
+                                 # TODO always use [0]?
+                                 fillcolor = facecolors[0]
+                               )
+        content.append( cont )
+        k = k+1
+
+    return data, content
+# ==============================================================================
+def _draw_path( data, path,
+                fillcolor = None,
+                edgecolor = None
+              ):
     '''Adds code for drawing an ordinary path in Pgfplots (TikZ).
     '''
 
@@ -930,9 +978,24 @@ def _draw_path( data, path ):
         else:
             sys.exit( "Strange." )
 
-    return data, '\\path [fill] %s;\n\n' % "--".join( nodes )
+    path_options = []
+    if not edgecolor is None:
+        data, col = _mpl_color2xcolor( data, edgecolor )
+        path_options.append( 'draw=%s' % col )
+    if not fillcolor is None:
+        data, col = _mpl_color2xcolor( data, fillcolor )
+        path_options.append( 'fill=%s' % col )
+
+    nodes_string = "--".join( nodes )
+    if path_options:
+        path_command = '\\path [%s] %s;\n\n' % \
+                       ( ', '.join(path_options), nodes_string )
+    else:
+        path_command = '\\path %s;\n\n' % nodes_string
+
+    return data, path_command
 # ==============================================================================
-MPLCOLOR_2_XCOLOR = { # RGB values:
+MPLCOLOR_2_XCOLOR = { # RGB values (as taken from xcolor.dtx):
                       (1,    0,    0   ): 'red',
                       (0,    1,    0   ): 'green',
                       (0,    0,    1   ): 'blue',
@@ -943,6 +1006,17 @@ MPLCOLOR_2_XCOLOR = { # RGB values:
                       (0.75, 0,    0.25): 'purple',
                       (0,    0.5,  0.5 ): 'teal',
                       (0.5,  0,    0.5 ): 'violet',
+                      # CMYK values (as taken from xcolor.dtx):
+                      (0,    1,    1,    0    ) : 'red',
+                      (1,    0,    1,    0    ) : 'green',
+                      (1,    1,    0,    0    ) : 'blue',
+                      (0.0,  0.25, 0.5,  0.25 ) : 'brown',
+                      (0.25, 0,    1,    0    ) : 'lime',
+                      (0,    0.5,  1,    0    ) : 'orange',
+                      (0,    0.25, 0.25, 0    ) : 'pink',
+                      (0,    0.75, 0.5,  0.25 ) : 'purple',
+                      (0.5,  0,    0,    0.5  ) : 'teal',
+                      (0,    0.5,  0,    0.5  ) : 'violet',
                       # gray values:
                       '0.0' : 'red',
                       '0.5' : 'gray',
@@ -966,10 +1040,21 @@ MPLCOLOR_2_XCOLOR = { # RGB values:
 def _mpl_color2xcolor( data, color ):
     '''Translates a matplotlib color specification into a proper LaTeX xcolor.
     '''
+    # Strange: Colors sometimes come in ndarrays of length 4, but they are no
+    # CMYK specs. Instead, the last entry always seems to be 1.0. Hence, use the
+    # first three elements.
+    if len( color ) == 4 and color[3]==1.0:
+        color = color[0:3]
+
+    # convert to a hashable tuple, thanks
+    if isinstance( color, numpy.ndarray ):
+        color = tuple( color.tolist() )
+
     try:
         return data, MPLCOLOR_2_XCOLOR[ color ]
     except KeyError:
-        if isinstance( color, types.TupleType ) and len(color)==3:
+        if isinstance( color, types.TupleType ) and \
+           ( len(color)==3 or len(color)==4 ):
             # add a custom color
             return _add_rgbcolor_definition( data, color )
         else:
@@ -982,15 +1067,16 @@ def _mpl_color2xcolor( data, color ):
                 # lookup failed add a generic rgb color
                 return _add_rgbcolor_definition( data, rgb_col )
 # ==============================================================================
-def _add_rgbcolor_definition( data, rgb_color_tuple ):
-    '''Takes an RGB color tuple, adds it to the list of colors that will need to
-    be defined in the TikZ file, and returned the label with which the color can
-    be used.
+def _add_rgbcolor_definition( data, color_tuple ):
+    '''Takes a color tuple (RGB/CMYK), adds it to the list of colors that will
+    need to be defined in the TikZ file, and returns the label with which the
+    color can be used.
     '''
-    if rgb_color_tuple not in data['custom colors']:
-        data['custom colors'][ rgb_color_tuple ] = 'color' + str(len(data['custom colors']))
+    if color_tuple not in data['custom colors']:
+        data['custom colors'][ color_tuple ] = \
+             'color' + str(len(data['custom colors']))
 
-    return data, data['custom colors'][ rgb_color_tuple ]
+    return data, data['custom colors'][ color_tuple ]
 # ==============================================================================
 def _draw_legend( data, obj ):
     '''Adds legend code to the EXTRA_AXIS_OPTIONS.
@@ -1140,6 +1226,14 @@ def _draw_text( data, obj ):
 
     return data, content
 # ==============================================================================
+def _draw_rectangle( data, obj ):
+    '''Returns Pgfplots code for a rectangle.'''
+    return _draw_path( data,
+                       obj.get_patch_transform().transform_path( obj.get_path() ),
+                       fillcolor = obj.get_facecolor(),
+                       edgecolor = obj.get_edgecolor()
+                     )
+# ==============================================================================
 def _transform_positioning( ha, va ):
     '''Converts matplotlib positioning to pgf node positioning.
     Not quite accurate but the results are equivalent more or less.'''
@@ -1182,12 +1276,18 @@ def _handle_children( data, obj ):
         elif ( isinstance( child, mpl.collections.PatchCollection ) ):
             data, cont = _draw_patchcollection( data, child )
             content.extend( cont )
+        elif ( isinstance( child, mpl.collections.PathCollection ) ):
+            data, cont = _draw_pathcollection( data, child )
+            content.extend( cont )
         elif ( isinstance( child, mpl.legend.Legend ) ):
             data = _draw_legend( data, child )
+        elif ( isinstance( child, mpl.patches.Rectangle ) ):
+            if data['draw rectangles']:
+                data, cont = _draw_rectangle( data, child )
+                content.extend( cont )
         elif (   isinstance( child, mpl.axis.XAxis )
               or isinstance( child, mpl.axis.YAxis )
               or isinstance( child, mpl.spines.Spine )
-              or isinstance( child, mpl.patches.Rectangle )
               or isinstance( child, mpl.text.Text )
               or isinstance( child, mpl.collections.QuadMesh )
              ):
@@ -1205,9 +1305,8 @@ def _handle_children( data, obj ):
     return data, content
 # ==============================================================================
 def _print_pgfplot_libs_message( data ):
-    '''
-    Prints message to screen indicating the use of Pgfplots and its libraries.
-    '''
+    '''Prints message to screen indicating the use of Pgfplots and its
+    libraries.'''
     pgfplotslibs = ",".join( list( data['pgfplots libs'] ) )
     tikzlibs = ",".join( list( data['tikz libs'] ) )
 

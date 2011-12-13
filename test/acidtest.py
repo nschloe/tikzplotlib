@@ -21,11 +21,8 @@
 #
 # ==============================================================================
 from os import path
-
 import sys
-
-import matplotlib as mpl
-
+from matplotlib import pyplot as pp
 import matplotlib2tikz
 import testfunctions as tf
 # ==============================================================================
@@ -67,7 +64,8 @@ def _main():
                        tf.subplot4x4,
                        tf.text_overlay,
                        tf.annotate,
-                       tf.histogram
+                       tf.histogram,
+                       tf.contourf_with_logscale
                      ]
 
     if not test_list is None: # actually treat a sublist of test_functions
@@ -79,8 +77,8 @@ def _main():
 
     for k in test_list:
         print 'Test function %d...' % k,
-        mpl.pyplot.cla()
-        mpl.pyplot.clf()
+        pp.cla()
+        pp.clf()
         # plot the test example
         comment = test_functions[k]()
 
@@ -94,7 +92,7 @@ def _main():
 
         # plot reference figure
         pdf_path  = data_dir + "/test" + repr(k) + ".pdf"
-        mpl.pyplot.savefig(pdf_path)
+        pp.savefig(pdf_path)
 
         # update the LaTeX file
         write_file_comparison_entry( file_handle,

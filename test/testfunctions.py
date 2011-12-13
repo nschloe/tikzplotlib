@@ -20,72 +20,71 @@
 # along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #
 # ==============================================================================
-from pylab import *
-import numpy
+import numpy as np
+import matplotlib as mpl
+from matplotlib import pyplot as pp
 # =============================================================================
 def basic_sin():
-        t = arange( 0.0, 2.0, 0.01 )
-        s = sin( 2*pi*t )
-        plot( t, s, ":" )
+        t = np.arange( 0.0, 2.0, 0.01 )
+        s = np.sin( 2*np.pi*t )
+        pp.plot( t, s, ':' )
 
-        xlabel("time(s)")
-        ylabel("Voltage (mV)")
-        title("Easier than easy $\\frac{1}{2}$")
-        grid( True )
+        pp.xlabel('time(s)')
+        pp.ylabel('Voltage (mV)')
+        pp.title('Easier than easy $\\frac{1}{2}$')
+        pp.grid( True )
 
-        return "Simple $\sin$ plot with some labels"
+        return 'Simple $\sin$ plot with some labels'
 # =============================================================================
 def subplots():
         def f(t):
-            s1 = numpy.cos(2*numpy.pi*t)
-            e1 = numpy.exp(-t)
-            return numpy.multiply(s1,e1)
+            s1 = np.cos(2*np.pi*t)
+            e1 = np.exp(-t)
+            return np.multiply(s1,e1)
 
-        t1 = numpy.arange(0.0, 5.0, 0.1)
-        t2 = numpy.arange(0.0, 5.0, 0.02)
-        t3 = numpy.arange(0.0, 2.0, 0.01)
+        t1 = np.arange(0.0, 5.0, 0.1)
+        t2 = np.arange(0.0, 5.0, 0.02)
+        t3 = np.arange(0.0, 2.0, 0.01)
 
-        subplot(211)
-        l = plot(t1, f(t1), 'bo', t2, f(t2), 'k--', markerfacecolor='green')
-        grid(True)
-        title('A tale of 2 subplots')
-        ylabel('Damped oscillation')
+        pp.subplot(211)
+        pp.plot(t1, f(t1), 'bo', t2, f(t2), 'k--', markerfacecolor='green')
+        pp.grid(True)
+        pp.title('A tale of 2 subplots')
+        pp.ylabel('Damped oscillation')
 
-        subplot(212)
-        plot(t3, numpy.cos(2*numpy.pi*t3), 'r.')
-        grid(True)
-        xlabel('time (s)')
-        ylabel('Undamped')
+        pp.subplot(212)
+        pp.plot(t3, np.cos(2*np.pi*t3), 'r.')
+        pp.grid(True)
+        pp.xlabel('time (s)')
+        pp.ylabel('Undamped')
 
-        return "Two subplots on top of each other"
+        return 'Two subplots on top of each other'
 # =============================================================================
 def image_plot():
+    from matplotlib import rcParams
     try:
         import Image
     except ImportError, exc:
-        raise SystemExit("PIL must be installed to run this example")
+        raise SystemExit('PIL must be installed to run this example')
 
     lena = Image.open('lena.png')
     dpi = rcParams['figure.dpi']
     figsize = lena.size[0]/dpi, lena.size[1]/dpi
 
-    figure(figsize=figsize)
-    ax = axes([0,0,1,1], frameon=False)
+    pp.figure( figsize=figsize )
+    ax = pp.axes([0,0,1,1], frameon=False)
     ax.set_axis_off()
-    im = imshow(lena, origin='lower')
+    im = pp.imshow(lena, origin='lower')
 
-    colorbar()
+    pp.colorbar()
 
-    return "An \\texttt{imshow} plot"
+    return 'An \\texttt{imshow} plot'
 # =============================================================================
 def noise():
-    import matplotlib.pyplot as plt
-    import numpy as np
-
     from numpy.random import randn
 
     # Make plot with vertical (default) colorbar
-    fig = plt.figure()
+    fig = pp.figure()
     ax = fig.add_subplot(111)
 
     data = np.clip(randn(250, 250), -1, 1)
@@ -98,10 +97,10 @@ def noise():
     cbar.ax.set_yticklabels(['< -1', '0', '> 1'])# vertically oriented colorbar
 
     # Make plot with horizontal colorbar
-    fig = plt.figure()
+    fig = pp.figure()
     ax = fig.add_subplot(111)
 
-    data = np.clip(randn(250, 250), -1, 1)
+    data = np.clip(np.random.randn(250, 250), -1, 1)
 
     cax = ax.imshow(data, interpolation='nearest')
     ax.set_title('Gaussian noise with horizontal colorbar')
@@ -109,31 +108,31 @@ def noise():
     cbar = fig.colorbar(cax, ticks=[-1, 0, 1], orientation='horizontal')
     cbar.ax.set_xticklabels(['Low', 'Medium', 'High'])# horizontal colorbar
 
-    return "Noise with a color bar"
+    return 'Noise with a color bar'
 # =============================================================================
 def patches():
 
     from matplotlib.patches import Circle, Wedge, Polygon
     from matplotlib.collections import PatchCollection
 
-    fig=figure()
-    ax=fig.add_subplot(111)
+    fig = pp.figure()
+    ax = fig.add_subplot(111)
 
     resolution = 50 # the number of vertices
     N = 3
-    x       = rand(N)
-    y       = rand(N)
-    radii   = 0.1*rand(N)
+    x       = np.random.rand(N)
+    y       = np.random.rand(N)
+    radii   = 0.1*np.random.rand(N)
     patches = []
     for x1,y1,r in zip(x, y, radii):
         circle = Circle((x1,y1), r)
         patches.append(circle)
 
-    x       = rand(N)
-    y       = rand(N)
-    radii   = 0.1*rand(N)
-    theta1  = 360.0*rand(N)
-    theta2  = 360.0*rand(N)
+    x       = np.random.rand(N)
+    y       = np.random.rand(N)
+    radii   = 0.1*np.random.rand(N)
+    theta1  = 360.0*np.random.rand(N)
+    theta2  = 360.0*np.random.rand(N)
     for x1,y1,r,t1,t2 in zip(x, y, radii, theta1, theta2):
         wedge = Wedge((x1,y1), r, t1, t2)
         patches.append(wedge)
@@ -147,136 +146,152 @@ def patches():
     ]
 
     for i in range(N):
-        polygon = Polygon(rand(N,2), True)
+        polygon = Polygon(np.random.rand(N,2), True)
         patches.append(polygon)
 
-    colors = 100*rand(len(patches))
-    p = PatchCollection(patches, cmap=matplotlib.cm.jet, alpha=0.4)
-    p.set_array(array(colors))
+    colors = 100*np.random.rand(len(patches))
+    p = PatchCollection( patches,
+                         cmap = mpl.cm.jet,
+                         alpha=0.4
+                       )
+    p.set_array( np.array(colors) )
     ax.add_collection(p)
-    colorbar(p)
+    pp.colorbar(p)
 
-    return "Some patches and a color bar"
+    return 'Some patches and a color bar'
 # =============================================================================
 def legends():
-    x = ma.arange(0, 2*pi, 0.02)
-    y = ma.sin(x)
-    y1 = sin(2*x)
-    y2 = sin(3*x)
-    ym1 = ma.masked_where(y1 > 0.5, y1)
-    ym2 = ma.masked_where(y2 < -0.5, y2)
+    x = np.ma.arange(0, 2*np.pi, 0.02)
+    y = np.ma.sin(x)
+    y1 = np.sin(2*x)
+    y2 = np.sin(3*x)
+    ym1 = np.ma.masked_where(y1 > 0.5, y1)
+    ym2 = np.ma.masked_where(y2 < -0.5, y2)
 
-    lines = plot(x, y, 'r', x, ym1, 'g', x, ym2, 'bo')
-    setp(lines[0], linewidth = 4)
-    setp(lines[1], linewidth = 2)
-    setp(lines[2], markersize = 10)
+    lines = pp.plot(x, y, 'r', x, ym1, 'g', x, ym2, 'bo')
+    pp.setp(lines[0], linewidth = 4)
+    pp.setp(lines[1], linewidth = 2)
+    pp.setp(lines[2], markersize = 10)
 
-    legend( ('No mask', 'Masked if > 0.5', 'Masked if < -0.5') ,
-            loc = 'upper right')
+    pp.legend( ( 'No mask', 'Masked if > 0.5', 'Masked if < -0.5') ,
+               loc = 'upper right'
+             )
 
-    title('Masked line demo')
+    pp.title('Masked line demo')
 
-    return "Plot with legends"
+    return 'Plot with legends'
 # =============================================================================
 def annotate():
-    fig = figure(1,figsize=(8,5))
-    ax = fig.add_subplot(111, autoscale_on=False, xlim=(-1,5), ylim=(-4,3))
+    fig = pp.figure( 1, figsize=(8,5) )
+    ax = fig.add_subplot( 111,
+                          autoscale_on = False,
+                          xlim=(-1,5),
+                          ylim=(-4,3)
+                        )
 
-    t = np.arange(0.0, 5.0, 0.01)
-    s = np.cos(2*np.pi*t)
-    line, = ax.plot(t, s, color='blue')
-    ann1 = ax.annotate('text', xy=(4., 1.),  xycoords='data',
-                xytext=(4.5, 1.5), textcoords='data',
-                arrowprops=dict(arrowstyle="->",ec="r"))
+    t = np.arange( 0.0, 5.0, 0.01 )
+    s = np.cos( 2*np.pi*t )
+    line, = ax.plot( t, s, color='blue' )
+    ann1 = ax.annotate( 'text',
+                        xy = (4., 1.),
+                        xycoords = 'data',
+                        xytext = (4.5, 1.5),
+                        textcoords='data',
+                        arrowprops = dict(arrowstyle='->',ec='r')
+                      )
 
-    ann2 = ax.annotate('arrowstyle', xy=(0, 1),  xycoords='data',
-                xytext=(-50, 30), textcoords='offset points',
-                arrowprops=dict(arrowstyle="->"))
+    ann2 = ax.annotate( 'arrowstyle',
+                        xy = (0, 1),
+                        xycoords = 'data',
+                        xytext = (-50, 30),
+                        textcoords = 'offset points',
+                        arrowprops = dict(arrowstyle='->')
+                      )
 
-    return "Annotations"
+    return 'Annotations'
 # =============================================================================
 def legends2():
-    t1 = arange(0.0, 2.0, 0.1)
-    t2 = arange(0.0, 2.0, 0.01)
+    t1 = np.arange(0.0, 2.0, 0.1)
+    t2 = np.arange(0.0, 2.0, 0.01)
 
-    # note that plot returns a list of lines.  The "l1, = plot" usage
+    # note that plot returns a list of lines.  The 'l1, = plot' usage
     # extracts the first element of the list inot l1 using tuple
     # unpacking.  So l1 is a Line2D instance, not a sequence of lines
-    l1,    = plot(t2, exp(-t2))
-    l2, l3 = plot(t2, sin(2*pi*t2), '--go', t1, log(1+t1), '.')
-    l4,    = plot(t2, exp(-t2)*sin(2*pi*t2), 'rs-.')
+    l1,    = pp.plot(t2, np.exp(-t2))
+    l2, l3 = pp.plot(t2, np.sin(2*np.pi*t2), '--go', t1, np.log(1+t1), '.')
+    l4,    = pp.plot(t2, np.exp(-t2)*np.sin(2*np.pi*t2), 'rs-.')
 
-    legend( (l2, l4), ('oscillatory', 'damped'), 'upper right', shadow=True)
-    xlabel('time')
-    ylabel('volts')
-    title('Damped oscillation')
+    pp.legend( (l2, l4), ('oscillatory', 'damped'), 'upper right', shadow=True)
+    pp.xlabel('time')
+    pp.ylabel('volts')
+    pp.title('Damped oscillation')
 
-    return "Another legend plot"
+    return 'Another legend plot'
 # =============================================================================
 def logplot():
     a = [ pow(10,i) for i in range(10) ]
-    fig = figure()
+    fig = pp.figure()
     ax = fig.add_subplot(1,1,1)
 
     line, = ax.semilogy(a, color='blue', lw=2)
-    return "Log scaled plot"
+    return 'Log scaled plot'
 # =============================================================================
 def loglogplot():
 
-    x = logspace( 0, 6, num=5 )
-    loglog( x, x**2 )
+    x = np.logspace( 0, 6, num=5 )
+    pp.loglog( x, x**2 )
 
-    return "Loglog plot with large ticks dimensions"
+    return 'Loglog plot with large ticks dimensions'
 # ==============================================================================
 def text_overlay():
-    xxx = linspace(0,5)
+    xxx = np.linspace(0,5)
     yyy = xxx**2
 
-    text(1, 5, "test1", size=50, rotation=30.,
-         ha="center", va="bottom", color="r", style="italic",
-         bbox = dict(boxstyle="round, pad=0.2",
+    pp.text(1, 5, 'test1', size=50, rotation=30.,
+         ha='center', va='bottom', color='r', style='italic',
+         bbox = dict(boxstyle='round, pad=0.2',
                      ec=(1., 0.5, 0.5),
                      fc=(1., 0.8, 0.8),
-                     ls="dashdot"
+                     ls='dashdot'
                      )
          )
 
-    text(3, 6, "test2", size=50, rotation=-30.,
-         ha="center", va="center", color="b", weight='bold',
-         bbox = dict(boxstyle="square",
+    pp.text(3, 6, 'test2', size=50, rotation=-30.,
+         ha='center', va='center', color='b', weight='bold',
+         bbox = dict(boxstyle='square',
                      ec=(1., 0.5, 0.5),
                      fc=(1., 0.8, 0.8),
                      )
          )
-    plot(xxx,yyy,label="graph")
-    legend()
+    pp.plot(xxx,yyy,label='graph')
+    pp.legend()
 
-    return "Regular plot with overlay text"
+    return 'Regular plot with overlay text'
 # ==============================================================================
 def subplot4x4():
-    an = linspace(0,2*pi,100)
+    an = np.linspace(0,2*np.pi,100)
 
-    subplot(221)
-    plot( 3*cos(an), 3*sin(an) )
-    title('not equal, looks like ellipse',fontsize=10)
+    pp.subplot(221)
+    pp.plot( 3*np.cos(an), 3*np.sin(an) )
+    pp.title('not equal, looks like ellipse',fontsize=10)
 
-    subplot(222)
-    plot( 3*cos(an), 3*sin(an) )
-    axis('equal')
-    title('equal, looks like circle',fontsize=10)
+    pp.subplot(222)
+    pp.plot( 3*np.cos(an), 3*np.sin(an) )
+    pp.axis('equal')
+    pp.title('equal, looks like circle',fontsize=10)
 
-    subplot(223)
-    plot( 3*cos(an), 3*sin(an) )
-    axis('equal')
-    axis([-3,3,-3,3])
-    title('looks like circle, even after changing limits',fontsize=10)
+    pp.subplot(223)
+    pp.plot( 3*np.cos(an), 3*np.sin(an) )
+    pp.axis('equal')
+    pp.axis([-3,3,-3,3])
+    pp.title('looks like circle, even after changing limits',fontsize=10)
 
-    subplot(224)
-    plot( 3*cos(an), 3*sin(an) )
-    axis('equal')
-    axis([-3,3,-3,3])
-    plot([0,4],[0,4])
-    title('still equal after adding line',fontsize=10)
+    pp.subplot(224)
+    pp.plot( 3*np.cos(an), 3*np.sin(an) )
+    pp.axis('equal')
+    pp.axis([-3,3,-3,3])
+    pp.plot([0,4],[0,4])
+    pp.title('still equal after adding line',fontsize=10)
 
     return '4x4 subplots'
 # ==============================================================================
@@ -292,8 +307,51 @@ def histogram():
     ax.legend()
     return 'Histogram'
 # ==============================================================================
+def contourf_with_logscale():
+    import matplotlib.pyplot as plt
+    import matplotlib.ticker as tkr
+    #from matplotlib import colors, ticker
+    from matplotlib.mlab import bivariate_normal
+
+    N = 100
+    x = np.linspace(-3.0, 3.0, N)
+    y = np.linspace(-2.0, 2.0, N)
+
+    X, Y = np.meshgrid(x, y)
+
+    # A low hump with a spike coming out of the top right.
+    # Needs to have z/colour axis on a log scale so we see both hump and spike.
+    # linear scale only shows the spike.
+    z = bivariate_normal(X, Y, 0.1, 0.2, 1.0, 1.0) \
+      + 0.1 * bivariate_normal(X, Y, 1.0, 1.0, 0.0, 0.0)
+
+    # Put in some negative values (lower left corner) to cause trouble with logs:
+    z[:5, :5] = -1
+
+    # The following is not strictly essential, but it will eliminate
+    # a warning.  Comment it out to see the warning.
+    z = np.ma.masked_where( z<=0, z )
+
+    # Automatic selection of levels works; setting the
+    # log locator tells contourf to use a log scale:
+    cs = plt.contourf( X, Y, z,
+                       locator = tkr.LogLocator()
+                     )
+
+    # Alternatively, you can manually set the levels
+    # and the norm:
+    #lev_exp = np.arange(np.floor(np.log10(z.min())-1),
+    #                       np.ceil(np.log10(z.max())+1))
+    #levs = np.power(10, lev_exp)
+    #cs = plt.contourf(X, Y, z, levs, norm=colors.LogNorm())
+
+    #The 'extend' kwarg does not work yet with a log scale.
+
+    cbar = plt.colorbar()
+
+    return 'contourf with logscale'
+# ==============================================================================
 if __name__ == 'main':
     patches()
     show()
 # ==============================================================================
-
