@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 #
-# Copyright (C) 2010 Nico Schl"omer
+# Copyright (C) 2010, 2011 Nico Schl"omer
 #
 # This file is part of matplotlib2tikz.
 #
@@ -68,28 +68,25 @@ def _main():
                        tf.text_overlay,
                        tf.annotate,
                        tf.histogram
-                       ]
+                     ]
 
     if not test_list is None: # actually treat a sublist of test_functions
-        # remove duplicates:
-        test_list = list(set(test_list))
-        # create the sublist
-        tmp = test_functions
-        test_functions = []
-        for i in test_list:
-            test_functions.append( tmp[i] )
+        # remove duplicates and sort
+        test_list = sorted( set(test_list) )
+    else:
+        # all indices
+        test_list = xrange( 0, len(test_functions) )
 
-    k = 0
-    for fun in test_functions:
+    for k in test_list:
         mpl.pyplot.cla()
         mpl.pyplot.clf()
         # plot the test example
-        comment = fun()
+        comment = test_functions[k]()
 
         # convert to TikZ
         tikz_path = data_dir + "/test" + repr(k) + ".tikz"
         matplotlib2tikz.save( tikz_path,
-                              figurewidth=figure_width,
+                              figurewidth = figure_width,
                               tex_relative_path_to_data = \
                                                      tex_relative_path_to_data
                             )
@@ -107,7 +104,6 @@ def _main():
                                      k,
                                      comment
                                    )
-        k = k+1
 
     write_document_closure( file_handle )
     file_handle.close()
@@ -115,6 +111,8 @@ def _main():
     return
 # ==============================================================================
 def write_document_header( file_handle, figure_width ):
+    '''Write the LaTeX document header to the file.
+    '''
     file_handle.write( "\\documentclass{scrartcl}\n"
                        "\\pdfminorversion=5\n"
                        "\\pdfobjcompresslevel=2\n\n"
@@ -130,6 +128,8 @@ def write_document_header( file_handle, figure_width ):
     return
 # ==============================================================================
 def write_document_closure( file_handle ):
+    '''Write the LaTeX document closure to the file.
+    '''
     file_handle.write( "\\end{document}" )
     return
 # ==============================================================================
@@ -138,6 +138,8 @@ def write_file_comparison_entry( file_handle,
                                  tikz_path,
                                  test_id,
                                  comment ):
+    '''Write the Tikz vs. PDF comparison figures to the LaTeX file.
+    '''
     file_handle.write(   "% test plot " + str(test_id) + "\n"
                        + "\\begin{figure}%\n"
                        + "\\centering%\n"
@@ -158,7 +160,8 @@ def _parse_options():
     '''Parse input options.'''
     import argparse
 
-    parser = argparse.ArgumentParser( description = 'Acid test for matplotlib2tikz.' )
+    parser = argparse.ArgumentParser( description =
+                                              'Acid test for matplotlib2tikz.' )
 
     parser.add_argument( '--tests', '-t',
                          metavar = 'TEST_INDICES',
