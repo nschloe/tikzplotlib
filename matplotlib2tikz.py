@@ -169,17 +169,9 @@ def _get_color_definitions( data ):
     '''
     definitions = []
     for ( color, name ) in data['custom colors'].items():
-        if len(color) == 3:
-            definitions.append( "\\definecolor{%s}{rgb}{%g,%g,%g}" % \
-                                ( (name,) + color  )
-                              )
-        elif len(color) == 4:
-            definitions.append( "\\definecolor{%s}{cmyk}{%g,%g,%g,%g}" % \
-                                ( (name,) + color  )
-                              )
-        else:
-            print 'Don''t know how to handle color', color, '. Draw it red.'
-            definitions.append( "\\definecolor{%s}{rgb}{1,0,0}" % ((name,)) )
+        definitions.append( "\\definecolor{%s}{rgb}{%g,%g,%g}" % \
+                            ( (name,) + color  )
+                          )
 
     return definitions
 # ==============================================================================
@@ -922,14 +914,19 @@ def _draw_patchcollection( data, obj ):
     content = []
 
     # TODO Use those properties
-    #edgecolors = obj.get_edgecolors()
     #edgecolor = obj.get_edgecolor()
-    #facecolors = obj.get_facecolors()
     #linewidths = obj.get_linewidths()
+    edgecolors = obj.get_edgecolors()
+    facecolors = obj.get_facecolors()
+
+    print facecolors
 
     paths = obj.get_paths()
     for path in paths:
-        data, cont = _draw_path( data, path )
+        data, cont = _draw_path( data, path,
+                                 fillcolor = facecolors[0],
+                                 edgecolor = edgecolors[0]
+                               )
         content.append( cont )
 
     return data, content
@@ -968,7 +965,11 @@ def _draw_path( data, path,
     for vert, code in path.iter_segments():
         # For path codes see
         #      <http://matplotlib.sourceforge.net/api/path_api.html#matplotlib.path.Path>
-        if code == mpl.path.Path.LINETO:
+        if code == mpl.path.Path.STOP:
+            pass
+        elif code == mpl.path.Path.MOVETO:
+            pass
+        elif code == mpl.path.Path.LINETO:
             nodes.append( '(axis cs:%s,%s)' % ( str(vert[0]), str(vert[1]) ) )
         elif code == mpl.path.Path.CURVE3:
             # This is actually a quadratic Bezier curve,
@@ -981,8 +982,10 @@ def _draw_path( data, path,
             nodes.append( '(axis cs:%s,%s)' % ( str(vert[0]), str(vert[1]) ) )
             nodes.append( '(axis cs:%s,%s)' % ( str(vert[2]), str(vert[3]) ) )
             nodes.append( '(axis cs:%s,%s)' % ( str(vert[4]), str(vert[5]) ) )
+        elif code == mpl.path.Path.CLOSEPOLY:
+            nodes.append( 'cycle' )
         else:
-            sys.exit( "Strange." )
+            sys.exit( "Unknown path code %d. Abort." % code )
 
     path_options = []
     if not edgecolor is None:
@@ -1001,80 +1004,49 @@ def _draw_path( data, path,
 
     return data, path_command
 # ==============================================================================
-MPLCOLOR_2_XCOLOR = { # RGB values (as taken from xcolor.dtx):
-                      (1,    0,    0   ): 'red',
-                      (0,    1,    0   ): 'green',
-                      (0,    0,    1   ): 'blue',
-                      (0.75, 0.5,  0.25): 'brown',
-                      (0.75, 1,    0   ): 'lime',
-                      (1,    0.5,  0   ): 'orange',
-                      (1,    0.75, 0.75): 'pink',
-                      (0.75, 0,    0.25): 'purple',
-                      (0,    0.5,  0.5 ): 'teal',
-                      (0.5,  0,    0.5 ): 'violet',
-                      # CMYK values (as taken from xcolor.dtx):
-                      (0,    1,    1,    0    ) : 'red',
-                      (1,    0,    1,    0    ) : 'green',
-                      (1,    1,    0,    0    ) : 'blue',
-                      (0.0,  0.25, 0.5,  0.25 ) : 'brown',
-                      (0.25, 0,    1,    0    ) : 'lime',
-                      (0,    0.5,  1,    0    ) : 'orange',
-                      (0,    0.25, 0.25, 0    ) : 'pink',
-                      (0,    0.75, 0.5,  0.25 ) : 'purple',
-                      (0.5,  0,    0,    0.5  ) : 'teal',
-                      (0,    0.5,  0,    0.5  ) : 'violet',
-                      # gray values:
-                      '0.0' : 'red',
-                      '0.5' : 'gray',
-                      '0.75': 'lightgray',
-                      '1.0' : None,
-                      # literals:
-                      'b'     : 'blue',
-                      'blue'  : 'blue',
-                      'g'     : 'green',
-                      'green' : 'green',
-                      'purple': 'purple',
-                      'r'     : 'red',
-                      'red'   : 'red',
-                      'c'     : 'cyan',
-                      'm'     : 'magenta',
-                      'y'     : 'yellow',
-                      'k'     : 'black',
-                      'w'     : 'white'
-                    }
+RGB_2_XCOLOR = { # RGB values (as taken from xcolor.dtx):
+                 (1,    0,    0   ): 'red',
+                 (0,    1,    0   ): 'green',
+                 (0,    0,    1   ): 'blue',
+                 (0.75, 0.5,  0.25): 'brown',
+                 (0.75, 1,    0   ): 'lime',
+                 (1,    0.5,  0   ): 'orange',
+                 (1,    0.75, 0.75): 'pink',
+                 (0.75, 0,    0.25): 'purple',
+                 (0,    0.5,  0.5 ): 'teal',
+                 (0.5,  0,    0.5 ): 'violet',
+                 (0,    0,    0   ): 'black',
+                 (0.25, 0.25, 0.25): 'darkgray',
+                 (0.5 , 0.5 , 0.5 ): 'gray',
+                 (0.75, 0.75, 0.75): 'lightgray',
+                 (1,    1,    1   ): 'white'
+                 # The colors cyan, magenta, yellow, and olive are also
+                 # predefined by xcolor, but their RGB approximation of the
+                 # native CMYK values is not very good. Don't use them here.
+               }
 # ------------------------------------------------------------------------------
-def _mpl_color2xcolor( data, color ):
+def _mpl_color2xcolor( data, matplotlib_color ):
     '''Translates a matplotlib color specification into a proper LaTeX xcolor.
     '''
-    # Strange: Colors sometimes come in ndarrays of length 4, but they are no
-    # CMYK specs. Instead, the last entry always seems to be 1.0. Hence, use the
-    # first three elements.
-    if len( color ) == 4 and color[3]==1.0:
-        color = color[0:3]
-
-    # convert to a hashable tuple, thanks
-    if isinstance( color, numpy.ndarray ):
-        color = tuple( color.tolist() )
+    # Convert it to RGBA.
+    rgba_col = mpl.colors.ColorConverter().to_rgba( matplotlib_color )
 
     try:
-        return data, MPLCOLOR_2_XCOLOR[ color ]
+        # Try to lookup the color in the default color table.
+        xcol = RGB_2_XCOLOR[ rgba_col[0:3] ]
     except KeyError:
-        if isinstance( color, types.TupleType ) and \
-           ( len(color)==3 or len(color)==4 ):
-            # add a custom color
-            return _add_rgbcolor_definition( data, color )
-        else:
-            #converter = mpl.colors.ColorConverter()
-            rgb_col = mpl.colors.ColorConverter().to_rgb(color)
-            try:
-                # try to lookup the color again
-                return data, MPLCOLOR_2_XCOLOR[ rgb_col ]
-            except KeyError:
-                # lookup failed add a generic rgb color
-                return _add_rgbcolor_definition( data, rgb_col )
+        # Lookup failed, add it to the custom list.
+        data, xcol = _add_rgbcolor_definition( data, rgba_col[0:3] )
+
+    # Handle transparency.
+    col = xcol
+    if rgba_col[3] != 1.0:
+        col = col + '!%d' % int( round(rgba_col[3]*100) )
+
+    return data, col
 # ==============================================================================
 def _add_rgbcolor_definition( data, color_tuple ):
-    '''Takes a color tuple (RGB/CMYK), adds it to the list of colors that will
+    '''Takes an RGB color tuple, adds it to the list of colors that will
     need to be defined in the TikZ file, and returns the label with which the
     color can be used.
     '''
