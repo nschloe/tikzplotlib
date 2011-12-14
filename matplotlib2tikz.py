@@ -952,6 +952,9 @@ def _draw_patch( data, obj ):
     if ( isinstance( obj, mpl.patches.Rectangle ) ):
         # rectangle specialization
         return _draw_rectangle( data, obj, draw_options )
+    elif ( isinstance( obj, mpl.patches.Ellipse ) ):
+        # ellipse specialization
+        return _draw_ellipse( data, obj, draw_options )
     else:
         # regular patch
         return  _draw_path( data, obj.get_path(),
@@ -969,6 +972,34 @@ def _draw_rectangle( data, obj, draw_options ):
           left_lower_y,
           left_lower_x + obj.get_width(),
           left_lower_y + obj.get_height()
+        )
+
+    return data, cont
+# ==============================================================================
+def _draw_ellipse( data, obj, draw_options ):
+    '''Return the Pgfplots code for ellipses.
+    '''
+    if ( isinstance( obj, mpl.patches.Circle ) ):
+        # circle specialization
+        return _draw_circle( data, obj, draw_options )
+
+    x, y = obj.center
+    cont = '\draw[%s] (axis cs:%g,%g) ellipse (%g and %g);\n' % \
+        ( ','.join(draw_options),
+          x, y,
+          0.5 * obj.width, 0.5 * obj.height
+        )
+
+    return data, cont
+# ==============================================================================
+def _draw_circle( data, obj, draw_options ):
+    '''Return the Pgfplots code for circles.
+    '''
+    x, y = obj.center
+    cont = '\draw[%s] (axis cs:%g,%g) circle (%g);\n' % \
+        ( ','.join(draw_options),
+          x, y,
+          obj.get_radius()
         )
 
     return data, cont
