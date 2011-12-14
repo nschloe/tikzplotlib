@@ -722,8 +722,7 @@ MP_MARKER2PLOTMARKS = { 'v' : ('triangle', 'rotate=180'), # triangle down
                       }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 def _mpl_marker2pgfp_marker( data, mpl_marker, is_marker_face_color ):
-    '''
-    Translates a marker style of matplotlib to the corresponding style
+    '''Translates a marker style of matplotlib to the corresponding style
     in Pgfplots.
     '''
     # try default list
@@ -915,15 +914,64 @@ def _draw_patchcollection( data, obj ):
 
     return data, content
 # ==============================================================================
-def _draw_patch( data, obj ):
-    '''Return the Pgfplots code for polygons.
-    '''
+def _get_draw_options( data, obj ):
+    '''Get the draw options for a given (patch) object.'''
+    draw_options = []
+
+    ec = obj.get_edgecolor()
+    if not ec is None:
+        data, col = _mpl_color2xcolor( data, ec )
+        draw_options.append( 'draw=%s' % col )
+
+    fc = obj.get_facecolor()
+    if not fc is None:
+        data, col = _mpl_color2xcolor( data, fc )
+        draw_options.append( 'fill=%s' % col )
+
+    # handle transparency
+    if not ec is None and not fc is None and ec[3] != 1.0 and ec[3] == fc[3]:
+        draw_options.append( 'opacity=%g' % ec[3] )
+    else:
+        if not ec is None and ec[3] != 1.0:
+            draw_options.append( 'draw opacity=%g' % ec[3] )
+        if not fc is None and fc[3] != 1.0:
+            draw_options.append( 'fill opacity=%g' % fc[3] )
+
     # TODO Use those properties
     #linewidths = obj.get_linewidths()
-    return  _draw_path( data, obj.get_path(),
-                        fillcolor = obj.get_facecolor(),
-                        edgecolor = obj.get_edgecolor()
-                      )
+
+    return data, draw_options
+# ==============================================================================
+def _draw_patch( data, obj ):
+    '''Return the Pgfplots code for patches.
+    '''
+
+    # Gather the draw options.
+    data, draw_options = _get_draw_options( data, obj )
+
+    if ( isinstance( obj, mpl.patches.Rectangle ) ):
+        # rectangle specialization
+        return _draw_rectangle( data, obj, draw_options )
+    else:
+        # regular patch
+        return  _draw_path( data, obj.get_path(),
+                            draw_options = draw_options
+                          )
+# ==============================================================================
+def _draw_rectangle( data, obj, draw_options ):
+    '''Return the Pgfplots code for rectangles.
+    '''
+    left_lower_x = obj.get_x()
+    left_lower_y = obj.get_y()
+    cont = '\draw[%s] (axis cs:%g,%g) rectangle (axis cs:%g,%g);\n' % \
+        ( ','.join(draw_options),
+          left_lower_x,
+          left_lower_y,
+          left_lower_x + obj.get_width(),
+          left_lower_y + obj.get_height()
+        )
+
+    return data, cont
 # ==============================================================================
 def _draw_pathcollection( data, obj ):
     '''Returns Pgfplots code for a number of patch objects.
@@ -938,10 +986,10 @@ def _draw_pathcollection( data, obj ):
     paths = obj.get_paths()
     k = 0
     for path in paths:
-        data, cont = _draw_path( data, path,
+        data, cont = _draw_path( data, path#,
                                  # TODO always use [0]?
-                                 fillcolor = facecolors[0],
-                                 edgecolor = edgecolors[0]
+                                 #fillcolor = facecolors[0],
+                                 #edgecolor = edgecolors[0]
                                )
         content.append( cont )
         k = k+1
@@ -949,14 +997,14 @@ def _draw_pathcollection( data, obj ):
     return data, content
 # ==============================================================================
 def _draw_path( data, path,
-                fillcolor = None,
-                edgecolor = None
+                draw_options = None
               ):
     '''Adds code for drawing an ordinary path in Pgfplots (TikZ).
     '''
 
     nodes = []
     for vert, code in path.iter_segments():
+        print vert
         # For path codes see
         #      <http://matplotlib.sourceforge.net/api/path_api.html#matplotlib.path.Path>
         if code == mpl.path.Path.STOP:
@@ -983,18 +1031,10 @@ def _draw_path( data, path,
         else:
             sys.exit( "Unknown path code %d. Abort." % code )
 
-    path_options = []
-    if not edgecolor is None:
-        data, col = _mpl_color2xcolor( data, edgecolor )
-        path_options.append( 'draw=%s' % col )
-    if not fillcolor is None:
-        data, col = _mpl_color2xcolor( data, fillcolor )
-        path_options.append( 'fill=%s' % col )
-
     nodes_string = ''.join( nodes )
-    if path_options:
+    if draw_options:
         path_command = '\\path [%s] %s;\n\n' % \
-                       ( ', '.join(path_options), nodes_string )
+                       ( ', '.join(draw_options), nodes_string )
     else:
         path_command = '\\path %s;\n\n' % nodes_string
 
@@ -1034,12 +1074,7 @@ def _mpl_color2xcolor( data, matplotlib_color ):
         # Lookup failed, add it to the custom list.
         data, xcol = _add_rgbcolor_definition( data, rgba_col[0:3] )
 
-    # Handle transparency.
-    col = xcol
-    if rgba_col[3] != 1.0:
-        col = col + '!%d' % int( round(rgba_col[3]*100) )
-
-    return data, col
+    return data, xcol
 # ==============================================================================
 def _add_rgbcolor_definition( data, color_tuple ):
     '''Takes an RGB color tuple, adds it to the list of colors that will
@@ -1200,14 +1235,6 @@ def _draw_text( data, obj ):
 
     return data, content
 # ==============================================================================
-def _draw_rectangle( data, obj ):
-    '''Returns Pgfplots code for a rectangle.'''
-    return _draw_path( data,
-                       obj.get_patch_transform().transform_path( obj.get_path() ),
-                       fillcolor = obj.get_facecolor(),
-                       edgecolor = obj.get_edgecolor()
-                     )
-# ==============================================================================
 def _transform_positioning( ha, va ):
     '''Converts matplotlib positioning to pgf node positioning.
     Not quite accurate but the results are equivalent more or less.'''
@@ -1232,6 +1259,7 @@ def _handle_children( data, obj ):
 
     content = []
     for child in obj.get_children():
+        print child
         if ( isinstance( child, mpl.axes.Axes ) ):
             data, cont = _draw_axes( data, child )
             content.extend( cont )
@@ -1255,10 +1283,6 @@ def _handle_children( data, obj ):
             content.extend( cont )
         elif ( isinstance( child, mpl.legend.Legend ) ):
             data = _draw_legend( data, child )
-        elif ( isinstance( child, mpl.patches.Rectangle ) ):
-            if data['draw rectangles']:
-                data, cont = _draw_rectangle( data, child )
-                content.extend( cont )
         elif (   isinstance( child, mpl.axis.XAxis )
               or isinstance( child, mpl.axis.YAxis )
               or isinstance( child, mpl.spines.Spine )
