@@ -110,6 +110,16 @@ def noise():
 
     return 'Noise with a color bar'
 # =============================================================================
+def circle_patch():
+    from matplotlib.patches import Circle
+
+    fig = pp.figure()
+    ax = fig.add_subplot(111)
+
+    ax.add_patch( Circle((0,0), 1) )
+
+    return 'A circle patch'
+# =============================================================================
 def patches():
 
     from matplotlib.patches import Circle, Wedge, Polygon

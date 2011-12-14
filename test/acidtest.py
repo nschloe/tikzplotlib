@@ -56,6 +56,7 @@ def _main():
                        tf.subplots,
                        tf.image_plot,
                        tf.noise,
+                       tf.circle_patch,
                        tf.patches,
                        tf.legends,
                        tf.legends2,

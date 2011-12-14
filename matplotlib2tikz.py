@@ -836,12 +836,6 @@ def _draw_image( data, obj ):
 
     return data, content
 # ==============================================================================
-def _draw_polygon( data, obj ):
-    '''Return the Pgfplots code for polygons.
-    '''
-    # TODO do nothing for polygons?!
-    return _handle_children( data, obj )
-# ==============================================================================
 def _find_associated_colorbar( obj ):
     ''' Rather poor way of telling whether an axis has a colorbar associated:
     Check the next axis environment, and see if it is de facto a color bar;
@@ -910,26 +904,26 @@ def _draw_polycollection( data, obj ):
 def _draw_patchcollection( data, obj ):
     '''Returns Pgfplots code for a number of patch objects.
     '''
-
     content = []
 
-    # TODO Use those properties
-    #edgecolor = obj.get_edgecolor()
-    #linewidths = obj.get_linewidths()
-    edgecolors = obj.get_edgecolors()
-    facecolors = obj.get_facecolors()
-
-    print facecolors
-
-    paths = obj.get_paths()
-    for path in paths:
-        data, cont = _draw_path( data, path,
-                                 fillcolor = facecolors[0],
-                                 edgecolor = edgecolors[0]
+    for path in obj.get_paths():
+        data, cont = _draw_path( data, path#,
+                                 #fillcolor = facecolors[0],
+                                 #edgecolor = edgecolors[0]
                                )
         content.append( cont )
 
     return data, content
+# ==============================================================================
+def _draw_patch( data, obj ):
+    '''Return the Pgfplots code for polygons.
+    '''
+    # TODO Use those properties
+    #linewidths = obj.get_linewidths()
+    return  _draw_path( data, obj.get_path(),
+                        fillcolor = obj.get_facecolor(),
+                        edgecolor = obj.get_edgecolor()
+                      )
 # ==============================================================================
 def _draw_pathcollection( data, obj ):
     '''Returns Pgfplots code for a number of patch objects.
@@ -937,17 +931,17 @@ def _draw_pathcollection( data, obj ):
     content = []
 
     # TODO Use those properties
-    #edgecolors = obj.get_edgecolors()
-    #edgecolor = obj.get_edgecolor()
     #linewidths = obj.get_linewidths()
     facecolors = obj.get_facecolors()
+    edgecolors = obj.get_edgecolors()
 
     paths = obj.get_paths()
     k = 0
     for path in paths:
         data, cont = _draw_path( data, path,
                                  # TODO always use [0]?
-                                 fillcolor = facecolors[0]
+                                 fillcolor = facecolors[0],
+                                 edgecolor = edgecolors[0]
                                )
         content.append( cont )
         k = k+1
@@ -968,22 +962,24 @@ def _draw_path( data, path,
         if code == mpl.path.Path.STOP:
             pass
         elif code == mpl.path.Path.MOVETO:
-            pass
-        elif code == mpl.path.Path.LINETO:
             nodes.append( '(axis cs:%s,%s)' % ( str(vert[0]), str(vert[1]) ) )
+        elif code == mpl.path.Path.LINETO:
+            nodes.append( '--(axis cs:%s,%s)' % ( str(vert[0]), str(vert[1]) ) )
         elif code == mpl.path.Path.CURVE3:
             # This is actually a quadratic Bezier curve,
             # but can't deal with this yet.
-            nodes.append( '(axis cs:%s,%s)' % ( str(vert[0]), str(vert[1]) ) )
-            nodes.append( '(axis cs:%s,%s)' % ( str(vert[2]), str(vert[3]) ) )
+            print 'Warning: Quadratic Bezier curves not yet supported.'
+            nodes.append( '--(axis cs:%s,%s)' % ( str(vert[0]), str(vert[1]) ) )
+            nodes.append( '--(axis cs:%s,%s)' % ( str(vert[2]), str(vert[3]) ) )
         elif code == mpl.path.Path.CURVE4:
             # This is actually a cubic Bezier curve,
             # but can't deal with this yet.
-            nodes.append( '(axis cs:%s,%s)' % ( str(vert[0]), str(vert[1]) ) )
-            nodes.append( '(axis cs:%s,%s)' % ( str(vert[2]), str(vert[3]) ) )
-            nodes.append( '(axis cs:%s,%s)' % ( str(vert[4]), str(vert[5]) ) )
+            print 'Warning: Cubic Bezier curves not yet supported.'
+            nodes.append( '--(axis cs:%s,%s)' % ( str(vert[0]), str(vert[1]) ) )
+            nodes.append( '--(axis cs:%s,%s)' % ( str(vert[2]), str(vert[3]) ) )
+            nodes.append( '--(axis cs:%s,%s)' % ( str(vert[4]), str(vert[5]) ) )
         elif code == mpl.path.Path.CLOSEPOLY:
-            nodes.append( 'cycle' )
+            nodes.append( '--cycle' )
         else:
             sys.exit( "Unknown path code %d. Abort." % code )
 
@@ -995,7 +991,7 @@ def _draw_path( data, path,
         data, col = _mpl_color2xcolor( data, fillcolor )
         path_options.append( 'fill=%s' % col )
 
-    nodes_string = "--".join( nodes )
+    nodes_string = ''.join( nodes )
     if path_options:
         path_command = '\\path [%s] %s;\n\n' % \
                        ( ', '.join(path_options), nodes_string )
@@ -1245,8 +1241,8 @@ def _handle_children( data, obj ):
         elif ( isinstance( child, mpl.image.AxesImage ) ):
             data, cont = _draw_image( data, child )
             content.extend( cont )
-        elif ( isinstance( child, mpl.patches.Polygon ) ):
-            data, cont = _draw_polygon( data, child )
+        elif ( isinstance( child, mpl.patches.Patch ) ):
+            data, cont = _draw_patch( data, child )
             content.extend( cont )
         elif ( isinstance( child, mpl.collections.PolyCollection ) ):
             data, cont = _draw_polycollection( data, child )
