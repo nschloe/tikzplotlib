@@ -626,7 +626,7 @@ def _draw_line2d( data, obj ):
     # --------------------------------------------------------------------------
     # get line color
     color = obj.get_color()
-    data, xcolor = _mpl_color2xcolor( data, color )
+    data, xcolor, _ = _mpl_color2xcolor( data, color )
     if xcolor:
         addplot_options.append( xcolor )
 
@@ -645,10 +645,10 @@ def _draw_line2d( data, obj ):
         if extra_mark_options:
             mark_options.append( extra_mark_options )
         if marker_face_color:
-            data, col = _mpl_color2xcolor( data, marker_face_color )
+            data, col, _ = _mpl_color2xcolor( data, marker_face_color )
             mark_options.append( "fill=" + col )
         if marker_edge_color  and  marker_edge_color != marker_face_color:
-            data, col = _mpl_color2xcolor( data, marker_edge_color )
+            data, col, _ = _mpl_color2xcolor( data, marker_edge_color )
             mark_options.append( "draw=" + col )
         if mark_options:
             addplot_options.append( "mark options={%s}" % \
@@ -914,28 +914,27 @@ def _draw_patchcollection( data, obj ):
 
     return data, content
 # ==============================================================================
-def _get_draw_options( data, obj ):
+def _get_draw_options( data, ec, fc ):
     '''Get the draw options for a given (patch) object.'''
     draw_options = []
 
-    ec = obj.get_edgecolor()
-    if not ec is None:
-        data, col = _mpl_color2xcolor( data, ec )
+    if ec is not None:
+        data, col, ec_rgba = _mpl_color2xcolor( data, ec )
         draw_options.append( 'draw=%s' % col )
 
-    fc = obj.get_facecolor()
-    if not fc is None:
-        data, col = _mpl_color2xcolor( data, fc )
+    if fc is not None:
+        data, col, fc_rgba = _mpl_color2xcolor( data, fc )
         draw_options.append( 'fill=%s' % col )
 
     # handle transparency
-    if not ec is None and not fc is None and ec[3] != 1.0 and ec[3] == fc[3]:
+    if ec is not None and fc is not None and \
+       ec_rgba[3] != 1.0 and ec_rgba[3] == fc_rgba[3]:
         draw_options.append( 'opacity=%g' % ec[3] )
     else:
-        if not ec is None and ec[3] != 1.0:
-            draw_options.append( 'draw opacity=%g' % ec[3] )
-        if not fc is None and fc[3] != 1.0:
-            draw_options.append( 'fill opacity=%g' % fc[3] )
+        if ec is not None and ec_rgba[3] != 1.0:
+            draw_options.append( 'draw opacity=%g' % ec_rgba[3] )
+        if fc is not None and  fc_rgba[3] != 1.0:
+            draw_options.append( 'fill opacity=%g' % fc_rgba[3] )
 
     # TODO Use those properties
     #linewidths = obj.get_linewidths()
@@ -947,7 +946,10 @@ def _draw_patch( data, obj ):
     '''
 
     # Gather the draw options.
-    data, draw_options = _get_draw_options( data, obj )
+    data, draw_options = _get_draw_options( data,
+                                            obj.get_edgecolor(),
+                                            obj.get_facecolor()
+                                          )
 
     if ( isinstance( obj, mpl.patches.Rectangle ) ):
         # rectangle specialization
@@ -964,6 +966,9 @@ def _draw_patch( data, obj ):
 def _draw_rectangle( data, obj, draw_options ):
     '''Return the Pgfplots code for rectangles.
     '''
+    if not data['draw rectangles']:
+        return data, []
+
     left_lower_x = obj.get_x()
     left_lower_y = obj.get_y()
     cont = '\draw[%s] (axis cs:%g,%g) rectangle (axis cs:%g,%g);\n' % \
@@ -1011,19 +1016,29 @@ def _draw_pathcollection( data, obj ):
 
     # TODO Use those properties
     #linewidths = obj.get_linewidths()
-    facecolors = obj.get_facecolors()
-    edgecolors = obj.get_edgecolors()
+
+    # gather the draw options
+    ec = obj.get_edgecolors()
+    fc = obj.get_facecolors()
 
     paths = obj.get_paths()
-    k = 0
+
+    # TODO always use [0]?
+    if ec is not None and len(ec) > 0:
+        ec = ec[0]
+    else:
+        ec = None
+    if fc is not None and len(fc) > 0:
+        fc = fc[0]
+    else:
+        fc = None
+
     for path in paths:
-        data, cont = _draw_path( data, path#,
-                                 # TODO always use [0]?
-                                 #fillcolor = facecolors[0],
-                                 #edgecolor = edgecolors[0]
+        data, do = _get_draw_options( data, ec, fc )
+        data, cont = _draw_path( data, path,
+                                 draw_options = do
                                )
         content.append( cont )
-        k = k+1
 
     return data, content
 # ==============================================================================
@@ -1035,7 +1050,6 @@ def _draw_path( data, path,
 
     nodes = []
     for vert, code in path.iter_segments():
-        print vert
         # For path codes see
         #      <http://matplotlib.sourceforge.net/api/path_api.html#matplotlib.path.Path>
         if code == mpl.path.Path.STOP:
@@ -1105,7 +1119,7 @@ def _mpl_color2xcolor( data, matplotlib_color ):
         # Lookup failed, add it to the custom list.
         data, xcol = _add_rgbcolor_definition( data, rgba_col[0:3] )
 
-    return data, xcol
+    return data, xcol, rgba_col
 # ==============================================================================
 def _add_rgbcolor_definition( data, color_tuple ):
     '''Takes an RGB color tuple, adds it to the list of colors that will
@@ -1154,19 +1168,19 @@ def _draw_text( data, obj ):
                 if obj.arrowprops['arrowstyle'] is not None:
                     if obj.arrowprops['arrowstyle'] in ['-', '->', '<-', '<->']:
                         arrow_style.append(obj.arrowprops['arrowstyle'])
-                        data, col = _mpl_color2xcolor( data,
-                                                       obj.arrow_patch.get_ec()
-                                                     )
+                        data, col, _ = _mpl_color2xcolor( data,
+                                                        obj.arrow_patch.get_ec()
+                                                      )
                         arrow_style.append( col )
                     elif obj.arrowprops['ec'] is not None:
-                        data, col = _mpl_color2xcolor( data,
-                                                       obj.arrowprops['ec']
-                                                     )
+                        data, col, _ = _mpl_color2xcolor( data,
+                                                        obj.arrowprops['ec']
+                                                      )
                         arrow_style.append( col )
                     elif obj.arrowprops['edgecolor'] is not None:
-                        data, col = _mpl_color2xcolor( data,
-                                                       obj.arrowprops['edgecolor']
-                                                     )
+                        data, col, _ = _mpl_color2xcolor( data,
+                                                        obj.arrowprops['edgecolor']
+                                                      )
                         arrow_style.append( col )
                     else:
                         pass
@@ -1196,10 +1210,10 @@ def _draw_text( data, obj ):
     if bbox is not None:
         bbox_style = bbox.get_boxstyle()
         if bbox.get_fill():
-            data, fc = _mpl_color2xcolor( data, bbox.get_facecolor() )
+            data, fc, _ = _mpl_color2xcolor( data, bbox.get_facecolor() )
             if fc:
                 properties.append("fill=%s" % fc)
-        data, ec = _mpl_color2xcolor( data, bbox.get_edgecolor() )
+        data, ec, _ = _mpl_color2xcolor( data, bbox.get_edgecolor() )
         if ec:
             properties.append("draw=%s" % ec )
         properties.append("line width=%gpt"%(bbox.get_lw()*0.4)) # XXX: This is ugly, too
@@ -1239,7 +1253,7 @@ def _draw_text( data, obj ):
     anchor = _transform_positioning( ha, va )
     if anchor is not None:
         properties.append(anchor)
-    data, col = _mpl_color2xcolor( data, converter.to_rgb(obj.get_color()) )
+    data, col, _ = _mpl_color2xcolor( data, converter.to_rgb(obj.get_color()) )
     properties.append( "text=%s" % col )
     properties.append( "rotate=%.1f" % obj.get_rotation() )
     if obj.get_style() != "normal":
@@ -1290,7 +1304,6 @@ def _handle_children( data, obj ):
 
     content = []
     for child in obj.get_children():
-        print child
         if ( isinstance( child, mpl.axes.Axes ) ):
             data, cont = _draw_axes( data, child )
             content.extend( cont )
