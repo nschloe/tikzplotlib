@@ -905,10 +905,15 @@ def _draw_patchcollection( data, obj ):
     '''
     content = []
 
+    # Gather the draw options.
+    data, draw_options = _get_draw_options( data,
+                                            obj.get_edgecolor()[0],
+                                            obj.get_facecolor()[0]
+                                          )
+
     for path in obj.get_paths():
-        data, cont = _draw_path( data, path#,
-                                 #fillcolor = facecolors[0],
-                                 #edgecolor = edgecolors[0]
+        data, cont = _draw_path( data, path,
+                                 draw_options = draw_options
                                )
         content.append( cont )
 
@@ -1065,12 +1070,9 @@ def _draw_path( data, path,
             nodes.append( '--(axis cs:%s,%s)' % ( str(vert[0]), str(vert[1]) ) )
             nodes.append( '--(axis cs:%s,%s)' % ( str(vert[2]), str(vert[3]) ) )
         elif code == mpl.path.Path.CURVE4:
-            # This is actually a cubic Bezier curve,
-            # but can't deal with this yet.
-            print 'Warning: Cubic Bezier curves not yet supported.'
-            nodes.append( '--(axis cs:%s,%s)' % ( str(vert[0]), str(vert[1]) ) )
-            nodes.append( '--(axis cs:%s,%s)' % ( str(vert[2]), str(vert[3]) ) )
-            nodes.append( '--(axis cs:%s,%s)' % ( str(vert[4]), str(vert[5]) ) )
+            # Cubic bezier.
+            nodes.append( '.. controls (axis cs:%s,%s) and (axis cs:%s,%s) .. (axis cs:%s,%s)' %
+              ( str(vert[0]), str(vert[1]), str(vert[2]), str(vert[3]), str(vert[4]), str(vert[5]) ) )
         elif code == mpl.path.Path.CLOSEPOLY:
             nodes.append( '--cycle' )
         else:
