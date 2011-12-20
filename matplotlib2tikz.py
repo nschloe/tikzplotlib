@@ -1054,6 +1054,7 @@ def _draw_path( data, path,
     '''
 
     nodes = []
+    prev = None
     for vert, code in path.iter_segments():
         # For path codes see
         #      <http://matplotlib.sourceforge.net/api/path_api.html#matplotlib.path.Path>
@@ -1064,19 +1065,39 @@ def _draw_path( data, path,
         elif code == mpl.path.Path.LINETO:
             nodes.append( '--(axis cs:%s,%s)' % ( str(vert[0]), str(vert[1]) ) )
         elif code == mpl.path.Path.CURVE3:
-            # This is actually a quadratic Bezier curve,
-            # but can't deal with this yet.
-            print 'Warning: Quadratic Bezier curves not yet supported.'
-            nodes.append( '--(axis cs:%s,%s)' % ( str(vert[0]), str(vert[1]) ) )
-            nodes.append( '--(axis cs:%s,%s)' % ( str(vert[2]), str(vert[3]) ) )
+            # Quadratic Bezier curves aren't natively supported in TikZ, but
+            # can be emulated as cubic Beziers.
+            # From
+            # http://www.latex-community.org/forum/viewtopic.php?t=4424&f=45:
+            # If you really need a quadratic Bézier curve on the points P0, P1
+            # and P2, then a process called "degree elevation" yields the cubic
+            # control points (Q0, Q1, Q2 and Q3) as follows:
+            #   CODE: SELECT ALL
+            #   Q0 = P0
+            #   Q1 = 1/3 P0 + 2/3 P1
+            #   Q2 = 2/3 P1 + 1/3 P2
+            #   Q3 = P2
+            #
+            # P0 is the point of the previous step which is needed to compute
+            # Q1.
+            if prev is None:
+                error( 'Cannot draw quadratic Bezier curves ' +
+                       'as the beginning of of a path.' )
+            Q1 = 1./3. * prev + 2./3. * vert[0:2]
+            Q2 = 2./3. * vert[0:2] + 1./3. * vert[2:4]
+            Q3 = vert[2:4]
+            nodes.append( '.. controls (axis cs:%s,%s) and (axis cs:%s,%s) .. (axis cs:%s,%s)' %
+              ( str(Q1[0]), str(Q1[1]), str(Q2[0]), str(Q2[1]), str(Q3[0]), str(Q3[1]) ) )
         elif code == mpl.path.Path.CURVE4:
-            # Cubic bezier.
+            # Cubic Bezier curves.
             nodes.append( '.. controls (axis cs:%s,%s) and (axis cs:%s,%s) .. (axis cs:%s,%s)' %
               ( str(vert[0]), str(vert[1]), str(vert[2]), str(vert[3]), str(vert[4]), str(vert[5]) ) )
         elif code == mpl.path.Path.CLOSEPOLY:
             nodes.append( '--cycle' )
         else:
             sys.exit( "Unknown path code %d. Abort." % code )
+        # Store the previous point for quadratic Beziers.
+        prev = vert[0:2]
 
     nodes_string = ''.join( nodes )
     if draw_options:
