@@ -147,8 +147,8 @@ def write_file_comparison_entry( file_handle,
                        + "\\subfloat[][Reference PDF figure.]{" \
                                             "\includegraphics[width=\\figwidth]"
                           + "{" + str(pdf_path) + "}}%\n"
-                       #+ "\\qquad%\n"
-                       + "\\\\"
+                       + "\\quad%\n"
+                       #+ "\\\\"
                        + "\\subfloat[][\\texttt{matplotlib2tikz}-generated]{" \
                                             "\input{" + str(tikz_path) + "}}%\n"
                        + "\\caption{" + str(comment) + " (test ID " \
