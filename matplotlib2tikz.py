@@ -169,7 +169,7 @@ def _get_color_definitions( data ):
     '''
     definitions = []
     for ( color, name ) in data['custom colors'].items():
-        definitions.append( '\\definecolor{%s}{rgb}{%g,%g,%g}' % \
+        definitions.append( '\\definecolor{%s}{rgb}{%.15g,%.15g,%.15g}' % \
                             ( (name,) + color  )
                           )
 
@@ -230,11 +230,11 @@ def _draw_axes( data, obj ):
     # Sort the limits so make sure that the smaller of the two is actually
     # *min.
     xlim = sorted( list( obj.get_xlim() ) )
-    axis_options.append(     'xmin=%e' % xlim[0]
-                         + ', xmax=%e' % xlim[1] )
+    axis_options.append(     'xmin=%.15g' % xlim[0]
+                         + ', xmax=%.15g' % xlim[1] )
     ylim = sorted( list( obj.get_ylim() ) )
-    axis_options.append(     'ymin=%e' % ylim[0]
-                         + ', ymax=%e' % ylim[1] )
+    axis_options.append(     'ymin=%.15g' % ylim[0]
+                         + ', ymax=%.15g' % ylim[1] )
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # axes scaling
     xscale = obj.get_xscale()
@@ -375,8 +375,8 @@ def _draw_axes( data, obj ):
         else:
             axis_options.append( 'colormap/' + mycolormap )
 
-        axis_options.append( 'point meta min=%e' % limits[0] )
-        axis_options.append( 'point meta max=%e' % limits[1] )
+        axis_options.append( 'point meta min=%.15g' % limits[0] )
+        axis_options.append( 'point meta max=%.15g' % limits[1] )
 
         if colorbar_styles:
             axis_options.append( 'colorbar style={%s}' % ','.join(colorbar_styles) )
@@ -433,7 +433,7 @@ def _get_ticks( data, xy, ticks, ticklabels ):
         if pgfplots_ticks:
             axis_options.append( '%stick={%s}' % \
                                 ( xy,
-                                  ','.join(['%e' % el for el in pgfplots_ticks]) )
+                                  ','.join(['%.15g' % el for el in pgfplots_ticks]) )
                               )
         else:
             axis_options.append( '%stick=\\empty' % xy )
@@ -529,7 +529,7 @@ def _mpl_cmap2pgf_cmap( cmap ):
 
     color_changes = []
     for (k, x) in enumerate(X):
-        color_changes.append( 'rgb(%d%s)=(%.3f,%.3f,%.3f)' % \
+        color_changes.append( 'rgb(%d%s)=(%.15g,%.15g,%.15g)' % \
                               ( ( x, unit ) + colors[k] )
                             )
 
@@ -651,8 +651,7 @@ def _draw_line2d( data, obj ):
             data, col, _ = _mpl_color2xcolor( data, marker_edge_color )
             mark_options.append( 'draw=' + col )
         if mark_options:
-            addplot_options.append( 'mark options={%s}' % \
-                                    ','.join(mark_options)
+            addplot_options.append( 'mark options={%s}' % ','.join(mark_options)
                                   )
 
     if marker and not linestyle:
@@ -681,12 +680,12 @@ def _draw_line2d( data, obj ):
         data['extra axis options'].add( 'unbounded coords=jump' )
         for (x, y, is_masked) in izip(xdata, ydata, ydata.mask):
             if is_masked:
-                content.append( '(%e,nan) ' % x )
+                content.append( '(%.15g,nan) ' % x )
             else:
-                content.append( '(%e,%e) ' % (x, y) )
+                content.append( '(%.15g,%.15g) ' % (x, y) )
     else:
         for (x, y) in izip(xdata, ydata):
-            content.append( '(%e,%e) ' % (x, y) )
+            content.append( '(%.15g,%.15g) ' % (x, y) )
     content.append( '\n};\n' )
 
     return data, content
@@ -825,8 +824,8 @@ def _draw_image( data, obj ):
     # Explicitly use \pgfimage as includegrapics command, as the default
     # \includegraphics fails unexpectedly in some cases
     content.append(  '\\addplot graphics [includegraphics cmd=\pgfimage,' \
-                                          'xmin=%e, xmax=%e, ' \
-                                          'ymin=%e, ymax=%e] {%s};\n' % \
+                                          'xmin=%.15g, xmax=%.15g, ' \
+                                          'ymin=%.15g, ymax=%.15g] {%s};\n' % \
                                           ( extent + (rel_filepath,) )
                   )
 
@@ -934,12 +933,12 @@ def _get_draw_options( data, ec, fc ):
     # handle transparency
     if ec is not None and fc is not None and \
        ec_rgba[3] != 1.0 and ec_rgba[3] == fc_rgba[3]:
-        draw_options.append( 'opacity=%g' % ec[3] )
+        draw_options.append( 'opacity=%.15g' % ec[3] )
     else:
         if ec is not None and ec_rgba[3] != 1.0:
-            draw_options.append( 'draw opacity=%g' % ec_rgba[3] )
+            draw_options.append( 'draw opacity=%.15g' % ec_rgba[3] )
         if fc is not None and  fc_rgba[3] != 1.0:
-            draw_options.append( 'fill opacity=%g' % fc_rgba[3] )
+            draw_options.append( 'fill opacity=%.15g' % fc_rgba[3] )
 
     # TODO Use those properties
     #linewidths = obj.get_linewidths()
@@ -976,13 +975,13 @@ def _draw_rectangle( data, obj, draw_options ):
 
     left_lower_x = obj.get_x()
     left_lower_y = obj.get_y()
-    cont = '\draw[%s] (axis cs:%g,%g) rectangle (axis cs:%g,%g);\n' % \
-        ( ','.join(draw_options),
-          left_lower_x,
-          left_lower_y,
-          left_lower_x + obj.get_width(),
-          left_lower_y + obj.get_height()
-        )
+    cont = '\draw[%s] (axis cs:%.15g,%.15g) rectangle (axis cs:%.15g,%.15g);\n'\
+         % ( ','.join(draw_options),
+             left_lower_x,
+             left_lower_y,
+             left_lower_x + obj.get_width(),
+             left_lower_y + obj.get_height()
+           )
 
     return data, cont
 # ==============================================================================
@@ -994,7 +993,7 @@ def _draw_ellipse( data, obj, draw_options ):
         return _draw_circle( data, obj, draw_options )
 
     x, y = obj.center
-    cont = '\draw[%s] (axis cs:%g,%g) ellipse (%g and %g);\n' % \
+    cont = '\draw[%s] (axis cs:%.15g,%.15g) ellipse (%.15g and %.15g);\n' % \
         ( ','.join(draw_options),
           x, y,
           0.5 * obj.width, 0.5 * obj.height
@@ -1006,7 +1005,7 @@ def _draw_circle( data, obj, draw_options ):
     '''Return the Pgfplots code for circles.
     '''
     x, y = obj.center
-    cont = '\draw[%s] (axis cs:%g,%g) circle (%g);\n' % \
+    cont = '\draw[%s] (axis cs:%.15g,%.15g) circle (%.15g);\n' % \
         ( ','.join(draw_options),
           x, y,
           obj.get_radius()
@@ -1061,9 +1060,9 @@ def _draw_path( data, path,
         if code == mpl.path.Path.STOP:
             pass
         elif code == mpl.path.Path.MOVETO:
-            nodes.append( '(axis cs:%s,%s)' % ( str(vert[0]), str(vert[1]) ) )
+            nodes.append( '(axis cs:%.15g,%.15g)' % tuple( vert ) )
         elif code == mpl.path.Path.LINETO:
-            nodes.append( '--(axis cs:%s,%s)' % ( str(vert[0]), str(vert[1]) ) )
+            nodes.append( '--(axis cs:%.15g,%.15g)' % tuple( vert ) )
         elif code == mpl.path.Path.CURVE3:
             # Quadratic Bezier curves aren't natively supported in TikZ, but
             # can be emulated as cubic Beziers.
@@ -1086,12 +1085,18 @@ def _draw_path( data, path,
             Q1 = 1./3. * prev + 2./3. * vert[0:2]
             Q2 = 2./3. * vert[0:2] + 1./3. * vert[2:4]
             Q3 = vert[2:4]
-            nodes.append( '.. controls (axis cs:%s,%s) and (axis cs:%s,%s) .. (axis cs:%s,%s)' %
-              ( str(Q1[0]), str(Q1[1]), str(Q2[0]), str(Q2[1]), str(Q3[0]), str(Q3[1]) ) )
+            nodes.append( ( '.. controls (axis cs:%.15g,%.15g) '
+                          + 'and (axis cs:%.15g,%.15g) '
+                          + '.. (axis cs:%.15g,%.15g)' )
+                          % tuple( Q1 + Q2 + Q3 )
+                        )
         elif code == mpl.path.Path.CURVE4:
             # Cubic Bezier curves.
-            nodes.append( '.. controls (axis cs:%s,%s) and (axis cs:%s,%s) .. (axis cs:%s,%s)' %
-              ( str(vert[0]), str(vert[1]), str(vert[2]), str(vert[3]), str(vert[4]), str(vert[5]) ) )
+            nodes.append( ( '.. controls (axis cs:%.15g,%.15g) '
+                          + 'and (axis cs:%.15g,%.15g) '
+                          + '.. (axis cs:%.15g,%.15g)' )
+                          % tuple( vert )
+                        )
         elif code == mpl.path.Path.CLOSEPOLY:
             nodes.append( '--cycle' )
         else:
@@ -1208,7 +1213,7 @@ def _draw_text( data, obj ):
                     else:
                         pass
 
-            arrow_proto = '\\draw[%s] (axis cs:%e,%e) -- (axis cs:%e,%e);\n'
+            arrow_proto = '\\draw[%s] (axis cs:%.15g,%.15g) -- (axis cs:%.15g,%.15g);\n'
             the_arrow = arrow_proto % ( ','.join(arrow_style),
                                         ann_xytext[0],
                                         ann_xytext[1],
@@ -1222,14 +1227,14 @@ def _draw_text( data, obj ):
     # 3: text style
     # 4: the text
     #                   -------1--------2---3--4--
-    proto = '\\node at (axis cs:%e,%e)[\n  %s\n]{%s %s};\n'
+    proto = '\\node at (axis cs:%.15g,%.15g)[\n  %s\n]{%s %s};\n'
     pos = obj.get_position()
     text = obj.get_text()
     size = obj.get_size()
     bbox = obj.get_bbox_patch()
     converter = mpl.colors.ColorConverter()
     scaling = 0.5*size / data['font size']  # XXX: This is ugly
-    properties.append('scale=%g' % scaling )
+    properties.append('scale=%.15g' % scaling )
     if bbox is not None:
         bbox_style = bbox.get_boxstyle()
         if bbox.get_fill():
@@ -1239,8 +1244,8 @@ def _draw_text( data, obj ):
         data, ec, _ = _mpl_color2xcolor( data, bbox.get_edgecolor() )
         if ec:
             properties.append('draw=%s' % ec )
-        properties.append('line width=%gpt'%(bbox.get_lw()*0.4)) # XXX: This is ugly, too
-        properties.append( 'inner sep=%gpt' %
+        properties.append('line width=%.15gpt'%(bbox.get_lw()*0.4)) # XXX: This is ugly, too
+        properties.append( 'inner sep=%.15gpt' %
                            (bbox_style.pad * data['font size'])
                          )
         # Rounded boxes
@@ -1327,7 +1332,6 @@ def _handle_children( data, obj ):
 
     content = []
     for child in obj.get_children():
-        print type(child)
         if ( isinstance( child, mpl.axes.Axes ) ):
             data, cont = _draw_axes( data, child )
             content.extend( cont )
