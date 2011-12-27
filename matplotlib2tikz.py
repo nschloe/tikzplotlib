@@ -924,11 +924,15 @@ def _get_draw_options( data, ec, fc ):
 
     if ec is not None:
         data, col, ec_rgba = _mpl_color2xcolor( data, ec )
-        draw_options.append( 'draw=%s' % col )
+        if ec_rgba[3] != 0.0:
+            # Don't draw if it's invisible anyways.
+            draw_options.append( 'draw=%s' % col )
 
     if fc is not None:
         data, col, fc_rgba = _mpl_color2xcolor( data, fc )
-        draw_options.append( 'fill=%s' % col )
+        if fc_rgba[3] != 0.0:
+            # Don't draw if it's invisible anyways.
+            draw_options.append( 'fill=%s' % col )
 
     # handle transparency
     if ec is not None and fc is not None and \
