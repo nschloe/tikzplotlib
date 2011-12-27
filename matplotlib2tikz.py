@@ -626,9 +626,8 @@ def _draw_line2d( data, obj ):
     # --------------------------------------------------------------------------
     # get line color
     color = obj.get_color()
-    data, xcolor, _ = _mpl_color2xcolor( data, color )
-    if xcolor:
-        addplot_options.append( xcolor )
+    data, line_xcolor, _ = _mpl_color2xcolor( data, color )
+    addplot_options.append( line_xcolor )
 
     linestyle = _mpl_linestyle2pgfp_linestyle( obj.get_linestyle() )
     if linestyle:
@@ -645,11 +644,13 @@ def _draw_line2d( data, obj ):
         if extra_mark_options:
             mark_options.append( extra_mark_options )
         if marker_face_color:
-            data, col, _ = _mpl_color2xcolor( data, marker_face_color )
-            mark_options.append( 'fill=' + col )
+            data, face_xcolor, _ = _mpl_color2xcolor( data, marker_face_color )
+            if face_xcolor != line_xcolor:
+                mark_options.append( 'fill=' + face_xcolor )
         if marker_edge_color  and  marker_edge_color != marker_face_color:
-            data, col, _ = _mpl_color2xcolor( data, marker_edge_color )
-            mark_options.append( 'draw=' + col )
+            data, draw_xcolor, _ = _mpl_color2xcolor( data, marker_edge_color )
+            if draw_xcolor != line_xcolor:
+                mark_options.append( 'draw=' + draw_xcolor )
         if mark_options:
             addplot_options.append( 'mark options={%s}' % ','.join(mark_options)
                                   )
