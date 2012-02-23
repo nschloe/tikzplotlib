@@ -41,6 +41,7 @@ __email__      = 'nico.schloemer@gmail.com'
 __status__     = 'Development'
 # ==============================================================================
 def save( filepath,
+          encoding = None,
           figurewidth = None,
           figureheight = None,
           textsize = 10.0,
@@ -56,6 +57,8 @@ def save( filepath,
 
     :param filepath: The file to which the TikZ output will be written.
     :type filepath: str.
+
+    :param encoding: Which encoding to use for the file.
 
     :param figurewidth: If not ``None``, this will be used as figure width
                         within the TikZ/Pgfplot output. If ``figureheight``
@@ -132,19 +135,14 @@ def save( filepath,
         data['extra axis options'] = set()
 
     # open file
-    file_handle = open( filepath, 'w' )
+    import codecs
+    file_handle = codecs.open(filepath, 'w', encoding)
+
+    print file_handle.encoding
 
     # gather the file content
     data, content = _handle_children( data, mpl.pyplot.gcf() )
 
-    #disclaimer = 'This is matplotlib2tikz v%s.\n' \
-               #+ 'The lastest updated can be retrieved from\n\n' \
-               #+ 'https://github.com/nschloe/matplotlib2tikz\n\n' \
-               #+ 'where you can submit bug reports and leave comments.\n' \
-               #% __version__
-
-    print __version__
-    print __copyright__
     disclaimer = ( 'This file was created by matplotlib v%s.\n'
                  + '%s\n'
                  + 'All rights reserved.\n' ) \
