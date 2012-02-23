@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 #
-# Copyright (C) 2010-2011 Nico Schl"omer
+# Copyright (C) 2010--2012 Nico Schl"omer
 #
 # This file is part of matplotlib2tikz.
 #
@@ -32,7 +32,7 @@ from itertools import izip
 # ==============================================================================
 # meta info
 __author__     = 'Nico Schl"omer'
-__copyright__  = 'Copyright (c) 2010, 2011, Nico Schl"omer <nico.schloemer@gmail.com>'
+__copyright__  = 'Copyright (c) 2010--2012, Nico Schl"omer <nico.schloemer@gmail.com>'
 __credits__    = []
 __license__    = 'GNU Lesser General Public License (LGPL), Version 3'
 __version__    = '0.1.0'
@@ -48,7 +48,8 @@ def save( filepath,
           strict = False,
           draw_rectangles = False,
           wrap = True,
-          extra = None
+          extra = None,
+          show_info = True
         ):
     '''Main function. Here, the recursion into the image starts and the contents
     are picked up. The actual file gets written in this routine.
@@ -136,9 +137,30 @@ def save( filepath,
     # gather the file content
     data, content = _handle_children( data, mpl.pyplot.gcf() )
 
+    #disclaimer = 'This is matplotlib2tikz v%s.\n' \
+               #+ 'The lastest updated can be retrieved from\n\n' \
+               #+ 'https://github.com/nschloe/matplotlib2tikz\n\n' \
+               #+ 'where you can submit bug reports and leave comments.\n' \
+               #% __version__
+
+    print __version__
+    print __copyright__
+    disclaimer = ( 'This file was created by matplotlib v%s.\n'
+                 + '%s\n'
+                 + 'All rights reserved.\n' ) \
+                 % (__version__, __copyright__)
+
+    if show_info:
+        disclaimer += '\nThe lastest updates can be retrieved from\n\n' \
+                    + 'https://github.com/nschloe/matplotlib2tikz\n\n' \
+                    + 'where you can also submit bug reports and leave comments.\n'
+
+    # write disclaimer to the file header
+    file_handle.write(_tex_comment(disclaimer))
+
     # write the contents
     if wrap:
-        file_handle.write( '\\begin{tikzpicture}\n\n' )
+        file_handle.write( '\n\\begin{tikzpicture}\n\n' )
 
     coldefs = _get_color_definitions( data )
     if coldefs:
@@ -155,6 +177,11 @@ def save( filepath,
     # print message about necessary pgfplot libs to command line
     _print_pgfplot_libs_message( data )
     return
+# ==============================================================================
+def _tex_comment( comment ):
+    '''Prepends each line in string with the LaTeX comment key, '%'.
+    '''
+    return '% ' + str.replace(comment, '\n', '\n% ')
 # ==============================================================================
 def _print_tree( obj, indent = '' ):
     '''Recursively prints the tree structure of the matplotlib object.

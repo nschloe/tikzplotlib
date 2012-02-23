@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 #
-# Copyright (C) 2010, 2011 Nico Schl"omer
+# Copyright (C) 2010--2012 Nico Schl"omer
 #
 # This file is part of matplotlib2tikz.
 #
@@ -84,7 +84,7 @@ def _main():
         comment = test_functions[k]()
 
         # convert to TikZ
-        tikz_path = data_dir + "/test" + repr(k) + ".tikz"
+        tikz_path = data_dir + "/test" + repr(k) + ".tex"
         matplotlib2tikz.save( tikz_path,
                               figurewidth = figure_width,
                               tex_relative_path_to_data = \
