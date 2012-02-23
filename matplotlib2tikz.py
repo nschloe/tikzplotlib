@@ -200,6 +200,13 @@ def _get_color_definitions( data ):
 
     return definitions
 # ==============================================================================
+#def _parse_text( text ):
+    #'''Parses input text for LaTeX expressions and escaptes them if
+    #necessary.'''
+    #replace_list = ['_', '$', '\\', '%' ]
+
+    #return
+# ==============================================================================
 def _draw_axes( data, obj ):
     '''Returns the Pgfplots code for an axis environment.
     '''

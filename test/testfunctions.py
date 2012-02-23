@@ -29,7 +29,7 @@ def basic_sin():
         s = np.sin( 2*np.pi*t )
         pp.plot( t, s, ':' )
 
-        pp.xlabel('time(s)')
+        pp.xlabel('time(s) _ % $ \\')
         pp.ylabel('Voltage (mV)')
         pp.title('Easier than easy $\\frac{1}{2}$')
         pp.grid( True )
