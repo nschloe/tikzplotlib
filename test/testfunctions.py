@@ -75,7 +75,8 @@ def image_plot():
     ax = pp.axes([0,0,1,1], frameon=False)
     ax.set_axis_off()
     im = pp.imshow(lena, origin='lower')
-
+    # Set the current color map to HSV.
+    pp.hsv()
     pp.colorbar()
 
     return 'An \\texttt{imshow} plot'
