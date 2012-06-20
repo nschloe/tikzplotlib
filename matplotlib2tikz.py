@@ -24,10 +24,9 @@
 # ==============================================================================
 # imported modules
 import matplotlib as mpl
-import numpy
+import numpy as np
 import types
 import os
-import sys
 from itertools import izip
 # ==============================================================================
 # meta info
@@ -193,9 +192,9 @@ def _get_color_definitions( data ):
     '''Returns the list of custom color definitions for the TikZ file.
     '''
     definitions = []
-    for ( color, name ) in data['custom colors'].items():
+    for name, rgb in data['custom colors'].items():
         definitions.append( '\\definecolor{%s}{rgb}{%.15g,%.15g,%.15g}' % \
-                            ( (name,) + color  )
+                            (name, rgb[0], rgb[1], rgb[2])
                           )
 
     return definitions
@@ -397,8 +396,8 @@ def _draw_axes( data, obj ):
             colorbar_styles.extend( _get_ticks( data, 'y', colorbar_ticks,
                                                     colorbar_ticklabels ) )
         else:
-            sys.exit( 'Unknown color bar orientation "%s". Abort.' % \
-                      orientation )
+            raise RuntimeError('Unknown color bar orientation "%s". Abort.' %
+                               orientation )
 
 
         mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap( colorbar.get_cmap() )
@@ -503,7 +502,7 @@ def _mpl_cmap2pgf_cmap( cmap ):
     k_blue  = 0
     x = 0.0
     colors = []
-    X = numpy.array([])
+    X = np.array([])
     while True:
         # find next x
         x = min( red[k_red][0], green[k_green][0], blue[k_blue][0] )
@@ -539,7 +538,7 @@ def _mpl_cmap2pgf_cmap( cmap ):
                                                 blue[k_blue]  [1]  )
                                             )
 
-        X = numpy.append( X, x )
+        X = np.append( X, x )
         colors.append( (red_comp, green_comp, blue_comp) )
 
         if x >= 1.0:
@@ -837,10 +836,10 @@ def _draw_image( data, obj ):
         # RGB (+alpha) information at each point
         # convert to PIL image (after upside-down flip)
         import Image
-        image = Image.fromarray( numpy.flipud(img_array) )
+        image = Image.fromarray(np.flipud(img_array))
         image.save( filename )
     else:
-        sys.exit( 'Unable to store image array.' )
+        raise RuntimeError( 'Unable to store image array.' )
 
     # write the corresponding information to the TikZ file
     extent = obj.get_extent()
@@ -1137,7 +1136,7 @@ def _draw_path( data, path,
         elif code == mpl.path.Path.CLOSEPOLY:
             nodes.append( '--cycle' )
         else:
-            sys.exit( 'Unknown path code %d. Abort.' % code )
+            raise RuntimeError( 'Unknown path code %d. Abort.' % code )
         # Store the previous point for quadratic Beziers.
         prev = vert[0:2]
 
@@ -1151,21 +1150,21 @@ def _draw_path( data, path,
     return data, path_command
 # ==============================================================================
 RGB_2_XCOLOR = { # RGB values (as taken from xcolor.dtx):
-                 (1,    0,    0   ): 'red',
-                 (0,    1,    0   ): 'green',
-                 (0,    0,    1   ): 'blue',
-                 (0.75, 0.5,  0.25): 'brown',
-                 (0.75, 1,    0   ): 'lime',
-                 (1,    0.5,  0   ): 'orange',
-                 (1,    0.75, 0.75): 'pink',
-                 (0.75, 0,    0.25): 'purple',
-                 (0,    0.5,  0.5 ): 'teal',
-                 (0.5,  0,    0.5 ): 'violet',
-                 (0,    0,    0   ): 'black',
-                 (0.25, 0.25, 0.25): 'darkgray',
-                 (0.5 , 0.5 , 0.5 ): 'gray',
-                 (0.75, 0.75, 0.75): 'lightgray',
-                 (1,    1,    1   ): 'white'
+                 'red':  np.array([1,    0,    0   ]),
+                 'green': np.array([0,    1,    0   ]),
+                 'blue': np.array([0,    0,    1   ]),
+                 'brown': np.array([0.75, 0.5,  0.25]),
+                 'lime': np.array([0.75, 1,    0   ]),
+                 'orange': np.array([1,    0.5,  0   ]),
+                 'pink': np.array([1,    0.75, 0.75]),
+                 'purple': np.array([0.75, 0,    0.25]),
+                 'teal': np.array([0,    0.5,  0.5 ]),
+                 'violet': np.array([0.5,  0,    0.5 ]),
+                 'black': np.array([0,    0,    0   ]),
+                 'darkgray': np.array([0.25, 0.25, 0.25]),
+                 'gray': np.array([0.5 , 0.5 , 0.5 ]),
+                 'lightgray': np.array([0.75, 0.75, 0.75]),
+                 'white': np.array([1,    1,    1   ])
                  # The colors cyan, magenta, yellow, and olive are also
                  # predefined by xcolor, but their RGB approximation of the
                  # native CMYK values is not very good. Don't use them here.
@@ -1175,27 +1174,50 @@ def _mpl_color2xcolor( data, matplotlib_color ):
     '''Translates a matplotlib color specification into a proper LaTeX xcolor.
     '''
     # Convert it to RGBA.
-    rgba_col = mpl.colors.ColorConverter().to_rgba( matplotlib_color )
+    my_col = np.array(mpl.colors.ColorConverter().to_rgba(matplotlib_color))
 
-    try:
-        # Try to lookup the color in the default color table.
-        xcol = RGB_2_XCOLOR[ rgba_col[0:3] ]
-    except KeyError:
-        # Lookup failed, add it to the custom list.
-        data, xcol = _add_rgbcolor_definition( data, rgba_col[0:3] )
+    xcol = None
+    available_colors = RGB_2_XCOLOR
+    available_colors.update(data['custom colors'])
 
-    return data, xcol, rgba_col
-# ==============================================================================
-def _add_rgbcolor_definition( data, color_tuple ):
-    '''Takes an RGB color tuple, adds it to the list of colors that will
-    need to be defined in the TikZ file, and returns the label with which the
-    color can be used.
-    '''
-    if color_tuple not in data['custom colors']:
-        data['custom colors'][ color_tuple ] = \
-             'color' + str(len(data['custom colors']))
+    # Check if it exactly matches any of the colors already available.
+    # This case is actually treated below (alpha==1), but that loop
+    # may pick up combinations with black before finding the exact
+    # match. Hence, first check all colors.
+    for name, rgb in available_colors.items():
+        if all(my_col[:3] == rgb):
+            xcol = name
+            break
 
-    return data, data['custom colors'][ color_tuple ]
+    if not xcol:
+        # Check if my_col is a multiple of a predefined color and 'black'.
+        for name, rgb in available_colors.items():
+            if rgb[0] != 0.0:
+                alpha = my_col[0] / rgb[0]
+            elif rgb[1] != 0.0:
+                alpha = my_col[1] / rgb[1]
+            elif rgb[2] != 0.0:
+                alpha = my_col[2] / rgb[2]
+            else: # rgb=(0,0,0)
+                alpha = 0.0
+
+            if all(my_col[:3] == alpha * rgb):
+                if alpha == 1.0:
+                     xcol = name
+                     break
+                elif alpha == 0.0:
+                     xcol = 'black'
+                     break
+                elif 0.0 < alpha and alpha < 1.0: #and round(alpha*100) == alpha*100:
+                    # Is the last condition really necessary?
+                    xcol = name + ('!%r!black' % (alpha*100))
+
+    # Lookup failed, add it to the custom list.
+    if not xcol:
+        xcol = 'color' + str(len(data['custom colors']))
+        data['custom colors'][xcol] = my_col[:3]
+
+    return data, xcol, my_col
 # ==============================================================================
 def _draw_legend( data, obj ):
     '''Adds legend code to the EXTRA_AXIS_OPTIONS.
