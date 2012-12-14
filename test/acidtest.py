@@ -24,7 +24,7 @@ from os import path
 import sys
 from matplotlib import pyplot as pp
 import matplotlib2tikz
-import testfunctions as tf
+import testfunctions
 # ==============================================================================
 # XXX: There seems to be an issue with the legends that do not
 # appear in the pdf versions. The old legends are carried over from
@@ -50,68 +50,62 @@ def _main():
     # open file for writing
     file_handle = open( tex_file_path, "w" )
 
-    write_document_header( file_handle, figure_width )
+    write_document_header(file_handle, figure_width)
 
-    test_functions = [ tf.basic_sin,
-                       tf.subplots,
-                       tf.image_plot,
-                       tf.noise,
-                       tf.circle_patch,
-                       tf.patches,
-                       tf.legends,
-                       tf.legends2,
-                       tf.logplot,
-                       tf.loglogplot,
-                       tf.subplot4x4,
-                       tf.text_overlay,
-                       tf.annotate,
-                       tf.histogram,
-                       tf.contourf_with_logscale
-                     ]
+    # Get all function names from the testfunctions module.
+    function_strings = dir(testfunctions)
+    # Remove all functions that start with "_" and that are not
+    # in a certain exclude list (uuuugly).
+    exclude_list = {'mpl', 'np', 'pp'}
+    tmp = []
+    for s in function_strings:
+        if s[0] != '_' and s not in exclude_list:
+            tmp.append(s)
+    function_strings = tmp
 
     if not test_list is None: # actually treat a sublist of test_functions
         # remove duplicates and sort
-        test_list = sorted( set(test_list) )
+        test_list = sorted(set(test_list))
     else:
         # all indices
-        test_list = xrange( 0, len(test_functions) )
+        test_list = xrange(0, len(function_strings))
 
     for k in test_list:
-        print 'Test function %d...' % k,
+        print 'Test function %d (%s)...' % (k, function_strings[k]),
         pp.cla()
         pp.clf()
         # plot the test example
-        comment = test_functions[k]()
+        comment = getattr(testfunctions, function_strings[k])()
 
         # convert to TikZ
-        tikz_path = data_dir + "/test" + repr(k) + ".tex"
-        matplotlib2tikz.save( tikz_path,
-                              figurewidth = figure_width,
-                              tex_relative_path_to_data = \
-                                                     tex_relative_path_to_data
-                            )
+        tikz_path = data_dir + "/test%r.tex" % k
+        matplotlib2tikz.save(tikz_path,
+                             figurewidth = figure_width,
+                             tex_relative_path_to_data = \
+                                                    tex_relative_path_to_data
+                             )
 
         # plot reference figure
-        pdf_path  = data_dir + "/test" + repr(k) + ".pdf"
+        pdf_path = data_dir + "/test" + repr(k) + ".pdf"
         pp.savefig(pdf_path)
 
         # update the LaTeX file
-        write_file_comparison_entry( file_handle,
-                                     path.join( tex_relative_path_to_data,
-                                                path.basename(pdf_path) ),
-                                     path.join( tex_relative_path_to_data,
-                                                path.basename(tikz_path) ),
-                                     k,
-                                     comment
-                                   )
+        write_file_comparison_entry(file_handle,
+                                    path.join(tex_relative_path_to_data,
+                                              path.basename(pdf_path)),
+                                    path.join(tex_relative_path_to_data,
+                                              path.basename(tikz_path)),
+                                    k,
+                                    comment
+                                    )
         print 'done.'
 
-    write_document_closure( file_handle )
+    write_document_closure(file_handle)
     file_handle.close()
 
     return
 # ==============================================================================
-def write_document_header( file_handle, figure_width ):
+def write_document_header(file_handle, figure_width):
     '''Write the LaTeX document header to the file.
     '''
     file_handle.write( "\\documentclass{scrartcl}\n"
