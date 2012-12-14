@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ==============================================================================
 #
 # Copyright (C) 2010--2012 Nico Schl"omer
@@ -1130,7 +1129,7 @@ def _draw_path( data, path,
             # can be emulated as cubic Beziers.
             # From
             # http://www.latex-community.org/forum/viewtopic.php?t=4424&f=45:
-            # If you really need a quadratic Bézier curve on the points P0, P1
+            # If you really need a quadratic BÃ©zier curve on the points P0, P1
             # and P2, then a process called 'degree elevation' yields the cubic
             # control points (Q0, Q1, Q2 and Q3) as follows:
             #   CODE: SELECT ALL
