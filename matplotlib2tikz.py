@@ -335,14 +335,14 @@ def _draw_axes( data, obj ):
     # Coordinate of the lines are entirely meaningless, but styles (colors,...
     # are respected.
     if obj.xaxis._gridOnMajor:
-        axis_options.append( 'xmajorgrids' )
+        axis_options.append('xmajorgrids')
     elif obj.xaxis._gridOnMinor:
-        axis_options.append( 'xminorgrids' )
+        axis_options.append('xminorgrids')
 
     if obj.yaxis._gridOnMajor:
-        axis_options.append( 'ymajorgrids' )
+        axis_options.append('ymajorgrids')
     elif obj.yaxis._gridOnMinor:
-        axis_options.append( 'yminorgrids' )
+        axis_options.append('yminorgrids')
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # find color bar
     colorbar = _find_associated_colorbar( obj )
@@ -352,7 +352,7 @@ def _draw_axes( data, obj ):
         orientation = colorbar.orientation
         limits = colorbar.get_clim()
         if orientation == 'horizontal':
-            axis_options.append( 'colorbar horizontal' )
+            axis_options.append('colorbar horizontal')
 
             colorbar_ticks = colorbar.ax.get_xticks()
             axis_limits = colorbar.ax.get_xlim()
@@ -669,8 +669,8 @@ def _draw_line2d( data, obj ):
     data, line_xcolor, _ = _mpl_color2xcolor( data, color )
     addplot_options.append( line_xcolor )
 
-    linestyle = _mpl_linestyle2pgfp_linestyle( obj.get_linestyle() )
-    if linestyle:
+    show_line, linestyle = _mpl_linestyle2pgfp_linestyle( obj.get_linestyle() )
+    if show_line and linestyle:
         addplot_options.append( linestyle )
 
     marker_face_color = obj.get_markerfacecolor()
@@ -695,7 +695,7 @@ def _draw_line2d( data, obj ):
             addplot_options.append( 'mark options={%s}' % ','.join(mark_options)
                                   )
 
-    if marker and not linestyle:
+    if marker and not show_line:
         addplot_options.append( 'only marks' )
 
     # process options
@@ -793,8 +793,8 @@ def _mpl_marker2pgfp_marker( data, mpl_marker, is_marker_face_color ):
 
     return ( data, None, None )
 # ==============================================================================
-MPLLINESTYLE_2_PGFPLOTSLINESTYLE = { '-'   : None,
-                                     'None': None,
+MPLLINESTYLE_2_PGFPLOTSLINESTYLE = { 'None': None,
+                                     '-'   : None,
                                      ':'   : 'dotted',
                                      '--'  : 'dashed',
                                      '-.'  : 'dash pattern=on 1pt off 3pt ' \
@@ -805,11 +805,28 @@ def _mpl_linestyle2pgfp_linestyle( line_style ):
     '''Translates a line style of matplotlib to the corresponding style
     in Pgfplots.
     '''
-    try:
-        return MPLLINESTYLE_2_PGFPLOTSLINESTYLE[ line_style ]
-    except KeyError:
-        print('Unknown line style "' + str(line_style) + '".')
-        return None
+    # TODO redo as dictionary
+    if line_style == 'None':
+        show_line = False
+        style = None
+    elif line_style == '-':
+        show_line = True
+        style = None
+    elif line_style == ':':
+        show_line = True
+        style = 'dotted'
+    elif line_style == '--':
+        show_line = True
+        style = 'dashed'
+    elif line_style == '-.':
+        show_line = True
+        style = 'dash pattern=on 1pt off 3pt on 3pt off 3pt'
+    else:
+        warnings.warn('Unknown line style ''%r''. Using default.')
+        show_line = True
+        style = None
+
+    return show_line, style
 # ==============================================================================
 def _draw_image( data, obj ):
     '''Returns the Pgfplots code for an image environment.

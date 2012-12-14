@@ -25,11 +25,12 @@ import matplotlib as mpl
 from matplotlib import pyplot as pp
 # =============================================================================
 def basic_sin():
-        t = np.arange( 0.0, 2.0, 0.01 )
-        s = np.sin( 2*np.pi*t )
-        pp.plot( t, s, ':' )
+        t = np.arange(0.0, 2.0, 0.1)
+        s = np.sin(2*np.pi*t)
+        pp.plot(t, s, 'o-')
 
-        pp.xlabel('time(s) _ % $ \\')
+        pp.xlabel('time(s)')
+        #pp.xlabel('time(s) _ % $ \\')
         pp.ylabel('Voltage (mV)')
         pp.title('Easier than easy $\\frac{1}{2}$')
         pp.grid( True )
