@@ -662,7 +662,7 @@ def _draw_line2d( data, obj ):
             addplot_options.append( 'ultra thick' )
         else:
             # explicit line width
-            addplot_options.append( 'line width=%spt' % 0.4*line_width )
+            addplot_options.append( 'line width=%rpt' % (0.4*line_width) )
     # --------------------------------------------------------------------------
     # get line color
     color = obj.get_color()

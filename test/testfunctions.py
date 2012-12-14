@@ -27,7 +27,7 @@ from matplotlib import pyplot as pp
 def basic_sin():
         t = np.arange(0.0, 2.0, 0.1)
         s = np.sin(2*np.pi*t)
-        pp.plot(t, s, 'o-')
+        pp.plot(t, s, 'o-', lw=4.1)
 
         pp.xlabel('time(s)')
         #pp.xlabel('time(s) _ % $ \\')
