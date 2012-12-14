@@ -138,7 +138,7 @@ def save( filepath,
     import codecs
     file_handle = codecs.open(filepath, 'w', encoding)
 
-    print file_handle.encoding
+    print(file_handle.encoding)
 
     # gather the file content
     data, content = _handle_children( data, mpl.pyplot.gcf() )
@@ -171,7 +171,7 @@ def save( filepath,
 
     # close file
     file_handle.close()
-    
+
     # print message about necessary pgfplot libs to command line
     _print_pgfplot_libs_message( data )
     return
@@ -184,7 +184,7 @@ def _tex_comment( comment ):
 def _print_tree( obj, indent = '' ):
     '''Recursively prints the tree structure of the matplotlib object.
     '''
-    print indent, type(obj)
+    print(indent, type(obj))
     for child in obj.get_children():
         _print_tree( child, indent + '   ' )
     return
@@ -293,7 +293,7 @@ def _draw_axes( data, obj ):
         try:
             aspect_num = float(aspect)
         except ValueError:
-            print 'Aspect ratio not a number?!'
+            print('Aspect ratio not a number?!')
 
     if data['fwidth'] and data['fheight']: # width and height overwrite aspect ratio
         axis_options.append( 'width='+data['fwidth'] )
@@ -322,8 +322,8 @@ def _draw_axes( data, obj ):
             axis_options.append( 'width='+data['fwidth'] )
     else:
         if aspect_num:
-            print 'Non-automatic aspect ratio demanded, but neither height ' \
-                  'nor width of the plot are given. Discard aspect ratio.'
+            print('Non-automatic aspect ratio demanded, but neither height '
+                  'nor width of the plot are given. Discard aspect ratio.')
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # get ticks
     axis_options.extend( _get_ticks( data, 'x', obj.get_xticks(),
@@ -481,7 +481,7 @@ def _mpl_cmap2pgf_cmap( cmap ):
     in Pgfplots.
     '''
     if not isinstance( cmap, mpl.colors.LinearSegmentedColormap ):
-        print 'Don''t know how to handle color map. Using "blackwhite".'
+        print('Don''t know how to handle color map. Using "blackwhite".')
         is_custom_colormap = False
         return ('blackwhite', is_custom_colormap)
 
@@ -489,37 +489,46 @@ def _mpl_cmap2pgf_cmap( cmap ):
         is_custom_colormap = False
         return ('blackwhite', is_custom_colormap)
 
-
+    # For an explanation of what _segmentdata contains, see
+    # http://matplotlib.sourceforge.net/examples/pylab_examples/custom_cmap.html
+    # A key sentence:
+    # If there are discontinuities, then it is a little more complicated.
+    # Label the 3 elements in each row in the cdict entry for a given color as
+    # (x, y0, y1).  Then for values of x between x[i] and x[i+1] the color
+    # value is interpolated between y1[i] and y0[i+1].
     segdata = cmap._segmentdata
     red    = segdata['red']
     green  = segdata['green']
     blue   = segdata['blue']
 
-    # loop over the data, stop at each spot where the linear
-    # interpolations is interrupted, and set a color mark there
-    # set initial color
+    # Loop over the data, stop at each spot where the linear
+    # interpolations is interrupted, and set a color mark there.
+    #
+    # Set initial color.
     k_red   = 0
     k_green = 0
     k_blue  = 0
     x = 0.0
     colors = []
-    X = numpy.array([])
+    X = []
     while True:
         # find next x
         x = min( red[k_red][0], green[k_green][0], blue[k_blue][0] )
 
-        if ( red[k_red][0]==x ):
+        if red[k_red][0] == x:
             red_comp = red[k_red][1]
-            k_red    = k_red+1
+            k_red += 1
         else:
             red_comp = _linear_interpolation( x,
-                                             ( red[k_red-1][0], red[k_red][0] ),
-                                             ( red[k_red-1][2], red[k_red][1] )
+                                             ( red[k_red-1][0],
+                                               red[k_red]  [0] ),
+                                             ( red[k_red-1][2],
+                                               red[k_red]  [1] )
                                             )
 
-        if ( green[k_green][0]==x ):
+        if green[k_green][0] == x:
             green_comp = green[k_green][1]
-            k_green    = k_green+1
+            k_green += 1
         else:
             green_comp = _linear_interpolation( x,
                                                 ( green[k_green-1][0],
@@ -528,9 +537,9 @@ def _mpl_cmap2pgf_cmap( cmap ):
                                                   green[k_green]  [1]  )
                                               )
 
-        if ( blue[k_blue][0]==x ):
+        if blue[k_blue][0] == x:
             blue_comp = blue[k_blue][1]
-            k_blue    = k_blue+1
+            k_blue += 1
         else:
             blue_comp = _linear_interpolation( x,
                                               ( blue[k_blue-1][0],
@@ -539,7 +548,7 @@ def _mpl_cmap2pgf_cmap( cmap ):
                                                 blue[k_blue]  [1]  )
                                             )
 
-        X = numpy.append( X, x )
+        X.append(x)
         colors.append( (red_comp, green_comp, blue_comp) )
 
         if x >= 1.0:
@@ -553,19 +562,19 @@ def _mpl_cmap2pgf_cmap( cmap ):
     # At the same time, TeX suffers from significant round-off errors,
     # so make sure that this unit is not too small such that the round-
     # off errors don't play much of a role. A unit of 1pt, e.g., does
-    # most often not work
+    # most often not work.
     unit = 'pt'
 
     # Scale to integer
-    X = _scale_to_int( X )
+    X = _scale_to_int( numpy.array(X) )
 
     color_changes = []
     for (k, x) in enumerate(X):
         color_changes.append( 'rgb(%d%s)=(%.15g,%.15g,%.15g)' % \
-                              ( ( x, unit ) + colors[k] )
+                              ( (x, unit) + colors[k] )
                             )
 
-    colormap_string = '{mymap}{[1%s] %s }' % \
+    colormap_string = '{mymap}{[1%s] %s}' % \
                       ( unit, '; '.join( color_changes ) )
     is_custom_colormap = True
     return ( colormap_string, is_custom_colormap )
@@ -735,7 +744,7 @@ MP_MARKER2PGF_MARKER = { '.'   : '*', # point
                        }
 # the following markers are only available with PGF's plotmarks library
 MP_MARKER2PLOTMARKS = { 'v' : ('triangle', 'rotate=180'), # triangle down
-                        '1' : ('triangle', 'rotate=180'), 
+                        '1' : ('triangle', 'rotate=180'),
                         '^' : ('triangle', None), # triangle up
                         '2' : ('triangle', None),
                         '<' : ('triangle', 'rotate=270'), # triangle left
@@ -752,7 +761,7 @@ MP_MARKER2PLOTMARKS = { 'v' : ('triangle', 'rotate=180'), # triangle down
                         '|' : ('|', None), # vertical line
                         '_' : ('_', None)  # horizontal line
                       }
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def _mpl_marker2pgfp_marker( data, mpl_marker, is_marker_face_color ):
     '''Translates a marker style of matplotlib to the corresponding style
     in Pgfplots.
@@ -768,7 +777,7 @@ def _mpl_marker2pgfp_marker( data, mpl_marker, is_marker_face_color ):
     except KeyError:
         pass
 
-    # try plotmarks list    
+    # try plotmarks list
     try:
         data['pgfplots libs'].add( 'plotmarks' )
         pgfplots_marker, marker_options = MP_MARKER2PLOTMARKS[ mpl_marker ]
@@ -779,9 +788,9 @@ def _mpl_marker2pgfp_marker( data, mpl_marker, is_marker_face_color ):
         pass
 
     if mpl_marker == ',': # pixel
-        print 'Unsupported marker "' + mpl_marker + '".'
+        print('Unsupported marker "' + mpl_marker + '".')
     else:
-        print 'Unknown marker "' + mpl_marker + '".'
+        print('Unknown marker "' + mpl_marker + '".')
 
     return ( data, None, None )
 # ==============================================================================
@@ -800,7 +809,7 @@ def _mpl_linestyle2pgfp_linestyle( line_style ):
     try:
         return MPLLINESTYLE_2_PGFPLOTSLINESTYLE[ line_style ]
     except KeyError:
-        print 'Unknown line style "' + str(line_style) + '".'
+        print('Unknown line style "' + str(line_style) + '".')
         return None
 # ==============================================================================
 def _draw_image( data, obj ):
@@ -819,8 +828,8 @@ def _draw_image( data, obj ):
                                  'img' + str(data['img number']) + '.png'
                                )
         file_exists = os.path.isfile( filename )
-        
-      
+
+
 
     # store the image as in a file
     img_array = obj.get_array()
@@ -909,7 +918,7 @@ def _extract_colorbar( obj ):
     if not colorbars:
         return None
     if not _equivalent( colorbars ):
-        print 'More than one color bar found. Use first one.'
+        print('More than one color bar found. Use first one.')
 
     return colorbars[0]
 # ==============================================================================
@@ -929,7 +938,7 @@ def _equivalent( array ):
 def _draw_polycollection( data, obj ):
     '''Returns Pgfplots code for a number of polygons. Currently empty.
     '''
-    print 'matplotlib2tikz: Don''t know how to draw a PolyCollection.'
+    print('matplotlib2tikz: Don''t know how to draw a PolyCollection.')
     return data, ''
 # ==============================================================================
 def _draw_patchcollection( data, obj ):
@@ -1197,7 +1206,7 @@ def _add_rgbcolor_definition( data, color_tuple ):
 
     return data, data['custom colors'][ color_tuple ]
 # ==============================================================================
-def _draw_legend( data, obj ):
+def _draw_legend(data, obj):
     '''Adds legend code to the EXTRA_AXIS_OPTIONS.
     '''
     texts = []
@@ -1205,10 +1214,65 @@ def _draw_legend( data, obj ):
         texts.append( '%s' % text.get_text() )
 
     cont = 'legend entries={%s}' % ','.join( texts )
-    if data['extra axis options']:
-        data['extra axis options'].add( cont )
+    data['extra axis options'].add(cont)
+
+    # Get the location.
+    # http://matplotlib.org/api/legend_api.html
+    pad = 0.03
+    if obj._loc == 1:
+        # upper right
+        pass
+    elif obj._loc == 2:
+        # upper left
+        position = [pad, 1.0-pad];
+        anchor   = 'north west';
+    elif obj._loc == 3:
+        # lower left
+        position = [pad, pad];
+        anchor   = 'south west';
+    elif obj._loc == 4:
+        # lower right
+        position = [1.0-pad, pad];
+        anchor   = 'south east';
+    elif obj._loc == 5:
+        # right
+        position = [1.0-pad, 0.5];
+        anchor   = 'west';
+    elif obj._loc == 6:
+        # center left
+        position = [3*pad, 0.5];
+        anchor   = 'east';
+    elif obj._loc == 7:
+        # center right
+        position = [1.0-3*pad, 0.5];
+        anchor   = 'west';
+    elif obj._loc == 8:
+        # lower center
+        position = [0.5, 3*pad];
+        anchor   = 'south';
+    elif obj._loc == 9:
+        # upper center
+        position = [0.5, 1.0-3*pad];
+        anchor   = 'north';
+    elif obj._loc == 10:
+        # center
+        position = [0.5, 0.5];
+        anchor   = 'center'; # does this work?
     else:
-        data['extra axis options'] = [ cont ]
+        position = None
+        anchor = None
+        warnings.warn('Unknown legend location ''%r''. Using default.'
+                     % obj._loc)
+
+    legend_style = []
+    if position:
+        legend_style.append('at={(%.15g,%.15g)}' % (position[0], position[1]))
+    if anchor:
+        legend_style.append('anchor=%s' % anchor)
+
+    if legend_style:
+        style = 'legend style={%s}' % ', '.join(legend_style)
+        data['extra axis options'].add(style)
 
     return data
 # ==============================================================================
@@ -1258,7 +1322,7 @@ def _draw_text( data, obj ):
                                         ann_xy[1]
                                       )
             content.append( the_arrow )
-    
+
     # 1: coordinates in axis system
     # 2: properties (shapes, rotation, etc)
     # 3: text style
@@ -1400,8 +1464,8 @@ def _handle_children( data, obj ):
              ):
             pass
         else:
-            print 'matplotlib2tikz: Don''t know how to handle object "%s".' % \
-                  type(child)
+            print('matplotlib2tikz: Don''t know how to handle object "%s".' %
+                  type(child))
 
     # XXX: This is ugly
     if isinstance(obj, mpl.axes.Subplot) or isinstance(obj, mpl.figure.Figure):
@@ -1417,14 +1481,14 @@ def _print_pgfplot_libs_message( data ):
     pgfplotslibs = ','.join( list( data['pgfplots libs'] ) )
     tikzlibs = ','.join( list( data['tikz libs'] ) )
 
-    print '========================================================='
-    print 'Please add the following line to your LaTeX preamble:\n'
-    print '\usepackage{pgfplots}'
+    print('=========================================================')
+    print('Please add the following line to your LaTeX preamble:\n')
+    print('\\usepackage{pgfplots}')
     if tikzlibs:
-        print '\usetikzlibrary{'+ tikzlibs +'}'
+        print('\\usetikzlibrary{'+ tikzlibs +'}')
     if pgfplotslibs:
-        print '\usepgfplotslibrary{' + pgfplotslibs + '}'
-    print '========================================================='
+        print('\\usepgfplotslibrary{' + pgfplotslibs + '}')
+    print('=========================================================')
 
     return
 # ==============================================================================
