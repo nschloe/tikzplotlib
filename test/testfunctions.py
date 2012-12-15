@@ -94,9 +94,11 @@ def noise():
     cax = ax.imshow(data, interpolation='nearest')
     ax.set_title('Gaussian noise with vertical colorbar')
 
-    # Add colorbar, make sure to specify tick locations to match desired ticklabels
+    # Add colorbar, make sure to specify tick locations
+    # to match desired ticklabels.
     cbar = fig.colorbar(cax, ticks=[-1, 0, 1])
-    cbar.ax.set_yticklabels(['< -1', '0', '> 1'])# vertically oriented colorbar
+    # vertically oriented colorbar
+    cbar.ax.set_yticklabels(['< -1', '0', '> 1'])
 
     # Make plot with horizontal colorbar
     fig = pp.figure()
@@ -108,7 +110,8 @@ def noise():
     ax.set_title('Gaussian noise with horizontal colorbar')
 
     cbar = fig.colorbar(cax, ticks=[-1, 0, 1], orientation='horizontal')
-    cbar.ax.set_xticklabels(['Low', 'Medium', 'High'])# horizontal colorbar
+    # horizontal colorbar
+    cbar.ax.set_xticklabels(['Low', 'Medium', 'High'])
 
     return 'Noise with a color bar'
 # =============================================================================
@@ -337,7 +340,8 @@ def contourf_with_logscale():
     z = bivariate_normal(X, Y, 0.1, 0.2, 1.0, 1.0) \
       + 0.1 * bivariate_normal(X, Y, 1.0, 1.0, 0.0, 0.0)
 
-    # Put in some negative values (lower left corner) to cause trouble with logs:
+    # Put in some negative values (lower left corner) to cause trouble with
+    # logs:
     z[:5, :5] = -1
 
     # The following is not strictly essential, but it will eliminate

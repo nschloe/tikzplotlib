@@ -155,8 +155,8 @@ def _parse_options():
     '''Parse input options.'''
     import argparse
 
-    parser = argparse.ArgumentParser( description =
-                                              'Acid test for matplotlib2tikz.' )
+    parser = argparse.ArgumentParser(description =
+                                     'Acid test for matplotlib2tikz.')
 
     parser.add_argument( '--tests', '-t',
                          metavar = 'TEST_INDICES',
