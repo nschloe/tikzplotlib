@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 # ==============================================================================
 #
-# Copyright (C) 2010--2012 Nico Schl"omer
+# Copyright (C) 2010--2012 Nico Schlömer
 #
 # This file is part of matplotlib2tikz.
 #
@@ -29,12 +30,12 @@ import os
 from itertools import izip
 # ==============================================================================
 # meta info
-__author__     = 'Nico Schl"omer'
-__copyright__  = 'Copyright (c) 2010--2012, Nico Schl"omer <nico.schloemer@gmail.com>'
+__author__     = 'Nico Schlömer'
+__copyright__  = 'Copyright (c) 2010--2012, Nico Schlömer <nico.schloemer@gmail.com>'
 __credits__    = []
 __license__    = 'GNU Lesser General Public License (LGPL), Version 3'
 __version__    = '0.1.0'
-__maintainer__ = 'Nico Schl"omer'
+__maintainer__ = 'Nico Schlömer'
 __email__      = 'nico.schloemer@gmail.com'
 __status__     = 'Development'
 # ==============================================================================
@@ -110,8 +111,8 @@ def save( filepath,
                  the environment (eg. scale= etc.). Default is ``True``
     :type wrap: bool.
 
-    :param extra: Extra axis options to be passed (as a dict) to pgfplots. Default
-                  is ``None``.
+    :param extra: Extra axis options to be passed (as a dict) to pgfplots.
+                  Default is ``None``.
     :type extra: dict.
 
     :returns: None.
@@ -149,7 +150,8 @@ def save( filepath,
     if show_info:
         disclaimer += '\nThe lastest updates can be retrieved from\n\n' \
                     + 'https://github.com/nschloe/matplotlib2tikz\n\n' \
-                    + 'where you can also submit bug reports and leave comments.\n'
+                    + 'where you can also submit bug reports and leave' \
+                    + 'comments.\n'
 
     # write disclaimer to the file header
     file_handle.write(_tex_comment(disclaimer))
@@ -293,10 +295,12 @@ def _draw_axes( data, obj ):
         except ValueError:
             print('Aspect ratio not a number?!')
 
-    if data['fwidth'] and data['fheight']: # width and height overwrite aspect ratio
+    if data['fwidth'] and data['fheight']:
+        # width and height overwrite aspect ratio
         axis_options.append( 'width='+data['fwidth'] )
         axis_options.append( 'height='+data['fheight'] )
-    elif data['fwidth']: # only data['fwidth'] given. calculate height by the aspect ratio
+    elif data['fwidth']:
+        # only data['fwidth'] given. calculate height by the aspect ratio
         axis_options.append( 'width='+data['fwidth'] )
         if aspect_num:
             alpha = aspect_num * (ylim[1]-ylim[0])/(xlim[1]-xlim[0])
@@ -307,7 +311,8 @@ def _draw_axes( data, obj ):
             else:
                 data['fheight'] = data['fwidth']
             axis_options.append( 'height='+data['fheight'] )
-    elif data['fheight']: # only data['fheight'] given. calculate width by the aspect ratio
+    elif data['fheight']:
+        # only data['fheight'] given. calculate width by the aspect ratio
         axis_options.append( 'height='+data['fheight'] )
         if aspect_num:
             alpha = aspect_num * (ylim[1]-ylim[0])/(xlim[1]-xlim[0])
@@ -395,7 +400,7 @@ def _draw_axes( data, obj ):
             colorbar_styles.extend( _get_ticks( data, 'y', colorbar_ticks,
                                                     colorbar_ticklabels ) )
         else:
-            raise RuntimeError('Unknown color bar orientation "%s". Abort.' %
+            raise RuntimeError('Unknown color bar orientation ''%s''. Abort.' %
                                orientation )
 
 
@@ -479,7 +484,7 @@ def _mpl_cmap2pgf_cmap( cmap ):
     in Pgfplots.
     '''
     if not isinstance( cmap, mpl.colors.LinearSegmentedColormap ):
-        print('Don''t know how to handle color map. Using "blackwhite".')
+        print('Don''t know how to handle color map. Using ''blackwhite''.')
         is_custom_colormap = False
         return ('blackwhite', is_custom_colormap)
 
@@ -600,9 +605,9 @@ def _gcd( a, b ):
     This algoritm also works for real numbers:
     Find the greatest number h such that a and b are integer multiples of h.
     '''
-    # Keep the tolerance somewhat significantly about machine precision,
+    # Keep the tolerance somewhat significantly above machine precision
     # as otherwise round-off errors will be accounted for, returning 1.0e-10
-    # instead of 1 for the values
+    # instead of 1.0 for the values
     #   [ 1.0, 2.0000000001, 3.0, 4.0 ].
     while a > 1.0e-5:
         a, b = b % a, a
@@ -786,9 +791,9 @@ def _mpl_marker2pgfp_marker( data, mpl_marker, is_marker_face_color ):
         pass
 
     if mpl_marker == ',': # pixel
-        print('Unsupported marker "' + mpl_marker + '".')
+        print('Unsupported marker ''%r''.' % mpl_marker)
     else:
-        print('Unknown marker "' + mpl_marker + '".')
+        print('Unknown marker ''%r''.' % mpl_marker)
 
     return ( data, None, None )
 # ==============================================================================
@@ -804,25 +809,11 @@ def _mpl_linestyle2pgfp_linestyle( line_style ):
     '''Translates a line style of matplotlib to the corresponding style
     in Pgfplots.
     '''
-    # TODO redo as dictionary
-    if line_style == 'None':
-        show_line = False
-        style = None
-    elif line_style == '-':
-        show_line = True
-        style = None
-    elif line_style == ':':
-        show_line = True
-        style = 'dotted'
-    elif line_style == '--':
-        show_line = True
-        style = 'dashed'
-    elif line_style == '-.':
-        show_line = True
-        style = 'dash pattern=on 1pt off 3pt on 3pt off 3pt'
-    else:
-        warnings.warn('Unknown line style ''%r''. Using default.')
-        show_line = True
+    show_line = (line_style != 'None')
+    try:
+        style = MPLLINESTYLE_2_PGFPLOTSLINESTYLE[ line_style ]
+    except KeyError:
+        print('Unknown line style ''%r''. Using default.' % line_style)
         style = None
 
     return show_line, style
@@ -874,7 +865,9 @@ def _draw_image( data, obj ):
         extent = tuple(extent)
 
     if data['rel data path']:
-        rel_filepath = os.path.join( data['rel data path'], os.path.basename(filename) )
+        rel_filepath = os.path.join(data['rel data path'],
+                                    os.path.basename(filename)
+                                    )
     else:
         rel_filepath = os.path.basename(filename)
 
@@ -1407,7 +1400,7 @@ def _draw_text( data, obj ):
             properties.append( 'dotted' )
         elif bbox.get_ls() == 'dashed':
             properties.append('dashed')
-        # XXX: Is there any way to extract the dashdot
+        # TODO Check if there is there any way to extract the dashdot
         # pattern from matplotlib instead of hardcoding
         # an approximation?
         elif(bbox.get_ls() == 'dashdot'):
@@ -1502,7 +1495,7 @@ def _handle_children( data, obj ):
              ):
             pass
         else:
-            print('matplotlib2tikz: Don''t know how to handle object "%s".' %
+            print('matplotlib2tikz: Don''t know how to handle object ''%s''.' %
                   type(child))
 
     # XXX: This is ugly
