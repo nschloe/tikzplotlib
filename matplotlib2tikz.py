@@ -27,7 +27,6 @@ import matplotlib as mpl
 import numpy as np
 import types
 import os
-from itertools import izip
 # ==============================================================================
 # meta info
 __author__     = 'Nico Schlömer'
@@ -451,7 +450,7 @@ def _get_ticks( data, xy, ticks, ticklabels ):
     pgfplots_ticks = []
     pgfplots_ticklabels = []
     is_label_necessary = False
-    for (tick, ticklabel) in izip(ticks, ticklabels):
+    for (tick, ticklabel) in zip(ticks, ticklabels):
         pgfplots_ticks.append( tick )
         # store the label anyway
         label = ticklabel.get_text()
@@ -723,13 +722,13 @@ def _draw_line2d( data, obj ):
         # interpolates. Hence, if we have a masked plot, make sure that Pgfplots
         # jump as well.
         data['extra axis options'].add( 'unbounded coords=jump' )
-        for (x, y, is_masked) in izip(xdata, ydata, ydata.mask):
+        for (x, y, is_masked) in zip(xdata, ydata, ydata.mask):
             if is_masked:
                 content.append( '(%.15g,nan) ' % x )
             else:
                 content.append( '(%.15g,%.15g) ' % (x, y) )
     else:
-        for (x, y) in izip(xdata, ydata):
+        for (x, y) in zip(xdata, ydata):
             content.append( '(%.15g,%.15g) ' % (x, y) )
     content.append( '\n};\n' )
 
