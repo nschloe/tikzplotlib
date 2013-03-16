@@ -568,7 +568,7 @@ def _mpl_cmap2pgf_cmap( cmap ):
     unit = 'pt'
 
     # Scale to integer
-    X = _scale_to_int( numpy.array(X) )
+    X = _scale_to_int( np.array(X) )
 
     color_changes = []
     for (k, x) in enumerate(X):
