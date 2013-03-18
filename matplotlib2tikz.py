@@ -1251,7 +1251,8 @@ def _draw_legend(data, obj):
     pad = 0.03
     if obj._loc == 1:
         # upper right
-        pass
+        position = None
+        anchor = None
     elif obj._loc == 2:
         # upper left
         position = [pad, 1.0-pad];
