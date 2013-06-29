@@ -783,7 +783,7 @@ def _mpl_marker2pgfp_marker( data, mpl_marker, is_marker_face_color ):
     try:
         data['pgfplots libs'].add( 'plotmarks' )
         pgfplots_marker, marker_options = MP_MARKER2PLOTMARKS[ mpl_marker ]
-        if is_marker_face_color and not pgfplots_marker in ['|', '_']:
+        if (is_marker_face_color and is_marker_face_color.lower() != "none") and not pgfplots_marker in ['|', '_']:
             pgfplots_marker += '*'
         return ( data, pgfplots_marker, marker_options )
     except KeyError:
