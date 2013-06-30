@@ -178,7 +178,7 @@ def save( filepath,
 def _tex_comment( comment ):
     '''Prepends each line in string with the LaTeX comment key, '%'.
     '''
-    return '% ' + str.replace(comment, '\n', '\n% ')
+    return '% ' + str.replace(comment, '\n', '\n% ') + "\n"
 # ==============================================================================
 def _print_tree( obj, indent = '' ):
     '''Recursively prints the tree structure of the matplotlib object.
