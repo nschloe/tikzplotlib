@@ -683,6 +683,15 @@ def _draw_line2d( data, obj ):
     if marker:
         addplot_options.append( 'mark=' + marker )
 
+        mark_size = obj.get_markersize()
+        if mark_size:
+            # setting half size because pgfplots counts the radius/half-width
+            pgf_size = int( mark_size/2 )
+            # make sure we didn't round off to zero by accident
+            if pgf_size == 0 and mark_size != 0:
+                pgf_size = 1
+            addplot_options.append( 'mark size=%d' %  pgf_size)
+
         mark_options = []
         if extra_mark_options:
             mark_options.append( extra_mark_options )
