@@ -446,7 +446,7 @@ def _draw_axes( data, obj ):
     if hasattr(obj, "_matplotlib2tikz_anchors"):
         try:
             for coord, anchor_name in obj._matplotlib2tikz_anchors:
-                content.append('\\node (%s) at (axis cs:%f,%f) {};\n' % (anchor_name, coord[0], coord[1]))
+                content.append('\\node (%s) at (axis cs:%e,%e) {};\n' % (anchor_name, coord[0], coord[1]))
         except:
             print("Axes attribute _matplotlib2tikz_anchors wrongly set: Expected a list of ((x,y), anchor_name), got '%s'" % str(obj._matplotlib2tikz_anchors))
 
