@@ -27,6 +27,7 @@ import matplotlib as mpl
 import numpy as np
 import types
 import os
+import matplotlib.transforms
 # ==============================================================================
 # meta info
 __author__     = 'Nico Schlömer'
@@ -721,6 +722,22 @@ def _draw_line2d( data, obj ):
 
     # print the hard numerical data
     xdata, ydata = obj.get_data()
+
+    # Transform to data coordinates
+    # The coordinates might not be in data coordinates, but could be partly in axes coordinates.
+    # For example, the matplotlib command
+    #  axes.axvline(2)
+    # will have the y coordinates set to 0 and 1, not to the limits. Therefore, a two stage transform is to
+    # be applied, first transforming to display coordinates, then from display to data.
+    # In case of problems (non-invertible, or whatever), print a warning and continue anyways.
+    try:
+        points = zip(xdata, ydata)
+        transform = matplotlib.transforms.composite_transform_factory(obj.get_transform(), obj.get_axes().transData.inverted())
+        points_data = transform.transform(points)
+        xdata, ydata = zip(*points_data)
+    except:
+        print "Problem during transformation"
+
     try:
         has_mask = ydata.mask.any()
     except AttributeError:
