@@ -116,6 +116,14 @@ def save( filepath,
     :type extra: dict.
 
     :returns: None.
+
+
+    The following optional attributes of matplotlib's objects are recognized and handled:
+
+     - axes.Axes._matplotlib2tikz_anchors
+       This attribute can be set to a list of ((x,y), anchor_name) tuples. Invisible nodes
+       at the respective location will be created which  can be referenced from outside
+       the axis environment.
     '''
     data = {}
     data['fwidth']  = figurewidth
@@ -434,6 +442,14 @@ def _draw_axes( data, obj ):
         content.append( '[\n' + options + '\n]\n' )
 
     content.extend( children_content )
+
+    # anchors
+    if hasattr(obj, "_matplotlib2tikz_anchors"):
+        try:
+            for coord, anchor_name in obj._matplotlib2tikz_anchors:
+                content.append('\\node (%s) at (axis cs:%e,%e) {};\n' % (anchor_name, coord[0], coord[1]))
+        except:
+            print("Axes attribute _matplotlib2tikz_anchors wrongly set: Expected a list of ((x,y), anchor_name), got '%s'" % str(obj._matplotlib2tikz_anchors))
 
     if not is_subplot:
         content.append( '\\end{%s}\n\n' % env )
