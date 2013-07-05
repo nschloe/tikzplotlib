@@ -634,6 +634,25 @@ def _linear_interpolation( x, X, Y ):
     '''
     return ( Y[1]*(x-X[0]) + Y[0]*(X[1]-x) ) / ( X[1]-X[0] )
 # ==============================================================================
+def _transform_to_data_coordinates(obj, xdata, ydata):
+    '''Transform to data coordinates
+    The coordinates might not be in data coordinates, but could be partly in axes coordinates.
+    For example, the matplotlib command
+      axes.axvline(2)
+    will have the y coordinates set to 0 and 1, not to the limits. Therefore, a two stage transform is to
+    be applied, first transforming to display coordinates, then from display to data.
+    In case of problems (non-invertible, or whatever), print a warning and continue anyways.
+    '''
+    try:
+        points = zip(xdata, ydata)
+        transform = matplotlib.transforms.composite_transform_factory(obj.get_transform(), obj.get_axes().transData.inverted())
+        points_data = transform.transform(points)
+        xdata, ydata = zip(*points_data)
+    except:
+        print "Problem during transformation"
+        raise
+    return (xdata, ydata)
+# ==============================================================================
 TIKZ_LINEWIDTHS = { 0.1: 'ultra thin',
                     0.2: 'very thin',
                     0.4: 'thin',
@@ -737,22 +756,7 @@ def _draw_line2d( data, obj ):
 
 
     # print the hard numerical data
-    xdata, ydata = obj.get_data()
-
-    # Transform to data coordinates
-    # The coordinates might not be in data coordinates, but could be partly in axes coordinates.
-    # For example, the matplotlib command
-    #  axes.axvline(2)
-    # will have the y coordinates set to 0 and 1, not to the limits. Therefore, a two stage transform is to
-    # be applied, first transforming to display coordinates, then from display to data.
-    # In case of problems (non-invertible, or whatever), print a warning and continue anyways.
-    try:
-        points = zip(xdata, ydata)
-        transform = matplotlib.transforms.composite_transform_factory(obj.get_transform(), obj.get_axes().transData.inverted())
-        points_data = transform.transform(points)
-        xdata, ydata = zip(*points_data)
-    except:
-        print "Problem during transformation"
+    xdata, ydata = _transform_to_data_coordinates(obj, *obj.get_data())
 
     try:
         has_mask = ydata.mask.any()
@@ -1002,7 +1006,7 @@ def _draw_patchcollection( data, obj ):
                                           )
 
     for path in obj.get_paths():
-        data, cont = _draw_path( data, path,
+        data, cont = _draw_path( obj, data, path,
                                  draw_options = draw_options
                                )
         content.append( cont )
@@ -1058,7 +1062,7 @@ def _draw_patch( data, obj ):
         return _draw_ellipse( data, obj, draw_options )
     else:
         # regular patch
-        return  _draw_path( data, obj.get_path(),
+        return  _draw_path( obj, data, obj.get_path(),
                             draw_options = draw_options
                           )
 # ==============================================================================
@@ -1134,14 +1138,14 @@ def _draw_pathcollection( data, obj ):
 
     for path in paths:
         data, do = _get_draw_options( data, ec, fc )
-        data, cont = _draw_path( data, path,
+        data, cont = _draw_path( obj, data, path,
                                  draw_options = do
                                )
         content.append( cont )
 
     return data, content
 # ==============================================================================
-def _draw_path( data, path,
+def _draw_path( obj, data, path,
                 draw_options = None
               ):
     '''Adds code for drawing an ordinary path in Pgfplots (TikZ).
@@ -1150,6 +1154,7 @@ def _draw_path( data, path,
     nodes = []
     prev = None
     for vert, code in path.iter_segments():
+        vert = np.asarray(_transform_to_data_coordinates(obj, [vert[0]], [vert[1]]))
         # For path codes see
         #      <http://matplotlib.sourceforge.net/api/path_api.html#matplotlib.path.Path>
         if code == mpl.path.Path.STOP:
