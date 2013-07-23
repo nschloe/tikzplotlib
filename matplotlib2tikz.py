@@ -145,7 +145,8 @@ def save( filepath,
     import codecs
     file_handle = codecs.open(filepath, 'w', encoding)
 
-    print(file_handle.encoding)
+    if show_info:
+        print('file encoding: {0}'.format(file_handle.encoding))
 
     # gather the file content
     data, content = _handle_children( data, mpl.pyplot.gcf() )
@@ -181,7 +182,8 @@ def save( filepath,
     file_handle.close()
 
     # print message about necessary pgfplot libs to command line
-    _print_pgfplot_libs_message( data )
+    if show_info:
+        _print_pgfplot_libs_message( data )
     return
 # ==============================================================================
 def _tex_comment( comment ):
