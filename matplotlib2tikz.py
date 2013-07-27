@@ -651,7 +651,7 @@ def _transform_to_data_coordinates(obj, xdata, ydata):
         points_data = transform.transform(points)
         xdata, ydata = zip(*points_data)
     except:
-        print "Problem during transformation, continuing with original data"
+        print("Problem during transformation, continuing with original data")
     return (xdata, ydata)
 # ==============================================================================
 TIKZ_LINEWIDTHS = { 0.1: 'ultra thin',
