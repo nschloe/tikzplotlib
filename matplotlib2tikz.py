@@ -709,6 +709,10 @@ def _draw_line2d( data, obj ):
     data, line_xcolor, _ = _mpl_color2xcolor( data, color )
     addplot_options.append( line_xcolor )
 
+    alpha = obj.get_alpha()
+    if alpha != None :
+        addplot_options.append( 'opacity=%r' % alpha)
+
     show_line, linestyle = _mpl_linestyle2pgfp_linestyle( obj.get_linestyle() )
     if show_line and linestyle:
         addplot_options.append( linestyle )
