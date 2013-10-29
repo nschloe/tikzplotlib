@@ -780,7 +780,7 @@ def _draw_line2d( data, obj ):
                 content.append( '(%.15g,%.15g) ' % (x, y) )
     else:
         for (x, y) in zip(xdata, ydata):
-            content.append( '(%.15g,%.15g) ' % (x, y) )
+            content.append( '(%.15g,%.15g)\n' % (x, y) )
     content.append( '\n};\n' )
 
     return data, content
