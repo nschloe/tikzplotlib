@@ -1295,7 +1295,7 @@ def _draw_legend(data, obj):
     for text in obj.texts:
         texts.append( '%s' % text.get_text() )
 
-    cont = 'legend entries={%s}' % ','.join( texts )
+    cont = 'legend entries={{%s}}' % '},{'.join( texts )
     data['extra axis options'].add(cont)
 
     # Get the location.
