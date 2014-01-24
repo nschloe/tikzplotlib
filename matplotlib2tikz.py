@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 #
-# Copyright (C) 2010--2012 Nico Schlömer
+# Copyright (C) 2010--2014 Nico Schlömer
 #
 # This file is part of matplotlib2tikz.
 #
@@ -31,7 +31,7 @@ import matplotlib.transforms
 # ==============================================================================
 # meta info
 __author__     = 'Nico Schlömer'
-__copyright__  = 'Copyright (c) 2010--2012, Nico Schlömer <nico.schloemer@gmail.com>'
+__copyright__  = 'Copyright (c) 2010--2014, Nico Schlömer <nico.schloemer@gmail.com>'
 __credits__    = []
 __license__    = 'GNU Lesser General Public License (LGPL), Version 3'
 __version__    = '0.1.0'

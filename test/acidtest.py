@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 #
-# Copyright (C) 2010--2012 Nico Schl"omer
+# Copyright (C) 2010--2014 Nico Schl"omer
 #
 # This file is part of matplotlib2tikz.
 #
