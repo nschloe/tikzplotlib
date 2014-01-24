@@ -299,7 +299,7 @@ def subplot4x4():
     pp.plot([0, 4], [0, 4])
     pp.title('still equal after adding line', fontsize=10)
 
-    return '4x4 subplots'
+    return '$4\\times 4$ subplots'
 
 
 def histogram():

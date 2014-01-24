@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010--2014 Nico Schl'omer
+# Copyright (C) 2010--2014 Nico Schlömer
 #
 # This file is part of matplotlib2tikz.
 #
@@ -74,26 +74,44 @@ def _main():
         # plot the test example
         comment = getattr(testfunctions, function_strings[k])()
 
-        # convert to TikZ
-        tikz_path = data_dir + '/test%r.tex' % k
-        matplotlib2tikz.save(tikz_path,
-                             figurewidth=figure_width,
-                             tex_relative_path_to_data=tex_relative_path_to_data
-                             )
-
         # plot reference figure
         pdf_path = data_dir + '/test' + repr(k) + '.pdf'
         pp.savefig(pdf_path)
 
-        # update the LaTeX file
-        write_file_comparison_entry(file_handle,
-                                    path.join(tex_relative_path_to_data,
-                                              path.basename(pdf_path)),
-                                    path.join(tex_relative_path_to_data,
-                                              path.basename(tikz_path)),
-                                    k,
-                                    comment
-                                    )
+        pdf_path = path.join(tex_relative_path_to_data,
+                             path.basename(pdf_path)
+                             )
+        # Open figure, insert PDF
+        file_handle.write('% test plot ' + str(k) + '\n'
+                          '\\begin{figure}%\n'
+                          '\\centering%\n'
+                          '\\begin{tabular}{cc}\n'
+                          '\includegraphics[width=\\figwidth]'
+                          '{' + str(pdf_path) + '}%\n'
+                          '&\n'
+                          )
+        # convert to TikZ
+        tikz_path = data_dir + '/test%r.tex' % k
+        tikz_tex_path = path.join(tex_relative_path_to_data,
+                                  path.basename(tikz_path)
+                                  )
+        try:
+            matplotlib2tikz.save(
+                tikz_path,
+                figurewidth=figure_width,
+                tex_relative_path_to_data=tex_relative_path_to_data,
+                show_info=False
+                )
+            file_handle.write('\\input{%s}\n' % tikz_tex_path)
+        except:
+            file_handle.write('% fail\n')
+
+        # Close the figure
+        file_handle.write('\\end{tabular}\n'
+                          '\\caption{' + str(comment) + ' (test ID '
+                          + str(k) + ').}%\n'
+                          '\\end{figure}\\clearpage\n\n'
+                          )
         print 'done.'
     write_document_closure(file_handle)
     file_handle.close()
@@ -103,15 +121,12 @@ def _main():
 def write_document_header(file_handle, figure_width):
     '''Write the LaTeX document header to the file.
     '''
-    file_handle.write('\\documentclass{scrartcl}\n'
-                      '\\pdfminorversion=5\n'
-                      '\\pdfobjcompresslevel=2\n\n'
+    file_handle.write('\\documentclass[landscape]{scrartcl}\n'
                       '\\usepackage{graphicx}\n'
-                      '\\usepackage{subfig}\n'
                       '\\usepackage{pgfplots}\n'
                       '\\usepgfplotslibrary{groupplots}\n'
                       '\\pgfplotsset{compat=newest}\n\n'
-                      '\\newlength\\figwidth\n'
+                      '\\newlength\\figwidth%\n'
                       '\\setlength\\figwidth{' + figure_width + '}\n\n'
                       '\\begin{document}\n\n'
                       )
@@ -136,13 +151,12 @@ def write_file_comparison_entry(file_handle,
     file_handle.write('% test plot ' + str(test_id) + '\n'
                       '\\begin{figure}%\n'
                       '\\centering%\n'
-                      '\\subfloat[][Reference PDF figure.]{'
+                      '\\begin{tabular}{cc}\n'
                       '\includegraphics[width=\\figwidth]'
-                      '{' + str(pdf_path) + '}}%\n'
-                      '\\quad%\n'
-                      #+ '\\\\'
-                      '\\subfloat[][\\texttt{matplotlib2tikz}-generated]{'
-                      '\input{' + str(tikz_path) + '}}%\n'
+                      '{' + str(pdf_path) + '}%\n'
+                      '&\n'
+                      '\input{' + str(tikz_path) + '}%\n'
+                      '\\end{tabular}\n'
                       '\\caption{' + str(comment) + ' (test ID '
                       + str(test_id) + ').}%\n'
                       '\\end{figure}\\clearpage\n\n'
