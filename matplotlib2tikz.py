@@ -40,6 +40,7 @@ __email__      = 'nico.schloemer@gmail.com'
 __status__     = 'Development'
 # ==============================================================================
 def save( filepath,
+          figure = None,
           encoding = None,
           figurewidth = None,
           figureheight = None,
@@ -125,6 +126,8 @@ def save( filepath,
        at the respective location will be created which  can be referenced from outside
        the axis environment.
     '''
+    if figure is None:
+        figure = mpl.pyplot.gcf()
     data = {}
     data['fwidth']  = figurewidth
     data['fheight'] = figureheight
@@ -149,7 +152,7 @@ def save( filepath,
         print('file encoding: {0}'.format(file_handle.encoding))
 
     # gather the file content
-    data, content = _handle_children( data, mpl.pyplot.gcf() )
+    data, content = _handle_children( data, figure )
 
     disclaimer = ( 'This file was created by matplotlib v%s.\n'
                  + '%s\n'
