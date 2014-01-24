@@ -40,7 +40,7 @@ __email__      = 'nico.schloemer@gmail.com'
 __status__     = 'Development'
 # ==============================================================================
 def save( filepath,
-          figure = None,
+          figure = 'gcf',
           encoding = None,
           figurewidth = None,
           figureheight = None,
@@ -54,6 +54,8 @@ def save( filepath,
         ):
     '''Main function. Here, the recursion into the image starts and the contents
     are picked up. The actual file gets written in this routine.
+
+    :param figure: either a Figure object or 'gcf' (default).
 
     :param filepath: The file to which the TikZ output will be written.
     :type filepath: str.
@@ -112,9 +114,9 @@ def save( filepath,
                  the environment (eg. scale= etc.). Default is ``True``
     :type wrap: bool.
 
-    :param extra: Extra axis options to be passed (as a dict) to pgfplots.
+    :param extra: Extra axis options to be passed (as a set) to pgfplots.
                   Default is ``None``.
-    :type extra: dict.
+    :type extra: a set of strings for the pfgplots axes.
 
     :returns: None.
 
@@ -126,7 +128,8 @@ def save( filepath,
        at the respective location will be created which  can be referenced from outside
        the axis environment.
     '''
-    if figure is None:
+    # not as default value because gcf() would be evaluated at import time
+    if figure == 'gcf':
         figure = mpl.pyplot.gcf()
     data = {}
     data['fwidth']  = figurewidth
@@ -140,7 +143,7 @@ def save( filepath,
     data['font size'] = textsize
     data['custom colors'] = {}
     if extra:
-        data['extra axis options'] = extra
+        data['extra axis options'] = extra.copy()
     else:
         data['extra axis options'] = set()
 
