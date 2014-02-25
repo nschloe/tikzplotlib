@@ -24,7 +24,6 @@
 import matplotlib as mpl
 import numpy as np
 import os
-import matplotlib.transforms
 import warnings
 
 # meta info
@@ -672,6 +671,7 @@ def _transform_to_data_coordinates(obj, xdata, ydata):
     (non-invertible, or whatever), print a warning and continue anyways.
     '''
     try:
+        import matplotlib.transforms
         points = zip(xdata, ydata)
         transform = matplotlib.transforms.composite_transform_factory(
             obj.get_transform(),
