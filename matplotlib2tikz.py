@@ -56,7 +56,7 @@ def save(filepath,
     :param figure: either a Figure object or 'gcf' (default).
 
     :param filepath: The file to which the TikZ output will be written.
-    :type filepath: str.
+    :type filepath: str
 
     :param encoding: Which encoding to use for the file.
 
@@ -66,7 +66,7 @@ def save(filepath,
                         the original width/height ratio.
                         Note that ``figurewidth`` can be a string literal,
                         such as ``'\\figurewidth'``.
-    :type figurewidth: str.
+    :type figurewidth: str
 
     :param figureheight: If not ``None``, this will be used as figure height
                          within the TikZ/Pgfplot output. If ``figurewidth`` is
@@ -74,11 +74,11 @@ def save(filepath,
                          the original width/height ratio.  Note that
                          ``figurewidth`` can be a string literal, such as
                          ``'\\figureheight'``.
-    :type figureheight: str.
+    :type figureheight: str
 
     :param textsize: The text size (in pt) that the target latex document is
                      using.  Default is 10.0.
-    :type textsize: float.
+    :type textsize: float
 
     :param tex_relative_path_to_data: In some cases, the TikZ file will have to
                                       refer to another file, e.g., a PNG for
@@ -89,13 +89,13 @@ def save(filepath,
                                       This arguments optionally sets the
                                       relative path from the LaTeX file to the
                                       data.
-    :type tex_relative_path_to_data: str.
+    :type tex_relative_path_to_data: str
 
     :param strict: Whether or not to strictly stick to matplotlib's appearance.
                    This influences, for example, whether tick marks are set
                    exactly as in the matplotlib plot, or if TikZ/Pgfplots
                    can decide where to put the ticks.
-    :type strict: bool.
+    :type strict: bool
 
     :param draw_rectangles: Whether or not to draw Rectangle objects.
                             You normally don't want that as legend, axes, and
@@ -105,19 +105,19 @@ def save(filepath,
                             cannot otherwise be represented though.
                             Don't expect working or clean output when using
                             this option.
-    :type draw_rectangles: bool.
+    :type draw_rectangles: bool
 
     :param wrap: Whether ``'\\begin{tikzpicture}'`` and
                  ``'\\end{tikzpicture}'`` will be written. One might need to
                  provide custom arguments to the environment (eg. scale= etc.).
                  Default is ``True``.
-    :type wrap: bool.
+    :type wrap: bool
 
     :param extra: Extra axis options to be passed (as a set) to pgfplots.
                   Default is ``None``.
     :type extra: a set of strings for the pfgplots axes.
 
-    :returns: None.
+    :returns: None
 
 
     The following optional attributes of matplotlib's objects are recognized
