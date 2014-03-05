@@ -24,40 +24,44 @@ from matplotlib import pyplot as pp
 
 
 def basic_sin():
-        t = np.arange(0.0, 2.0, 0.1)
-        s = np.sin(2*np.pi*t)
-        pp.plot(t, s, 'o-', lw=4.1)
-        pp.xlabel('time(s)')
-        #pp.xlabel('time(s) _ % $ \\')
-        pp.ylabel('Voltage (mV)')
-        pp.title('Easier than easy $\\frac{1}{2}$')
-        pp.grid(True)
-        return 'Simple $\sin$ plot with some labels'
+    from mpltools import style
+    style.use('ggplot')
+    t = np.arange(0.0, 2.0, 0.1)
+    s = np.sin(2*np.pi*t)
+    s2 = np.cos(2*np.pi*t)
+    pp.plot(t, s, 'o-', lw=4.1)
+    pp.plot(t, s2, 'o-', lw=4.1)
+    pp.xlabel('time(s)')
+    #pp.xlabel('time(s) _ % $ \\')
+    pp.ylabel('Voltage (mV)')
+    pp.title('Easier than easy $\\frac{1}{2}$')
+    pp.grid(True)
+    return 'Simple $\sin$ plot with some labels'
 
 
 def subplots():
-        def f(t):
-            s1 = np.cos(2*np.pi*t)
-            e1 = np.exp(-t)
-            return np.multiply(s1, e1)
+    def f(t):
+        s1 = np.cos(2*np.pi*t)
+        e1 = np.exp(-t)
+        return np.multiply(s1, e1)
 
-        t1 = np.arange(0.0, 5.0, 0.1)
-        t2 = np.arange(0.0, 5.0, 0.02)
-        t3 = np.arange(0.0, 2.0, 0.01)
+    t1 = np.arange(0.0, 5.0, 0.1)
+    t2 = np.arange(0.0, 5.0, 0.02)
+    t3 = np.arange(0.0, 2.0, 0.01)
 
-        pp.subplot(211)
-        pp.plot(t1, f(t1), 'bo', t2, f(t2), 'k--', markerfacecolor='green')
-        pp.grid(True)
-        pp.title('A tale of 2 subplots')
-        pp.ylabel('Damped oscillation')
+    pp.subplot(211)
+    pp.plot(t1, f(t1), 'bo', t2, f(t2), 'k--', markerfacecolor='green')
+    pp.grid(True)
+    pp.title('A tale of 2 subplots')
+    pp.ylabel('Damped oscillation')
 
-        pp.subplot(212)
-        pp.plot(t3, np.cos(2*np.pi*t3), 'r.')
-        pp.grid(True)
-        pp.xlabel('time (s)')
-        pp.ylabel('Undamped')
+    pp.subplot(212)
+    pp.plot(t3, np.cos(2*np.pi*t3), 'r.')
+    pp.grid(True)
+    pp.xlabel('time (s)')
+    pp.ylabel('Undamped')
 
-        return 'Two subplots on top of each other'
+    return 'Two subplots on top of each other'
 
 
 def image_plot():
@@ -359,6 +363,6 @@ def contourf_with_logscale():
     return 'contourf with logscale'
 
 
-if __name__ == 'main':
-    patches()
+if __name__ == '__main__':
+    basic_sin()
     pp.show()
