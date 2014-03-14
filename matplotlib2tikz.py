@@ -1108,13 +1108,14 @@ def _draw_rectangle(data, obj, draw_options):
 
     left_lower_x = obj.get_x()
     left_lower_y = obj.get_y()
-    cont = '\draw[%s] (axis cs:%.15g,%.15g) rectangle (axis cs:%.15g,%.15g);\n' \
-           % (','.join(draw_options),
-              left_lower_x,
-              left_lower_y,
-              left_lower_x + obj.get_width(),
-              left_lower_y + obj.get_height()
-              )
+    cont = ('\draw[%s] (axis cs:%.15g,%.15g) '
+            'rectangle (axis cs:%.15g,%.15g);\n'
+            ) % (','.join(draw_options),
+                 left_lower_x,
+                 left_lower_y,
+                 left_lower_x + obj.get_width(),
+                 left_lower_y + obj.get_height()
+                 )
     return data, cont
 
 
@@ -1186,7 +1187,7 @@ def _draw_path(obj, data, path,
                                                          [vert[1]]
                                                          ))
         # For path codes see
-        # <http://matplotlib.sourceforge.net/api/path_api.html#matplotlib.path.Path>
+        # http://matplotlib.sourceforge.net/api/path_api.html#matplotlib.path.Path
         if code == mpl.path.Path.STOP:
             pass
         elif code == mpl.path.Path.MOVETO:
@@ -1407,7 +1408,8 @@ def _draw_text(data, obj):
             arrow_style = []
             if obj.arrowprops is not None:
                 if obj.arrowprops['arrowstyle'] is not None:
-                    if obj.arrowprops['arrowstyle'] in ['-', '->', '<-', '<->']:
+                    if obj.arrowprops['arrowstyle'] in ['-', '->',
+                                                        '<-', '<->']:
                         arrow_style.append(obj.arrowprops['arrowstyle'])
                         data, col, _ = _mpl_color2xcolor(
                             data,
@@ -1488,8 +1490,10 @@ def _draw_text(data, obj):
         # pattern from matplotlib instead of hardcoding
         # an approximation?
         elif(bbox.get_ls() == 'dashdot'):
-            properties.append('dash pattern=on %.3gpt off %.3gpt on %.3gpt off %.3gpt'
-                              % (1.0/scaling, 3.0/scaling, 6.0/scaling, 3.0/scaling)
+            properties.append(('dash pattern=on %.3gpt off %.3gpt on '
+                               '%.3gpt off %.3gpt'
+                               ) % (1.0/scaling, 3.0/scaling,
+                                    6.0/scaling, 3.0/scaling)
                               )
         else:
             pass  # solid
