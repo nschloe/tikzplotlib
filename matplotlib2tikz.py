@@ -1244,27 +1244,6 @@ def _draw_path(obj, data, path,
 
     return data, path_command
 
-# RGB values (as taken from xcolor.dtx):
-RGB_2_XCOLOR = {'red':  np.array([1, 0, 0]),
-                'green': np.array([0, 1, 0]),
-                'blue': np.array([0, 0, 1]),
-                'brown': np.array([0.75, 0.5,  0.25]),
-                'lime': np.array([0.75, 1, 0]),
-                'orange': np.array([1, 0.5, 0]),
-                'pink': np.array([1, 0.75, 0.75]),
-                'purple': np.array([0.75, 0, 0.25]),
-                'teal': np.array([0, 0.5, 0.5]),
-                'violet': np.array([0.5, 0, 0.5]),
-                'black': np.array([0, 0, 0]),
-                'darkgray': np.array([0.25, 0.25, 0.25]),
-                'gray': np.array([0.5, 0.5, 0.5]),
-                'lightgray': np.array([0.75, 0.75, 0.75]),
-                'white': np.array([1, 1, 1])
-                # The colors cyan, magenta, yellow, and olive are also
-                # predefined by xcolor, but their RGB approximation of the
-                # native CMYK values is not very good. Don't use them here.
-                }
-
 
 def _mpl_color2xcolor(data, matplotlib_color):
     '''Translates a matplotlib color specification into a proper LaTeX xcolor.
@@ -1273,7 +1252,29 @@ def _mpl_color2xcolor(data, matplotlib_color):
     my_col = np.array(mpl.colors.ColorConverter().to_rgba(matplotlib_color))
 
     xcol = None
-    available_colors = RGB_2_XCOLOR
+
+    # RGB values (as taken from xcolor.dtx):
+    available_colors = {
+        'red':  np.array([1, 0, 0]),
+        'green': np.array([0, 1, 0]),
+        'blue': np.array([0, 0, 1]),
+        'brown': np.array([0.75, 0.5,  0.25]),
+        'lime': np.array([0.75, 1, 0]),
+        'orange': np.array([1, 0.5, 0]),
+        'pink': np.array([1, 0.75, 0.75]),
+        'purple': np.array([0.75, 0, 0.25]),
+        'teal': np.array([0, 0.5, 0.5]),
+        'violet': np.array([0.5, 0, 0.5]),
+        'black': np.array([0, 0, 0]),
+        'darkgray': np.array([0.25, 0.25, 0.25]),
+        'gray': np.array([0.5, 0.5, 0.5]),
+        'lightgray': np.array([0.75, 0.75, 0.75]),
+        'white': np.array([1, 1, 1])
+        # The colors cyan, magenta, yellow, and olive are also
+        # predefined by xcolor, but their RGB approximation of the
+        # native CMYK values is not very good. Don't use them here.
+        }
+
     available_colors.update(data['custom colors'])
 
     # Check if it exactly matches any of the colors already available.
