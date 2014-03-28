@@ -175,7 +175,7 @@ def save(filepath,
 
     # write the contents
     if wrap:
-        file_handle.write('\n\\begin{tikzpicture}\n\n')
+        file_handle.write('\\begin{tikzpicture}\n\n')
 
     coldefs = _get_color_definitions(data)
     if coldefs:
