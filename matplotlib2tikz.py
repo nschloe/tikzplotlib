@@ -25,6 +25,8 @@ import matplotlib as mpl
 import numpy as np
 import os
 import warnings
+import matplotlib.backends.backend_agg as bagg
+import matplotlib._png as _png
 
 # meta info
 __author__ = 'Nico Schlömer'
@@ -701,39 +703,10 @@ def _draw_line2d(data, obj):
     addplot_options = []
 
     # get the linewidth (in pt)
-    line_width = obj.get_linewidth()
+    line_width = _mpl_linewidth2pgfp_linewidth(data,obj.get_linewidth())
 
-    if data['strict']:
-        # Takes the matplotlib linewidths, and just translate them
-        # into Pgfplots.
-        try:
-            addplot_options.append(TIKZ_LINEWIDTHS[line_width])
-        except KeyError:
-            # explicit line width
-            addplot_options.append('line width=%spt' % line_width)
-    else:
-        # The following is an alternative approach to line widths.
-        # The default line width in matplotlib is 1.0pt, in Pgfplots 0.4pt
-        # ('thin').
-        # Match the two defaults, and scale for the rest.
-        scaled_line_width = line_width / 1.0  # scale by default line width
-        if scaled_line_width == 0.25:
-            addplot_options.append('ultra thin')
-        elif scaled_line_width == 0.5:
-            addplot_options.append('very thin')
-        elif scaled_line_width == 1.0:
-            pass  # Pgfplots default line width, 'thin'
-        elif scaled_line_width == 1.5:
-            addplot_options.append('semithick')
-        elif scaled_line_width == 2:
-            addplot_options.append('thick')
-        elif scaled_line_width == 3:
-            addplot_options.append('very thick')
-        elif scaled_line_width == 4:
-            addplot_options.append('ultra thick')
-        else:
-            # explicit line width
-            addplot_options.append('line width=%rpt' % (0.4*line_width))
+    if line_width:
+        addplot_options.append(line_width)
 
     # get line color
     color = obj.get_color()
@@ -751,7 +724,7 @@ def _draw_line2d(data, obj):
     marker_face_color = obj.get_markerfacecolor()
     marker_edge_color = obj.get_markeredgecolor()
     data, marker, extra_mark_options = \
-        _mpl_marker2pgfp_marker(data, obj.get_marker(), marker_face_color)
+        _mpl_marker2pgfp_marker(data, obj.get_marker(), marker_face_color is not None)
     if marker:
         addplot_options.append('mark=' + marker)
 
@@ -767,14 +740,21 @@ def _draw_line2d(data, obj):
         mark_options = []
         if extra_mark_options:
             mark_options.append(extra_mark_options)
-        if marker_face_color:
+        if marker_face_color is not None:
             data, face_xcolor, _ = _mpl_color2xcolor(data, marker_face_color)
-            if face_xcolor != line_xcolor:
-                mark_options.append('fill=' + face_xcolor)
-        if marker_edge_color and marker_edge_color != marker_face_color:
+        else:
+            face_xcolor = line_xcolor
+            
+        if marker_edge_color is not None:
             data, draw_xcolor, _ = _mpl_color2xcolor(data, marker_edge_color)
-            if draw_xcolor != line_xcolor:
-                mark_options.append('draw=' + draw_xcolor)
+        else:
+            draw_xcolor = line_xcolor
+            
+        if face_xcolor != line_xcolor:
+            mark_options.append('fill=' + face_xcolor)
+        if draw_xcolor != line_xcolor and draw_xcolor != face_xcolor:
+            mark_options.append('draw=' + draw_xcolor)
+            
         if mark_options:
             addplot_options.append('mark options={%s}' % ','.join(mark_options)
                                    )
@@ -866,9 +846,7 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, is_marker_face_color):
     try:
         data['pgfplots libs'].add('plotmarks')
         pgfplots_marker, marker_options = MP_MARKER2PLOTMARKS[mpl_marker]
-        if (is_marker_face_color
-            and is_marker_face_color.lower() != "none") \
-                and not pgfplots_marker in ['|', '_']:
+        if is_marker_face_color and not pgfplots_marker in ['|', '_']:
             pgfplots_marker += '*'
         return (data, pgfplots_marker, marker_options)
     except KeyError:
@@ -888,6 +866,38 @@ MPLLINESTYLE_2_PGFPLOTSLINESTYLE = {'None': None,
                                           'on 3pt off 3pt'
                                     }
 
+def _mpl_linewidth2pgfp_linewidth(data,line_width):
+    if data['strict']:
+        # Takes the matplotlib linewidths, and just translate them
+        # into Pgfplots.
+        try:
+            return TIKZ_LINEWIDTHS[ line_width ]
+        except KeyError:
+            # explicit line width
+            return 'line width=%spt' % line_width
+    else:
+        # The following is an alternative approach to line widths.
+        # The default line width in matplotlib is 1.0pt, in Pgfplots 0.4pt
+        # ('thin').
+        # Match the two defaults, and scale for the rest.
+        scaled_line_width = line_width / 1.0  # scale by default line width
+        if scaled_line_width == 0.25:
+            return 'ultra thin'
+        elif scaled_line_width == 0.5:
+            return 'very thin'
+        elif scaled_line_width == 1.0:
+            return ''# Pgfplots default line width, 'thin'
+        elif scaled_line_width == 1.5:
+            return 'semithick'
+        elif scaled_line_width == 2:
+            return 'thick'
+        elif scaled_line_width == 3:
+            return 'very thick'
+        elif scaled_line_width == 4:
+            return 'ultra thick'
+        else:
+            # explicit line width
+            return 'line width=%rpt' % (0.4*line_width)
 
 def _mpl_linestyle2pgfp_linestyle(line_style):
     '''Translates a line style of matplotlib to the corresponding style
@@ -967,6 +977,55 @@ def _draw_image(data, obj):
 
     return data, content
 
+def _draw_quadmesh( data, obj, dpi=50 ):
+    '''Returns the Pgfplots code for an quadmesh environment.
+    '''
+    content = []
+
+    if not 'img number' in data.keys():
+        data['img number'] = 0
+
+    # Make sure not to overwrite anything.
+    file_exists = True
+    while file_exists:
+        data['img number'] = data['img number'] + 1
+        filename = os.path.join( data['output dir'],
+                                 'img' + str(data['img number']) + '.png'
+                               )
+        file_exists = os.path.isfile( filename )
+
+
+
+    #draw quadmesh to new rederer 
+    cbox = obj.get_clip_box()
+    xsize,ysize = int(cbox.extents[2]),int(cbox.extents[3])
+    ren = bagg.RendererAgg(xsize,ysize,dpi)
+    obj.draw(ren)
+    
+    # write renderer to file
+    with open(filename,'wb') as f:
+        w,h = int(cbox.width),int(cbox.height)
+        rsub = ren.copy_from_bbox(cbox)
+        _png.write_png(rsub.to_string(),w,h,f,dpi)
+
+    # write the corresponding information to the TikZ file
+    extent = tuple(obj.get_window_extent(ren).extents)
+
+    if data['rel data path']:
+        rel_filepath = os.path.join(data['rel data path'],
+                                    os.path.basename(filename)
+                                    )
+    else:
+        rel_filepath = os.path.basename(filename)
+
+    # Explicitly use \pgfimage as includegrapics command, as the default
+    # \includegraphics fails unexpectedly in some cases
+    content.append(  '\\addplot graphics [xmin=%.4g, ymin=%.4g, ' \
+                                          'xmax=%.4g, ymax=%.4g] {%s};\n' % \
+                                          ( extent + (rel_filepath,) )
+                  )
+
+    return data, content
 
 def _find_associated_colorbar(obj):
     '''Rather poor way of telling whether an axis has a colorbar associated:
@@ -1045,6 +1104,31 @@ def _draw_patchcollection(data, obj):
         content.append(cont)
     return data, content
 
+def _draw_linecollection( data, obj ):
+    '''Returns Pgfplots code for a number of patch objects.
+    '''
+    content = []
+
+    for path,color,style,width in zip(obj.get_paths(),obj.get_edgecolors(),
+                                      obj.get_linestyles(),obj.get_linewidths()):
+
+        data, options = _get_draw_options( data, color, None )
+        
+        width = _mpl_linewidth2pgfp_linewidth(data,width)
+        if width:
+            options.append(width)
+        
+        if style[0] is not None:
+            show_line, linestyle = _mpl_linestyle2pgfp_linestyle( style[0] )
+            if show_line and linestyle:
+                options.append( linestyle )
+            
+        data, cont = _draw_path( obj, data, path,
+                                 draw_options = options, simplify=False
+                               )
+        content.append( cont )
+
+    return data, content
 
 def _get_draw_options(data, ec, fc):
     '''Get the draw options for a given (patch) object.
@@ -1175,13 +1259,13 @@ def _draw_pathcollection(data, obj):
 
 
 def _draw_path(obj, data, path,
-               draw_options=None
+               draw_options=None,simplify=None
                ):
     '''Adds code for drawing an ordinary path in Pgfplots (TikZ).
     '''
     nodes = []
     prev = None
-    for vert, code in path.iter_segments():
+    for vert, code in path.iter_segments(simplify=simplify):
         vert = np.asarray(_transform_to_data_coordinates(obj,
                                                          [vert[0]],
                                                          [vert[1]]
@@ -1577,13 +1661,18 @@ def _handle_children(data, obj):
         elif (isinstance(child, mpl.collections.PathCollection)):
             data, cont = _draw_pathcollection(data, child)
             content.extend(cont)
+        elif ( isinstance( child, mpl.collections.LineCollection ) ):
+            data, cont = _draw_linecollection( data, child )
+            content.extend( cont )
+        elif ( isinstance( child, mpl.collections.QuadMesh ) ):
+            data, cont = _draw_quadmesh( data, child )
+            content.extend( cont )
         elif (isinstance(child, mpl.legend.Legend)):
             data = _draw_legend(data, child)
         elif (isinstance(child, mpl.axis.XAxis)
               or isinstance(child, mpl.axis.YAxis)
               or isinstance(child, mpl.spines.Spine)
               or isinstance(child, mpl.text.Text)
-              or isinstance(child, mpl.collections.QuadMesh)
               ):
             pass
         else:
