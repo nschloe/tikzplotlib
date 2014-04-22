@@ -903,13 +903,32 @@ def _mpl_linestyle2pgfp_linestyle(line_style):
     '''Translates a line style of matplotlib to the corresponding style
     in Pgfplots.
     '''
-    show_line = (line_style != 'None')
-    try:
-        style = MPLLINESTYLE_2_PGFPLOTSLINESTYLE[line_style]
-    except KeyError:
-        print('Unknown line style ''%r''. Using default.' % line_style)
-        style = None
-    return show_line, style
+    if isinstance(line_style,tuple):
+        offset, spacing = line_style
+        if offset is None and spacing is None:
+            return True, None # solid line
+        elif spacing == (1.0, 3.0):
+            return True, 'dotted'
+        elif spacing == (6.0, 6.0):
+            return True, 'dashed'
+        else:
+            pattern = []
+            for s in spacing:
+                if len(pattern)%2:
+                    pattern.append('off %dpt' % (s,))
+                else:
+                    pattern.append('on %dpt' % (s,))
+                    
+            line_style = 'dash pattern=' + ' '.join(pattern)
+            return True, line_style
+    else:
+        show_line = (line_style != 'None')
+        try:
+            style = MPLLINESTYLE_2_PGFPLOTSLINESTYLE[line_style]
+        except KeyError:
+            print('Unknown line style ''%r''. Using default.' % line_style)
+            style = None
+        return show_line, style
 
 
 def _draw_image(data, obj):
@@ -1119,7 +1138,7 @@ def _draw_linecollection( data, obj ):
             options.append(width)
         
         if style[0] is not None:
-            show_line, linestyle = _mpl_linestyle2pgfp_linestyle( style[0] )
+            show_line, linestyle = _mpl_linestyle2pgfp_linestyle( style )
             if show_line and linestyle:
                 options.append( linestyle )
             
