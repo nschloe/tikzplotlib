@@ -25,7 +25,6 @@ https://github.com/nschloe/matplotlib2tikz.
   *  Pgfplots (>=1.3).
 
 ### Usage
-The workflow is as follows.
 
 1. Generate your matplotlib plot as usual.
 
@@ -66,19 +65,24 @@ The workflow is as follows.
         \setlength\figurewidth{6cm}
         \input{myfile.tikz}
 
-  3. Add the contents of myfile.tikz into your LaTeX source code; a convenient
-      way of doing so is to use \input{/path/to/myfile.tikz}. Also make sure
-      that at the header of your document the packages TikZ and Pgfplots are
-      included:
+3. Add the contents of `myfile.tikz` into your LaTeX source code; a convenient
+   way of doing so is to use `\input{/path/to/myfile.tikz}`. Also make sure
+   that at the header of your document the packages TikZ and Pgfplots are
+   included:
 
         \usepackage{tikz}
         \usepackage{pgfplots}
 
-      Optionally, to use features of the latest Pgfplots package (as of
-      Pgfplots 1.3), insert
+   Optionally, to use features of the latest Pgfplots package (as of
+   Pgfplots 1.3), insert
 
         \pgfplotsset{compat=newest}
 
+### License
+
+matplotlib2tikz is published under the GNU Lesser General Public License v3.0.
+
+### Contributing
 
 If you experience bugs, would like to contribute, have nice examples of what
 matplotlib2tikz can do, or if you are just looking for more information, then
