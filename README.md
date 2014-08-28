@@ -1,6 +1,7 @@
 # matplotlib2tikz
 
 [![Code Health](https://landscape.io/github/nschloe/matplotlib2tikz/master/landscape.png)](https://landscape.io/github/nschloe/matplotlib2tikz/master)
+[![Documentation Status](https://readthedocs.org/projects/matplotlib2tikz/badge/?version=latest)](https://readthedocs.org/projects/matplotlib2tikz/?badge=latest)
 
 
 This is matplotlib2tikz, a Python script for converting matplotlib figures into
