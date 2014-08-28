@@ -1,45 +1,51 @@
+# matplotlib2tikz
+
+[![Code Health](https://landscape.io/github/nschloe/matplotlib2tikz/master/landscape.png)](https://landscape.io/github/nschloe/matplotlib2tikz/master)
+
+
 This is matplotlib2tikz, a Python script for converting matplotlib figures into
 native Pgfplots (TikZ) figures.
 
 To download matplotlibtikz, go to its page on GitHub
 https://github.com/nschloe/matplotlib2tikz.
 
+## Installation
+1. Place the matplotlib2tikz script in a directory where Python can find
+    it (e.g., `$PYTHONPATH`).
+    You can install it systemwide with
+
+        sudo python setup.py install
+
+   or place the script `matplotlib2tikz.py` into the directory where you
+   intend to use it.
+
+2. Make sure that your LaTeX installation includes the packages
+
+  * TikZ (aka PGF, >=2.00), and
+  *  Pgfplots (>=1.3).
+
+### Usage
 The workflow is as follows.
 
-  0.) a) Place the matplotlib2tikz script in a directory where Python can find
-         it (e.g., $PYTHONPATH).
+1. Generate your matplotlib plot as usual.
 
-	 You can install it systemwide with
-
-           sudo python setup.py install
-
-         or place the script matplotlib2tikz.py into the directory where you
-         intend to use it.
-
-      b) Make sure that your LaTeX installation includes the packages
-
-          * TikZ (aka PGF, >=2.00), and
-          * Pgfplots (>=1.3).
-
-  1.) Generate your matplotlib plot as usual.
-
-  2.) Instead of pyplot.show(), invoke matplotlib2tikz by
+2. Instead of pyplot.show(), invoke matplotlib2tikz by
 
         tikz_save( 'myfile.tikz' );
 
-      to store the TikZ file as myfile.tikz. Load the libary with:
+   to store the TikZ file as myfile.tikz. Load the libary with:
 
         from matplotlib2tikz import save as tikz_save
 
-      Optional:
-      The scripts accepts several options, for example 'height', 'width',
-      'encoding', and some others. Invoke by
+      _Optional:_
+      The scripts accepts several options, for example `height`, `width`,
+      `encoding`, and some others. Invoke by
 
         tikz_save( 'myfile.tikz', figureheight='4cm', figurewidth='6cm' )
 
 
-      IMPORTANT:
-     eHeight and width must be set large enough; setting it too low it may
+     IMPORTANT:
+     Height and width must be set large enough; setting it too low it may
      result in a LaTeX compilation failure such as
         - Dimension Too Large, or
         - Arithmetic Overflow
@@ -60,7 +66,7 @@ The workflow is as follows.
         \setlength\figurewidth{6cm}
         \input{myfile.tikz}
 
-  3.) Add the contents of myfile.tikz into your LaTeX source code; a convenient
+  3. Add the contents of myfile.tikz into your LaTeX source code; a convenient
       way of doing so is to use \input{/path/to/myfile.tikz}. Also make sure
       that at the header of your document the packages TikZ and Pgfplots are
       included:
