@@ -10,7 +10,7 @@ native Pgfplots (TikZ) figures.
 To download matplotlibtikz, go to its page on GitHub
 https://github.com/nschloe/matplotlib2tikz.
 
-## Installation
+### Installation
 1. Place the matplotlib2tikz script in a directory where Python can find
     it (e.g., `$PYTHONPATH`).
     You can install it systemwide with
