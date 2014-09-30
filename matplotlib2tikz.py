@@ -666,7 +666,7 @@ def _transform_to_data_coordinates(obj, xdata, ydata):
     '''
     try:
         import matplotlib.transforms
-        points = zip(xdata, ydata)
+        points = np.array(zip(xdata, ydata))
         transform = matplotlib.transforms.composite_transform_factory(
             obj.get_transform(),
             obj.get_axes().transData.inverted()
