@@ -292,16 +292,10 @@ def _draw_axes(data, obj):
                         )
 
     # axes scaling
-    xscale = obj.get_xscale()
-    yscale = obj.get_yscale()
-    if xscale == 'log' and yscale == 'log':
-        env = 'loglogaxis'
-    elif xscale == 'log':
-        env = 'semilogxaxis'
-    elif yscale == 'log':
-        env = 'semilogyaxis'
-    else:
-        env = 'axis'
+    if obj.get_xscale() == 'log':
+        axis_options.append('xmode=log')
+    if obj.get_yscale() == 'log':
+        axis_options.append('ymode=log')
 
     if not obj.get_axisbelow():
         axis_options.append('axis on top')
@@ -444,7 +438,7 @@ def _draw_axes(data, obj):
     if is_subplot:
         content.append('\\nextgroupplot')
     else:
-        content.append('\\begin{%s}' % env)
+        content.append('\\begin{axis}')
 
     # Run through the children objects, gather the content, and give them the
     # opportunity to contribute to data['extra axis options'].
@@ -473,7 +467,7 @@ def _draw_axes(data, obj):
                   )
 
     if not is_subplot:
-        content.append('\\end{%s}\n\n' % env)
+        content.append('\\end{axis}\n\n')
     elif is_subplot and nsubplots == subplot_index:
         content.append('\\end{groupplot}\n\n')
 
@@ -672,7 +666,7 @@ def _transform_to_data_coordinates(obj, xdata, ydata):
     '''
     try:
         import matplotlib.transforms
-        points = zip(xdata, ydata)
+        points = np.array(zip(xdata, ydata))
         transform = matplotlib.transforms.composite_transform_factory(
             obj.get_transform(),
             obj.get_axes().transData.inverted()
