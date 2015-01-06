@@ -651,7 +651,6 @@ def _linear_interpolation(x, X, Y):
     '''
     return (Y[1] * (x - X[0]) + Y[0] * (X[1] - x)) / (X[1] - X[0])
 
-
 def _transform_to_data_coordinates(obj, xdata, ydata):
     '''Transform to data coordinates
     The coordinates might not be in data coordinates, but could be partly in
@@ -1173,6 +1172,7 @@ def _draw_path(obj, data, path,
     nodes = []
     prev = None
     for vert, code in path.iter_segments():
+        savedvert = vert
         vert = np.asarray(_transform_to_data_coordinates(obj,
                                                          [vert[0]],
                                                          [vert[1]]
@@ -1203,14 +1203,24 @@ def _draw_path(obj, data, path,
             if prev is None:
                 raise RuntimeError('Cannot draw quadratic Bezier curves '
                                    'as the beginning of of a path.')
-            Q1 = 1. / 3. * prev + 2. / 3. * vert[0:2]
-            Q2 = 2. / 3. * vert[0:2] + 1. / 3. * vert[2:4]
-            Q3 = vert[2:4]
+            # formatting via autopep8
+            v1, v2 = (np.array(v)[:, np.newaxis]
+                      for v in zip(*np.asarray(
+                                   _transform_to_data_coordinates(obj,
+                                                                  savedvert[
+                                                                      0::2],
+                                                                  savedvert[
+                                                                      1::2]
+                                                                  ))))
+            Q1 = 1. / 3. * prev + 2. / 3. * v1
+            Q2 = 2. / 3. * v1 + 1. / 3. * v2
+            Q3 = v2
             nodes.append(('.. controls (axis cs:%.15g,%.15g) '
                           + 'and (axis cs:%.15g,%.15g) '
                           + '.. (axis cs:%.15g,%.15g)')
-                         % tuple(Q1 + Q2 + Q3)
+                         % tuple(tuple(Q1) + tuple(Q2) + tuple(Q3))
                          )
+            vert = v2
         elif code == mpl.path.Path.CURVE4:
             # Cubic Bezier curves.
             nodes.append(('.. controls (axis cs:%.15g,%.15g) '
