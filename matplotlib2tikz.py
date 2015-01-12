@@ -1390,6 +1390,9 @@ def _draw_legend(data, obj):
     return data
 
 
+def _escape_text(text):
+    return text.replace('_', '\\_')
+
 def _draw_text(data, obj):
     '''Paints text on the graph.
     '''
@@ -1447,7 +1450,7 @@ def _draw_text(data, obj):
     #                   -------1--------2---3--4--
     proto = '\\node at (axis cs:%.15g,%.15g)[\n  %s\n]{%s %s};\n'
     pos = obj.get_position()
-    text = obj.get_text()
+    text = _escape_text(obj.get_text())
     size = obj.get_size()
     bbox = obj.get_bbox_patch()
     converter = mpl.colors.ColorConverter()
