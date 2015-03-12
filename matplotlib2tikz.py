@@ -759,11 +759,11 @@ def _draw_line2d(data, obj):
         mark_options = []
         if extra_mark_options:
             mark_options.append(extra_mark_options)
-        if marker_face_color:
+        if marker_face_color is not None:
             data, face_xcolor, _ = _mpl_color2xcolor(data, marker_face_color)
             if face_xcolor != line_xcolor:
                 mark_options.append('fill=' + face_xcolor)
-        if marker_edge_color and marker_edge_color != marker_face_color:
+        if (marker_edge_color is not None) and ((type(marker_edge_color) != type(marker_face_color)) or (marker_edge_color != marker_face_color)):
             data, draw_xcolor, _ = _mpl_color2xcolor(data, marker_edge_color)
             if draw_xcolor != line_xcolor:
                 mark_options.append('draw=' + draw_xcolor)
@@ -846,7 +846,7 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, is_marker_face_color):
     # try default list
     try:
         pgfplots_marker = MP_MARKER2PGF_MARKER[mpl_marker]
-        if is_marker_face_color and pgfplots_marker == 'o':
+        if (is_marker_face_color is not None) and pgfplots_marker == 'o':
             pgfplots_marker = '*'
             data['pgfplots libs'].add('plotmarks')
         marker_options = None
@@ -857,8 +857,8 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, is_marker_face_color):
     try:
         data['pgfplots libs'].add('plotmarks')
         pgfplots_marker, marker_options = MP_MARKER2PLOTMARKS[mpl_marker]
-        if (is_marker_face_color
-            and is_marker_face_color.lower() != "none") \
+        if ((is_marker_face_color is not None) 
+            and (isinstance(is_marker_face_color,str) and (is_marker_face_color.lower() != "none")) ) \
                 and not pgfplots_marker in ['|', '_']:
             pgfplots_marker += '*'
         return (data, pgfplots_marker, marker_options)
@@ -983,8 +983,11 @@ def _is_colorbar(obj):
     # TODO Are the colorbars exactly the l.collections.PolyCollection's?
     if isinstance(obj, mpl.collections.PolyCollection):
         arr = obj.get_array()
-        dims = arr.shape
-        return len(dims) == 1  # o rly?
+        if arr is not None:
+            dims = arr.shape
+            return len(dims) == 1  # o rly?
+        else:
+            return False
     else:
         return False
 
