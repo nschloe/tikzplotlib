@@ -248,7 +248,7 @@ def _draw_axes(data, obj):
 
     if isinstance(obj, mpl.axes.Subplot):
         geom = obj.get_geometry()
-        nsubplots = geom[0]*geom[1]
+        nsubplots = geom[0] * geom[1]
         if nsubplots > 1:
             is_subplot = True
             subplot_index = geom[2]
@@ -314,32 +314,32 @@ def _draw_axes(data, obj):
 
     if data['fwidth'] and data['fheight']:
         # width and height overwrite aspect ratio
-        axis_options.append('width='+data['fwidth'])
-        axis_options.append('height='+data['fheight'])
+        axis_options.append('width=' + data['fwidth'])
+        axis_options.append('height=' + data['fheight'])
     elif data['fwidth']:
         # only data['fwidth'] given. calculate height by the aspect ratio
-        axis_options.append('width='+data['fwidth'])
+        axis_options.append('width=' + data['fwidth'])
         if aspect_num:
-            alpha = aspect_num * (ylim[1]-ylim[0])/(xlim[1]-xlim[0])
+            alpha = aspect_num * (ylim[1] - ylim[0]) / (xlim[1] - xlim[0])
             if alpha != 1.0:
                 # Concatenate the literals, as data['fwidth'] could as well be
                 # a LaTeX length variable such as \figurewidth.
                 data['fheight'] = str(alpha) + '*' + data['fwidth']
             else:
                 data['fheight'] = data['fwidth']
-            axis_options.append('height='+data['fheight'])
+            axis_options.append('height=' + data['fheight'])
     elif data['fheight']:
         # only data['fheight'] given. calculate width by the aspect ratio
-        axis_options.append('height='+data['fheight'])
+        axis_options.append('height=' + data['fheight'])
         if aspect_num:
-            alpha = aspect_num * (ylim[1]-ylim[0])/(xlim[1]-xlim[0])
+            alpha = aspect_num * (ylim[1] - ylim[0]) / (xlim[1] - xlim[0])
             if alpha != 1.0:
                 # Concatenate the literals, as data['fheight'] could as well be
                 # a LaTeX length variable such as \figureheight.
-                data['fwidth'] = str(1.0/alpha) + '*' + data['fheight']
+                data['fwidth'] = str(1.0 / alpha) + '*' + data['fheight']
             else:
                 data['fwidth'] = data['fheight']
-            axis_options.append('width='+data['fwidth'])
+            axis_options.append('width=' + data['fwidth'])
     else:
         if aspect_num:
             print('Non-automatic aspect ratio demanded, but neither height '
@@ -352,7 +352,7 @@ def _draw_axes(data, obj):
                                          obj.get_yticklabels()))
 
     # Don't use get_{x,y}gridlines for gridlines; see discussion on
-    # <http://sourceforge.net/mailarchive/forum.php?thread_name=AANLkTima87pQkZmJhU2oNb8uxD2dfeV-Pa-uXWAFc2-v%40mail.gmail.com&forum_name=matplotlib-users>
+    # <http://sourceforge.net/p/matplotlib/mailman/message/25169234/>
     # Coordinate of the lines are entirely meaningless, but styles (colors,...
     # are respected.
     if obj.xaxis._gridOnMajor:
@@ -390,7 +390,6 @@ def _draw_axes(data, obj):
 
             # Getting the labels via get_* might not actually be suitable:
             # they might not reflect the current state.
-            # http://sourceforge.net/mailarchive/message.php?msg_name=AANLkTikdNFwSAhMIlLjnd4Ai8-XIdJYGmrwq6PrHkbgi%40mail.gmail.com
             colorbar_ticklabels = colorbar.ax.get_xticklabels()
             colorbar_styles.extend(_get_ticks(data, 'x', colorbar_ticks,
                                                     colorbar_ticklabels))
@@ -412,7 +411,6 @@ def _draw_axes(data, obj):
 
             # Getting the labels via get_* might not actually be suitable:
             # they might not reflect the current state.
-            # http://sourceforge.net/mailarchive/message.php?msg_name=AANLkTikdNFwSAhMIlLjnd4Ai8-XIdJYGmrwq6PrHkbgi%40mail.gmail.com
             colorbar_ticklabels = colorbar.ax.get_yticklabels()
             colorbar_styles.extend(_get_ticks(data, 'y', colorbar_ticks,
                                                     colorbar_ticklabels))
@@ -500,8 +498,8 @@ def _get_ticks(data, xy, ticks, ticklabels):
     if data['strict'] or is_label_necessary:
         if pgfplots_ticks:
             axis_options.append('%stick={%s}'
-                                % (xy,
-                                   ','.join(['%.15g' % el for el in pgfplots_ticks]))
+                                % (xy, ','.join(['%.15g' % el for el in
+                                    pgfplots_ticks]))
                                 )
         else:
             axis_options.append('%stick=\\empty' % xy)
@@ -527,7 +525,7 @@ def _mpl_cmap2pgf_cmap(cmap):
         return ('blackwhite', is_custom_colormap)
 
     # For an explanation of what _segmentdata contains, see
-    # http://matplotlib.sourceforge.net/examples/pylab_examples/custom_cmap.html
+    # http://matplotlib.org/mpl_examples/pylab_examples/custom_cmap.py
     # A key sentence:
     # If there are discontinuities, then it is a little more complicated.
     # Label the 3 elements in each row in the cdict entry for a given color as
@@ -556,9 +554,9 @@ def _mpl_cmap2pgf_cmap(cmap):
             red_comp = red[k_red][1]
             k_red += 1
         else:
-            red_comp = _linear_interpolation(x,
-                                             (red[k_red-1][0], red[k_red][0]),
-                                             (red[k_red-1][2], red[k_red][1])
+            red_comp = _linear_interpolation(x, (red[k_red - 1][0],
+                                                 red[k_red][0]),
+                                             (red[k_red - 1][2], red[k_red][1])
                                              )
 
         if green[k_green][0] == x:
@@ -566,9 +564,9 @@ def _mpl_cmap2pgf_cmap(cmap):
             k_green += 1
         else:
             green_comp = _linear_interpolation(x,
-                                               (green[k_green-1][0],
+                                               (green[k_green - 1][0],
                                                 green[k_green][0]),
-                                               (green[k_green-1][2],
+                                               (green[k_green - 1][2],
                                                 green[k_green][1])
                                                )
 
@@ -577,9 +575,9 @@ def _mpl_cmap2pgf_cmap(cmap):
             k_blue += 1
         else:
             blue_comp = _linear_interpolation(x,
-                                              (blue[k_blue-1][0],
+                                              (blue[k_blue - 1][0],
                                                blue[k_blue][0]),
-                                              (blue[k_blue-1][2],
+                                              (blue[k_blue - 1][2],
                                                blue[k_blue][1])
                                               )
 
@@ -651,7 +649,7 @@ def _gcd(a, b):
 def _linear_interpolation(x, X, Y):
     '''Given two data points [X,Y], linearly interpolate those at x.
     '''
-    return (Y[1]*(x-X[0]) + Y[0]*(X[1]-x)) / (X[1]-X[0])
+    return (Y[1] * (x - X[0]) + Y[0] * (X[1] - x)) / (X[1] - X[0])
 
 
 def _transform_to_data_coordinates(obj, xdata, ydata):
@@ -727,7 +725,7 @@ def _draw_line2d(data, obj):
             addplot_options.append('ultra thick')
         else:
             # explicit line width
-            addplot_options.append('line width=%rpt' % (0.4*line_width))
+            addplot_options.append('line width=%rpt' % (0.4 * line_width))
 
     # get line color
     color = obj.get_color()
@@ -752,7 +750,7 @@ def _draw_line2d(data, obj):
         mark_size = obj.get_markersize()
         if mark_size:
             # setting half size because pgfplots counts the radius/half-width
-            pgf_size = int(mark_size/2)
+            pgf_size = int(mark_size / 2)
             # make sure we didn't round off to zero by accident
             if pgf_size == 0 and mark_size != 0:
                 pgf_size = 1
@@ -810,8 +808,7 @@ def _draw_line2d(data, obj):
     return data, content
 
 
-# for matplotlib markers, see
-# http://matplotlib.sourceforge.net/api/artist_api.html#matplotlib.lines.Line2D.set_marker
+# for matplotlib markers, see: http://matplotlib.org/api/markers_api.html
 MP_MARKER2PGF_MARKER = {'.': '*',  # point
                         'o': 'o',  # circle
                         '+': '+',  # plus
@@ -1183,8 +1180,7 @@ def _draw_path(obj, data, path,
                                                          [vert[0]],
                                                          [vert[1]]
                                                          ))
-        # For path codes see
-        # http://matplotlib.sourceforge.net/api/path_api.html#matplotlib.path.Path
+        # For path codes see: http://matplotlib.org/api/path_api.html
         if code == mpl.path.Path.STOP:
             pass
         elif code == mpl.path.Path.MOVETO:
@@ -1210,8 +1206,8 @@ def _draw_path(obj, data, path,
             if prev is None:
                 raise RuntimeError('Cannot draw quadratic Bezier curves '
                                    'as the beginning of of a path.')
-            Q1 = 1./3. * prev + 2./3. * vert[0:2]
-            Q2 = 2./3. * vert[0:2] + 1./3. * vert[2:4]
+            Q1 = 1. / 3. * prev + 2. / 3. * vert[0:2]
+            Q2 = 2. / 3. * vert[0:2] + 1. / 3. * vert[2:4]
             Q3 = vert[2:4]
             nodes.append(('.. controls (axis cs:%.15g,%.15g) '
                           + 'and (axis cs:%.15g,%.15g) '
@@ -1305,7 +1301,7 @@ def _mpl_color2xcolor(data, matplotlib_color):
                 elif 0.0 < alpha and alpha < 1.0:
                     # ... and round(alpha*100) == alpha*100:
                     # Is the last condition really necessary?
-                    xcol = name + ('!%r!black' % (alpha*100))
+                    xcol = name + ('!%r!black' % (alpha * 100))
 
     # Lookup failed, add it to the custom list.
     if not xcol:
@@ -1334,7 +1330,7 @@ def _draw_legend(data, obj):
         anchor = None
     elif obj._loc == 2:
         # upper left
-        position = [pad, 1.0-pad]
+        position = [pad, 1.0 - pad]
         anchor = 'north west'
     elif obj._loc == 3:
         # lower left
@@ -1342,27 +1338,27 @@ def _draw_legend(data, obj):
         anchor = 'south west'
     elif obj._loc == 4:
         # lower right
-        position = [1.0-pad, pad]
+        position = [1.0 - pad, pad]
         anchor = 'south east'
     elif obj._loc == 5:
         # right
-        position = [1.0-pad, 0.5]
+        position = [1.0 - pad, 0.5]
         anchor = 'west'
     elif obj._loc == 6:
         # center left
-        position = [3*pad, 0.5]
+        position = [3 * pad, 0.5]
         anchor = 'east'
     elif obj._loc == 7:
         # center right
-        position = [1.0-3*pad, 0.5]
+        position = [1.0 - 3 * pad, 0.5]
         anchor = 'west'
     elif obj._loc == 8:
         # lower center
-        position = [0.5, 3*pad]
+        position = [0.5, 3 * pad]
         anchor = 'south'
     elif obj._loc == 9:
         # upper center
-        position = [0.5, 1.0-3*pad]
+        position = [0.5, 1.0 - 3 * pad]
         anchor = 'north'
     elif obj._loc == 10:
         # center
@@ -1448,7 +1444,7 @@ def _draw_text(data, obj):
     size = obj.get_size()
     bbox = obj.get_bbox_patch()
     converter = mpl.colors.ColorConverter()
-    scaling = 0.5*size / data['font size']  # XXX: This is ugly
+    scaling = 0.5 * size / data['font size']  # XXX: This is ugly
     properties.append('scale=%.15g' % scaling)
     if bbox is not None:
         bbox_style = bbox.get_boxstyle()
@@ -1460,7 +1456,7 @@ def _draw_text(data, obj):
         if ec:
             properties.append('draw=%s' % ec)
         # XXX: This is ugly, too
-        properties.append('line width=%.15gpt' % (bbox.get_lw()*0.4))
+        properties.append('line width=%.15gpt' % (bbox.get_lw() * 0.4))
         properties.append('inner sep=%.15gpt'
                           % (bbox_style.pad * data['font size'])
                           )
@@ -1490,8 +1486,8 @@ def _draw_text(data, obj):
         elif(bbox.get_ls() == 'dashdot'):
             properties.append(('dash pattern=on %.3gpt off %.3gpt on '
                                '%.3gpt off %.3gpt'
-                               ) % (1.0/scaling, 3.0/scaling,
-                                    6.0/scaling, 3.0/scaling)
+                               ) % (1.0 / scaling, 3.0 / scaling,
+                                    6.0 / scaling, 3.0 / scaling)
                               )
         else:
             pass  # solid
