@@ -24,7 +24,7 @@ from matplotlib import pyplot as pp
 
 
 def basic_sin():
-    from mpltools import style
+    from matplotlib import style
     style.use('ggplot')
     t = np.arange(0.0, 2.0, 0.1)
     s = np.sin(2*np.pi*t)
