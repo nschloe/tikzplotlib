@@ -60,7 +60,7 @@ def _main():
             tmp.append(s)
     function_strings = tmp
 
-    if not test_list is None:  # actually treat a sublist of test_functions
+    if test_list is not None:  # actually treat a sublist of test_functions
         # remove duplicates and sort
         test_list = sorted(set(test_list))
     else:
@@ -107,11 +107,12 @@ def _main():
             file_handle.write('% fail\n')
 
         # Close the figure
-        file_handle.write('\\end{tabular}\n'
-                          '\\caption{' + str(comment) + ' (test ID '
-                          + str(k) + ').}%\n'
-                          '\\end{figure}\\clearpage\n\n'
-                          )
+        file_handle.write(
+                '\\end{tabular}\n'
+                '\\caption{' + str(comment) + ' (test ID ' +
+                str(k) + ').}%\n'
+                '\\end{figure}\\clearpage\n\n'
+                )
         print 'done.'
     write_document_closure(file_handle)
     file_handle.close()
@@ -157,8 +158,8 @@ def write_file_comparison_entry(file_handle,
                       '&\n'
                       '\input{' + str(tikz_path) + '}%\n'
                       '\\end{tabular}\n'
-                      '\\caption{' + str(comment) + ' (test ID '
-                      + str(test_id) + ').}%\n'
+                      '\\caption{' + str(comment) + ' (test ID ' +
+                      str(test_id) + ').}%\n'
                       '\\end{figure}\\clearpage\n\n'
                       )
     return
@@ -167,9 +168,9 @@ def write_file_comparison_entry(file_handle,
 def _parse_options():
     '''Parse input options.'''
     import argparse
-    parser = argparse.ArgumentParser(description=
-                                     'Acid test for matplotlib2tikz.'
-                                     )
+    parser = argparse.ArgumentParser(
+            description='Acid test for matplotlib2tikz.'
+            )
     parser.add_argument('--tests', '-t',
                         metavar='TEST_INDICES',
                         nargs='+',
