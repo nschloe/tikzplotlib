@@ -655,14 +655,15 @@ def _linear_interpolation(x, X, Y):
 
 
 def _transform_to_data_coordinates(obj, xdata, ydata):
-    '''Transform to data coordinates
-    The coordinates might not be in data coordinates, but could be partly in
+    '''The coordinates might not be in data coordinates, but could be partly in
     axes coordinates.  For example, the matplotlib command
       axes.axvline(2)
     will have the y coordinates set to 0 and 1, not to the limits. Therefore, a
-    two stage transform is to be applied, first transforming to display
-    coordinates, then from display to data.  In case of problems
-    (non-invertible, or whatever), print a warning and continue anyways.
+    two-stage transform has to be applied:
+      1. first transforming to display coordinates, then
+      2. from display to data.
+    In case of problems (non-invertible, or whatever), print a warning and
+    continue anyways.
     '''
     try:
         import matplotlib.transforms
@@ -674,6 +675,7 @@ def _transform_to_data_coordinates(obj, xdata, ydata):
         points_data = transform.transform(points)
         xdata, ydata = zip(*points_data)
     except Exception as e:
+        print(xdata, ydata)
         print(('Problem during transformation:\n' +
                '   %s\n' +
                'Continuing with original data.')
@@ -790,8 +792,12 @@ def _draw_line2d(data, obj):
 
     content.append('coordinates {\n')
 
-    # print the hard numerical data
-    xdata, ydata = _transform_to_data_coordinates(obj, *obj.get_data())
+    # nschloe, Oct 2, 2015:
+    #   The transform call yields warnings and it is unclear why. Perhaps
+    #   the input data is not suitable? Anyhow, this should not happen.
+    #   Comment out for now.
+    # xdata, ydata = _transform_to_data_coordinates(obj, *obj.get_data())
+    xdata, ydata = obj.get_data()
 
     try:
         has_mask = ydata.mask.any()
@@ -801,7 +807,7 @@ def _draw_line2d(data, obj):
     if has_mask:
         # matplotlib jumps at masked images, while Pgfplots by default
         # interpolates. Hence, if we have a masked plot, make sure that
-        # Pgfplots jump as well.
+        # Pgfplots jumps as well.
         data['extra axis options'].add('unbounded coords=jump')
         for (x, y, is_masked) in zip(xdata, ydata, ydata.mask):
             if is_masked:
@@ -1185,10 +1191,13 @@ def _draw_path(obj, data, path,
     nodes = []
     prev = None
     for vert, code in path.iter_segments():
-        vert = np.asarray(_transform_to_data_coordinates(obj,
-                                                         [vert[0]],
-                                                         [vert[1]]
-                                                         ))
+        # nschloe, Oct 2, 2015:
+        #   The transform call yields warnings and it is unclear why. Perhaps
+        #   the input data is not suitable? Anyhow, this should not happen.
+        #   Comment out for now.
+        # vert = np.asarray(
+        #         _transform_to_data_coordinates(obj, [vert[0]], [vert[1]])
+        #         )
         # For path codes see: http://matplotlib.org/api/path_api.html
         if code == mpl.path.Path.STOP:
             pass
