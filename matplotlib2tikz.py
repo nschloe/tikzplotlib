@@ -198,7 +198,7 @@ def save(filepath,
 def _tex_comment(comment):
     '''Prepends each line in string with the LaTeX comment key, '%'.
     '''
-    return '% ' + str.replace(comment, '\n', '\n% ') + "\n"
+    return '% ' + str.replace(comment, '\n', '\n% ') + '\n'
 
 
 def _print_tree(obj, indent=''):
@@ -452,7 +452,7 @@ def _draw_axes(data, obj):
     content.extend(children_content)
 
     # anchors
-    if hasattr(obj, "_matplotlib2tikz_anchors"):
+    if hasattr(obj, '_matplotlib2tikz_anchors'):
         try:
             for coord, anchor_name in obj._matplotlib2tikz_anchors:
                 content.append('\\node (%s) at (axis cs:%e,%e) {};\n'
@@ -460,7 +460,7 @@ def _draw_axes(data, obj):
                                )
         except:
             print('Axes attribute _matplotlib2tikz_anchors wrongly set:'
-                  "Expected a list of ((x,y), anchor_name), got '%s'"
+                  'Expected a list of ((x,y), anchor_name), got \'%s\''
                   % str(obj._matplotlib2tikz_anchors)
                   )
 
@@ -674,7 +674,7 @@ def _transform_to_data_coordinates(obj, xdata, ydata):
         points_data = transform.transform(points)
         xdata, ydata = zip(*points_data)
     except:
-        print("Problem during transformation, continuing with original data")
+        print('Problem during transformation, continuing with original data')
     return (xdata, ydata)
 
 
