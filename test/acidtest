@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2010--2014 Nico Schlömer
@@ -65,10 +65,10 @@ def _main():
         test_list = sorted(set(test_list))
     else:
         # all indices
-        test_list = xrange(0, len(function_strings))
+        test_list = range(0, len(function_strings))
 
     for k in test_list:
-        print 'Test function %d (%s)...' % (k, function_strings[k]),
+        print('Test function %d (%s)...' % (k, function_strings[k]))
         pp.cla()
         pp.clf()
         # plot the test example
@@ -114,7 +114,7 @@ def _main():
                 str(k) + ').}%\n'
                 '\\end{figure}\\clearpage\n\n'
                 )
-        print 'done.'
+        print('done.')
     write_document_closure(file_handle)
     file_handle.close()
     return
