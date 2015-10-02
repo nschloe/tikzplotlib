@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2010--2014 Nico Schlömer
@@ -60,15 +60,15 @@ def _main():
             tmp.append(s)
     function_strings = tmp
 
-    if not test_list is None:  # actually treat a sublist of test_functions
+    if test_list is not None:  # actually treat a sublist of test_functions
         # remove duplicates and sort
         test_list = sorted(set(test_list))
     else:
         # all indices
-        test_list = xrange(0, len(function_strings))
+        test_list = range(0, len(function_strings))
 
     for k in test_list:
-        print 'Test function %d (%s)...' % (k, function_strings[k]),
+        print('Test function %d (%s)...' % (k, function_strings[k]))
         pp.cla()
         pp.clf()
         # plot the test example
@@ -103,16 +103,18 @@ def _main():
                 show_info=False
                 )
             file_handle.write('\\input{%s}\n' % tikz_tex_path)
-        except:
-            file_handle.write('% fail\n')
+        except Exception as e:
+            print(e)
+            file_handle.write('%%%s\n' % e)
 
         # Close the figure
-        file_handle.write('\\end{tabular}\n'
-                          '\\caption{' + str(comment) + ' (test ID '
-                          + str(k) + ').}%\n'
-                          '\\end{figure}\\clearpage\n\n'
-                          )
-        print 'done.'
+        file_handle.write(
+                '\\end{tabular}\n'
+                '\\caption{' + str(comment) + ' (test ID ' +
+                str(k) + ').}%\n'
+                '\\end{figure}\\clearpage\n\n'
+                )
+        print('done.')
     write_document_closure(file_handle)
     file_handle.close()
     return
@@ -157,8 +159,8 @@ def write_file_comparison_entry(file_handle,
                       '&\n'
                       '\input{' + str(tikz_path) + '}%\n'
                       '\\end{tabular}\n'
-                      '\\caption{' + str(comment) + ' (test ID '
-                      + str(test_id) + ').}%\n'
+                      '\\caption{' + str(comment) + ' (test ID ' +
+                      str(test_id) + ').}%\n'
                       '\\end{figure}\\clearpage\n\n'
                       )
     return
@@ -167,9 +169,9 @@ def write_file_comparison_entry(file_handle,
 def _parse_options():
     '''Parse input options.'''
     import argparse
-    parser = argparse.ArgumentParser(description=
-                                     'Acid test for matplotlib2tikz.'
-                                     )
+    parser = argparse.ArgumentParser(
+            description='Acid test for matplotlib2tikz.'
+            )
     parser.add_argument('--tests', '-t',
                         metavar='TEST_INDICES',
                         nargs='+',

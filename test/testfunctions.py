@@ -24,7 +24,7 @@ from matplotlib import pyplot as pp
 
 
 def basic_sin():
-    from mpltools import style
+    from matplotlib import style
     style.use('ggplot')
     t = np.arange(0.0, 2.0, 0.1)
     s = np.sin(2*np.pi*t)
@@ -32,7 +32,7 @@ def basic_sin():
     pp.plot(t, s, 'o-', lw=4.1)
     pp.plot(t, s2, 'o-', lw=4.1)
     pp.xlabel('time(s)')
-    #pp.xlabel('time(s) _ % $ \\')
+    # pp.xlabel('time(s) _ % $ \\')
     pp.ylabel('Voltage (mV)')
     pp.title('Easier than easy $\\frac{1}{2}$')
     pp.grid(True)
@@ -207,8 +207,8 @@ def annotate():
     line, = ax.plot(t, s, color='blue')
     ax.annotate('text',
                 xy=(4., 1.),
-                xycoords = 'data',
-                xytext = (4.5, 1.5),
+                xycoords='data',
+                xytext=(4.5, 1.5),
                 textcoords='data',
                 arrowprops=dict(arrowstyle='->', ec='r')
                 )
@@ -233,7 +233,12 @@ def legends2():
     l2, l3 = pp.plot(t2, np.sin(2*np.pi*t2), '--go', t1, np.log(1+t1), '.')
     l4,    = pp.plot(t2, np.exp(-t2)*np.sin(2*np.pi*t2), 'rs-.')
 
-    pp.legend((l2, l4), ('oscillatory', 'damped'), 'upper right', shadow=True)
+    pp.legend(
+            (l2, l4),
+            ('oscillatory', 'damped'),
+            loc='upper right',
+            shadow=True
+            )
     pp.xlabel('time')
     pp.ylabel('volts')
     pp.title('Damped oscillation')
@@ -322,7 +327,7 @@ def histogram():
 def contourf_with_logscale():
     import matplotlib.pyplot as plt
     import matplotlib.ticker as tkr
-    #from matplotlib import colors, ticker
+    # from matplotlib import colors, ticker
     from matplotlib.mlab import bivariate_normal
 
     N = 100
@@ -353,12 +358,12 @@ def contourf_with_logscale():
 
     # Alternatively, you can manually set the levels
     # and the norm:
-    #lev_exp = np.arange(np.floor(np.log10(z.min())-1),
+    # lev_exp = np.arange(np.floor(np.log10(z.min())-1),
     #                       np.ceil(np.log10(z.max())+1))
-    #levs = np.power(10, lev_exp)
-    #cs = plt.contourf(X, Y, z, levs, norm=colors.LogNorm())
+    # levs = np.power(10, lev_exp)
+    # cs = plt.contourf(X, Y, z, levs, norm=colors.LogNorm())
 
-    #The 'extend' kwarg does not work yet with a log scale.
+    # The 'extend' kwarg does not work yet with a log scale.
     plt.colorbar()
     return 'contourf with logscale'
 

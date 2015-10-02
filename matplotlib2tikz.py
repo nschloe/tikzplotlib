@@ -198,7 +198,7 @@ def save(filepath,
 def _tex_comment(comment):
     '''Prepends each line in string with the LaTeX comment key, '%'.
     '''
-    return '% ' + str.replace(comment, '\n', '\n% ') + "\n"
+    return '% ' + str.replace(comment, '\n', '\n% ') + '\n'
 
 
 def _print_tree(obj, indent=''):
@@ -221,11 +221,11 @@ def _get_color_definitions(data):
     return definitions
 
 
-#def _parse_text(text):
-    #'''Parses input text for LaTeX expressions and escaptes them if
-    #necessary.'''
-    #replace_list = ['_', '$', '\\', '%']
-    #return
+# def _parse_text(text):
+#     '''Parses input text for LaTeX expressions and escaptes them if
+#     necessary.'''
+#     replace_list = ['_', '$', '\\', '%']
+#     return
 
 
 def _draw_axes(data, obj):
@@ -283,13 +283,13 @@ def _draw_axes(data, obj):
     # Sort the limits so make sure that the smaller of the two is actually
     # *min.
     xlim = sorted(list(obj.get_xlim()))
-    axis_options.append('xmin=%.15g' % xlim[0]
-                        + ', xmax=%.15g' % xlim[1]
-                        )
+    axis_options.append(
+            'xmin=%.15g' % xlim[0] + ', xmax=%.15g' % xlim[1]
+            )
     ylim = sorted(list(obj.get_ylim()))
-    axis_options.append('ymin=%.15g' % ylim[0]
-                        + ', ymax=%.15g' % ylim[1]
-                        )
+    axis_options.append(
+            'ymin=%.15g' % ylim[0] + ', ymax=%.15g' % ylim[1]
+            )
 
     # axes scaling
     if obj.get_xscale() == 'log':
@@ -452,7 +452,7 @@ def _draw_axes(data, obj):
     content.extend(children_content)
 
     # anchors
-    if hasattr(obj, "_matplotlib2tikz_anchors"):
+    if hasattr(obj, '_matplotlib2tikz_anchors'):
         try:
             for coord, anchor_name in obj._matplotlib2tikz_anchors:
                 content.append('\\node (%s) at (axis cs:%e,%e) {};\n'
@@ -460,7 +460,7 @@ def _draw_axes(data, obj):
                                )
         except:
             print('Axes attribute _matplotlib2tikz_anchors wrongly set:'
-                  "Expected a list of ((x,y), anchor_name), got '%s'"
+                  'Expected a list of ((x,y), anchor_name), got \'%s\''
                   % str(obj._matplotlib2tikz_anchors)
                   )
 
@@ -497,10 +497,12 @@ def _get_ticks(data, xy, ticks, ticklabels):
     # explicit labels.
     if data['strict'] or is_label_necessary:
         if pgfplots_ticks:
-            axis_options.append('%stick={%s}'
-                                % (xy, ','.join(['%.15g' % el for el in
-                                    pgfplots_ticks]))
-                                )
+            axis_options.append(
+                    '%stick={%s}' % (
+                        xy,
+                        ','.join(['%.15g' % el for el in pgfplots_ticks])
+                        )
+                    )
         else:
             axis_options.append('%stick=\\empty' % xy)
 
@@ -671,8 +673,12 @@ def _transform_to_data_coordinates(obj, xdata, ydata):
             )
         points_data = transform.transform(points)
         xdata, ydata = zip(*points_data)
-    except:
-        print("Problem during transformation, continuing with original data")
+    except Exception as e:
+        print(('Problem during transformation:\n' +
+               '   %s\n' +
+               'Continuing with original data.')
+              % e
+              )
     return (xdata, ydata)
 
 
@@ -763,7 +769,9 @@ def _draw_line2d(data, obj):
             data, face_xcolor, _ = _mpl_color2xcolor(data, marker_face_color)
             if face_xcolor != line_xcolor:
                 mark_options.append('fill=' + face_xcolor)
-        if (marker_edge_color is not None) and ((type(marker_edge_color) != type(marker_face_color)) or (marker_edge_color != marker_face_color)):
+        if (marker_edge_color is not None) and \
+                ((type(marker_edge_color) != type(marker_face_color)) or
+                    (marker_edge_color != marker_face_color)):
             data, draw_xcolor, _ = _mpl_color2xcolor(data, marker_edge_color)
             if draw_xcolor != line_xcolor:
                 mark_options.append('draw=' + draw_xcolor)
@@ -857,9 +865,10 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, is_marker_face_color):
     try:
         data['pgfplots libs'].add('plotmarks')
         pgfplots_marker, marker_options = MP_MARKER2PLOTMARKS[mpl_marker]
-        if ((is_marker_face_color is not None) 
-            and (isinstance(is_marker_face_color,str) and (is_marker_face_color.lower() != "none")) ) \
-                and not pgfplots_marker in ['|', '_']:
+        if ((is_marker_face_color is not None) and
+                (isinstance(is_marker_face_color, str) and
+                    (is_marker_face_color.lower() != 'none'))) and \
+                pgfplots_marker not in ['|', '_']:
             pgfplots_marker += '*'
         return (data, pgfplots_marker, marker_options)
     except KeyError:
@@ -898,7 +907,7 @@ def _draw_image(data, obj):
     '''
     content = []
 
-    if not 'img number' in data.keys():
+    if 'img number' not in data.keys():
         data['img number'] = 0
 
     # Make sure not to overwrite anything.
@@ -969,7 +978,7 @@ def _find_associated_colorbar(obj):
             cbar = child.colorbar
         except AttributeError:
             continue
-        if not cbar is None:  # really necessary?
+        if cbar is not None:  # really necessary?
             # if fetch was successful, cbar contains
             # (reference to colorbar,
             #   reference to axis containing colorbar)
@@ -1067,7 +1076,7 @@ def _get_draw_options(data, ec, fc):
         if fc is not None and fc_rgba[3] != 1.0:
             draw_options.append('fill opacity=%.15g' % fc_rgba[3])
     # TODO Use those properties
-    #linewidths = obj.get_linewidths()
+    # linewidths = obj.get_linewidths()
     return data, draw_options
 
 
@@ -1145,7 +1154,7 @@ def _draw_pathcollection(data, obj):
     '''
     content = []
     # TODO Use those properties
-    #linewidths = obj.get_linewidths()
+    # linewidths = obj.get_linewidths()
     # gather the draw options
     ec = obj.get_edgecolors()
     fc = obj.get_facecolors()
@@ -1209,16 +1218,16 @@ def _draw_path(obj, data, path,
             Q1 = 1. / 3. * prev + 2. / 3. * vert[0:2]
             Q2 = 2. / 3. * vert[0:2] + 1. / 3. * vert[2:4]
             Q3 = vert[2:4]
-            nodes.append(('.. controls (axis cs:%.15g,%.15g) '
-                          + 'and (axis cs:%.15g,%.15g) '
-                          + '.. (axis cs:%.15g,%.15g)')
+            nodes.append(('.. controls (axis cs:%.15g,%.15g) ' +
+                          'and (axis cs:%.15g,%.15g) ' +
+                          '.. (axis cs:%.15g,%.15g)')
                          % tuple(Q1 + Q2 + Q3)
                          )
         elif code == mpl.path.Path.CURVE4:
             # Cubic Bezier curves.
-            nodes.append(('.. controls (axis cs:%.15g,%.15g) '
-                          + 'and (axis cs:%.15g,%.15g) '
-                          + '.. (axis cs:%.15g,%.15g)')
+            nodes.append(('.. controls (axis cs:%.15g,%.15g) ' +
+                          'and (axis cs:%.15g,%.15g) ' +
+                          '.. (axis cs:%.15g,%.15g)')
                          % tuple(vert)
                          )
         elif code == mpl.path.Path.CLOSEPOLY:
@@ -1392,8 +1401,8 @@ def _draw_text(data, obj):
     if(isinstance(obj, mpl.text.Annotation)):
         ann_xy = obj.xy
         ann_xycoords = obj.xycoords
-        ann_xytext = obj.xytext
-        ann_textcoords = obj.textcoords
+        ann_xytext = obj.xyann
+        ann_textcoords = obj.anncoords
         if ann_xycoords != 'data' or ann_textcoords != 'data':
             print('Warning: Anything else except for explicit positioning '
                   'is not supported for annotations yet :(')
@@ -1572,11 +1581,11 @@ def _handle_children(data, obj):
             content.extend(cont)
         elif (isinstance(child, mpl.legend.Legend)):
             data = _draw_legend(data, child)
-        elif (isinstance(child, mpl.axis.XAxis)
-              or isinstance(child, mpl.axis.YAxis)
-              or isinstance(child, mpl.spines.Spine)
-              or isinstance(child, mpl.text.Text)
-              or isinstance(child, mpl.collections.QuadMesh)
+        elif (isinstance(child, mpl.axis.XAxis) or
+              isinstance(child, mpl.axis.YAxis) or
+              isinstance(child, mpl.spines.Spine) or
+              isinstance(child, mpl.text.Text) or
+              isinstance(child, mpl.collections.QuadMesh)
               ):
             pass
         else:
