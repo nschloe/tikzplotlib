@@ -233,7 +233,12 @@ def legends2():
     l2, l3 = pp.plot(t2, np.sin(2*np.pi*t2), '--go', t1, np.log(1+t1), '.')
     l4,    = pp.plot(t2, np.exp(-t2)*np.sin(2*np.pi*t2), 'rs-.')
 
-    pp.legend((l2, l4), ('oscillatory', 'damped'), 'upper right', shadow=True)
+    pp.legend(
+            (l2, l4),
+            ('oscillatory', 'damped'),
+            loc='upper right',
+            shadow=True
+            )
     pp.xlabel('time')
     pp.ylabel('volts')
     pp.title('Damped oscillation')
