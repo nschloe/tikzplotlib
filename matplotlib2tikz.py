@@ -1397,8 +1397,8 @@ def _draw_text(data, obj):
     if(isinstance(obj, mpl.text.Annotation)):
         ann_xy = obj.xy
         ann_xycoords = obj.xycoords
-        ann_xytext = obj.xytext
-        ann_textcoords = obj.textcoords
+        ann_xytext = obj.xyann
+        ann_textcoords = obj.anncoords
         if ann_xycoords != 'data' or ann_textcoords != 'data':
             print('Warning: Anything else except for explicit positioning '
                   'is not supported for annotations yet :(')
