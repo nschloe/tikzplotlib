@@ -673,8 +673,12 @@ def _transform_to_data_coordinates(obj, xdata, ydata):
             )
         points_data = transform.transform(points)
         xdata, ydata = zip(*points_data)
-    except:
-        print('Problem during transformation, continuing with original data')
+    except Exception as e:
+        print(('Problem during transformation:\n' +
+               '   %s\n' +
+               'Continuing with original data.')
+              % e
+              )
     return (xdata, ydata)
 
 
