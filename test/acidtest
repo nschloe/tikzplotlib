@@ -103,8 +103,9 @@ def _main():
                 show_info=False
                 )
             file_handle.write('\\input{%s}\n' % tikz_tex_path)
-        except:
-            file_handle.write('% fail\n')
+        except Exception as e:
+            print(e)
+            file_handle.write('%%%s\n' % e)
 
         # Close the figure
         file_handle.write(
