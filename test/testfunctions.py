@@ -72,7 +72,7 @@ def image_plot():
     try:
         import Image
     except ImportError:
-        raise SystemExit('PIL must be installed to run this example')
+        raise RuntimeError('PIL must be installed to run this example')
 
     lena = Image.open('lena.png')
     dpi = rcParams['figure.dpi']

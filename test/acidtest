@@ -72,42 +72,55 @@ def _main():
         pp.cla()
         pp.clf()
 
-        # plot the test example
-        comment = getattr(testfunctions, function_strings[k])()
-
         # plot reference figure
         pdf_path = data_dir + '/test' + repr(k) + '.pdf'
         pp.savefig(pdf_path)
-
-        pdf_path = path.join(tex_relative_path_to_data,
-                             path.basename(pdf_path)
-                             )
-        # Open figure, insert PDF
-        file_handle.write('% test plot ' + str(k) + '\n'
-                          '\\begin{figure}%\n'
-                          '\\centering%\n'
-                          '\\begin{tabular}{cc}\n'
-                          '\includegraphics[width=\\figwidth]'
-                          '{' + str(pdf_path) + '}%\n'
-                          '&\n'
-                          )
-        # convert to TikZ
-        tikz_path = data_dir + '/test%r.tex' % k
-        tikz_tex_path = path.join(tex_relative_path_to_data,
-                                  path.basename(tikz_path)
-                                  )
-        try:
-            matplotlib2tikz.save(
-                tikz_path,
-                figurewidth=figure_width,
-                tex_relative_path_to_data=tex_relative_path_to_data,
-                show_info=False
+        pdf_path = path.join(
+                tex_relative_path_to_data,
+                path.basename(pdf_path)
                 )
-            file_handle.write('\\input{%s}\n' % tikz_tex_path)
-        except Exception as e:
-            print(e)
-            file_handle.write('%%%s\n' % e)
 
+        try:
+            # plot the test example
+            comment = getattr(testfunctions, function_strings[k])()
+            try:
+                tikz_path = data_dir + '/test%r.tex' % k
+                tikz_tex_path = path.join(
+                        tex_relative_path_to_data,
+                        path.basename(tikz_path)
+                        )
+                # convert to tikz
+                matplotlib2tikz.save(
+                    tikz_path,
+                    figurewidth=figure_width,
+                    tex_relative_path_to_data=tex_relative_path_to_data,
+                    show_info=False
+                    )
+                text = '\\input{%s}\n' % tikz_tex_path
+                # file_handle.write('\\input{%s}\n' % tikz_tex_path)
+            except Exception as e:
+                print()
+                print(e)
+                print()
+                text = '%% mpl2tikz conversion failed with\n%% %s\n' % e
+                file_handle.write('%%%s\n' % e)
+        except Exception as e:
+            print()
+            print(e)
+            print()
+            text = '%% Figure generation failed with\n%% %s\n' % e
+
+        # Open figure, insert PDF
+        file_handle.write(
+            '% test plot ' + str(k) + '\n'
+            '\\begin{figure}%\n'
+            '\\centering%\n'
+            '\\begin{tabular}{cc}\n'
+            '\includegraphics[width=\\figwidth]'
+            '{' + str(pdf_path) + '}%\n'
+            '&\n'
+            )
+        file_handle.write(text)
         # Close the figure
         file_handle.write(
                 '\\end{tabular}\n'
