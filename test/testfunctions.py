@@ -22,6 +22,9 @@ import numpy as np
 import matplotlib as mpl
 from matplotlib import pyplot as pp
 
+# By default, aill symbols from this file are executed by acidtest, except
+# those that start with an underscore (_). Exclude some more.
+EXCLUDE_LIST = {'EXCLUDE_LIST', 'mpl', 'np', 'pp'}
 
 def basic_sin():
     from matplotlib import style

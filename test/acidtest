@@ -51,9 +51,9 @@ def _main():
 
     # Get all function names from the testfunctions module.
     function_strings = dir(testfunctions)
-    # Remove all functions that start with '_' and that are not
-    # in a certain exclude list (uuuugly).
-    exclude_list = {'mpl', 'np', 'pp'}
+    # Remove all functions that start with '_' and that are not in a certain
+    # exclude list (uuuugly).
+    exclude_list = testfunctions.EXCLUDE_LIST
     tmp = []
     for s in function_strings:
         if s[0] != '_' and s not in exclude_list:
@@ -71,6 +71,7 @@ def _main():
         print('Test function %d (%s)...' % (k, function_strings[k]))
         pp.cla()
         pp.clf()
+
         # plot the test example
         comment = getattr(testfunctions, function_strings[k])()
 
