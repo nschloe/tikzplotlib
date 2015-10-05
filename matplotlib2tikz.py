@@ -157,11 +157,7 @@ def save(filepath,
     # gather the file content
     data, content = _handle_children(data, figure)
 
-    disclaimer = (
-        'This file was created by matplotlib v%s.\n'
-        '%s\n'
-        'All rights reserved.\n') \
-        % (__version__, __copyright__)
+    disclaimer = 'This file was created by matplotlib2tikz.'
 
     if show_info:
         disclaimer += \
