@@ -64,7 +64,7 @@ def _main():
             # plot the test example
             test.plot()
             try:
-                tikz_path = data_dir + '/test%r.tex' % k
+                tikz_path = path.join(data_dir, name + '.tex')
                 tikz_tex_path = path.join(
                         tex_relative_path_to_data,
                         path.basename(tikz_path)
@@ -91,7 +91,7 @@ def _main():
             text = '%% Figure generation failed with\n%% %s\n' % e
 
         # plot reference figure
-        pdf_path = data_dir + '/test' + repr(k) + '.pdf'
+        pdf_path = path.join(data_dir, name + '.pdf')
         pp.savefig(pdf_path)
         pdf_path = path.join(
                 tex_relative_path_to_data,
