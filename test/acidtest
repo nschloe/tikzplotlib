@@ -72,14 +72,6 @@ def _main():
         pp.cla()
         pp.clf()
 
-        # plot reference figure
-        pdf_path = data_dir + '/test' + repr(k) + '.pdf'
-        pp.savefig(pdf_path)
-        pdf_path = path.join(
-                tex_relative_path_to_data,
-                path.basename(pdf_path)
-                )
-
         try:
             # plot the test example
             comment = getattr(testfunctions, function_strings[k])()
@@ -109,6 +101,14 @@ def _main():
             print(e)
             print()
             text = '%% Figure generation failed with\n%% %s\n' % e
+
+        # plot reference figure
+        pdf_path = data_dir + '/test' + repr(k) + '.pdf'
+        pp.savefig(pdf_path)
+        pdf_path = path.join(
+                tex_relative_path_to_data,
+                path.basename(pdf_path)
+                )
 
         # Open figure, insert PDF
         file_handle.write(

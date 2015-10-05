@@ -26,6 +26,7 @@ from matplotlib import pyplot as pp
 # those that start with an underscore (_). Exclude some more.
 EXCLUDE_LIST = {'EXCLUDE_LIST', 'mpl', 'np', 'pp'}
 
+
 def basic_sin():
     from matplotlib import style
     style.use('ggplot')
@@ -67,7 +68,7 @@ def subplots():
     return 'Two subplots on top of each other'
 
 
-def image_plot():
+def _image_plot():
     from matplotlib import rcParams
     try:
         import Image
@@ -314,7 +315,7 @@ def subplot4x4():
     return '$4\\times 4$ subplots'
 
 
-def histogram():
+def _histogram():
     import matplotlib.pyplot as plt
 
     # Make plot with vertical (default) colorbar
@@ -327,7 +328,7 @@ def histogram():
     return 'Histogram'
 
 
-def contourf_with_logscale():
+def _contourf_with_logscale():
     import matplotlib.pyplot as plt
     import matplotlib.ticker as tkr
     # from matplotlib import colors, ticker
