@@ -18,7 +18,7 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 desc = '$4\\times 4$ subplots'
-md5 = ''
+sha = ''
 
 
 def plot():

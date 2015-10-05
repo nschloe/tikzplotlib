@@ -18,7 +18,7 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 desc = 'Noise with a color bar'
-md5 = ''
+sha = ''
 
 
 def plot():

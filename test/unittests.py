@@ -17,19 +17,36 @@
 # You should have received a copy of the GNU General Public License along with
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
-desc = 'Histogram'
-sha = ''
+import os
+import tempfile
+from importlib import import_module
+import hashlib
+
+import matplotlib2tikz
+import testfunctions
 
 
-def plot():
-    import matplotlib.pyplot as plt
-    import numpy as np
+def test_generator():
+    for name in testfunctions.__all__:
+        print(name)
+        test = import_module('testfunctions.' + name)
+        yield check_md5, test
 
-    # Make plot with vertical (default) colorbar
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
 
-    ax.hist(10 + 2 * np.random.randn(1000), label='men')
-    ax.hist(12 + 3 * np.random.randn(1000), label='women', alpha=0.5)
-    ax.legend()
-    return
+def check_md5(test):
+    # import the test
+    test.plot()
+    # convert to tikz file
+    handle, filename = tempfile.mkstemp()
+    # convert to tikz
+    matplotlib2tikz.save(
+        filename,
+        figurewidth='7.5cm',
+        show_info=False
+        )
+    # compute hash
+    print(filename)
+    with open(filename, 'rb') as f:
+        sha = hashlib.sha1(f.read()).hexdigest()
+    print(sha)
+    assert test.sha == sha

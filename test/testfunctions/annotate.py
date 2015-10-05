@@ -18,7 +18,7 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 desc = 'Annotations'
-md5 = '49389526476d0a45cdb71bb2fc3a2b32'
+sha = '49389526476d0a45cdb71bb2fc3a2b32'
 
 
 def plot():
