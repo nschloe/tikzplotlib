@@ -12,6 +12,7 @@ addons:
       - python-tk
       - python-nose
       - texlive-latex-base
+      - texlive-pictures
 install:
   # Alternative: setup.py install.
   # Using pip makes sure that the package is pip-compatible, too.
