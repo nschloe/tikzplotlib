@@ -34,7 +34,7 @@ import testfunctions
 
 def _main():
     # get command line arguments
-    test_list = _parse_options()
+    test_names = _parse_options()
 
     tex_file_path = './tex/acid.tex'
 
@@ -51,8 +51,13 @@ def _main():
 
     write_document_header(file_handle, figure_width)
 
-    for k, name in enumerate(testfunctions.__all__):
-        print('Test function %d (%s)...' % (k, name))
+    if test_names:
+        test_list = test_names
+    else:
+        test_list = testfunctions.__all__
+
+    for name in test_list:
+        print('Test function %s...' % name)
 
         # import the test
         test = import_module('testfunctions.' + name)
@@ -99,20 +104,20 @@ def _main():
                 )
 
         # Open figure, insert PDF
-        file_handle.write(
-            '% test plot ' + str(k) + '\n'
-            '\\begin{figure}%\n'
-            '\\centering%\n'
+        file_handle.write((
+            '%% test plot %s \n'
+            '\\begin{figure}%%\n'
+            '\\centering%%\n'
             '\\begin{tabular}{cc}\n'
             '\includegraphics[width=\\figwidth]'
-            '{' + str(pdf_path) + '}%\n'
+            '{%s}%%\n'
             '&\n'
-            )
+            ) % (name, pdf_path))
         file_handle.write(text)
         # Close the figure
         file_handle.write(
                 '\\end{tabular}\n'
-                '\\caption{' + test.desc + ' (test ID ' + str(k) + ').}%\n'
+                '\\caption{' + test.desc + '.}%\n'
                 '\\end{figure}\\clearpage\n\n'
                 )
         print('done.')
@@ -174,9 +179,9 @@ def _parse_options():
             description='Acid test for matplotlib2tikz.'
             )
     parser.add_argument('--tests', '-t',
-                        metavar='TEST_INDICES',
+                        metavar='TEST_NAMES',
                         nargs='+',
-                        type=int,
+                        type=str,
                         help='tests to perform'
                         )
     args = parser.parse_args()
