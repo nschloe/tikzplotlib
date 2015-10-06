@@ -1,26 +1,39 @@
+# We cannot enable container-based infrastructure for now since we need TeXlive
+# from a PPA
+#sudo: false
+
 language: python
 python:
     - "2.7"
-virtualenv:
-  system_site_packages: true
-# Enable container-based infrastructure
-sudo: false
-# install dependencies
-addons:
-  apt:
-    packages:
-      - python-tk
-      - python-nose
-      - texlive-latex-base
-      - texlive-latex-extra
-      - texlive-pictures
+
+before_install:
+  # http://about.travis-ci.org/docs/user/build-configuration/#Installing-Packages-Using-apt
+  # Get Trilinos.
+  - sudo add-apt-repository -y ppa:texlive-backports/ppa
+  - sudo apt-get update -qq
+  - sudo apt-get install python-tk python-nose
+  - sudo apt-get install texlive-latex-base texlive-latex-extra texlive-pictures
+
+# virtualenv:
+#   system_site_packages: true
+# # install dependencies
+# addons:
+#   apt:
+#     packages:
+#       - python-tk
+#       - python-nose
+#       - texlive-latex-base
+#       - texlive-latex-extra
+#       - texlive-pictures
+
 install:
   # Alternative: setup.py install.
   # Using pip makes sure that the package is pip-compatible, too.
   - pip install .
   - pip install coveralls
   - pip install matplotlib
-# command to run tests
+
+# run tests
 script:
   - nosetests #--with-coverage --cover-package=matplotlib2tikz
 #after_success:
