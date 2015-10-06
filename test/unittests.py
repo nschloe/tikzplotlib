@@ -21,6 +21,7 @@ import os
 import tempfile
 from importlib import import_module
 import hashlib
+import subprocess
 
 import matplotlib2tikz
 import testfunctions
@@ -30,23 +31,53 @@ def test_generator():
     for name in testfunctions.__all__:
         print(name)
         test = import_module('testfunctions.' + name)
-        yield check_md5, test
+        yield check_hash, test
 
 
-def check_md5(test):
+def check_hash(test):
     # import the test
     test.plot()
     # convert to tikz file
-    handle, filename = tempfile.mkstemp()
-    # convert to tikz
+    handle, tikzfile = tempfile.mkstemp(suffix='_tikz.tex')
     matplotlib2tikz.save(
-        filename,
+        tikzfile,
         figurewidth='7.5cm',
         show_info=False
         )
-    # compute hash
-    print(filename)
-    with open(filename, 'rb') as f:
-        sha = hashlib.sha1(f.read()).hexdigest()
-    print(sha)
-    assert test.sha == sha
+    # create a latex wrapper for the tikz
+    wrapper = '''\\documentclass{standalone}
+\\usepackage{pgfplots}
+\\pgfplotsset{compat=newest}
+\\begin{document}
+\\input{%s}
+\\end{document}''' % tikzfile
+    handle, tex_file = tempfile.mkstemp()
+    with open(tex_file, 'w') as f:
+        f.write(wrapper)
+
+    # change into the directory of the TeX file
+    os.chdir(os.path.dirname(tex_file))
+
+    # compile the output to pdf
+    FNULL = open(os.devnull, 'w')
+    subprocess.check_call(
+        ['lualatex', '--interaction=nonstopmode', tex_file],
+        stdout=FNULL,
+        stderr=subprocess.STDOUT
+        )
+    pdf_file = tex_file + '.pdf'
+
+    # Convert PDF to PNG
+    import wand.image
+    with wand.image.Image(filename=pdf_file, resolution=300) as img:
+        img.format = 'png'
+        png_file = tex_file + '.png'
+        img.save(filename=png_file)
+
+    # compute the phash of the PNG
+    from PIL import Image
+    import imagehash
+    phash = imagehash.phash(Image.open(png_file)).__str__()
+    print(phash, type(phash))
+    print(test.phash, type(test.phash))
+    assert test.phash == phash
