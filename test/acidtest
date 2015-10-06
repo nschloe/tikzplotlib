@@ -108,7 +108,7 @@ def _main():
 \\begin{figure}%%
 \\centering%%
 \\begin{tabular}{cc}
-\includegraphics[width=\\figwidth]{%s}%%
+\\includegraphics[width=\\figwidth]{%s}%%
 &
 %s
 \\end{tabular}
