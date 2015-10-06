@@ -18,7 +18,7 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 desc = 'Loglog plot with large ticks dimensions'
-sha = ''
+phash = 'ddc98d723232338d'
 
 
 def plot():

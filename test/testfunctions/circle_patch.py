@@ -18,7 +18,7 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 desc = 'A circle path'
-sha = ''
+phash = '4352f6a56c495cd9'
 
 
 def plot():

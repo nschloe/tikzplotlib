@@ -47,6 +47,7 @@ def check_hash(test):
     # create a latex wrapper for the tikz
     wrapper = '''\\documentclass{standalone}
 \\usepackage{pgfplots}
+\\usepgfplotslibrary{groupplots}
 \\pgfplotsset{compat=newest}
 \\begin{document}
 \\input{%s}
@@ -79,5 +80,4 @@ def check_hash(test):
     import imagehash
     phash = imagehash.phash(Image.open(png_file)).__str__()
     print(phash, type(phash))
-    print(test.phash, type(test.phash))
     assert test.phash == phash
