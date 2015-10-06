@@ -63,8 +63,8 @@ def check_hash(test):
     FNULL = open(os.devnull, 'w')
     subprocess.check_call(
         ['lualatex', '--interaction=nonstopmode', tex_file],
-        stdout=FNULL,
-        stderr=subprocess.STDOUT
+        #stdout=FNULL,
+        #stderr=subprocess.STDOUT
         )
     pdf_file = tex_file + '.pdf'
 
