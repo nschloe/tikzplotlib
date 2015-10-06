@@ -10,6 +10,7 @@ addons:
   apt:
     packages:
       - python-matplotlib
+      - python-tk
       - python-nose
       - texlive-latex-base
 install:
