@@ -19,7 +19,7 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 import argparse
-from matplotlib import pyplot as pp
+import matplotlib
 from importlib import import_module
 
 import testfunctions
@@ -40,7 +40,11 @@ def _main():
 def print_tree(obj, indent=''):
     '''Recursively prints the tree structure of the matplotlib object.
     '''
-    print(indent, type(obj))
+    if isinstance(obj, matplotlib.text.Text):
+        print(indent, type(obj).__name__, '("%s")' % obj.get_text())
+    else:
+        print(indent, type(obj).__name__)
+
     for child in obj.get_children():
             print_tree(child, indent + '   ')
     return
