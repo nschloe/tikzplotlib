@@ -18,12 +18,14 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 desc = 'Regular plot with overlay text'
-phash = 'd5364bc1344bb2ad'
+phash = '5db46c09f46c8bf0'
 
 
 def plot():
     from matplotlib import pyplot as pp
     import numpy as np
+
+    fig = pp.figure()
 
     xxx = np.linspace(0, 5)
     yyy = xxx**2
@@ -44,4 +46,5 @@ def plot():
             )
     pp.plot(xxx, yyy, label='graph')
     pp.legend()
-    return
+
+    return fig

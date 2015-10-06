@@ -18,13 +18,16 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 desc = 'Loglog plot with large ticks dimensions'
-phash = 'ddc98d723232338d'
+phash = '555c0df633d4df00'
 
 
 def plot():
     from matplotlib import pyplot as pp
     import numpy as np
 
+    fig = pp.figure()
+
     x = np.logspace(0, 6, num=5)
     pp.loglog(x, x**2)
-    return
+
+    return fig

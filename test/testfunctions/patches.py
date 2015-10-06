@@ -69,4 +69,5 @@ def plot():
     p.set_array(np.array(colors))
     ax.add_collection(p)
     pp.colorbar(p)
-    return
+
+    return fig

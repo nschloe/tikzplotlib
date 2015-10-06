@@ -51,4 +51,4 @@ def plot():
             textcoords='offset points',
             arrowprops=dict(arrowstyle='->')
             )
-    return
+    return fig

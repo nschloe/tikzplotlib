@@ -18,13 +18,14 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 desc = 'Simple $\sin$ plot with some labels'
-phash = 'f7300fcc3332c52e'
+phash = '55cb0f302f36e136'
 
 
 def plot():
     from matplotlib import pyplot as pp
     from matplotlib import style
     import numpy as np
+    fig = pp.figure()
     style.use('ggplot')
     t = np.arange(0.0, 2.0, 0.1)
     s = np.sin(2*np.pi*t)
@@ -36,4 +37,4 @@ def plot():
     pp.ylabel('Voltage (mV)')
     pp.title('Easier than easy $\\frac{1}{2}$')
     pp.grid(True)
-    return
+    return fig

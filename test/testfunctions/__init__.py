@@ -29,6 +29,7 @@ __all__ = [
   'loglogplot',
   'logplot',
   'noise',
+  'noise2',
   'patches',
   'subplot4x4',
   'subplots',

@@ -27,4 +27,4 @@ def plot():
     fig = pp.figure()
     ax = fig.add_subplot(111)
     ax.add_patch(Circle((0, 0), 1))
-    return
+    return fig

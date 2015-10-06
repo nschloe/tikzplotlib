@@ -25,6 +25,8 @@ def plot():
     from matplotlib import pyplot as pp
     import numpy as np
 
+    fig = pp.figure()
+
     an = np.linspace(0, 2*np.pi, 100)
 
     pp.subplot(221)
@@ -48,4 +50,5 @@ def plot():
     pp.axis([-3, 3, -3, 3])
     pp.plot([0, 4], [0, 4])
     pp.title('still equal after adding line', fontsize=10)
-    return
+
+    return fig

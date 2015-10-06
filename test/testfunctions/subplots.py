@@ -30,6 +30,8 @@ def plot():
         e1 = np.exp(-t)
         return np.multiply(s1, e1)
 
+    fig = pp.figure()
+
     t1 = np.arange(0.0, 5.0, 0.1)
     t2 = np.arange(0.0, 5.0, 0.02)
     t3 = np.arange(0.0, 2.0, 0.01)
@@ -45,4 +47,5 @@ def plot():
     pp.grid(True)
     pp.xlabel('time (s)')
     pp.ylabel('Undamped')
-    return
+
+    return fig

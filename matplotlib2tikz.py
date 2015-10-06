@@ -245,6 +245,7 @@ def _draw_axes(data, obj):
 
     if isinstance(obj, mpl.axes.Subplot):
         geom = obj.get_geometry()
+        print('geom ', geom)
         nsubplots = geom[0] * geom[1]
         if nsubplots > 1:
             is_subplot = True

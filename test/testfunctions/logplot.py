@@ -28,4 +28,5 @@ def plot():
     fig = pp.figure()
     ax = fig.add_subplot(1, 1, 1)
     line, = ax.semilogy(a, color='blue', lw=2)
-    return
+
+    return fig

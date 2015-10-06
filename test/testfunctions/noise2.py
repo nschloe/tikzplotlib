@@ -17,19 +17,26 @@
 # You should have received a copy of the GNU General Public License along with
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
-desc = 'Histogram'
+desc = 'Noise with a color bar'
 sha = ''
 
 
 def plot():
-    import matplotlib.pyplot as plt
+    from numpy.random import randn
+    from matplotlib import pyplot as pp
     import numpy as np
 
-    # Make plot with vertical (default) colorbar
-    fig = plt.figure()
+    # Make plot with horizontal colorbar
+    fig = pp.figure()
     ax = fig.add_subplot(111)
 
-    ax.hist(10 + 2 * np.random.randn(1000), label='men')
-    ax.hist(12 + 3 * np.random.randn(1000), label='women', alpha=0.5)
-    ax.legend()
+    data = np.clip(np.random.randn(250, 250), -1, 1)
+
+    cax = ax.imshow(data, interpolation='nearest')
+    ax.set_title('Gaussian noise with horizontal colorbar')
+
+    cbar = fig.colorbar(cax, ticks=[-1, 0, 1], orientation='horizontal')
+    # horizontal colorbar
+    cbar.ax.set_xticklabels(['Low', 'Medium', 'High'])
+
     return fig

@@ -188,8 +188,8 @@ def _parse_options():
             help='directory for the test output (default: ./tex/)'
             )
     parser.add_argument(
-            '--tests', '-t',
-            metavar='TEST_NAMES',
+            'tests',
+            metavar='TEST_NAME',
             nargs='+',
             type=str,
             help='tests to perform (default: all)'

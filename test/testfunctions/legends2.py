@@ -18,12 +18,14 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 desc = 'Another legend plot'
-phash = '516d3c9296f2f232'
+phash = '5d6d2db69292d252'
 
 
 def plot():
     from matplotlib import pyplot as pp
     import numpy as np
+    fig = pp.figure()
+
     t1 = np.arange(0.0, 2.0, 0.1)
     t2 = np.arange(0.0, 2.0, 0.01)
 
@@ -43,4 +45,4 @@ def plot():
     pp.xlabel('time')
     pp.ylabel('volts')
     pp.title('Damped oscillation')
-    return
+    return fig

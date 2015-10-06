@@ -18,12 +18,14 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 desc = 'Plot with legends'
-phash = 'c599fd46366223a9'
+phash = 'dd8907766666252d'
 
 
 def plot():
     from matplotlib import pyplot as pp
     import numpy as np
+
+    fig = pp.figure()
 
     x = np.ma.arange(0, 2*np.pi, 0.02)
     y = np.ma.sin(x)
@@ -41,4 +43,4 @@ def plot():
               loc='upper right'
               )
     pp.title('Masked line demo')
-    return
+    return fig
