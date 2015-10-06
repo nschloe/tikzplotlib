@@ -33,7 +33,7 @@ install:
   - pip install coveralls
   - pip install matplotlib
   - pip install Wand
-  - pip install PIL
+  - pip install Pillow
   - pip install ImageHash
 
 # run tests
