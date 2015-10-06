@@ -1,0 +1,24 @@
+language: python
+python:
+    - "3.4"
+virtualenv:
+  system_site_packages: true
+# Enable container-based infrastructure
+sudo: false
+# install dependencies
+addons:
+  apt:
+    packages:
+      - python-matplotlib
+      - python-nose
+      - texlive-latex-base
+install:
+  # Alternative: setup.py install.
+  # Using pip makes sure that the package is pip-compatible, too.
+  - pip install .
+  - pip install coveralls
+# command to run tests
+script:
+  - nosetests --with-coverage --cover-package=matplotlib2tikz
+after_success:
+  - coveralls
