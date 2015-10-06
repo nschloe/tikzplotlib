@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License along with
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
-from os import path
+import os
 from matplotlib import pyplot as pp
 from importlib import import_module
 
@@ -34,12 +34,16 @@ import testfunctions
 
 def _main():
     # get command line arguments
-    test_names = _parse_options()
+    test_dir, test_names = _parse_options()
 
-    tex_file_path = './tex/acid.tex'
+    if not os.path.isdir(test_dir):
+        os.mkdir(test_dir)
+    tex_file_path = os.path.join(test_dir, 'acid.tex')
 
     # directory where all the generated files will end up
-    data_dir = './tex/data'
+    data_dir = os.path.join(test_dir, 'data')
+    if not os.path.isdir(data_dir):
+        os.mkdir(data_dir)
 
     # how to get from the LaTeX file to the data
     tex_relative_path_to_data = './data'
@@ -69,10 +73,10 @@ def _main():
             # plot the test example
             test.plot()
             try:
-                tikz_path = path.join(data_dir, name + '.tex')
-                tikz_tex_path = path.join(
+                tikz_path = os.path.join(data_dir, name + '.tex')
+                tikz_tex_path = os.path.join(
                         tex_relative_path_to_data,
-                        path.basename(tikz_path)
+                        os.path.basename(tikz_path)
                         )
                 # convert to tikz
                 matplotlib2tikz.save(
@@ -96,11 +100,11 @@ def _main():
             tikz = '%% Figure generation failed with\n%% %s' % e
 
         # plot reference figure
-        pdf_path = path.join(data_dir, name + '.pdf')
+        pdf_path = os.path.join(data_dir, name + '.pdf')
         pp.savefig(pdf_path)
-        pdf_path = path.join(
+        pdf_path = os.path.join(
                 tex_relative_path_to_data,
-                path.basename(pdf_path)
+                os.path.basename(pdf_path)
                 )
 
         # Open figure, insert PDF
@@ -176,14 +180,22 @@ def _parse_options():
     parser = argparse.ArgumentParser(
             description='Acid test for matplotlib2tikz.'
             )
-    parser.add_argument('--tests', '-t',
-                        metavar='TEST_NAMES',
-                        nargs='+',
-                        type=str,
-                        help='tests to perform (default: all)'
-                        )
+    parser.add_argument(
+            '--dir', '-d',
+            metavar='TEST_DIR',
+            type=str,
+            default='./tex/',
+            help='directory for the test output (default: ./tex/)'
+            )
+    parser.add_argument(
+            '--tests', '-t',
+            metavar='TEST_NAMES',
+            nargs='+',
+            type=str,
+            help='tests to perform (default: all)'
+            )
     args = parser.parse_args()
-    return args.tests
+    return args.dir, args.tests
 
 
 if __name__ == '__main__':
