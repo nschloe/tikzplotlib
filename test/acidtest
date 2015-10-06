@@ -39,10 +39,10 @@ def _main():
     tex_file_path = './tex/acid.tex'
 
     # directory where all the generated files will end up
-    data_dir = './data'
+    data_dir = './tex/data'
 
     # how to get from the LaTeX file to the data
-    tex_relative_path_to_data = '../data'
+    tex_relative_path_to_data = './data'
 
     figure_width = '7.5cm'
 
@@ -81,19 +81,19 @@ def _main():
                     tex_relative_path_to_data=tex_relative_path_to_data,
                     show_info=False
                     )
-                text = '\\input{%s}\n' % tikz_tex_path
+                tikz = '\\input{%s}' % tikz_tex_path
                 # file_handle.write('\\input{%s}\n' % tikz_tex_path)
             except Exception as e:
                 print()
                 print(e)
                 print()
-                text = '%% mpl2tikz conversion failed with\n%% %s\n' % e
+                tikz = '%% mpl2tikz conversion failed with\n%% %s' % e
                 file_handle.write('%%%s\n' % e)
         except Exception as e:
             print()
             print(e)
             print()
-            text = '%% Figure generation failed with\n%% %s\n' % e
+            tikz = '%% Figure generation failed with\n%% %s' % e
 
         # plot reference figure
         pdf_path = path.join(data_dir, name + '.pdf')
@@ -104,22 +104,19 @@ def _main():
                 )
 
         # Open figure, insert PDF
-        file_handle.write((
-            '%% test plot %s \n'
-            '\\begin{figure}%%\n'
-            '\\centering%%\n'
-            '\\begin{tabular}{cc}\n'
-            '\includegraphics[width=\\figwidth]'
-            '{%s}%%\n'
-            '&\n'
-            ) % (name, pdf_path))
-        file_handle.write(text)
-        # Close the figure
-        file_handle.write(
-                '\\end{tabular}\n'
-                '\\caption{' + test.desc + '.}%\n'
-                '\\end{figure}\\clearpage\n\n'
-                )
+        file_handle.write('''%% test plot %s
+\\begin{figure}%%
+\\centering%%
+\\begin{tabular}{cc}
+\includegraphics[width=\\figwidth]{%s}%%
+&
+%s
+\\end{tabular}
+\\caption{%s.}%%
+\\end{figure}\\clearpage
+
+''' % (name, pdf_path, tikz, test.desc)
+            )
         print('done.')
     write_document_closure(file_handle)
     file_handle.close()
@@ -129,15 +126,16 @@ def _main():
 def write_document_header(file_handle, figure_width):
     '''Write the LaTeX document header to the file.
     '''
-    file_handle.write('\\documentclass[landscape]{scrartcl}\n'
-                      '\\usepackage{graphicx}\n'
-                      '\\usepackage{pgfplots}\n'
-                      '\\usepgfplotslibrary{groupplots}\n'
-                      '\\pgfplotsset{compat=newest}\n\n'
-                      '\\newlength\\figwidth%\n'
-                      '\\setlength\\figwidth{' + figure_width + '}\n\n'
-                      '\\begin{document}\n\n'
-                      )
+    file_handle.write(
+            '\\documentclass[landscape]{scrartcl}\n'
+            '\\usepackage{graphicx}\n'
+            '\\usepackage{pgfplots}\n'
+            '\\usepgfplotslibrary{groupplots}\n'
+            '\\pgfplotsset{compat=newest}\n\n'
+            '\\newlength\\figwidth%\n'
+            '\\setlength\\figwidth{' + figure_width + '}\n\n'
+            '\\begin{document}\n\n'
+            )
     return
 
 
@@ -182,7 +180,7 @@ def _parse_options():
                         metavar='TEST_NAMES',
                         nargs='+',
                         type=str,
-                        help='tests to perform'
+                        help='tests to perform (default: all)'
                         )
     args = parser.parse_args()
     return args.tests

@@ -18,7 +18,7 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 desc = 'An \\texttt{imshow} plot'
-sha = ''
+phash = '0b4bfc01f40bfc4b'
 
 
 def plot():

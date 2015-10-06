@@ -971,7 +971,7 @@ def _draw_image(data, obj):
 
 
 def _find_associated_colorbar(obj):
-    '''Rather poor way of telling whether an axis has a colorbar associated:
+    '''A rather poor way of telling whether an axis has a colorbar associated:
     Check the next axis environment, and see if it is de facto a color bar;
     if yes, return the color bar object.
     '''
@@ -984,7 +984,7 @@ def _find_associated_colorbar(obj):
             # if fetch was successful, cbar contains
             # (reference to colorbar,
             #   reference to axis containing colorbar)
-            return cbar[0]
+            return cbar
     return None
 
 
