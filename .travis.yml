@@ -9,7 +9,6 @@ sudo: false
 addons:
   apt:
     packages:
-      - python-matplotlib
       - python-tk
       - python-nose
       - texlive-latex-base
@@ -18,6 +17,7 @@ install:
   # Using pip makes sure that the package is pip-compatible, too.
   - pip install .
   - pip install coveralls
+  - pip install matplotlib
 # command to run tests
 script:
   - nosetests #--with-coverage --cover-package=matplotlib2tikz
