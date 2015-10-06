@@ -24,12 +24,15 @@ sha = ''
 def plot():
     from matplotlib import rcParams
     from matplotlib import pyplot as pp
+    import os
     try:
         import Image
     except ImportError:
         raise RuntimeError('PIL must be installed to run this example')
 
-    lena = Image.open('lena.png')
+    this_dir = os.path.dirname(os.path.realpath(__file__))
+    print(this_dir)
+    lena = Image.open(os.path.join(this_dir, 'lena.png'))
     dpi = rcParams['figure.dpi']
     figsize = lena.size[0]/dpi, lena.size[1]/dpi
     pp.figure(figsize=figsize)
