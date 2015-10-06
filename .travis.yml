@@ -13,6 +13,7 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install python-tk python-nose
   - sudo apt-get install texlive-latex-base texlive-latex-extra texlive-pictures
+  - sudo apt-get install liblapack  # for ImageHash
 
 # virtualenv:
 #   system_site_packages: true
