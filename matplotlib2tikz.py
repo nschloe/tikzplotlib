@@ -227,6 +227,7 @@ def _get_color_definitions(data):
 def _draw_axes(data, obj):
     '''Returns the Pgfplots code for an axis environment.
     '''
+    print('_draw_axes')
     content = []
 
     # Are we dealing with an axis that hosts a colorbar?
@@ -460,6 +461,9 @@ def _draw_axes(data, obj):
                   % str(obj._matplotlib2tikz_anchors)
                   )
 
+    print(is_subplot)
+    print(nsubplots)
+    print(subplot_index)
     if not is_subplot:
         content.append('\\end{axis}\n\n')
     elif is_subplot and nsubplots == subplot_index:
