@@ -12,6 +12,7 @@ addons:
       - python-tk
       - python-nose
       - texlive-latex-base
+      - texlive-latex-extra
       - texlive-pictures
 install:
   # Alternative: setup.py install.
