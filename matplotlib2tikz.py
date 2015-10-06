@@ -21,9 +21,12 @@
 '''
 
 # imported modules
-import matplotlib as mpl
-import numpy as np
 import os
+import matplotlib as mpl
+if 'DISPLAY' not in os.environ:
+    # headless mode, for remote executions (and travis)
+    mpl.use('Agg')
+import numpy as np
 import warnings
 
 # meta info
