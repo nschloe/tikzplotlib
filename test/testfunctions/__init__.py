@@ -28,12 +28,13 @@ __all__ = [
   'legends',
   'loglogplot',
   'logplot',
-  'noise',
-  'noise2',
-  'patches',
   'subplot4x4',
   'subplots',
   'text_overlay'
   ]
 # Failing:
+# TODO resurrect
 #  'histogram',
+#  'noise',
+#  'noise2',
+#  'patches',
