@@ -227,7 +227,6 @@ def _get_color_definitions(data):
 def _draw_axes(data, obj):
     '''Returns the Pgfplots code for an axis environment.
     '''
-    print('_draw_axes')
     content = []
 
     # Are we dealing with an axis that hosts a colorbar?
