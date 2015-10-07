@@ -41,6 +41,7 @@ install:
 
 # run tests
 script:
+  - python -c "import scipy; print(scipy.__file__); import scipy.fftpack"
   - nosetests #--with-coverage --cover-package=matplotlib2tikz
 #after_success:
 #  - coveralls
