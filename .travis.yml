@@ -40,6 +40,7 @@ install:
 
 # manually install important TeX dependencies
 before_script:
+  - env
   - wget http://mirrors.ctan.org/install/graphics/pgf/base/pgf.tds.zip -O /tmp/pgf.zip
   - unzip /tmp/pgf.zip -d $TEXMFLOCAL
   - wget http://mirrors.ctan.org/install/graphics/pgf/contrib/pgfplots.tds.zip -O /tmp/pgfplots.zip
