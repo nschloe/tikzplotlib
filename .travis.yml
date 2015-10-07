@@ -17,6 +17,7 @@ before_install:
   - sudo apt-get install texlive-latex-base texlive-latex-extra texlive-pictures
   #- sudo apt-get install liblapack-dev gfortran
   - sudo apt-get install python-scipy  # for ImageHash
+  - sudo apt-get install lua5.2  # for pgfplots
 
 # # install dependencies
 # addons:
