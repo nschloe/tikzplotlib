@@ -35,7 +35,8 @@ install:
   - pip install matplotlib
   - pip install Wand
   - pip install Pillow
-  - pip install ImageHash
+  # Use --no-deps for ImageHash to avoid a lengthy install of scipy here.
+  - pip install --no-deps ImageHash
 
 # run tests
 script:
