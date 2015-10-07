@@ -22,6 +22,9 @@ import tempfile
 from importlib import import_module
 import hashlib
 import subprocess
+import wand.image
+from PIL import Image
+import imagehash
 
 import matplotlib2tikz
 import testfunctions
@@ -69,15 +72,12 @@ def check_hash(test):
     pdf_file = tex_file + '.pdf'
 
     # Convert PDF to PNG
-    import wand.image
     with wand.image.Image(filename=pdf_file, resolution=300) as img:
         img.format = 'png'
         png_file = tex_file + '.png'
         img.save(filename=png_file)
 
     # compute the phash of the PNG
-    from PIL import Image
-    import imagehash
     phash = imagehash.phash(Image.open(png_file)).__str__()
     print(phash, type(phash))
     assert test.phash == phash
