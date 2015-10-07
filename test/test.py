@@ -65,7 +65,8 @@ def check_hash(test):
     # compile the output to pdf
     FNULL = open(os.devnull, 'w')
     subprocess.check_call(
-        ['lualatex', '--interaction=nonstopmode', tex_file],
+        # use pdflatex for now until travis features a more modern lualatex
+        ['pdflatex', '--interaction=nonstopmode', tex_file],
         #stdout=FNULL,
         #stderr=subprocess.STDOUT
         )
