@@ -38,12 +38,10 @@ install:
   - pip install matplotlib
   - pip install Wand
   - pip install Pillow
-  # Use --no-deps for ImageHash to avoid a lengthy install of scipy here.
-  - pip install --no-deps ImageHash
+  - pip install ImageHash
 
 # run tests
 script:
-  - python -c "import scipy; print(scipy.__file__); import scipy.fftpack"
   - nosetests #--with-coverage --cover-package=matplotlib2tikz
 #after_success:
 #  - coveralls
