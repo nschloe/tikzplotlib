@@ -10,11 +10,12 @@ before_install:
   # http://about.travis-ci.org/docs/user/build-configuration/#Installing-Packages-Using-apt
   # Get Trilinos.
   - sudo add-apt-repository -y ppa:texlive-backports/ppa
-  - sudo add-apt-repository -y ppa:pylab/stable  # for scipy
+  #- sudo add-apt-repository -y ppa:pylab/stable  # for scipy
   - sudo apt-get update -qq
   - sudo apt-get install python-tk python-nose
   - sudo apt-get install texlive-latex-base texlive-latex-extra texlive-pictures
-  - sudo apt-get install liblapack-dev gfortran python-scipy  # for ImageHash
+  #- sudo apt-get install liblapack-dev gfortran
+  - sudo apt-get install python-scipy  # for ImageHash
 
 # virtualenv:
 #   system_site_packages: true
