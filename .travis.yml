@@ -16,9 +16,7 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install python-nose
   - sudo apt-get install texlive-latex-base texlive-latex-extra
-    # texlive-latex-extra texlive-pictures
   - sudo apt-get install python-scipy  # for ImageHash
-  - sudo apt-get install python-matplotlib
   - sudo apt-get install python-wand
 
 install:
@@ -26,6 +24,7 @@ install:
   # Using pip makes sure that the package is pip-compatible, too.
   - pip install .
   - pip install coveralls
+  - pip install matplotlib
   - pip install Pillow
   - pip install ImageHash
 
