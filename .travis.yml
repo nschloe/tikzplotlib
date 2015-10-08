@@ -38,12 +38,6 @@ before_script:
   - unzip /tmp/pgfplots.zip -d $TEXMFLOCAL
   - wget http://mirrors.ctan.org/install/macros/latex/contrib/standalone.tds.zip -O /tmp/standalone.zip
   - unzip /tmp/standalone.zip -d $TEXMFLOCAL
-  - wget http://mirrors.ctan.org/fonts/fourier-GUT.zip -O /tmp/fourier.zip
-  - unzip /tmp/fourier.zip -d $TEXMFLOCAL
-  - texhash
-  - wget http://mirrors.ctan.org/macros/latex/contrib/xkeyval.zip -O /tmp/xkeyval.zip
-  - unzip /tmp/xkeyval.zip -d $TEXMFLOCAL
-  - cd $TEXMFLOCAL/xkeyval && latex xkeyval.dtx && cd -
   - texhash
 
 # run tests
