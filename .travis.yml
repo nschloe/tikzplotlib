@@ -48,6 +48,8 @@ before_script:
 # run tests
 script:
   - env
+  - pwd
+  - ls
   - nosetests #--with-coverage --cover-package=matplotlib2tikz
 #after_success:
 #  - coveralls
