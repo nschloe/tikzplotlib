@@ -42,7 +42,7 @@ before_script:
   - texhash
   - wget http://mirrors.ctan.org/macros/latex/contrib/xkeyval.zip -O /tmp/xkeyval.zip
   - unzip /tmp/xkeyval.zip -d $TEXMFLOCAL
-  - cd $TEXMFLOCAL/xkeyval && latex xkeyval.dtx
+  - cd $TEXMFLOCAL/xkeyval && latex xkeyval.dtx && cd -
   - texhash
 
 # run tests
