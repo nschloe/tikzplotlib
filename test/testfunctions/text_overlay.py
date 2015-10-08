@@ -44,7 +44,7 @@ def plot():
                       fc=(1., 0.8, 0.8),
                       )
             )
-    pp.plot(xxx, yyy, label='graph')
+    pp.plot(xxx, yyy, label='a graph')
     pp.legend()
 
     return fig
