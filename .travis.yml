@@ -18,6 +18,7 @@ before_install:
   - sudo apt-get install texlive-latex-base texlive-latex-extra
   - sudo apt-get install python-scipy  # for ImageHash
   - sudo apt-get install python-wand
+  - sudo apt-get install python-matplotlib
 
 install:
   # Alternative: setup.py install.
