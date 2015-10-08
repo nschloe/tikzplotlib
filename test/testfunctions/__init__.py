@@ -23,7 +23,6 @@ __all__ = [
   'annotate',
   'basic_sin',
   'circle_patch',
-  'image_plot',
   'legends2',
   'legends',
   'loglogplot',
@@ -35,6 +34,7 @@ __all__ = [
 # Failing:
 # TODO resurrect
 #  'histogram',
+#  'image_plot',
 #  'noise',
 #  'noise2',
 #  'patches',

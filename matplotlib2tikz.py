@@ -939,7 +939,7 @@ def _draw_image(data, obj):
     elif len(dims) == 3 and dims[2] in [3, 4]:
         # RGB (+alpha) information at each point
         # convert to PIL image (after upside-down flip)
-        import Image
+        from PIL import Image
         image = Image.fromarray(np.flipud(img_array))
         image.save(filename)
     else:

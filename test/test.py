@@ -67,21 +67,25 @@ def check_hash(test):
     subprocess.check_call(
         # use pdflatex for now until travis features a more modern lualatex
         ['pdflatex', '--interaction=nonstopmode', tex_file],
-        #stdout=FNULL,
-        #stderr=subprocess.STDOUT
+        stdout=FNULL,
+        stderr=subprocess.STDOUT
         )
     pdf_file = tex_file + '.pdf'
 
-    # Convert PDF to PNG
+    # Convert PDF to PNG.
+    # Unfortunately, on some machines the background will be transparent, on
+    # other it will be white. To remove this ambiguity, just ensure that the
+    # background is white every time. See
+    # <http://stackoverflow.com/a/27568049/353337> on how to do that.
     with wand.image.Image(filename=pdf_file, resolution=300) as img:
-        img.format = 'png'
-        png_file = tex_file + '.png'
-        print()
-        print()
-        print(png_file)
-        print()
-        print()
-        img.save(filename=png_file)
+        with wand.image.Image(width=img.width, height=img.height,
+                              background=wand.color.Color('white')) as bg:
+            bg.composite(img, 0, 0)
+            bg.format = 'png'
+            bg.background_color = wand.color.Color('green')
+            bg.alpha_channel = False
+            png_file = tex_file + '.png'
+            bg.save(filename=png_file)
 
     # compute the phash of the PNG
     phash = imagehash.phash(Image.open(png_file)).__str__()

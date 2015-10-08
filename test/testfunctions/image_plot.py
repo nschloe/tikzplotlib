@@ -26,7 +26,7 @@ def plot():
     from matplotlib import pyplot as pp
     import os
     try:
-        import Image
+        from PIL import Image
     except ImportError:
         raise RuntimeError('PIL must be installed to run this example')
 
