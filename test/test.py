@@ -76,6 +76,11 @@ def check_hash(test):
     with wand.image.Image(filename=pdf_file, resolution=300) as img:
         img.format = 'png'
         png_file = tex_file + '.png'
+        print()
+        print()
+        print(png_file)
+        print()
+        print()
         img.save(filename=png_file)
 
     # compute the phash of the PNG

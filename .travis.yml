@@ -2,6 +2,9 @@
 # from a PPA
 #sudo: false
 
+sudo: required
+dist: trusty
+
 language: python
 python:
     - "2.7"
@@ -10,21 +13,19 @@ virtualenv:
   system_site_packages: true
 
 before_install:
-  - sudo add-apt-repository -y ppa:texlive-backports/ppa
-  - sudo add-apt-repository -y ppa:pylab/stable  # for scipy
   - sudo apt-get update -qq
-  - sudo apt-get install python-tk python-nose
+  - sudo apt-get install python-nose
   - sudo apt-get install texlive-latex-base texlive-latex-extra
     # texlive-latex-extra texlive-pictures
   - sudo apt-get install python-scipy  # for ImageHash
+  - sudo apt-get install python-matplotlib
+  - sudo apt-get install python-wand
 
 install:
   # Alternative: setup.py install.
   # Using pip makes sure that the package is pip-compatible, too.
   - pip install .
   - pip install coveralls
-  - pip install matplotlib
-  - pip install Wand
   - pip install Pillow
   - pip install ImageHash
 
@@ -47,9 +48,6 @@ before_script:
 
 # run tests
 script:
-  - env
-  - pwd
-  - ls
   - nosetests #--with-coverage --cover-package=matplotlib2tikz
 #after_success:
 #  - coveralls
