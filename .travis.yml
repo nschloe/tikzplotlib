@@ -17,7 +17,7 @@ before_install:
   - sudo apt-get install python-nose
   - sudo apt-get install texlive-latex-base texlive-latex-extra
   - sudo apt-get install python-scipy  # for ImageHash
-  - sudo apt-get install python-wand
+  - sudo apt-get install poppler-utils
   - sudo apt-get build-dep python-matplotlib
 
 install:
