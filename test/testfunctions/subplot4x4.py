@@ -18,7 +18,7 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 desc = '$4\\times 4$ subplots'
-phash = '255c3f129adc3713'
+phash = '639c3d1a9a5c7313'
 
 
 def plot():

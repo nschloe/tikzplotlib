@@ -22,7 +22,8 @@ import tempfile
 from importlib import import_module
 import hashlib
 import subprocess
-import wand.image
+#import wand.image
+#import poppler
 from PIL import Image
 import imagehash
 
@@ -73,22 +74,14 @@ def check_hash(test):
     pdf_file = tex_file + '.pdf'
 
     # Convert PDF to PNG.
-    # Unfortunately, on some machines the background will be transparent, on
-    # other it will be white. To remove this ambiguity, just ensure that the
-    # background is white every time. See
-    # <http://stackoverflow.com/a/27568049/353337> on how to do that.
-    with wand.image.Image(filename=pdf_file, resolution=300) as img:
-        with wand.image.Image(width=img.width, height=img.height,
-                              background=wand.color.Color('white')) as bg:
-            bg.composite(img, 0, 0)
-            bg.format = 'png'
-            bg.background_color = wand.color.Color('green')
-            bg.alpha_channel = False
-            png_file = tex_file + '.png'
-            print()
-            print(png_file)
-            print()
-            bg.save(filename=png_file)
+    base = tex_file
+    png_file = tex_file + '-1.png'
+    print(png_file)
+    subprocess.check_call(
+        ['pdftoppm', '-rx', '300', '-ry','300', '-png', pdf_file, base],
+        stdout=FNULL,
+        stderr=subprocess.STDOUT
+        )
 
     # compute the phash of the PNG
     phash = imagehash.phash(Image.open(png_file)).__str__()

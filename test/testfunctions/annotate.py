@@ -18,7 +18,7 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 desc = 'Annotations'
-phash = '238b78a1768654df'
+phash = '038b78a1749654ff'
 
 def plot():
     from matplotlib import pyplot as pp

@@ -18,7 +18,7 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 desc = 'Simple $\sin$ plot with some labels'
-phash = '5f3427ce21ce219e'
+phash = '5f34a7ce21ce2196'
 
 
 def plot():
