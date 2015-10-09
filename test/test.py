@@ -85,9 +85,19 @@ def check_hash(test):
             bg.background_color = wand.color.Color('green')
             bg.alpha_channel = False
             png_file = tex_file + '.png'
+            print()
+            print(png_file)
+            print()
             bg.save(filename=png_file)
 
     # compute the phash of the PNG
     phash = imagehash.phash(Image.open(png_file)).__str__()
     print(phash, type(phash))
+
+    # Compute the Hamming distance between the two 64-bit numbers
+    hamming_dist = bin(int(phash, 16) ^ int(test.phash, 16)).count('1')
+    print()
+    print(hamming_dist)
+    print()
+
     assert test.phash == phash
