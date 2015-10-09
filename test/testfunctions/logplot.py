@@ -18,7 +18,7 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 desc = 'Log scaled plot'
-phash = '2143fa49ee69bf80'
+phash = 'a143fa09ee29bfc0'
 
 
 def plot():

@@ -28,6 +28,7 @@ __all__ = [
   'loglogplot',
   'logplot',
   'subplots',
+  'subplot4x4',
   'text_overlay'
   ]
 # Failing:

@@ -18,7 +18,7 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 desc = 'Regular plot with overlay text'
-phash = 'b54b937449936c1b'
+phash = 'b74b937449936c0b'
 
 
 def plot():

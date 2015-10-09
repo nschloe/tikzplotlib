@@ -18,7 +18,8 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 desc = 'Two subplots on top of each other'
-phash = '3f619562619d6666'
+phash = '3f61d562619d2666'
+
 
 def plot():
     from matplotlib import pyplot as pp

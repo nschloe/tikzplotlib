@@ -18,7 +18,7 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 desc = 'Plot with legends'
-phash = 'fdfc810e17a10e2b'
+phash = 'fdfc810617a12e2b'
 
 
 def plot():

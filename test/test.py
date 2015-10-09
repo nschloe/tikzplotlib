@@ -78,7 +78,7 @@ def check_hash(test):
     png_file = tex_file + '-1.png'
     print(png_file)
     subprocess.check_call(
-        ['pdftoppm', '-rx', '300', '-ry','300', '-png', pdf_file, base],
+        ['pdftoppm', '-rx', '600', '-ry','600', '-png', pdf_file, base],
         stdout=FNULL,
         stderr=subprocess.STDOUT
         )
