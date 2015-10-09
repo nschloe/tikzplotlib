@@ -27,7 +27,6 @@ __all__ = [
   'legends',
   'loglogplot',
   'logplot',
-  'subplot4x4',
   'subplots',
   'text_overlay'
   ]
@@ -38,3 +37,4 @@ __all__ = [
 #  'noise',
 #  'noise2',
 #  'patches',
+#  'subplot4x4',
