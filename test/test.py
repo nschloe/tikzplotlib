@@ -68,7 +68,7 @@ def check_hash(test):
     subprocess.check_call(
         # use pdflatex for now until travis features a more modern lualatex
         ['pdflatex', '--interaction=nonstopmode', tex_file],
-        stdout=FNULL,
+        #stdout=FNULL,
         stderr=subprocess.STDOUT
         )
     pdf_file = tex_file + '.pdf'
@@ -79,7 +79,7 @@ def check_hash(test):
     print(png_file)
     subprocess.check_call(
         ['pdftoppm', '-rx', '600', '-ry','600', '-png', pdf_file, base],
-        stdout=FNULL,
+        #stdout=FNULL,
         stderr=subprocess.STDOUT
         )
 
