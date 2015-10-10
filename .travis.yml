@@ -42,6 +42,8 @@ install:
 
 # run tests
 script:
+  - python -c "import scipy; print(scipy.__file__)"
+  - python -c "import scipy; print(scipy.__version__)"
   - nosetests #--with-coverage --cover-package=matplotlib2tikz
 #after_success:
 #  - coveralls
