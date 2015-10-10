@@ -30,6 +30,7 @@ def phash(image, hash_size=8):
         image.getdata(),
         dtype=numpy.float
         ).reshape((hash_size, hash_size))
+    print(pixels)
     dct = scipy.fftpack.dct(scipy.fftpack.dct(pixels, axis=0), axis=1)
     print(dct)
     print(sum(sum(dct)))

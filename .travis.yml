@@ -42,6 +42,9 @@ install:
 
 # run tests
 script:
+  - python -c "import PIL; print(PIL.__file__)"
+  - python -c "import numpy; print(numpy.__file__)"
+  - python -c "import numpy; print(numpy.__version__)"
   - python -c "import scipy; print(scipy.__file__)"
   - python -c "import scipy; print(scipy.__version__)"
   - nosetests #--with-coverage --cover-package=matplotlib2tikz
