@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/nschloe/matplotlib2tikz.svg?branch=test-failures)](https://travis-ci.org/nschloe/matplotlib2tikz)
 [![Code Health](https://landscape.io/github/nschloe/matplotlib2tikz/master/landscape.png)](https://landscape.io/github/nschloe/matplotlib2tikz/master)
+[![Coverage Status](https://coveralls.io/repos/nschloe/matplotlib2tikz/badge.svg?branch=test-failures&service=github)](https://coveralls.io/github/nschloe/matplotlib2tikz?branch=test-failures)
 [![Documentation Status](https://readthedocs.org/projects/matplotlib2tikz/badge/?version=latest)](https://readthedocs.org/projects/matplotlib2tikz/?badge=latest)
 
 
@@ -24,7 +25,7 @@ https://github.com/nschloe/matplotlib2tikz.
 2. Make sure that your LaTeX installation includes the packages
 
   * TikZ (aka PGF, >=2.00), and
-  *  Pgfplots (>=1.3).
+  * Pgfplots (>=1.3).
 
 ### Usage
 
@@ -53,14 +54,14 @@ https://github.com/nschloe/matplotlib2tikz.
       (see information about these errors in the manual of Pgfplots)
 
       To specify the dimension of the plot from within the LaTeX document, try
-        
+
         tikz_save('myfile.tikz',
                   figureheight = '\\figureheight',
                   figurewidth = '\\figurewidth'
                   )
 
       and in the LaTeX source
- 
+
         \newlength\figureheight
         \newlength\figurewidth
         \setlength\figureheight{4cm}
