@@ -1,5 +1,6 @@
 # matplotlib2tikz
 
+[![Build Status](https://travis-ci.org/nschloe/matplotlib2tikz.svg?branch=test-failures)](https://travis-ci.org/nschloe/matplotlib2tikz)
 [![Code Health](https://landscape.io/github/nschloe/matplotlib2tikz/master/landscape.png)](https://landscape.io/github/nschloe/matplotlib2tikz/master)
 [![Documentation Status](https://readthedocs.org/projects/matplotlib2tikz/badge/?version=latest)](https://readthedocs.org/projects/matplotlib2tikz/?badge=latest)
 
