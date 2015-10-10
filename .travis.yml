@@ -19,7 +19,9 @@ before_install:
   - sudo apt-get install python-scipy  # for ImageHash
   - sudo apt-get install poppler-utils
   - sudo apt-get build-dep python-matplotlib
-  - sudo apt-get install python-pil
+  # Dependencies of Pillow, see
+  # <https://pillow.readthedocs.org/en/latest/installation.html#linux-installation>.
+  - sudo apt-get install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk
 
 install:
   # Alternative: setup.py install.
@@ -28,6 +30,7 @@ install:
   - pip install coveralls
   - pip install matplotlib
   - pip install ImageHash
+  - pip install --ignore-installed Pillow
 
 ## manually install important TeX dependencies
 #before_script:
