@@ -19,13 +19,15 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 from PIL import Image
-import imagehash
+#import imagehash
+import phash
 import argparse
 
 def _main():
     filename = _parse_options()
-    phash = imagehash.phash(Image.open(filename)).__str__()
-    print(phash)
+    #phash = imagehash.phash(Image.open(filename)).__str__()
+    h = phash.phash(Image.open(filename))
+    print(h)
     return
 
 def _parse_options():
