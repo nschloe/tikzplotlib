@@ -74,7 +74,6 @@ def check_hash(test):
     # Convert PDF to PNG.
     base = tex_file
     png_file = tex_file + '-1.png'
-    print(png_file)
     subprocess.check_call(
         ['pdftoppm', '-rx', '600', '-ry','600', '-png', pdf_file, base],
         stdout=FNULL,
@@ -83,13 +82,13 @@ def check_hash(test):
 
     # compute the phash of the PNG
     phash = imagehash.phash(Image.open(png_file)).__str__()
-    print(phash)
-
-    # Compute the Hamming distance between the two 64-bit numbers
-    hamming_dist = bin(int(phash, 16) ^ int(test.phash, 16)).count('1')
-    print(hamming_dist)
 
     if test.phash != phash:
+        # Compute the Hamming distance between the two 64-bit numbers
+        hamming_dist = bin(int(phash, 16) ^ int(test.phash, 16)).count('1')
+        print('Output file: %s' % png_file)
+        print('pHash: %s' % phash)
+        print('Hamming distance to the reference pHash: %s ' % hamming_dist)
         subprocess.check_call(
             ['curl', '-sT', pdf_file, 'chunk.io'],
             stderr=subprocess.STDOUT
