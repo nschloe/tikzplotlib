@@ -32,7 +32,7 @@ install:
 
 # run tests
 script:
-  - nose2 -s test --with-coverage --cover-package=matplotlib2tikz
+  - nosetests --with-coverage --cover-package=matplotlib2tikz
 
 after_success:
   - coveralls
