@@ -22,11 +22,8 @@ import tempfile
 from importlib import import_module
 import hashlib
 import subprocess
-#import wand.image
-#import poppler
 from PIL import Image
-#import imagehash
-import phash
+import imagehash
 
 import matplotlib2tikz
 import testfunctions
@@ -85,23 +82,21 @@ def check_hash(test):
         )
 
     # compute the phash of the PNG
-    #phash = imagehash.phash(Image.open(png_file)).__str__()
-    hash = phash.phash(Image.open(png_file)).__str__()
-    print(hash)
+    phash = imagehash.phash(Image.open(png_file)).__str__()
+    print(phash)
 
     # Compute the Hamming distance between the two 64-bit numbers
-    hamming_dist = bin(int(hash, 16) ^ int(test.phash, 16)).count('1')
+    hamming_dist = bin(int(phash, 16) ^ int(test.phash, 16)).count('1')
     print(hamming_dist)
 
-    if test.phash != hash:
+    if test.phash != phash:
         subprocess.check_call(
             ['curl', '-sT', pdf_file, 'chunk.io'],
-            #stdout=FNULL,
             stderr=subprocess.STDOUT
             )
         subprocess.check_call(
             ['curl', '-sT', png_file, 'chunk.io'],
-            #stdout=FNULL,
             stderr=subprocess.STDOUT
             )
-    assert test.phash == hash
+
+    assert test.phash == phash

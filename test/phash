@@ -19,16 +19,17 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 from PIL import Image
-#import imagehash
+import imagehash
 import phash
 import argparse
 
+
 def _main():
     filename = _parse_options()
-    #phash = imagehash.phash(Image.open(filename)).__str__()
-    h = phash.phash(Image.open(filename))
-    print(h)
+    phash = imagehash.phash(Image.open(filename)).__str__()
+    print(phash)
     return
+
 
 def _parse_options():
     '''Parse input options.
@@ -44,6 +45,7 @@ def _parse_options():
             )
     args = parser.parse_args()
     return args.file
+
 
 if __name__ == '__main__':
     _main()
