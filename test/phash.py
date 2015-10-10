@@ -18,18 +18,18 @@ def _binary_array_to_hex(arr):
     return "".join(s)
 
 
-def phash(image, hash_size=8, highfreq_factor=4):
-    '''Perceptual Hash computation.
+def phash(image, hash_size=8):
+    """
+    Perceptual Hash computation.
     Implementation follows
     http://www.hackerfactor.com/blog/index.php?/archives/432-Looks-Like-It.html
     @image must be a PIL instance.
-    '''
-    img_size = hash_size * highfreq_factor
-    image = image.convert('L').resize((img_size, img_size), Image.ANTIALIAS)
+    """
+    image = image.convert("L").resize((hash_size, hash_size), Image.ANTIALIAS)
     pixels = numpy.array(
         image.getdata(),
         dtype=numpy.float
-        ).reshape((img_size, img_size))
+        ).reshape((hash_size, hash_size))
     dct = scipy.fftpack.dct(scipy.fftpack.dct(pixels, axis=0), axis=1)
     print(dct)
     print(sum(sum(dct)))
@@ -38,5 +38,5 @@ def phash(image, hash_size=8, highfreq_factor=4):
     diff = dctlowfreq > med
     print(diff)
     # <http://stackoverflow.com/a/4066807/353337>
-    #a = sum(1<<i for i, b in enumerate(dff) if b)
+    # a = sum(1<<i for i, b in enumerate(dff) if b)
     return _binary_array_to_hex(diff)
