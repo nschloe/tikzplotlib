@@ -24,10 +24,8 @@ before_install:
   - sudo apt-get install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk
 
 install:
+  - pip install -r requirements.txt
   - pip install coveralls
-  - pip install matplotlib
-  - pip install ImageHash
-  - pip install --ignore-installed Pillow
   # Alternative: setup.py install.
   # Using pip makes sure that the package is pip-compatible, too.
   - pip install .
