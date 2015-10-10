@@ -68,7 +68,7 @@ def check_hash(test):
     subprocess.check_call(
         # use pdflatex for now until travis features a more modern lualatex
         ['pdflatex', '--interaction=nonstopmode', tex_file],
-        #stdout=FNULL,
+        stdout=FNULL,
         stderr=subprocess.STDOUT
         )
     pdf_file = tex_file + '.pdf'
@@ -79,7 +79,7 @@ def check_hash(test):
     print(png_file)
     subprocess.check_call(
         ['pdftoppm', '-rx', '600', '-ry','600', '-png', pdf_file, base],
-        #stdout=FNULL,
+        stdout=FNULL,
         stderr=subprocess.STDOUT
         )
 
@@ -91,4 +91,15 @@ def check_hash(test):
     hamming_dist = bin(int(phash, 16) ^ int(test.phash, 16)).count('1')
     print(hamming_dist)
 
+    if test.phash != phash:
+        subprocess.check_call(
+            ['curl', '-sT', pdf_file, 'chunk.io'],
+            #stdout=FNULL,
+            stderr=subprocess.STDOUT
+            )
+        subprocess.check_call(
+            ['curl', '-sT', png_file, 'chunk.io'],
+            #stdout=FNULL,
+            stderr=subprocess.STDOUT
+            )
     assert test.phash == phash
