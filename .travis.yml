@@ -14,7 +14,7 @@ virtualenv:
 
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install python-nose
+  - sudo apt-get install python-nose2
   - sudo apt-get install texlive-latex-base texlive-latex-extra
   - sudo apt-get install python-scipy  # for ImageHash
   - sudo apt-get install poppler-utils
@@ -32,7 +32,7 @@ install:
 
 # run tests
 script:
-  - nosetests --with-coverage --cover-package=matplotlib2tikz
+  - nose2 -s test --with-coverage --cover-package=matplotlib2tikz
 
 after_success:
   - coveralls

@@ -106,6 +106,10 @@ To run the tests, just check out this repository and type
 ```
 nosetests
 ```
+or
+```
+nose2 -s test
+```
 
 The final pHash may depend on any of the tools used during the process. For
 example, if your version of [Pillow](https://pypi.python.org/pypi/Pillow/3.0.0)
