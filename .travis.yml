@@ -19,6 +19,7 @@ before_install:
   - sudo apt-get install python-scipy  # for ImageHash
   - sudo apt-get install poppler-utils
   - sudo apt-get build-dep python-matplotlib
+  - sudo apt-get install python-pil
 
 install:
   # Alternative: setup.py install.
@@ -26,7 +27,6 @@ install:
   - pip install .
   - pip install coveralls
   - pip install matplotlib
-  - pip install --ignore-installed Pillow
   - pip install ImageHash
 
 ## manually install important TeX dependencies
