@@ -4,7 +4,8 @@
 [![Code Health](https://landscape.io/github/nschloe/matplotlib2tikz/master/landscape.png)](https://landscape.io/github/nschloe/matplotlib2tikz/master)
 [![Coverage Status](https://coveralls.io/repos/nschloe/matplotlib2tikz/badge.svg?branch=master&service=github)](https://coveralls.io/github/nschloe/matplotlib2tikz?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/matplotlib2tikz/badge/?version=latest)](https://readthedocs.org/projects/matplotlib2tikz/?badge=latest)
-
+[![PyPi Version](https://img.shields.io/pypi/v/matplotlib2tikz.svg)](https://pypi.python.org/pypi/matplotlib2tikz/0.2.0)
+[![PyPi Downloads](https://img.shields.io/pypi/dm/matplotlib2tikz.svg)](https://pypi.python.org/pypi/matplotlib2tikz/0.2.0)
 
 This is matplotlib2tikz, a Python tool for converting matplotlib figures into
 [PGFPlots](https://www.ctan.org/pkg/pgfplots)
@@ -215,6 +216,16 @@ If you would like to contribute a test, just take a look at the examples in
 Just add your file, add it to `test/testfunction/__init__.py`, and run the
 tests. A failing test will always print out the pHash, so you can leave it
 empty in the first run and fill it in later to make the test pass.
+
+### Distribution
+
+To publish a new version of matplotlib2tikz on
+[PyPi](https://pypi.python.org/pypi/matplotlib2tikz), make sure to have updated
+the version numbers consistently. Then run
+```
+python setup.py sdist upload
+```
+Warnings about a missing `README` can be ignored.
 
 
 ### License
