@@ -3,31 +3,14 @@
 from distutils.core import setup
 import os
 import codecs
-import pandoc
+import pypandoc
 
 from matplotlib2tikz import __version__
 
-
-def convert_to_rst(md_file):
-    print('md_file', md_file)
-    print(1)
-    fh = open(md_file, 'r')
-    print(2)
-    close(fh)
-    print(3)
-    with open(md_file, 'r') as content_file:
-        content = content_file.read()
-    print(content)
-    print(4)
-    pandoc.core.PANDOC_PATH = '/usr/bin/pandoc'
-    doc = pandoc.Document()
-    doc.markdown = open(md_file, 'r').read()
-    return doc.rst
-
-print(__file__)
-print(os.path.realpath(__file__))
-print(os.path.dirname(os.path.realpath(__file__)))
-print(os.listdir(os.path.dirname(os.path.realpath(__file__))))
+longdesc = pypandoc.convert(
+    os.path.join(os.path.dirname(os.path.realpath(__file__)), 'README.md'),
+    'rst'
+    )
 
 setup(
     name='matplotlib2tikz',
@@ -39,9 +22,7 @@ setup(
     author_email='nico.schloemer@gmail.com',
     requires=['matplotlib (>=1.4.0)', 'numpy'],
     description='convert matplotlib figures into TikZ/PGFPlots',
-    long_description=convert_to_rst(
-        os.path.join(os.path.dirname(os.path.realpath(__file__)), 'README.md')
-        ),
+    long_description=longdesc,
     license='MIT License',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
