@@ -138,36 +138,38 @@ To use the resulting TikZ/PGFPlots figures, your LaTeX installation needs
    result in a LaTeX compilation failure such as
       - Dimension Too Large, or
       - Arithmetic Overflow
-   (see information about these errors in the manual of PGFPlots).
+   (see information about these errors in [the manual of PGFPlots](http://pgfplots.sourceforge.net/pgfplots.pdf)).
 
    To specify the dimension of the plot from within the LaTeX document, try
-    
-        tikz_save('myfile.tikz',
+    ```python
+    tikz_save('myfile.tikz',
                   figureheight = '\\figureheight',
                   figurewidth = '\\figurewidth'
                   )
-
-      and in the LaTeX source
-
-        \newlength\figureheight
-        \newlength\figurewidth
-        \setlength\figureheight{4cm}
-        \setlength\figurewidth{6cm}
-        \input{myfile.tikz}
-
+    ```
+    and in the LaTeX source
+    ```latex
+    \newlength\figureheight
+    \newlength\figurewidth
+    \setlength\figureheight{4cm}
+    \setlength\figurewidth{6cm}
+    \input{myfile.tikz}
+    ```
+ 
 3. Add the contents of `myfile.tikz` into your LaTeX source code; a convenient
    way of doing so is to use `\input{/path/to/myfile.tikz}`. Also make sure
    that at the header of your document the packages TikZ and PGFPlots are
    included:
-
-        \usepackage{tikz}
-        \usepackage{pgfplots}
-
+    ```latex
+    \usepackage{tikz}
+    \usepackage{pgfplots}
+    ```
    Optionally, to use features of the latest PGFPlots package (as of
    PGFPlots 1.3), insert
-
-        \pgfplotsset{compat=newest}
-
+    ```latex
+    \pgfplotsset{compat=newest}
+    ```
+    
 ### Contributing
 
 If you experience bugs, would like to contribute, have nice examples of what
