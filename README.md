@@ -129,4 +129,4 @@ empty in the first run and fill it in later to make the test pass.
 
 ### License
 
-matplotlib2tikz is published under the GNU Lesser General Public License v3.0.
+matplotlib2tikz is published under the [MIT license](https://en.wikipedia.org/wiki/MIT_License).
