@@ -17,11 +17,24 @@ The output of matplotlib2tikz is in
 into the world of Graphs. Consequently, the output of matplotlib2tikz retains
 more information, can be easier understood, and is much easier editable. For
 example, the matplotlib figure
-```
-
+```python
+from matplotlib import pyplot as pp
+from matplotlib import style
+import numpy as np
+fig = pp.figure()
+style.use('ggplot')
+t = np.arange(0.0, 2.0, 0.1)
+s = np.sin(2*np.pi*t)
+s2 = np.cos(2*np.pi*t)
+pp.plot(t, s, 'o-', lw=4.1)
+pp.plot(t, s2, 'o-', lw=4.1)
+pp.xlabel('time(s)')
+pp.ylabel('Voltage (mV)')
+pp.title('Easier than easy $\\frac{1}{2}$')
+pp.grid(True)
 ```
 gives
-```
+```latex
 % This file was created by matplotlib2tikz.
 \begin{tikzpicture}
 
@@ -106,19 +119,19 @@ To use the resulting TikZ/PGFPlots figures, your LaTeX installation needs
 1. Generate your matplotlib plot as usual.
 
 2. Instead of `pyplot.show()`, invoke matplotlib2tikz by
-```
+```python
 tikz_save('myfile.tikz');
 ```
    to store the TikZ file as `myfile.tikz`. Load the libary with:
-```
+```python
 from matplotlib2tikz import save as tikz_save
 ```
 
       _Optional:_
       The scripts accepts several options, for example `height`, `width`,
       `encoding`, and some others. Invoke by
-```
-tikz_save( 'myfile.tikz', figureheight='4cm', figurewidth='6cm' )
+```python
+tikz_save('myfile.tikz', figureheight='4cm', figurewidth='6cm')
 ```
 
      IMPORTANT:
