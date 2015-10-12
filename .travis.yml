@@ -18,6 +18,7 @@ before_install:
   - sudo apt-get install texlive-latex-base texlive-latex-extra
   - sudo apt-get install python-scipy python3-scipy  # for ImageHash
   - sudo apt-get install poppler-utils
+  - sudo apt-get install pandoc
   - sudo apt-get build-dep python-matplotlib python3-matplotlib
   # Dependencies of Pillow, see
   # <https://pillow.readthedocs.org/en/latest/installation.html#linux-installation>.
@@ -29,8 +30,6 @@ install:
   - pip install pypandoc
   # Alternative: setup.py install.
   # Using pip makes sure that the package is pip-compatible, too.
-  - pwd
-  - ls .
   - pip install .
 
 cache: pip

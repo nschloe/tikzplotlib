@@ -2,7 +2,6 @@
 #
 from distutils.core import setup
 import os
-import codecs
 import pypandoc
 
 from matplotlib2tikz import __version__
