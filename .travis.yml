@@ -33,6 +33,8 @@ install:
   - ls .
   - pip install .
 
+cache: pip
+
 # run tests
 script:
   - nosetests --with-coverage --cover-package=matplotlib2tikz
