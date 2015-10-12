@@ -10,6 +10,15 @@ from matplotlib2tikz import __version__
 
 def convert_to_rst(md_file):
     print('md_file', md_file)
+    print(1)
+    fh = open(md_file, 'r')
+    print(2)
+    close(fh)
+    print(3)
+    with open(md_file, 'r') as content_file:
+        content = content_file.read()
+    print(content)
+    print(4)
     pandoc.core.PANDOC_PATH = '/usr/bin/pandoc'
     doc = pandoc.Document()
     doc.markdown = open(md_file, 'r').read()
