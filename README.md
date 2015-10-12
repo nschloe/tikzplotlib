@@ -216,6 +216,16 @@ Just add your file, add it to `test/testfunction/__init__.py`, and run the
 tests. A failing test will always print out the pHash, so you can leave it
 empty in the first run and fill it in later to make the test pass.
 
+### Distribution
+
+To publish a new version of matplotlib2tikz on
+[PyPi](https://pypi.python.org/pypi/matplotlib2tikz), make sure to have updated
+the version numbers consistently. Then run
+```
+python setup.py sdist upload
+```
+Warnings about a missing `README` can be ignored.
+
 
 ### License
 
