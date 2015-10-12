@@ -119,30 +119,29 @@ To use the resulting TikZ/PGFPlots figures, your LaTeX installation needs
 1. Generate your matplotlib plot as usual.
 
 2. Instead of `pyplot.show()`, invoke matplotlib2tikz by
-```python
-tikz_save('myfile.tikz');
-```
+    ```python
+    tikz_save('myfile.tikz');
+    ```
    to store the TikZ file as `myfile.tikz`. Load the libary with:
-```python
-from matplotlib2tikz import save as tikz_save
-```
+    ```python
+    from matplotlib2tikz import save as tikz_save
+    ```
+   _Optional:_
+   The scripts accepts several options, for example `height`, `width`,
+   `encoding`, and some others. Invoke by
+    ```python
+    tikz_save('myfile.tikz', figureheight='4cm', figurewidth='6cm')
+    ```
 
-      _Optional:_
-      The scripts accepts several options, for example `height`, `width`,
-      `encoding`, and some others. Invoke by
-```python
-tikz_save('myfile.tikz', figureheight='4cm', figurewidth='6cm')
-```
+   IMPORTANT:
+   Height and width must be set large enough; setting it too low it may
+   result in a LaTeX compilation failure such as
+      - Dimension Too Large, or
+      - Arithmetic Overflow
+   (see information about these errors in the manual of PGFPlots).
 
-     IMPORTANT:
-     Height and width must be set large enough; setting it too low it may
-     result in a LaTeX compilation failure such as
-        - Dimension Too Large, or
-        - Arithmetic Overflow
-      (see information about these errors in the manual of PGFPlots)
-
-      To specify the dimension of the plot from within the LaTeX document, try
-
+   To specify the dimension of the plot from within the LaTeX document, try
+    
         tikz_save('myfile.tikz',
                   figureheight = '\\figureheight',
                   figurewidth = '\\figurewidth'
