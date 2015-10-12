@@ -4,7 +4,7 @@
 
 # imported modules
 import os
-import numpy as np
+import numpy
 import warnings
 import matplotlib as mpl
 if 'DISPLAY' not in os.environ:
@@ -584,7 +584,7 @@ def _mpl_cmap2pgf_cmap(cmap):
     unit = 'pt'
 
     # Scale to integer
-    X = _scale_to_int(np.array(X))
+    X = _scale_to_int(numpy.array(X))
 
     color_changes = []
     for (k, x) in enumerate(X):
@@ -651,7 +651,7 @@ def _transform_to_data_coordinates(obj, xdata, ydata):
     '''
     try:
         import matplotlib.transforms
-        points = np.array(zip(xdata, ydata))
+        points = numpy.array(zip(xdata, ydata))
         transform = matplotlib.transforms.composite_transform_factory(
             obj.get_transform(),
             obj.get_axes().transData.inverted()
@@ -926,7 +926,7 @@ def _draw_image(data, obj):
         # RGB (+alpha) information at each point
         # convert to PIL image (after upside-down flip)
         from PIL import Image
-        image = Image.fromarray(np.flipud(img_array))
+        image = Image.fromarray(numpy.flipud(img_array))
         image.save(filename)
     else:
         raise RuntimeError('Unable to store image array.')
@@ -1180,7 +1180,7 @@ def _draw_path(obj, data, path,
         #   The transform call yields warnings and it is unclear why. Perhaps
         #   the input data is not suitable? Anyhow, this should not happen.
         #   Comment out for now.
-        # vert = np.asarray(
+        # vert = numpy.asarray(
         #         _transform_to_data_coordinates(obj, [vert[0]], [vert[1]])
         #         )
         # For path codes see: http://matplotlib.org/api/path_api.html
@@ -1245,27 +1245,27 @@ def _mpl_color2xcolor(data, matplotlib_color):
     '''Translates a matplotlib color specification into a proper LaTeX xcolor.
     '''
     # Convert it to RGBA.
-    my_col = np.array(mpl.colors.ColorConverter().to_rgba(matplotlib_color))
+    my_col = numpy.array(mpl.colors.ColorConverter().to_rgba(matplotlib_color))
 
     xcol = None
 
     # RGB values (as taken from xcolor.dtx):
     available_colors = {
-        'red':  np.array([1, 0, 0]),
-        'green': np.array([0, 1, 0]),
-        'blue': np.array([0, 0, 1]),
-        'brown': np.array([0.75, 0.5,  0.25]),
-        'lime': np.array([0.75, 1, 0]),
-        'orange': np.array([1, 0.5, 0]),
-        'pink': np.array([1, 0.75, 0.75]),
-        'purple': np.array([0.75, 0, 0.25]),
-        'teal': np.array([0, 0.5, 0.5]),
-        'violet': np.array([0.5, 0, 0.5]),
-        'black': np.array([0, 0, 0]),
-        'darkgray': np.array([0.25, 0.25, 0.25]),
-        'gray': np.array([0.5, 0.5, 0.5]),
-        'lightgray': np.array([0.75, 0.75, 0.75]),
-        'white': np.array([1, 1, 1])
+        'red':  numpy.array([1, 0, 0]),
+        'green': numpy.array([0, 1, 0]),
+        'blue': numpy.array([0, 0, 1]),
+        'brown': numpy.array([0.75, 0.5,  0.25]),
+        'lime': numpy.array([0.75, 1, 0]),
+        'orange': numpy.array([1, 0.5, 0]),
+        'pink': numpy.array([1, 0.75, 0.75]),
+        'purple': numpy.array([0.75, 0, 0.25]),
+        'teal': numpy.array([0, 0.5, 0.5]),
+        'violet': numpy.array([0.5, 0, 0.5]),
+        'black': numpy.array([0, 0, 0]),
+        'darkgray': numpy.array([0.25, 0.25, 0.25]),
+        'gray': numpy.array([0.5, 0.5, 0.5]),
+        'lightgray': numpy.array([0.75, 0.75, 0.75]),
+        'white': numpy.array([1, 1, 1])
         # The colors cyan, magenta, yellow, and olive are also
         # predefined by xcolor, but their RGB approximation of the
         # native CMYK values is not very good. Don't use them here.
