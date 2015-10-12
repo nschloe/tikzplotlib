@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010--2014 Nico Schlömer
+# Copyright (C) 2010-2015 Nico Schlömer
 #
 # This file is part of matplotlib2tikz.
 #
@@ -22,17 +22,17 @@
 
 # imported modules
 import os
+import numpy as np
+import warnings
 import matplotlib as mpl
 if 'DISPLAY' not in os.environ:
     # headless mode, for remote executions (and travis)
     mpl.use('Agg')
-import numpy as np
-import warnings
 
 # meta info
 __author__ = 'Nico Schlömer'
 __email__ = 'nico.schloemer@gmail.com'
-__copyright__ = 'Copyright (c) 2010--2014, %s <%s>' % (__author__, __email__)
+__copyright__ = 'Copyright (c) 2010-2015, %s <%s>' % (__author__, __email__)
 __credits__ = []
 __license__ = 'GNU Lesser General Public License (LGPL), Version 3'
 __version__ = '0.1.0'
@@ -320,24 +320,24 @@ def _draw_axes(data, obj):
         axis_options.append('width=' + data['fwidth'])
         if aspect_num:
             alpha = aspect_num * (ylim[1] - ylim[0]) / (xlim[1] - xlim[0])
-            if alpha != 1.0:
+            if alpha == 1.0:
+                data['fheight'] = data['fwidth']
+            else:
                 # Concatenate the literals, as data['fwidth'] could as well be
                 # a LaTeX length variable such as \figurewidth.
                 data['fheight'] = str(alpha) + '*' + data['fwidth']
-            else:
-                data['fheight'] = data['fwidth']
             axis_options.append('height=' + data['fheight'])
     elif data['fheight']:
         # only data['fheight'] given. calculate width by the aspect ratio
         axis_options.append('height=' + data['fheight'])
         if aspect_num:
             alpha = aspect_num * (ylim[1] - ylim[0]) / (xlim[1] - xlim[0])
-            if alpha != 1.0:
+            if alpha == 1.0:
+                data['fwidth'] = data['fheight']
+            else:
                 # Concatenate the literals, as data['fheight'] could as well be
                 # a LaTeX length variable such as \figureheight.
                 data['fwidth'] = str(1.0 / alpha) + '*' + data['fheight']
-            else:
-                data['fwidth'] = data['fheight']
             axis_options.append('width=' + data['fwidth'])
     else:
         if aspect_num:
@@ -345,10 +345,12 @@ def _draw_axes(data, obj):
                   'nor width of the plot are given. Discard aspect ratio.')
 
     # get ticks
-    axis_options.extend(_get_ticks(data, 'x', obj.get_xticks(),
-                                         obj.get_xticklabels()))
-    axis_options.extend(_get_ticks(data, 'y', obj.get_yticks(),
-                                         obj.get_yticklabels()))
+    axis_options.extend(
+        _get_ticks(data, 'x', obj.get_xticks(), obj.get_xticklabels())
+        )
+    axis_options.extend(
+        _get_ticks(data, 'y', obj.get_yticks(), obj.get_yticklabels())
+        )
 
     # Don't use get_{x,y}gridlines for gridlines; see discussion on
     # <http://sourceforge.net/p/matplotlib/mailman/message/25169234/>
@@ -414,8 +416,9 @@ def _draw_axes(data, obj):
             colorbar_styles.extend(_get_ticks(data, 'y', colorbar_ticks,
                                                     colorbar_ticklabels))
         else:
-            raise RuntimeError('Unknown color bar orientation ''%s''. Abort.' %
-                               orientation)
+            raise RuntimeError(
+                'Unknown color bar orientation ''%s''. Abort.' % orientation
+                )
 
         mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(colorbar.get_cmap())
         if is_custom_cmap:
@@ -427,9 +430,9 @@ def _draw_axes(data, obj):
         axis_options.append('point meta max=%.15g' % limits[1])
 
         if colorbar_styles:
-            axis_options.append('colorbar style={%s}'
-                                % ','.join(colorbar_styles)
-                                )
+            axis_options.append(
+                'colorbar style={%s}' % ','.join(colorbar_styles)
+                )
 
     # actually print the thing
     if is_subplot:
@@ -822,44 +825,46 @@ def _draw_line2d(data, obj):
 
 
 # for matplotlib markers, see: http://matplotlib.org/api/markers_api.html
-MP_MARKER2PGF_MARKER = {'.': '*',  # point
-                        'o': 'o',  # circle
-                        '+': '+',  # plus
-                        'x': 'x',  # x
-                        'None': None,
-                        ' ': None,
-                        '': None
-                        }
+MP_MARKER2PGF_MARKER = {
+        '.': '*',  # point
+        'o': 'o',  # circle
+        '+': '+',  # plus
+        'x': 'x',  # x
+        'None': None,
+        ' ': None,
+        '': None
+        }
 
 # the following markers are only available with PGF's plotmarks library
-MP_MARKER2PLOTMARKS = {'v': ('triangle', 'rotate=180'),  # triangle down
-                       '1': ('triangle', 'rotate=180'),
-                       '^': ('triangle', None),  # triangle up
-                       '2': ('triangle', None),
-                       '<': ('triangle', 'rotate=270'),  # triangle left
-                       '3': ('triangle', 'rotate=270'),
-                       '>': ('triangle', 'rotate=90'),  # triangle right
-                       '4': ('triangle', 'rotate=90'),
-                       's': ('square', None),
-                       'p': ('pentagon', None),
-                       '*': ('asterisk', None),
-                       'h': ('star', None),  # hexagon 1
-                       'H': ('star', None),  # hexagon 2
-                       'd': ('diamond', None),  # diamond
-                       'D': ('diamond', None),  # thin diamond
-                       '|': ('|', None),  # vertical line
-                       '_': ('_', None)  # horizontal line
-                       }
+MP_MARKER2PLOTMARKS = {
+        'v': ('triangle', 'rotate=180'),  # triangle down
+        '1': ('triangle', 'rotate=180'),
+        '^': ('triangle', None),  # triangle up
+        '2': ('triangle', None),
+        '<': ('triangle', 'rotate=270'),  # triangle left
+        '3': ('triangle', 'rotate=270'),
+        '>': ('triangle', 'rotate=90'),  # triangle right
+        '4': ('triangle', 'rotate=90'),
+        's': ('square', None),
+        'p': ('pentagon', None),
+        '*': ('asterisk', None),
+        'h': ('star', None),  # hexagon 1
+        'H': ('star', None),  # hexagon 2
+        'd': ('diamond', None),  # diamond
+        'D': ('diamond', None),  # thin diamond
+        '|': ('|', None),  # vertical line
+        '_': ('_', None)  # horizontal line
+        }
 
 
-def _mpl_marker2pgfp_marker(data, mpl_marker, is_marker_face_color):
+def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
     '''Translates a marker style of matplotlib to the corresponding style
     in Pgfplots.
     '''
     # try default list
     try:
         pgfplots_marker = MP_MARKER2PGF_MARKER[mpl_marker]
-        if (is_marker_face_color is not None) and pgfplots_marker == 'o':
+        if (marker_face_color is not None) and pgfplots_marker == 'o':
             pgfplots_marker = '*'
             data['pgfplots libs'].add('plotmarks')
         marker_options = None
@@ -870,10 +875,9 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, is_marker_face_color):
     try:
         data['pgfplots libs'].add('plotmarks')
         pgfplots_marker, marker_options = MP_MARKER2PLOTMARKS[mpl_marker]
-        if ((is_marker_face_color is not None) and
-                (isinstance(is_marker_face_color, str) and
-                    (is_marker_face_color.lower() != 'none'))) and \
-                pgfplots_marker not in ['|', '_']:
+        if marker_face_color is not None and \
+           marker_face_color.lower() != 'none' and \
+           pgfplots_marker not in ['|', '_']:
             pgfplots_marker += '*'
         return (data, pgfplots_marker, marker_options)
     except KeyError:

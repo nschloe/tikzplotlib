@@ -18,8 +18,7 @@
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
 desc = 'Another legend plot'
-phash = '5f31c3ca35bc2c32'
-
+phash = '5f31c1ca35bc2c72'
 
 def plot():
     from matplotlib import pyplot as pp
