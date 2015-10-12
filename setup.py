@@ -25,7 +25,7 @@ setup(
     author_email='nico.schloemer@gmail.com',
     requires=['matplotlib (>=1.4.0)', 'numpy'],
     description='convert matplotlib figures into TikZ/PGFPlots',
-    long_description=convert_to_rst('README.md'),
+    long_description=convert_to_rst(os.path.abspath('README.md')),
     license='MIT License',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
