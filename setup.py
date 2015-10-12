@@ -4,7 +4,7 @@ from distutils.core import setup
 import os
 import pypandoc
 
-from matplotlib2tikz import __version__
+from matplotlib2tikz import __version__, __license__
 
 longdesc = pypandoc.convert(
     os.path.join(os.path.dirname(os.path.realpath(__file__)), 'README.md'),
@@ -22,7 +22,7 @@ setup(
     requires=['matplotlib (>=1.4.0)', 'numpy'],
     description='convert matplotlib figures into TikZ/PGFPlots',
     long_description=longdesc,
-    license='MIT License',
+    license=__license__,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: MIT License',
