@@ -142,10 +142,11 @@ To use the resulting TikZ/PGFPlots figures, your LaTeX installation needs
 
    To specify the dimension of the plot from within the LaTeX document, try
     ```python
-    tikz_save('myfile.tikz',
-                  figureheight = '\\figureheight',
-                  figurewidth = '\\figurewidth'
-                  )
+    tikz_save(
+        'myfile.tikz',
+        figureheight = '\\figureheight',
+        figurewidth = '\\figurewidth'
+        )
     ```
     and in the LaTeX source
     ```latex
