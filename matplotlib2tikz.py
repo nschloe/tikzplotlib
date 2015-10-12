@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''Script to convert Matplotlib generated figures into TikZ/Pgfplots figures.
+'''Script to convert Matplotlib generated figures into TikZ/PGFPlots figures.
 '''
 
 # imported modules
@@ -46,7 +46,7 @@ def save(filepath,
     :param encoding: Which encoding to use for the file.
 
     :param figurewidth: If not ``None``, this will be used as figure width
-                        within the TikZ/Pgfplot output. If ``figureheight``
+                        within the TikZ/PGFPlots output. If ``figureheight``
                         is not given, ``matplotlib2tikz`` will try to preserve
                         the original width/height ratio.
                         Note that ``figurewidth`` can be a string literal,
@@ -54,7 +54,7 @@ def save(filepath,
     :type figurewidth: str
 
     :param figureheight: If not ``None``, this will be used as figure height
-                         within the TikZ/Pgfplot output. If ``figurewidth`` is
+                         within the TikZ/PGFPlots output. If ``figurewidth`` is
                          not given, ``matplotlib2tikz`` will try to preserve
                          the original width/height ratio.  Note that
                          ``figurewidth`` can be a string literal, such as
@@ -78,14 +78,14 @@ def save(filepath,
 
     :param strict: Whether or not to strictly stick to matplotlib's appearance.
                    This influences, for example, whether tick marks are set
-                   exactly as in the matplotlib plot, or if TikZ/Pgfplots
+                   exactly as in the matplotlib plot, or if TikZ/PGFPlots
                    can decide where to put the ticks.
     :type strict: bool
 
     :param draw_rectangles: Whether or not to draw Rectangle objects.
                             You normally don't want that as legend, axes, and
                             other entities which are natively taken care of by
-                            Pgfplots are represented as rectangles in
+                            PGFPlots are represented as rectangles in
                             matplotlib. Some plot types (such as bar plots)
                             cannot otherwise be represented though.
                             Don't expect working or clean output when using
@@ -210,7 +210,7 @@ def _get_color_definitions(data):
 
 
 def _draw_axes(data, obj):
-    '''Returns the Pgfplots code for an axis environment.
+    '''Returns the PGFPlots code for an axis environment.
     '''
     content = []
 
@@ -363,7 +363,7 @@ def _draw_axes(data, obj):
 
             # In matplotlib, the colorbar color limits are determined by
             # get_clim(), and the tick positions are as usual with respect to
-            # {x,y}lim. In Pgfplots, however, they are mixed together.
+            # {x,y}lim. In PGFPlots, however, they are mixed together.
             # Hence, scale the tick positions just like {x,y}lim are scaled
             # to clim.
             colorbar_ticks = (colorbar_ticks - axis_limits[0]) \
@@ -384,7 +384,7 @@ def _draw_axes(data, obj):
 
             # In matplotlib, the colorbar color limits are determined by
             # get_clim(), and the tick positions are as usual with respect to
-            # {x,y}lim. In Pgfplots, however, they are mixed together.
+            # {x,y}lim. In PGFPlots, however, they are mixed together.
             # Hence, scale the tick positions just like {x,y}lim are scaled
             # to clim.
             colorbar_ticks = (colorbar_ticks - axis_limits[0]) \
@@ -477,7 +477,7 @@ def _get_ticks(data, xy, ticks, ticklabels):
         # TODO This seems not quite to be the test whether labels are
         #      necessary.
 
-    # Leave the ticks to Pgfplots if not in STRICT mode and if there are no
+    # Leave the ticks to PGFPlots if not in STRICT mode and if there are no
     # explicit labels.
     if data['strict'] or is_label_necessary:
         if pgfplots_ticks:
@@ -499,7 +499,7 @@ def _get_ticks(data, xy, ticks, ticklabels):
 
 def _mpl_cmap2pgf_cmap(cmap):
     '''Converts a color map as given in matplotlib to a color map as
-    represented in Pgfplots.
+    represented in PGFPlots.
     '''
     if not isinstance(cmap, mpl.colors.LinearSegmentedColormap):
         print('Don''t know how to handle color map. Using ''blackwhite''.')
@@ -573,9 +573,9 @@ def _mpl_cmap2pgf_cmap(cmap):
         if x >= 1.0:
             break
 
-    # The Pgfplots color map has an actual physical scale, like (0cm,10cm), and
+    # The PGFPlots color map has an actual physical scale, like (0cm,10cm), and
     # the points where the colors change is also given in those units. As of
-    # now (2010-05-06) it is crucial for Pgfplots that the difference between
+    # now (2010-05-06) it is crucial for PGFPlots that the difference between
     # two successive points is an integer multiple of a given unity (parameter
     # to the colormap; e.g., 1cm).  At the same time, TeX suffers from
     # significant round-off errors, so make sure that this unit is not too
@@ -679,7 +679,7 @@ TIKZ_LINEWIDTHS = {0.1: 'ultra thin',
 
 
 def _draw_line2d(data, obj):
-    '''Returns the Pgfplots code for an Line2D environment.
+    '''Returns the PGFPlots code for an Line2D environment.
     '''
     content = []
     addplot_options = []
@@ -689,7 +689,7 @@ def _draw_line2d(data, obj):
 
     if data['strict']:
         # Takes the matplotlib linewidths, and just translate them
-        # into Pgfplots.
+        # into PGFPlots.
         try:
             addplot_options.append(TIKZ_LINEWIDTHS[line_width])
         except KeyError:
@@ -697,7 +697,7 @@ def _draw_line2d(data, obj):
             addplot_options.append('line width=%spt' % line_width)
     else:
         # The following is an alternative approach to line widths.
-        # The default line width in matplotlib is 1.0pt, in Pgfplots 0.4pt
+        # The default line width in matplotlib is 1.0pt, in PGFPlots 0.4pt
         # ('thin').
         # Match the two defaults, and scale for the rest.
         scaled_line_width = line_width / 1.0  # scale by default line width
@@ -706,7 +706,7 @@ def _draw_line2d(data, obj):
         elif scaled_line_width == 0.5:
             addplot_options.append('very thin')
         elif scaled_line_width == 1.0:
-            pass  # Pgfplots default line width, 'thin'
+            pass  # PGFPlots default line width, 'thin'
         elif scaled_line_width == 1.5:
             addplot_options.append('semithick')
         elif scaled_line_width == 2:
@@ -789,9 +789,9 @@ def _draw_line2d(data, obj):
         has_mask = 0
 
     if has_mask:
-        # matplotlib jumps at masked images, while Pgfplots by default
+        # matplotlib jumps at masked images, while PGFPlots by default
         # interpolates. Hence, if we have a masked plot, make sure that
-        # Pgfplots jumps as well.
+        # PGFPlots jumps as well.
         data['extra axis options'].add('unbounded coords=jump')
         for (x, y, is_masked) in zip(xdata, ydata, ydata.mask):
             if is_masked:
@@ -841,7 +841,7 @@ MP_MARKER2PLOTMARKS = {
 
 def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
     '''Translates a marker style of matplotlib to the corresponding style
-    in Pgfplots.
+    in PGFPlots.
     '''
     # try default list
     try:
@@ -882,7 +882,7 @@ MPLLINESTYLE_2_PGFPLOTSLINESTYLE = {'None': None,
 
 def _mpl_linestyle2pgfp_linestyle(line_style):
     '''Translates a line style of matplotlib to the corresponding style
-    in Pgfplots.
+    in PGFPlots.
     '''
     show_line = (line_style != 'None')
     try:
@@ -894,7 +894,7 @@ def _mpl_linestyle2pgfp_linestyle(line_style):
 
 
 def _draw_image(data, obj):
-    '''Returns the Pgfplots code for an image environment.
+    '''Returns the PGFPlots code for an image environment.
     '''
     content = []
 
@@ -1017,14 +1017,14 @@ def _equivalent(array):
 
 
 def _draw_polycollection(data, obj):
-    '''Returns Pgfplots code for a number of polygons. Currently empty.
+    '''Returns PGFPlots code for a number of polygons. Currently empty.
     '''
     print('matplotlib2tikz: Don''t know how to draw a PolyCollection.')
     return data, ''
 
 
 def _draw_patchcollection(data, obj):
-    '''Returns Pgfplots code for a number of patch objects.
+    '''Returns PGFPlots code for a number of patch objects.
     '''
     content = []
     # Gather the draw options.
@@ -1072,7 +1072,7 @@ def _get_draw_options(data, ec, fc):
 
 
 def _draw_patch(data, obj):
-    '''Return the Pgfplots code for patches.
+    '''Return the PGFPlots code for patches.
     '''
 
     # Gather the draw options.
@@ -1095,7 +1095,7 @@ def _draw_patch(data, obj):
 
 
 def _draw_rectangle(data, obj, draw_options):
-    '''Return the Pgfplots code for rectangles.
+    '''Return the PGFPlots code for rectangles.
     '''
     if not data['draw rectangles']:
         return data, []
@@ -1114,7 +1114,7 @@ def _draw_rectangle(data, obj, draw_options):
 
 
 def _draw_ellipse(data, obj, draw_options):
-    '''Return the Pgfplots code for ellipses.
+    '''Return the PGFPlots code for ellipses.
     '''
     if (isinstance(obj, mpl.patches.Circle)):
         # circle specialization
@@ -1129,7 +1129,7 @@ def _draw_ellipse(data, obj, draw_options):
 
 
 def _draw_circle(data, obj, draw_options):
-    '''Return the Pgfplots code for circles.
+    '''Return the PGFPlots code for circles.
     '''
     x, y = obj.center
     cont = '\draw[%s] (axis cs:%.15g,%.15g) circle (%.15g);\n' % \
@@ -1141,7 +1141,7 @@ def _draw_circle(data, obj, draw_options):
 
 
 def _draw_pathcollection(data, obj):
-    '''Returns Pgfplots code for a number of patch objects.
+    '''Returns PGFPlots code for a number of patch objects.
     '''
     content = []
     # TODO Use those properties
@@ -1171,7 +1171,7 @@ def _draw_pathcollection(data, obj):
 def _draw_path(obj, data, path,
                draw_options=None
                ):
-    '''Adds code for drawing an ordinary path in Pgfplots (TikZ).
+    '''Adds code for drawing an ordinary path in PGFPlots (TikZ).
     '''
     nodes = []
     prev = None
@@ -1548,7 +1548,7 @@ def _transform_positioning(ha, va):
 
 def _handle_children(data, obj):
     '''Iterates over all children of the current object, gathers the contents
-    contributing to the resulting Pgfplots file, and returns those.
+    contributing to the resulting PGFPlots file, and returns those.
     '''
     content = []
     for child in obj.get_children():
@@ -1594,7 +1594,7 @@ def _handle_children(data, obj):
 
 
 def _print_pgfplot_libs_message(data):
-    '''Prints message to screen indicating the use of Pgfplots and its
+    '''Prints message to screen indicating the use of PGFPlots and its
     libraries.'''
     pgfplotslibs = ','.join(list(data['pgfplots libs']))
     tikzlibs = ','.join(list(data['tikz libs']))
