@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010--2014 Nico Schlömer
+# Copyright (C) 2010-2015 Nico Schlömer
 #
 # This file is part of matplotlib2tikz.
 #
@@ -18,8 +18,10 @@
 # You should have received a copy of the GNU General Public License along with
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
-from os import path
+import os
 from matplotlib import pyplot as pp
+from importlib import import_module
+
 import matplotlib2tikz
 import testfunctions
 
@@ -32,15 +34,19 @@ import testfunctions
 
 def _main():
     # get command line arguments
-    test_list = _parse_options()
+    test_dir, test_names = _parse_options()
 
-    tex_file_path = './tex/acid.tex'
+    if not os.path.isdir(test_dir):
+        os.mkdir(test_dir)
+    tex_file_path = os.path.join(test_dir, 'acid.tex')
 
     # directory where all the generated files will end up
-    data_dir = './data'
+    data_dir = os.path.join(test_dir, 'data')
+    if not os.path.isdir(data_dir):
+        os.mkdir(data_dir)
 
     # how to get from the LaTeX file to the data
-    tex_relative_path_to_data = '../data'
+    tex_relative_path_to_data = './data'
 
     figure_width = '7.5cm'
 
@@ -49,71 +55,72 @@ def _main():
 
     write_document_header(file_handle, figure_width)
 
-    # Get all function names from the testfunctions module.
-    function_strings = dir(testfunctions)
-    # Remove all functions that start with '_' and that are not
-    # in a certain exclude list (uuuugly).
-    exclude_list = {'mpl', 'np', 'pp'}
-    tmp = []
-    for s in function_strings:
-        if s[0] != '_' and s not in exclude_list:
-            tmp.append(s)
-    function_strings = tmp
-
-    if test_list is not None:  # actually treat a sublist of test_functions
-        # remove duplicates and sort
-        test_list = sorted(set(test_list))
+    if test_names:
+        test_list = test_names
     else:
-        # all indices
-        test_list = range(0, len(function_strings))
+        test_list = testfunctions.__all__
 
-    for k in test_list:
-        print('Test function %d (%s)...' % (k, function_strings[k]))
+    for name in test_list:
+        print('Test function %s...' % name)
+
+        # import the test
+        test = import_module('testfunctions.' + name)
+
         pp.cla()
         pp.clf()
-        # plot the test example
-        comment = getattr(testfunctions, function_strings[k])()
+
+        try:
+            # plot the test example
+            test.plot()
+            try:
+                tikz_path = os.path.join(data_dir, name + '.tex')
+                tikz_tex_path = os.path.join(
+                        tex_relative_path_to_data,
+                        os.path.basename(tikz_path)
+                        )
+                # convert to tikz
+                matplotlib2tikz.save(
+                    tikz_path,
+                    figurewidth=figure_width,
+                    tex_relative_path_to_data=tex_relative_path_to_data,
+                    show_info=False
+                    )
+                tikz = '\\input{%s}' % tikz_tex_path
+                # file_handle.write('\\input{%s}\n' % tikz_tex_path)
+            except Exception as e:
+                print()
+                print(e)
+                print()
+                tikz = '%% mpl2tikz conversion failed with\n%% %s' % e
+                file_handle.write('%%%s\n' % e)
+        except Exception as e:
+            print()
+            print(e)
+            print()
+            tikz = '%% Figure generation failed with\n%% %s' % e
 
         # plot reference figure
-        pdf_path = data_dir + '/test' + repr(k) + '.pdf'
+        pdf_path = os.path.join(data_dir, name + '.pdf')
         pp.savefig(pdf_path)
+        pdf_path = os.path.join(
+                tex_relative_path_to_data,
+                os.path.basename(pdf_path)
+                )
 
-        pdf_path = path.join(tex_relative_path_to_data,
-                             path.basename(pdf_path)
-                             )
         # Open figure, insert PDF
-        file_handle.write('% test plot ' + str(k) + '\n'
-                          '\\begin{figure}%\n'
-                          '\\centering%\n'
-                          '\\begin{tabular}{cc}\n'
-                          '\includegraphics[width=\\figwidth]'
-                          '{' + str(pdf_path) + '}%\n'
-                          '&\n'
-                          )
-        # convert to TikZ
-        tikz_path = data_dir + '/test%r.tex' % k
-        tikz_tex_path = path.join(tex_relative_path_to_data,
-                                  path.basename(tikz_path)
-                                  )
-        try:
-            matplotlib2tikz.save(
-                tikz_path,
-                figurewidth=figure_width,
-                tex_relative_path_to_data=tex_relative_path_to_data,
-                show_info=False
-                )
-            file_handle.write('\\input{%s}\n' % tikz_tex_path)
-        except Exception as e:
-            print(e)
-            file_handle.write('%%%s\n' % e)
+        file_handle.write('''%% test plot %s
+\\begin{figure}%%
+\\centering%%
+\\begin{tabular}{cc}
+\\includegraphics[width=\\figwidth]{%s}%%
+&
+%s
+\\end{tabular}
+\\caption{%s.}%%
+\\end{figure}\\clearpage
 
-        # Close the figure
-        file_handle.write(
-                '\\end{tabular}\n'
-                '\\caption{' + str(comment) + ' (test ID ' +
-                str(k) + ').}%\n'
-                '\\end{figure}\\clearpage\n\n'
-                )
+''' % (name, pdf_path, tikz, test.desc)
+            )
         print('done.')
     write_document_closure(file_handle)
     file_handle.close()
@@ -123,15 +130,16 @@ def _main():
 def write_document_header(file_handle, figure_width):
     '''Write the LaTeX document header to the file.
     '''
-    file_handle.write('\\documentclass[landscape]{scrartcl}\n'
-                      '\\usepackage{graphicx}\n'
-                      '\\usepackage{pgfplots}\n'
-                      '\\usepgfplotslibrary{groupplots}\n'
-                      '\\pgfplotsset{compat=newest}\n\n'
-                      '\\newlength\\figwidth%\n'
-                      '\\setlength\\figwidth{' + figure_width + '}\n\n'
-                      '\\begin{document}\n\n'
-                      )
+    file_handle.write(
+            '\\documentclass[landscape]{scrartcl}\n'
+            '\\usepackage{graphicx}\n'
+            '\\usepackage{pgfplots}\n'
+            '\\usepgfplotslibrary{groupplots}\n'
+            '\\pgfplotsset{compat=newest}\n\n'
+            '\\newlength\\figwidth%\n'
+            '\\setlength\\figwidth{' + figure_width + '}\n\n'
+            '\\begin{document}\n\n'
+            )
     return
 
 
@@ -172,14 +180,22 @@ def _parse_options():
     parser = argparse.ArgumentParser(
             description='Acid test for matplotlib2tikz.'
             )
-    parser.add_argument('--tests', '-t',
-                        metavar='TEST_INDICES',
-                        nargs='+',
-                        type=int,
-                        help='tests to perform'
-                        )
+    parser.add_argument(
+            '--dir', '-d',
+            metavar='TEST_DIR',
+            type=str,
+            default='./tex/',
+            help='directory for the test output (default: ./tex/)'
+            )
+    parser.add_argument(
+            'tests',
+            metavar='TEST_NAME',
+            nargs='+',
+            type=str,
+            help='tests to perform (default: all)'
+            )
     args = parser.parse_args()
-    return args.tests
+    return args.dir, args.tests
 
 
 if __name__ == '__main__':

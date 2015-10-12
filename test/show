@@ -1,0 +1,58 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2015 Nico Schlömer
+#
+# This file is part of matplotlib2tikz.
+#
+# matplotlib2tikz is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation, either version 3 of the License, or (at your option) any
+# later version.
+#
+# matplotlib2tikz is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
+#
+import argparse
+from matplotlib import pyplot as pp
+from importlib import import_module
+
+import testfunctions
+
+
+def _main():
+    # get command line arguments
+    test_name = _parse_options()
+
+    # import the test
+    test = import_module('testfunctions.' + test_name)
+
+    test.plot()
+    pp.show()
+    return
+
+
+def _parse_options():
+    '''Parse input options.
+    '''
+    parser = argparse.ArgumentParser(
+            description='Show matplotlib2tikz test plots.'
+            )
+    parser.add_argument(
+            'test_name',
+            metavar='TEST_NAME',
+            type=str,
+            help='test plot to show'
+            )
+    args = parser.parse_args()
+    return args.test_name
+
+
+if __name__ == '__main__':
+    # execute the test
+    _main()

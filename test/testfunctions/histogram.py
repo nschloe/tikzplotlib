@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010--2014 Nico Schlömer
+# Copyright (C) 2015 Nico Schlömer
 #
 # This file is part of matplotlib2tikz.
 #
@@ -17,12 +17,19 @@
 # You should have received a copy of the GNU General Public License along with
 # matplotlib2tikz.  If not, see <http://www.gnu.org/licenses/>.
 #
+desc = 'Histogram'
+sha = ''
 
 
-def print_tree(obj, indent=''):
-    '''Recursively prints the tree structure of the matplotlib object.
-    '''
-    print indent, type(obj)
-    for child in obj.get_children():
-            print_tree(child, indent + '   ')
-    return
+def plot():
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    # Make plot with vertical (default) colorbar
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ax.hist(10 + 2 * np.random.randn(1000), label='men')
+    ax.hist(12 + 3 * np.random.randn(1000), label='women', alpha=0.5)
+    ax.legend()
+    return fig
