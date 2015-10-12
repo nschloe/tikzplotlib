@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 #
 from distutils.core import setup
+import os
+import codecs
 
 from matplotlib2tikz import __version__
 
 
 def read(fname):
-    return codecs.open(os.path.join(os.path.dirname(__file__), fname),
-                       encoding='utf-8').read()
+    return codecs.open(
+        os.path.join(os.path.dirname(__file__), fname),
+        encoding='utf-8'
+        ).read()
 
 setup(
     name='matplotlib2tikz',
