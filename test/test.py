@@ -33,16 +33,17 @@ def test_generator():
     for name in testfunctions.__all__:
         print(name)
         test = import_module('testfunctions.' + name)
-        yield check_hash, test
+        yield check_hash, test, name
 
 
-def check_hash(test):
+def check_hash(test, name):
     # import the test
     test.plot()
     # convert to tikz file
-    handle, tikzfile = tempfile.mkstemp(suffix='_tikz.tex')
+    handle, tmp_base = tempfile.mkstemp(prefix=name)
+    tikz_file = tmp_base + '_tikz.tex'
     matplotlib2tikz.save(
-        tikzfile,
+        tikz_file,
         figurewidth='7.5cm',
         show_info=False
         )
@@ -53,8 +54,8 @@ def check_hash(test):
 \\pgfplotsset{compat=newest}
 \\begin{document}
 \\input{%s}
-\\end{document}''' % tikzfile
-    handle, tex_file = tempfile.mkstemp()
+\\end{document}''' % tikz_file
+    tex_file = tmp_base + '.tex'
     with open(tex_file, 'w') as f:
         f.write(wrapper)
 
@@ -69,13 +70,12 @@ def check_hash(test):
         stdout=FNULL,
         stderr=subprocess.STDOUT
         )
-    pdf_file = tex_file + '.pdf'
+    pdf_file = tmp_base + '.pdf'
 
     # Convert PDF to PNG.
-    base = tex_file
-    png_file = tex_file + '-1.png'
+    png_file = tmp_base + '-1.png'
     subprocess.check_call(
-        ['pdftoppm', '-rx', '600', '-ry','600', '-png', pdf_file, base],
+        ['pdftoppm', '-rx', '600', '-ry', '600', '-png', pdf_file, tmp_base],
         stdout=FNULL,
         stderr=subprocess.STDOUT
         )
