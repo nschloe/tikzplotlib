@@ -18,7 +18,7 @@ def convert_to_rst(md_file):
 print(__file__)
 print(os.path.realpath(__file__))
 print(os.path.dirname(os.path.realpath(__file__)))
-
+print(os.listdir(os.path.dirname(os.path.realpath(__file__))))
 
 setup(
     name='matplotlib2tikz',
