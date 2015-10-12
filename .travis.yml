@@ -29,6 +29,8 @@ install:
   - pip install pyandoc
   # Alternative: setup.py install.
   # Using pip makes sure that the package is pip-compatible, too.
+  - pwd
+  - ls .
   - pip install .
 
 # run tests
