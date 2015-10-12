@@ -46,7 +46,7 @@ def print_tree(obj, indent=''):
         print(indent, type(obj).__name__)
 
     for child in obj.get_children():
-            print_tree(child, indent + '   ')
+        print_tree(child, indent + '   ')
     return
 
 
