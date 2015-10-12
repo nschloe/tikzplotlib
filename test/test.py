@@ -89,13 +89,15 @@ def check_hash(test, name):
         print('Output file: %s' % png_file)
         print('pHash: %s' % phash)
         print('Hamming distance to the reference pHash: %s ' % hamming_dist)
-        subprocess.check_call(
-            ['curl', '-sT', pdf_file, 'chunk.io'],
-            stderr=subprocess.STDOUT
-            )
-        subprocess.check_call(
-            ['curl', '-sT', png_file, 'chunk.io'],
-            stderr=subprocess.STDOUT
-            )
+        if 'DISPLAY' not in os.environ:
+            # upload to chunk.io if we're on a headless client
+            subprocess.check_call(
+                ['curl', '-sT', pdf_file, 'chunk.io'],
+                stderr=subprocess.STDOUT
+                )
+            subprocess.check_call(
+                ['curl', '-sT', png_file, 'chunk.io'],
+                stderr=subprocess.STDOUT
+                )
 
     assert test.phash == phash
