@@ -369,8 +369,8 @@ def _draw_axes(data, obj):
 
     # background color
     bgcolor = obj.get_axis_bgcolor()
-    if bgcolor is not None and bgcolor != 'white':
-        data, col, _ = _mpl_color2xcolor(data, bgcolor)
+    data, col, _ = _mpl_color2xcolor(data, bgcolor)
+    if col != 'white':
         axis_options.append('axis background/.style={fill=%s}' % col)
 
     # find color bar
