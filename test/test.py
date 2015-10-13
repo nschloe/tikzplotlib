@@ -70,8 +70,12 @@ def check_hash(test, name):
         # Compute the Hamming distance between the two 64-bit numbers
         hamming_dist = bin(int(phash, 16) ^ int(test.phash, 16)).count('1')
         print('Output file: %s' % png_file)
-        print('pHash: %s' % phash)
-        print('Hamming distance to the reference pHash: %s ' % hamming_dist)
+        print('computed pHash:  %s' % phash)
+        print('reference pHash: %s' % test.phash)
+        print(
+            'Hamming distance: %s (out of %s)' %
+            (hamming_dist, 4 * len(phash))
+            )
         if 'DISPLAY' not in os.environ:
             # upload to chunk.io if we're on a headless client
             subprocess.check_call(
