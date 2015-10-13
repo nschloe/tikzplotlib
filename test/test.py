@@ -8,6 +8,9 @@ import subprocess
 from PIL import Image
 import imagehash
 from matplotlib import pyplot as pp
+if 'DISPLAY' not in os.environ:
+    # headless mode, for remote executions (and travis)
+    mpl.use('Agg')
 
 import matplotlib2tikz
 import testfunctions
