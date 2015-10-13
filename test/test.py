@@ -80,10 +80,10 @@ def check_hash(test, name):
             (hamming_dist, 4 * len(phash))
             )
         print('pdflatex output:')
-        print(tex_out)
+        print(tex_out.decode('utf-8'))
 
         print('pdftoppm output:')
-        print(ptp_out)
+        print(ptp_out.decode('utf-8'))
 
         if 'DISPLAY' not in os.environ:
             # upload to chunk.io if we're on a headless client
@@ -97,18 +97,18 @@ def check_hash(test, name):
                 ['curl', '-sT', tikz_file, 'chunk.io'],
                 stderr=subprocess.STDOUT
                 )
-            print('Uploaded TikZ file to %s' % out)
+            print('Uploaded TikZ file to %s' % out.decode('utf-8'))
 
             out = subprocess.check_output(
                 ['curl', '-sT', pdf_file, 'chunk.io'],
                 stderr=subprocess.STDOUT
                 )
-            print('Uploaded output PDF file to %s' % out)
+            print('Uploaded output PDF file to %s' % out.decode('utf-8'))
 
             out = subprocess.check_output(
                 ['curl', '-sT', png_file, 'chunk.io'],
                 stderr=subprocess.STDOUT
                 )
-            print('Uploaded output PNG file to %s' % out)
+            print('Uploaded output PNG file to %s' % out.decode('utf-8'))
 
     assert test.phash == phash
