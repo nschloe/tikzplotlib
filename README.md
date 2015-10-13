@@ -11,12 +11,11 @@ This is matplotlib2tikz, a Python tool for converting matplotlib figures into
 [PGFPlots](https://www.ctan.org/pkg/pgfplots)
 ([TikZ](https://www.ctan.org/pkg/pgf)) figures for native inclusion into LaTeX.
 
-Since version 1.4, [matplotlib has a native
-TikZ backend](http://matplotlib.org/users/whats_new.html#pgf-tikz-backend).
 The output of matplotlib2tikz is in
-[PGFPlots](http://pgfplots.sourceforge.net/pgfplots.pdf) an abstraction of TikZ
-into the world of Graphs. Consequently, the output of matplotlib2tikz retains
-more information, can be easier understood, and is much easier editable. For
+[PGFPlots](http://pgfplots.sourceforge.net/pgfplots.pdf), a LaTeX library that
+sits on top of TikZ and describes graphs in terms of axes, data etc.
+Consequently, the output of matplotlib2tikz retains more information, can be
+more easily understood, and is more easily editable than raw TikZ output. For
 example, the matplotlib figure
 ```python
 from matplotlib import pyplot as pp
@@ -78,7 +77,8 @@ coordinates {
 
 \end{tikzpicture}
 ```
-Tweaking the plot becomes easy and can be done as part of your LaTeX workflow.
+Tweaking the plot is straightforward and can be done as part of your LaTeX
+workflow.
 [The fantastic PGFPlots manual](http://pgfplots.sourceforge.net/pgfplots.pdf)
 contains great examples of how to make your plot look even better.
 
