@@ -231,9 +231,8 @@ To publish a new version of matplotlib2tikz on
 [PyPi](https://pypi.python.org/pypi/matplotlib2tikz), make sure to have updated
 the version numbers consistently. Then run
 ```
-python setup.py sdist upload
+make upload
 ```
-Warnings about a missing `README` can be ignored.
 
 
 ### License

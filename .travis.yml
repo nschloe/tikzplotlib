@@ -27,7 +27,6 @@ before_install:
 install:
   - pip install -r requirements.txt
   - pip install coveralls
-  - pip install pypandoc
   # Alternative: setup.py install.
   # Using pip makes sure that the package is pip-compatible, too.
   - pip install .

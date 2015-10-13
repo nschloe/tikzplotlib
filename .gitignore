@@ -4,3 +4,4 @@
 *.pdf
 doc/_build/
 MANIFEST
+README.rst
