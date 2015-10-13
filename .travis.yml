@@ -37,8 +37,8 @@ cache: pip
 # manually install important TeX dependencies
 before_script:
   - export TEXMFLOCAL=/tmp/texmf/ && mkdir -p $TEXMFLOCAL
-  - wget http://mirrors.ctan.org/install/graphics/pgf/base/pgf.tds.zip -O /tmp/pgf.zip
-  - unzip /tmp/pgf.zip -d $TEXMFLOCAL
+  - wget http://mirrors.ctan.org/install/graphics/pgf/contrib/pgfplots.tds.zip -O /tmp/pgfplots.zip
+  - unzip /tmp/pgfplots.zip -d $TEXMFLOCAL
   - texhash
 
 # run tests
