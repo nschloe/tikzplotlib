@@ -7,6 +7,7 @@ import hashlib
 import subprocess
 from PIL import Image
 import imagehash
+from matplotlib import pyplot as pp
 
 import matplotlib2tikz
 import testfunctions
@@ -30,6 +31,11 @@ def check_hash(test, name):
         figurewidth='7.5cm',
         show_info=False
         )
+
+    # save reference figure
+    mpl_reference = tmp_base + '_reference.pdf'
+    pp.savefig(mpl_reference)
+
     # create a latex wrapper for the tikz
     wrapper = '''\\documentclass{standalone}
 \\usepackage{pgfplots}
@@ -56,12 +62,12 @@ def check_hash(test, name):
     pdf_file = tmp_base + '.pdf'
 
     # Convert PDF to PNG.
-    png_file = tmp_base + '-1.png'
     subprocess.check_call(
         ['pdftoppm', '-rx', '600', '-ry', '600', '-png', pdf_file, tmp_base],
         stdout=FNULL,
         stderr=subprocess.STDOUT
         )
+    png_file = tmp_base + '-1.png'
 
     # compute the phash of the PNG
     phash = imagehash.phash(Image.open(png_file)).__str__()
@@ -78,12 +84,19 @@ def check_hash(test, name):
             )
         if 'DISPLAY' not in os.environ:
             # upload to chunk.io if we're on a headless client
+            print('Uploading output PDF file to...')
             subprocess.check_call(
                 ['curl', '-sT', pdf_file, 'chunk.io'],
                 stderr=subprocess.STDOUT
                 )
+            print('Uploading output PNG file to...')
             subprocess.check_call(
                 ['curl', '-sT', png_file, 'chunk.io'],
+                stderr=subprocess.STDOUT
+                )
+            print('Uploading reference matplotlib PDF file to...')
+            subprocess.check_call(
+                ['curl', '-sT', mpl_reference, 'chunk.io'],
                 stderr=subprocess.STDOUT
                 )
 
