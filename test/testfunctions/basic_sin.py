@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Simple $\sin$ plot with some labels'
-phash = '5f34a7ce21ce2196'
+phash = '5f34a1cea1caa1d9'
 
 
 def plot():
@@ -18,6 +18,6 @@ def plot():
     pp.xlabel('time(s)')
     # pp.xlabel('time(s) _ % $ \\')
     pp.ylabel('Voltage (mV)')
-    pp.title('Easier than easy $\\frac{1}{2}$')
+    pp.title('Simple plot $\\frac{\\alpha}{2}$')
     pp.grid(True)
     return fig

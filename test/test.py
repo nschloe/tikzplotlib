@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 #
+import matplotlib2tikz
+import testfunctions
+
 import os
 import tempfile
 from importlib import import_module
@@ -7,9 +10,7 @@ import hashlib
 import subprocess
 from PIL import Image
 import imagehash
-
-import matplotlib2tikz
-import testfunctions
+from matplotlib import pyplot as pp
 
 
 def test_generator():
@@ -30,6 +31,11 @@ def check_hash(test, name):
         figurewidth='7.5cm',
         show_info=False
         )
+
+    # save reference figure
+    mpl_reference = tmp_base + '_reference.pdf'
+    pp.savefig(mpl_reference)
+
     # create a latex wrapper for the tikz
     wrapper = '''\\documentclass{standalone}
 \\usepackage{pgfplots}
@@ -46,22 +52,19 @@ def check_hash(test, name):
     os.chdir(os.path.dirname(tex_file))
 
     # compile the output to pdf
-    FNULL = open(os.devnull, 'w')
-    subprocess.check_call(
+    tex_out = subprocess.check_output(
         # use pdflatex for now until travis features a more modern lualatex
         ['pdflatex', '--interaction=nonstopmode', tex_file],
-        stdout=FNULL,
         stderr=subprocess.STDOUT
         )
     pdf_file = tmp_base + '.pdf'
 
     # Convert PDF to PNG.
-    png_file = tmp_base + '-1.png'
-    subprocess.check_call(
+    ptp_out = subprocess.check_output(
         ['pdftoppm', '-rx', '600', '-ry', '600', '-png', pdf_file, tmp_base],
-        stdout=FNULL,
         stderr=subprocess.STDOUT
         )
+    png_file = tmp_base + '-1.png'
 
     # compute the phash of the PNG
     phash = imagehash.phash(Image.open(png_file)).__str__()
@@ -70,17 +73,42 @@ def check_hash(test, name):
         # Compute the Hamming distance between the two 64-bit numbers
         hamming_dist = bin(int(phash, 16) ^ int(test.phash, 16)).count('1')
         print('Output file: %s' % png_file)
-        print('pHash: %s' % phash)
-        print('Hamming distance to the reference pHash: %s ' % hamming_dist)
+        print('computed pHash:  %s' % phash)
+        print('reference pHash: %s' % test.phash)
+        print(
+            'Hamming distance: %s (out of %s)' %
+            (hamming_dist, 4 * len(phash))
+            )
+        print('pdflatex output:')
+        print(tex_out.decode('utf-8'))
+
+        print('pdftoppm output:')
+        print(ptp_out.decode('utf-8'))
+
         if 'DISPLAY' not in os.environ:
             # upload to chunk.io if we're on a headless client
-            subprocess.check_call(
+            out = subprocess.check_output(
+                ['curl', '-sT', mpl_reference, 'chunk.io'],
+                stderr=subprocess.STDOUT
+                )
+            print('Uploaded reference matplotlib PDF file to %s' % out)
+
+            out = subprocess.check_output(
+                ['curl', '-sT', tikz_file, 'chunk.io'],
+                stderr=subprocess.STDOUT
+                )
+            print('Uploaded TikZ file to %s' % out.decode('utf-8'))
+
+            out = subprocess.check_output(
                 ['curl', '-sT', pdf_file, 'chunk.io'],
                 stderr=subprocess.STDOUT
                 )
-            subprocess.check_call(
+            print('Uploaded output PDF file to %s' % out.decode('utf-8'))
+
+            out = subprocess.check_output(
                 ['curl', '-sT', png_file, 'chunk.io'],
                 stderr=subprocess.STDOUT
                 )
+            print('Uploaded output PNG file to %s' % out.decode('utf-8'))
 
     assert test.phash == phash

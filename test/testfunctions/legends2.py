@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Another legend plot'
-phash = '5f31c1ca35bc2c72'
+phash = '5f35c1ce31b42c72'
 
 def plot():
     from matplotlib import pyplot as pp

@@ -17,7 +17,7 @@ __email__ = 'nico.schloemer@gmail.com'
 __copyright__ = 'Copyright (c) 2010-2015, %s <%s>' % (__author__, __email__)
 __credits__ = []
 __license__ = 'MIT License'
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 __maintainer__ = 'Nico Schlömer'
 __status__ = 'Production'
 
@@ -343,10 +343,35 @@ def _draw_axes(data, obj):
     elif obj.xaxis._gridOnMinor:
         axis_options.append('xminorgrids')
 
+    xlines = obj.get_xgridlines()
+    xgridcolor = xlines[0].get_color()
+    data, col, _ = _mpl_color2xcolor(data, xgridcolor)
+    if col != 'black':
+        axis_options.append('x grid style={%s}' % col)
+
     if obj.yaxis._gridOnMajor:
         axis_options.append('ymajorgrids')
     elif obj.yaxis._gridOnMinor:
         axis_options.append('yminorgrids')
+
+    ylines = obj.get_ygridlines()
+    ygridcolor = ylines[0].get_color()
+    data, col, _ = _mpl_color2xcolor(data, ygridcolor)
+    if col != 'black':
+        axis_options.append('y grid style={%s}' % col)
+
+    # axis line styles
+    # Assume that the bottom edge color is the color of the entire box.
+    axcol = obj.spines['bottom'].get_edgecolor()
+    data, col, _ = _mpl_color2xcolor(data, axcol)
+    if col != 'black':
+        axis_options.append('axis line style={%s}' % col)
+
+    # background color
+    bgcolor = obj.get_axis_bgcolor()
+    data, col, _ = _mpl_color2xcolor(data, bgcolor)
+    if col != 'white':
+        axis_options.append('axis background/.style={fill=%s}' % col)
 
     # find color bar
     colorbar = _find_associated_colorbar(obj)
@@ -801,7 +826,7 @@ def _draw_line2d(data, obj):
     else:
         for (x, y) in zip(xdata, ydata):
             content.append('(%.15g,%.15g)\n' % (x, y))
-    content.append('\n};\n')
+    content.append('};\n')
 
     return data, content
 
