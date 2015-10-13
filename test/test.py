@@ -60,9 +60,8 @@ def check_hash(test, name):
     pdf_file = tmp_base + '.pdf'
 
     # Convert PDF to PNG.
-    subprocess.check_call(
+    ptp_out = subprocess.check_output(
         ['pdftoppm', '-rx', '600', '-ry', '600', '-png', pdf_file, tmp_base],
-        stdout=FNULL,
         stderr=subprocess.STDOUT
         )
     png_file = tmp_base + '-1.png'
@@ -81,7 +80,11 @@ def check_hash(test, name):
             (hamming_dist, 4 * len(phash))
             )
         print('pdflatex output:')
-        print(tex_output)
+        print(tex_out)
+
+        print('pdftoppm output:')
+        print(ptp_out)
+
         if 'DISPLAY' not in os.environ:
             # upload to chunk.io if we're on a headless client
             out = subprocess.check_output(
