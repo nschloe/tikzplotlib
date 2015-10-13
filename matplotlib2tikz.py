@@ -343,15 +343,25 @@ def _draw_axes(data, obj):
     elif obj.xaxis._gridOnMinor:
         axis_options.append('xminorgrids')
 
+    xlines = obj.get_xgridlines()
+    xgridcolor = xlines[0].get_color()
+    data, col, _ = _mpl_color2xcolor(data, xgridcolor)
+    axis_options.append('x grid style={%s}' % col)
+
     if obj.yaxis._gridOnMajor:
         axis_options.append('ymajorgrids')
     elif obj.yaxis._gridOnMinor:
         axis_options.append('yminorgrids')
 
+    ylines = obj.get_ygridlines()
+    ygridcolor = ylines[0].get_color()
+    data, col, _ = _mpl_color2xcolor(data, ygridcolor)
+    axis_options.append('y grid style={%s}' % col)
+
     # background color
     bgcolor = obj.get_axis_bgcolor()
     if bgcolor is not None:
-        data, col, ec_rgba = _mpl_color2xcolor(data, bgcolor)
+        data, col, _ = _mpl_color2xcolor(data, bgcolor)
         axis_options.append('axis background/.style={fill=%s}' % col)
 
     # find color bar
