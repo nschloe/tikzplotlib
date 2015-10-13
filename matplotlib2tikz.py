@@ -348,6 +348,12 @@ def _draw_axes(data, obj):
     elif obj.yaxis._gridOnMinor:
         axis_options.append('yminorgrids')
 
+    # background color
+    bgcolor = obj.get_axis_bgcolor()
+    if bgcolor is not None:
+        data, col, ec_rgba = _mpl_color2xcolor(data, bgcolor)
+        axis_options.append('axis background/.style={fill=%s}' % col)
+
     # find color bar
     colorbar = _find_associated_colorbar(obj)
     if colorbar:
