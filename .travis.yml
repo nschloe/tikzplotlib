@@ -34,6 +34,13 @@ install:
 
 cache: pip
 
+# manually install important TeX dependencies
+before_script:
+  - export TEXMFLOCAL=/tmp/texmf/ && mkdir -p $TEXMFLOCAL
+  - wget http://mirrors.ctan.org/install/graphics/pgf/base/pgf.tds.zip -O /tmp/pgf.zip
+  - unzip /tmp/pgf.zip -d $TEXMFLOCAL
+  - texhash
+
 # run tests
 script:
   - nosetests --with-coverage --cover-package=matplotlib2tikz
