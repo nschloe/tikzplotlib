@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Two subplots on top of each other'
-phash = '3f61d562619d2666'
+phash = '1f61d562e19d2666'
 
 
 def plot():

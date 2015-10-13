@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = '$4\\times 4$ subplots'
-phash = '451c7d1a9a9c3b53'
+phash = '9b19335c57572398'
 
 
 def plot():

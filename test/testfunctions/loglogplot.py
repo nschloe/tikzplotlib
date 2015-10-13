@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Loglog plot with large ticks dimensions'
-phash = '0103fe09fe7f3e80'
+phash = '5f56035e0b7e3f00'
 
 
 def plot():
