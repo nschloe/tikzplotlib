@@ -358,6 +358,12 @@ def _draw_axes(data, obj):
     data, col, _ = _mpl_color2xcolor(data, ygridcolor)
     axis_options.append('y grid style={%s}' % col)
 
+    # axis line styles
+    # Assume that the bottom edge color is the color of the entire box.
+    axcol = obj.spines['bottom'].get_edgecolor()
+    data, col, _ = _mpl_color2xcolor(data, axcol)
+    axis_options.append('axis line style={%s}' % col)
+
     # background color
     bgcolor = obj.get_axis_bgcolor()
     if bgcolor is not None:
