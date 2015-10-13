@@ -84,20 +84,28 @@ def check_hash(test, name):
             )
         if 'DISPLAY' not in os.environ:
             # upload to chunk.io if we're on a headless client
-            print('Uploading output PDF file to...')
-            subprocess.check_call(
-                ['curl', '-sT', pdf_file, 'chunk.io'],
-                stderr=subprocess.STDOUT
-                )
-            print('Uploading output PNG file to...')
-            subprocess.check_call(
-                ['curl', '-sT', png_file, 'chunk.io'],
-                stderr=subprocess.STDOUT
-                )
-            print('Uploading reference matplotlib PDF file to...')
-            subprocess.check_call(
+            out = subprocess.check_output(
                 ['curl', '-sT', mpl_reference, 'chunk.io'],
                 stderr=subprocess.STDOUT
                 )
+            print('Uploaded reference matplotlib PDF file to %s' % out)
+
+            out = subprocess.check_output(
+                ['curl', '-sT', tikz_file, 'chunk.io'],
+                stderr=subprocess.STDOUT
+                )
+            print('Uploaded TikZ file to %s' % out)
+
+            out = subprocess.check_output(
+                ['curl', '-sT', pdf_file, 'chunk.io'],
+                stderr=subprocess.STDOUT
+                )
+            print('Uploaded output PDF file to %s' % out)
+
+            out = subprocess.check_output(
+                ['curl', '-sT', png_file, 'chunk.io'],
+                stderr=subprocess.STDOUT
+                )
+            print('Uploaded output PNG file to %s' % out)
 
     assert test.phash == phash
