@@ -9,13 +9,17 @@
 
 This is matplotlib2tikz, a Python tool for converting matplotlib figures into
 [PGFPlots](https://www.ctan.org/pkg/pgfplots)
-([TikZ](https://www.ctan.org/pkg/pgf)) figures for native inclusion into LaTeX.
+([TikZ](https://www.ctan.org/pkg/pgf)) figures like
+
+![](https://nschloe.github.io/matplotlib2tikz/latex.png)
+
+for native inclusion into LaTeX.
 
 The output of matplotlib2tikz is in
 [PGFPlots](http://pgfplots.sourceforge.net/pgfplots.pdf), a LaTeX library that
 sits on top of TikZ and describes graphs in terms of axes, data etc.
 Consequently, the output of matplotlib2tikz retains more information, can be
-more easily understood, and is more easily editable than raw TikZ output. For
+more easily understood, and is more easily editable than [raw TikZ output](http://matplotlib.org/users/whats_new.html#pgf-tikz-backend). For
 example, the matplotlib figure
 ```python
 from matplotlib import pyplot as pp
@@ -30,26 +34,30 @@ pp.plot(t, s, 'o-', lw=4.1)
 pp.plot(t, s2, 'o-', lw=4.1)
 pp.xlabel('time(s)')
 pp.ylabel('Voltage (mV)')
-pp.title('Easier than easy $\\frac{1}{2}$')
+pp.title('Simple plot $\\frac{\\alpha}{2}$')
 pp.grid(True)
 ```
-gives
+(see above) gives
 ```latex
 % This file was created by matplotlib2tikz.
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0.886274509803922,0.290196078431373,0.2}
 \definecolor{color1}{rgb}{0.203921568627451,0.541176470588235,0.741176470588235}
+\definecolor{color0}{rgb}{0.886274509803922,0.290196078431373,0.2}
 
 \begin{axis}[
-title={Easier than easy $\frac{1}{2}$},
+title={Simple plot $\frac{\alpha}{2}$},
 xlabel={time(s)},
 ylabel={Voltage (mV)},
 xmin=0, xmax=2,
 ymin=-1, ymax=1,
 width=7.5cm,
 xmajorgrids,
-ymajorgrids
+x grid style={white},
+ymajorgrids,
+y grid style={white},
+axis line style={white},
+axis background/.style={fill=white!89.803921568627459!black}
 ]
 \addplot [line width=1.64pt, color0, mark=*, mark size=3, mark options={draw=black}]
 coordinates {
@@ -67,9 +75,9 @@ coordinates {
 };
 \path [draw=white, fill opacity=0] (axis cs:13,0)--(axis cs:13,0);
 
-\path [draw=white, fill opacity=0] (axis cs:0,13)--(axis cs:0,13);
-
 \path [draw=white, fill opacity=0] (axis cs:1,13)--(axis cs:1,13);
+
+\path [draw=white, fill opacity=0] (axis cs:0,13)--(axis cs:0,13);
 
 \path [draw=white, fill opacity=0] (axis cs:13,1)--(axis cs:13,1);
 
