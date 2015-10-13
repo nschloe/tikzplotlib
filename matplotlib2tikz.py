@@ -346,7 +346,8 @@ def _draw_axes(data, obj):
     xlines = obj.get_xgridlines()
     xgridcolor = xlines[0].get_color()
     data, col, _ = _mpl_color2xcolor(data, xgridcolor)
-    axis_options.append('x grid style={%s}' % col)
+    if col != 'black':
+        axis_options.append('x grid style={%s}' % col)
 
     if obj.yaxis._gridOnMajor:
         axis_options.append('ymajorgrids')
@@ -356,17 +357,19 @@ def _draw_axes(data, obj):
     ylines = obj.get_ygridlines()
     ygridcolor = ylines[0].get_color()
     data, col, _ = _mpl_color2xcolor(data, ygridcolor)
-    axis_options.append('y grid style={%s}' % col)
+    if col != 'black':
+        axis_options.append('y grid style={%s}' % col)
 
     # axis line styles
     # Assume that the bottom edge color is the color of the entire box.
     axcol = obj.spines['bottom'].get_edgecolor()
     data, col, _ = _mpl_color2xcolor(data, axcol)
-    axis_options.append('axis line style={%s}' % col)
+    if col != 'black':
+        axis_options.append('axis line style={%s}' % col)
 
     # background color
     bgcolor = obj.get_axis_bgcolor()
-    if bgcolor is not None:
+    if bgcolor is not None and bgcolor != 'white':
         data, col, _ = _mpl_color2xcolor(data, bgcolor)
         axis_options.append('axis background/.style={fill=%s}' % col)
 
