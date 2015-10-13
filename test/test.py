@@ -52,11 +52,9 @@ def check_hash(test, name):
     os.chdir(os.path.dirname(tex_file))
 
     # compile the output to pdf
-    FNULL = open(os.devnull, 'w')
-    subprocess.check_call(
+    tex_out = subprocess.check_output(
         # use pdflatex for now until travis features a more modern lualatex
         ['pdflatex', '--interaction=nonstopmode', tex_file],
-        stdout=FNULL,
         stderr=subprocess.STDOUT
         )
     pdf_file = tmp_base + '.pdf'
@@ -82,6 +80,8 @@ def check_hash(test, name):
             'Hamming distance: %s (out of %s)' %
             (hamming_dist, 4 * len(phash))
             )
+        print('pdflatex output:')
+        print(tex_output)
         if 'DISPLAY' not in os.environ:
             # upload to chunk.io if we're on a headless client
             out = subprocess.check_output(
