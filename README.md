@@ -141,14 +141,13 @@ To use the resulting TikZ/PGFPlots figures, your LaTeX installation needs
     ```python
     tikz_save('myfile.tikz', figureheight='4cm', figurewidth='6cm')
     ```
-
-   IMPORTANT:
-   Height and width must be set large enough; setting it too low it may
+   Note that height and width must be set large enough; setting it too low it may
    result in a LaTeX compilation failure such as
       - Dimension Too Large, or
       - Arithmetic Overflow
-   (see information about these errors in [the manual of PGFPlots](http://pgfplots.sourceforge.net/pgfplots.pdf)).
-
+      
+   (see information about these errors in [PGFPlots manual](http://pgfplots.sourceforge.net/pgfplots.pdf)).
+   
    To specify the dimension of the plot from within the LaTeX document, try
     ```python
     tikz_save(
