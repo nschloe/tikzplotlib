@@ -191,8 +191,7 @@ test cases are specified. Those are
 
  * run through matplotlib2tikz,
  * the resulting LaTeX file is compiled into a PDF (`pdflatex`),
- * the PDF is converted into a PNG
-   (`[pdftoppm](http://poppler.freedesktop.org/)`),
+ * the PDF is converted into a PNG (`pdftoppm`),
  * a perceptual hash is computed from the PNG and compared to a previously
    stored version.
 
