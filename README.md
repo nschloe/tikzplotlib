@@ -223,13 +223,19 @@ empty in the first run and fill it in later to make the test pass.
 
 ### Distribution
 
-To publish a new version of matplotlib2tikz on
-[PyPi](https://pypi.python.org/pypi/matplotlib2tikz), make sure to have updated
-the version numbers consistently. Then run
-```
-make upload
-```
+To create a new release of matplotlib2tikz, make sure to
 
+1. bump the `__version__` number,
+2. create a Git tag,
+    ```
+    git tag -a v0.3.1
+    git push --tags
+    ```
+    and
+3. upload to PyPi:
+    ```
+    make upload
+    ```
 
 ### License
 
