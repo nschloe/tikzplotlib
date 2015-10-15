@@ -179,8 +179,8 @@ To use the resulting TikZ/PGFPlots figures, your LaTeX installation needs
 
 If you experience bugs, would like to contribute, have nice examples of what
 matplotlib2tikz can do, or if you are just looking for more information, then
-please visit [matplotlib2tikz's GitHub page]
-(https://github.com/nschloe/matplotlib2tikz).
+please visit
+[matplotlib2tikz's GitHub page](https://github.com/nschloe/matplotlib2tikz).
 
 
 ### Testing
@@ -192,7 +192,7 @@ test cases are specified. Those are
  * run through matplotlib2tikz,
  * the resulting LaTeX file is compiled into a PDF (`pdflatex`),
  * the PDF is converted into a PNG
-   ([`pdftoppm`](http://poppler.freedesktop.org/)),
+   (`[pdftoppm](http://poppler.freedesktop.org/)`),
  * a perceptual hash is computed from the PNG and compared to a previously
    stored version.
 
