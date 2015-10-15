@@ -73,14 +73,6 @@ coordinates {
 % [...]
 (1.9,0.809016994374947)
 };
-\path [draw=white, fill opacity=0] (axis cs:13,0)--(axis cs:13,0);
-
-\path [draw=white, fill opacity=0] (axis cs:1,13)--(axis cs:1,13);
-
-\path [draw=white, fill opacity=0] (axis cs:0,13)--(axis cs:0,13);
-
-\path [draw=white, fill opacity=0] (axis cs:13,1)--(axis cs:13,1);
-
 \end{axis}
 
 \end{tikzpicture}
