@@ -225,16 +225,20 @@ empty in the first run and fill it in later to make the test pass.
 
 To create a new release of matplotlib2tikz, make sure to
 
+To create a new release
+
 1. bump the `__version__` number,
+
 2. create a Git tag,
     ```
-    git tag -a v0.3.1
-    git push --tags
+    $ git tag -a v0.3.1
+    $ git push --tags
     ```
     and
+
 3. upload to PyPi:
     ```
-    make upload
+    $ make upload
     ```
 
 ### License
