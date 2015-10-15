@@ -212,9 +212,11 @@ your local machine, you should first make sure to have an up-to-date Pillow, .
 
 If you would like to contribute a test, just take a look at the examples in
 `test/testfunctions/`. Essentially a test consists of three things:
+
   * a description,
   * a function that creates the image in matplotlib, and
   * a pHash.
+
 Just add your file, add it to `test/testfunction/__init__.py`, and run the
 tests. A failing test will always print out the pHash, so you can leave it
 empty in the first run and fill it in later to make the test pass.
