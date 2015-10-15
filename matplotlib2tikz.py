@@ -1198,6 +1198,12 @@ def _draw_path(obj, data, path,
                ):
     '''Adds code for drawing an ordinary path in PGFPlots (TikZ).
     '''
+    if 'draw=white' in draw_options and 'fill opacity=0' in draw_options:
+        # For some reasons, matplotlib sometimes adds void paths with only
+        # consist of one point, are white, and have no opacity. To not let
+        # those clutter the output TeX file, bail out here.
+        return data, ''
+
     nodes = []
     prev = None
     for vert, code in path.iter_segments():
