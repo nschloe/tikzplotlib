@@ -6,3 +6,4 @@ doc/_build/
 MANIFEST
 README.rst
 dist/
+build/

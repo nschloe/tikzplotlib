@@ -4,8 +4,8 @@
 [![Code Health](https://landscape.io/github/nschloe/matplotlib2tikz/master/landscape.png)](https://landscape.io/github/nschloe/matplotlib2tikz/master)
 [![Coverage Status](https://coveralls.io/repos/nschloe/matplotlib2tikz/badge.svg?branch=master&service=github)](https://coveralls.io/github/nschloe/matplotlib2tikz?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/matplotlib2tikz/badge/?version=latest)](https://readthedocs.org/projects/matplotlib2tikz/?badge=latest)
-[![PyPi Version](https://img.shields.io/pypi/v/matplotlib2tikz.svg)](https://pypi.python.org/pypi/matplotlib2tikz/0.2.0)
-[![PyPi Downloads](https://img.shields.io/pypi/dm/matplotlib2tikz.svg)](https://pypi.python.org/pypi/matplotlib2tikz/0.2.0)
+[![PyPi Version](https://img.shields.io/pypi/v/matplotlib2tikz.svg)](https://pypi.python.org/pypi/matplotlib2tikz)
+[![PyPi Downloads](https://img.shields.io/pypi/dm/matplotlib2tikz.svg)](https://pypi.python.org/pypi/matplotlib2tikz)
 
 This is matplotlib2tikz, a Python tool for converting matplotlib figures into
 [PGFPlots](https://www.ctan.org/pkg/pgfplots)
@@ -73,14 +73,6 @@ coordinates {
 % [...]
 (1.9,0.809016994374947)
 };
-\path [draw=white, fill opacity=0] (axis cs:13,0)--(axis cs:13,0);
-
-\path [draw=white, fill opacity=0] (axis cs:1,13)--(axis cs:1,13);
-
-\path [draw=white, fill opacity=0] (axis cs:0,13)--(axis cs:0,13);
-
-\path [draw=white, fill opacity=0] (axis cs:13,1)--(axis cs:13,1);
-
 \end{axis}
 
 \end{tikzpicture}
@@ -179,8 +171,8 @@ To use the resulting TikZ/PGFPlots figures, your LaTeX installation needs
 
 If you experience bugs, would like to contribute, have nice examples of what
 matplotlib2tikz can do, or if you are just looking for more information, then
-please visit [matplotlib2tikz's GitHub page]
-(https://github.com/nschloe/matplotlib2tikz).
+please visit
+[matplotlib2tikz's GitHub page](https://github.com/nschloe/matplotlib2tikz).
 
 
 ### Testing
@@ -191,8 +183,7 @@ test cases are specified. Those are
 
  * run through matplotlib2tikz,
  * the resulting LaTeX file is compiled into a PDF (`pdflatex`),
- * the PDF is converted into a PNG
-   ([`pdftoppm`](http://poppler.freedesktop.org/)),
+ * the PDF is converted into a PNG (`pdftoppm`),
  * a perceptual hash is computed from the PNG and compared to a previously
    stored version.
 
@@ -213,22 +204,32 @@ your local machine, you should first make sure to have an up-to-date Pillow, .
 
 If you would like to contribute a test, just take a look at the examples in
 `test/testfunctions/`. Essentially a test consists of three things:
+
   * a description,
   * a function that creates the image in matplotlib, and
   * a pHash.
+
 Just add your file, add it to `test/testfunction/__init__.py`, and run the
 tests. A failing test will always print out the pHash, so you can leave it
 empty in the first run and fill it in later to make the test pass.
 
 ### Distribution
 
-To publish a new version of matplotlib2tikz on
-[PyPi](https://pypi.python.org/pypi/matplotlib2tikz), make sure to have updated
-the version numbers consistently. Then run
-```
-make upload
-```
+To create a new release
 
+1. bump the `__version__` number,
+
+2. create a Git tag,
+    ```
+    $ git tag -a v0.3.1
+    $ git push --tags
+    ```
+    and
+
+3. upload to PyPi:
+    ```
+    $ make upload
+    ```
 
 ### License
 
