@@ -159,9 +159,13 @@ To use the resulting TikZ/PGFPlots figures, your LaTeX installation needs
    support and are included:
     ```latex
     \usepackage[utf8]{inputenc}
-    \usepackage{fontspec}
     \usepackage{pgfplots}
     ```
+   Additionally, with LuaLaTeX
+    ```latex
+    \usepackage{fontspec}
+    ```
+   is needed to typeset Unicode characters.
    Optionally, to use the latest PGFPlots features, insert
     ```latex
     \pgfplotsset{compat=newest}
