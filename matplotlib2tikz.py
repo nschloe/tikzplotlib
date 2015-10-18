@@ -1638,7 +1638,9 @@ def _print_pgfplot_libs_message(data):
     tikzlibs = ','.join(list(data['tikz libs']))
 
     print('=========================================================')
-    print('Please add the following line to your LaTeX preamble:\n')
+    print('Please add the following lines to your LaTeX preamble:\n')
+    print('\\usepackage[utf8]{inputenc}')
+    print('\\usepackage{fontspec}')
     print('\\usepackage{pgfplots}')
     if tikzlibs:
         print('\\usetikzlibrary{' + tikzlibs + '}')

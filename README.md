@@ -152,21 +152,21 @@ To use the resulting TikZ/PGFPlots figures, your LaTeX installation needs
     \setlength\figurewidth{6cm}
     \input{myfile.tikz}
     ```
- 
+
 3. Add the contents of `myfile.tikz` into your LaTeX source code; a convenient
-   way of doing so is to use `\input{/path/to/myfile.tikz}`. Also make sure
-   that at the header of your document the packages TikZ and PGFPlots are
-   included:
+   way of doing so is via `\input{/path/to/myfile.tikz}`. Also make sure that
+   in the header of your document the packages for PGFPlots and proper unicode
+   support and are included:
     ```latex
-    \usepackage{tikz}
+    \usepackage[utf8]{inputenc}
+    \usepackage{fontspec}
     \usepackage{pgfplots}
     ```
-   Optionally, to use features of the latest PGFPlots package (as of
-   PGFPlots 1.3), insert
+   Optionally, to use the latest PGFPlots features, insert
     ```latex
     \pgfplotsset{compat=newest}
     ```
-    
+
 ### Contributing
 
 If you experience bugs, would like to contribute, have nice examples of what

@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Heat map with color bar'
-phash = ''
+phash = '5f34a1cea1caa1d9'
 
 
 def plot():
     from matplotlib import pyplot as plt
-    from matplotlib import style
-    style.use('ggplot')
     import numpy as np
 
     fig = plt.figure()
