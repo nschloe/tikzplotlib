@@ -202,11 +202,12 @@ def _get_color_definitions(data):
     return definitions
 
 
-# def _parse_text(text):
-#     '''Parses input text for LaTeX expressions and escaptes them if
-#     necessary.'''
-#     replace_list = ['_', '$', '\\', '%']
-#     return
+def _is_colorbar_heuristic(obj):
+    '''Find out if the object is in fact a color bar.
+    '''
+    # Really, this is the heuristic? Yes.
+    # TODO come up with something more accurate here
+    return obj.get_aspect() == 20.0
 
 
 def _draw_axes(data, obj):
@@ -214,13 +215,10 @@ def _draw_axes(data, obj):
     '''
     content = []
 
-    # Are we dealing with an axis that hosts a colorbar?
-    # Skip then.
-    # TODO instead of testing here, rather blacklist the colorbar axis
-    #      plots as soon as they have been found, e.g., by
-    #      _find_associated_colorbar()
-    if _extract_colorbar(obj):
-        return
+    # Are we dealing with an axis that hosts a colorbar? Skip then, those are
+    # treated implicitily by the associated axis.
+    if _is_colorbar_heuristic(obj):
+        return data, ''
 
     # instantiation
     nsubplots = 1
@@ -231,14 +229,20 @@ def _draw_axes(data, obj):
         geom = obj.get_geometry()
         nsubplots = geom[0] * geom[1]
         if nsubplots > 1:
-            is_subplot = True
-            subplot_index = geom[2]
-            if subplot_index == 1:
-                content.append(
-                    '\\begin{groupplot}[group style='
-                    '{group size=%.d by %.d}]\n' % (geom[1], geom[0])
-                    )
-                data['pgfplots libs'].add('groupplots')
+            is_groupplot = True
+            # Is this an axis-colorbar pair? No need for groupplot then.
+            if nsubplots == 2 and _find_associated_colorbar(obj):
+                is_groupplot = False
+
+            if is_groupplot:
+                is_subplot = True
+                subplot_index = geom[2]
+                if subplot_index == 1:
+                    content.append(
+                        '\\begin{groupplot}[group style='
+                        '{group size=%.d by %.d}]\n' % (geom[1], geom[0])
+                        )
+                    data['pgfplots libs'].add('groupplots')
 
     axis_options = []
 
@@ -1019,7 +1023,7 @@ def _is_colorbar(obj):
         return False
 
 
-def _extract_colorbar(obj):
+def _has_colorbar(obj):
     '''Search for color bars as subobjects of obj, and return the first found.
     If none is found, return None.
     '''
