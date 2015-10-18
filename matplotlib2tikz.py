@@ -163,7 +163,12 @@ def save(filepath,
         file_handle.write('\n'.join(coldefs))
         file_handle.write('\n\n')
 
-    file_handle.write(''.join(content))
+    try:
+        file_handle.write(''.join(content))
+    except UnicodeEncodeError:
+        # We're probably using Python 2, so use proper unicode treatment
+        file_handle.write(unicode(''.join(content)).encode('utf-8'))
+
     if wrap:
         file_handle.write('\\end{tikzpicture}')
 
