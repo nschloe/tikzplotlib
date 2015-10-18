@@ -502,7 +502,7 @@ def _get_ticks(data, xy, ticks, ticklabels):
     axis_options = []
     pgfplots_ticks = []
     pgfplots_ticklabels = []
-    is_label_necessary = False
+    is_label_required = False
     for (tick, ticklabel) in zip(ticks, ticklabels):
         pgfplots_ticks.append(tick)
         # store the label anyway
@@ -510,16 +510,17 @@ def _get_ticks(data, xy, ticks, ticklabels):
         pgfplots_ticklabels.append(label)
         # Check if the label is necessary. If one of the labels is, then all
         # of them must appear in the TikZ plot.
-        try:
-            label_float = float(label.replace(u'\N{MINUS SIGN}', '-'))
-            is_label_necessary = is_label_necessary or \
-                (label and label_float != tick)
-        except ValueError:
-            is_label_necessary = True
+        if label:
+            try:
+                label_float = float(label.replace(u'\N{MINUS SIGN}', '-'))
+                is_label_required = is_label_required or \
+                    (label and label_float != tick)
+            except ValueError:
+                is_label_required = True
 
     # Leave the ticks to PGFPlots if not in STRICT mode and if there are no
     # explicit labels.
-    if data['strict'] or is_label_necessary:
+    if data['strict'] or is_label_required:
         if pgfplots_ticks:
             axis_options.append(
                     '%stick={%s}' % (
@@ -530,7 +531,7 @@ def _get_ticks(data, xy, ticks, ticklabels):
         else:
             axis_options.append('%stick=\\empty' % xy)
 
-        if is_label_necessary:
+        if is_label_required:
             axis_options.append('%sticklabels={%s}'
                                 % (xy, ','.join(pgfplots_ticklabels))
                                 )
