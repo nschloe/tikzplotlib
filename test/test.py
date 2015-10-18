@@ -38,6 +38,7 @@ def check_hash(test, name):
 
     # create a latex wrapper for the tikz
     wrapper = '''\\documentclass{standalone}
+\\usepackage[utf8]{inputenc}
 \\usepackage{pgfplots}
 \\usepgfplotslibrary{groupplots}
 \\pgfplotsset{compat=newest}

@@ -22,7 +22,7 @@ setup(
     version=__version__,
     py_modules=['matplotlib2tikz'],
     url='https://github.com/nschloe/matplotlib2tikz',
-    download_url='https://github.com/nschloe/matplotlib2tikz/downloads',
+    download_url='https://pypi.python.org/pypi/matplotlib2tikz',
     author=__author__,
     author_email=__email__,
     requires=['matplotlib (>=1.4.0)', 'numpy'],

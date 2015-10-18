@@ -17,7 +17,7 @@ __email__ = 'nico.schloemer@gmail.com'
 __copyright__ = 'Copyright (c) 2010-2015, %s <%s>' % (__author__, __email__)
 __credits__ = []
 __license__ = 'MIT License'
-__version__ = '0.2.3'
+__version__ = '0.2.4'
 __maintainer__ = 'Nico Schlömer'
 __status__ = 'Production'
 
@@ -163,7 +163,12 @@ def save(filepath,
         file_handle.write('\n'.join(coldefs))
         file_handle.write('\n\n')
 
-    file_handle.write(''.join(content))
+    try:
+        file_handle.write(''.join(content))
+    except UnicodeEncodeError:
+        # We're probably using Python 2, so use proper unicode treatment
+        file_handle.write(unicode(''.join(content)).encode('utf-8'))
+
     if wrap:
         file_handle.write('\\end{tikzpicture}')
 
@@ -202,11 +207,12 @@ def _get_color_definitions(data):
     return definitions
 
 
-# def _parse_text(text):
-#     '''Parses input text for LaTeX expressions and escaptes them if
-#     necessary.'''
-#     replace_list = ['_', '$', '\\', '%']
-#     return
+def _is_colorbar_heuristic(obj):
+    '''Find out if the object is in fact a color bar.
+    '''
+    # Really, this is the heuristic? Yes.
+    # TODO come up with something more accurate here
+    return obj.get_aspect() == 20.0
 
 
 def _draw_axes(data, obj):
@@ -214,13 +220,10 @@ def _draw_axes(data, obj):
     '''
     content = []
 
-    # Are we dealing with an axis that hosts a colorbar?
-    # Skip then.
-    # TODO instead of testing here, rather blacklist the colorbar axis
-    #      plots as soon as they have been found, e.g., by
-    #      _find_associated_colorbar()
-    if _extract_colorbar(obj):
-        return
+    # Are we dealing with an axis that hosts a colorbar? Skip then, those are
+    # treated implicitily by the associated axis.
+    if _is_colorbar_heuristic(obj):
+        return data, ''
 
     # instantiation
     nsubplots = 1
@@ -231,14 +234,20 @@ def _draw_axes(data, obj):
         geom = obj.get_geometry()
         nsubplots = geom[0] * geom[1]
         if nsubplots > 1:
-            is_subplot = True
-            subplot_index = geom[2]
-            if subplot_index == 1:
-                content.append(
-                    '\\begin{groupplot}[group style='
-                    '{group size=%.d by %.d}]\n' % (geom[1], geom[0])
-                    )
-                data['pgfplots libs'].add('groupplots')
+            is_groupplot = True
+            # Is this an axis-colorbar pair? No need for groupplot then.
+            if nsubplots == 2 and _find_associated_colorbar(obj):
+                is_groupplot = False
+
+            if is_groupplot:
+                is_subplot = True
+                subplot_index = geom[2]
+                if subplot_index == 1:
+                    content.append(
+                        '\\begin{groupplot}[group style='
+                        '{group size=%.d by %.d}]\n' % (geom[1], geom[0])
+                        )
+                    data['pgfplots libs'].add('groupplots')
 
     axis_options = []
 
@@ -344,10 +353,11 @@ def _draw_axes(data, obj):
         axis_options.append('xminorgrids')
 
     xlines = obj.get_xgridlines()
-    xgridcolor = xlines[0].get_color()
-    data, col, _ = _mpl_color2xcolor(data, xgridcolor)
-    if col != 'black':
-        axis_options.append('x grid style={%s}' % col)
+    if xlines:
+        xgridcolor = xlines[0].get_color()
+        data, col, _ = _mpl_color2xcolor(data, xgridcolor)
+        if col != 'black':
+            axis_options.append('x grid style={%s}' % col)
 
     if obj.yaxis._gridOnMajor:
         axis_options.append('ymajorgrids')
@@ -355,10 +365,11 @@ def _draw_axes(data, obj):
         axis_options.append('yminorgrids')
 
     ylines = obj.get_ygridlines()
-    ygridcolor = ylines[0].get_color()
-    data, col, _ = _mpl_color2xcolor(data, ygridcolor)
-    if col != 'black':
-        axis_options.append('y grid style={%s}' % col)
+    if ylines:
+        ygridcolor = ylines[0].get_color()
+        data, col, _ = _mpl_color2xcolor(data, ygridcolor)
+        if col != 'black':
+            axis_options.append('y grid style={%s}' % col)
 
     # axis line styles
     # Assume that the bottom edge color is the color of the entire box.
@@ -399,8 +410,9 @@ def _draw_axes(data, obj):
             # Getting the labels via get_* might not actually be suitable:
             # they might not reflect the current state.
             colorbar_ticklabels = colorbar.ax.get_xticklabels()
-            colorbar_styles.extend(_get_ticks(data, 'x', colorbar_ticks,
-                                                    colorbar_ticklabels))
+            colorbar_styles.extend(
+                _get_ticks(data, 'x', colorbar_ticks, colorbar_ticklabels)
+                )
 
         elif orientation == 'vertical':
             axis_options.append('colorbar')
@@ -420,8 +432,9 @@ def _draw_axes(data, obj):
             # Getting the labels via get_* might not actually be suitable:
             # they might not reflect the current state.
             colorbar_ticklabels = colorbar.ax.get_yticklabels()
-            colorbar_styles.extend(_get_ticks(data, 'y', colorbar_ticks,
-                                                    colorbar_ticklabels))
+            colorbar_styles.extend(
+                _get_ticks(data, 'y', colorbar_ticks, colorbar_ticklabels)
+                )
         else:
             raise RuntimeError(
                 'Unknown color bar orientation ''%s''. Abort.' % orientation
@@ -489,22 +502,25 @@ def _get_ticks(data, xy, ticks, ticklabels):
     axis_options = []
     pgfplots_ticks = []
     pgfplots_ticklabels = []
-    is_label_necessary = False
+    is_label_required = False
     for (tick, ticklabel) in zip(ticks, ticklabels):
         pgfplots_ticks.append(tick)
         # store the label anyway
         label = ticklabel.get_text()
         pgfplots_ticklabels.append(label)
-        # Check if the label is necessary.
-        # If *one* of the labels is, then all of them must
-        # appear in the TikZ plot.
-        is_label_necessary = (label and label != str(tick))
-        # TODO This seems not quite to be the test whether labels are
-        #      necessary.
+        # Check if the label is necessary. If one of the labels is, then all
+        # of them must appear in the TikZ plot.
+        if label:
+            try:
+                label_float = float(label.replace(u'\N{MINUS SIGN}', '-'))
+                is_label_required = is_label_required or \
+                    (label and label_float != tick)
+            except ValueError:
+                is_label_required = True
 
     # Leave the ticks to PGFPlots if not in STRICT mode and if there are no
     # explicit labels.
-    if data['strict'] or is_label_necessary:
+    if data['strict'] or is_label_required:
         if pgfplots_ticks:
             axis_options.append(
                     '%stick={%s}' % (
@@ -515,7 +531,7 @@ def _get_ticks(data, xy, ticks, ticklabels):
         else:
             axis_options.append('%stick=\\empty' % xy)
 
-        if is_label_necessary:
+        if is_label_required:
             axis_options.append('%sticklabels={%s}'
                                 % (xy, ','.join(pgfplots_ticklabels))
                                 )
@@ -1017,7 +1033,7 @@ def _is_colorbar(obj):
         return False
 
 
-def _extract_colorbar(obj):
+def _has_colorbar(obj):
     '''Search for color bars as subobjects of obj, and return the first found.
     If none is found, return None.
     '''
@@ -1198,7 +1214,8 @@ def _draw_path(obj, data, path,
                ):
     '''Adds code for drawing an ordinary path in PGFPlots (TikZ).
     '''
-    if 'draw=white' in draw_options and 'fill opacity=0' in draw_options:
+    if ('draw=white' in draw_options or 'draw=black' in draw_options) and \
+            'fill opacity=0' in draw_options:
         # For some reasons, matplotlib sometimes adds void paths with only
         # consist of one point, are white, and have no opacity. To not let
         # those clutter the output TeX file, bail out here.
@@ -1631,7 +1648,9 @@ def _print_pgfplot_libs_message(data):
     tikzlibs = ','.join(list(data['tikz libs']))
 
     print('=========================================================')
-    print('Please add the following line to your LaTeX preamble:\n')
+    print('Please add the following lines to your LaTeX preamble:\n')
+    print('\\usepackage[utf8]{inputenc}')
+    print('\\usepackage{fontspec}')
     print('\\usepackage{pgfplots}')
     if tikzlibs:
         print('\\usetikzlibrary{' + tikzlibs + '}')
