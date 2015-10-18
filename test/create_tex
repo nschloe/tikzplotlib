@@ -52,35 +52,22 @@ def _main():
         pp.cla()
         pp.clf()
 
-        try:
-            # plot the test example
-            test.plot()
-            try:
-                tikz_path = os.path.join(data_dir, name + '.tex')
-                tikz_tex_path = os.path.join(
-                        tex_relative_path_to_data,
-                        os.path.basename(tikz_path)
-                        )
-                # convert to tikz
-                matplotlib2tikz.save(
-                    tikz_path,
-                    figurewidth=figure_width,
-                    tex_relative_path_to_data=tex_relative_path_to_data,
-                    show_info=False
-                    )
-                tikz = '\\input{%s}' % tikz_tex_path
-                # file_handle.write('\\input{%s}\n' % tikz_tex_path)
-            except Exception as e:
-                print()
-                print(e)
-                print()
-                tikz = '%% mpl2tikz conversion failed with\n%% %s' % e
-                file_handle.write('%%%s\n' % e)
-        except Exception as e:
-            print()
-            print(e)
-            print()
-            tikz = '%% Figure generation failed with\n%% %s' % e
+        # plot the test example
+        test.plot()
+        tikz_path = os.path.join(data_dir, name + '.tex')
+        tikz_tex_path = os.path.join(
+                tex_relative_path_to_data,
+                os.path.basename(tikz_path)
+                )
+        # convert to tikz
+        matplotlib2tikz.save(
+            tikz_path,
+            figurewidth=figure_width,
+            tex_relative_path_to_data=tex_relative_path_to_data,
+            show_info=False
+            )
+        tikz = '\\input{%s}' % tikz_tex_path
+        # file_handle.write('\\input{%s}\n' % tikz_tex_path)
 
         # plot reference figure
         pdf_path = os.path.join(data_dir, name + '.pdf')
