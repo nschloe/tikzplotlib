@@ -78,7 +78,7 @@ coordinates {
 \end{tikzpicture}
 ```
 Tweaking the plot is straightforward and can be done as part of your LaTeX
-workflow.
+work flow.
 [The fantastic PGFPlots manual](http://pgfplots.sourceforge.net/pgfplots.pdf)
 contains great examples of how to make your plot look even better.
 
@@ -94,9 +94,9 @@ pip install matplotlib2tikz
 
 #### Manual installation
 
-Download matplotlibtikz from https://github.com/nschloe/matplotlib2tikz.
+Download matplotlib2tikz from https://github.com/nschloe/matplotlib2tikz.
 Place the matplotlib2tikz script in a directory where Python can find it (e.g.,
-`$PYTHONPATH`).  You can install it systemwide with
+`$PYTHONPATH`).  You can install it system-wide with
 ```
 python setup.py install
 ```
@@ -123,7 +123,7 @@ To use the resulting TikZ/PGFPlots figures, your LaTeX installation needs
     ```python
     tikz_save('myfile.tikz');
     ```
-   to store the TikZ file as `myfile.tikz`. Load the libary with:
+   to store the TikZ file as `myfile.tikz`. Load the library with:
     ```python
     from matplotlib2tikz import save as tikz_save
     ```
@@ -155,7 +155,7 @@ To use the resulting TikZ/PGFPlots figures, your LaTeX installation needs
 
 3. Add the contents of `myfile.tikz` into your LaTeX source code; a convenient
    way of doing so is via `\input{/path/to/myfile.tikz}`. Also make sure that
-   in the header of your document the packages for PGFPlots and proper unicode
+   in the header of your document the packages for PGFPlots and proper Unicode
    support and are included:
     ```latex
     \usepackage[utf8]{inputenc}

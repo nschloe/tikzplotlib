@@ -7,6 +7,7 @@ import os
 import numpy
 import warnings
 import matplotlib as mpl
+import PIL
 if 'DISPLAY' not in os.environ:
     # headless mode, for remote executions (and travis)
     mpl.use('Agg')
@@ -185,15 +186,6 @@ def _tex_comment(comment):
     '''Prepends each line in string with the LaTeX comment key, '%'.
     '''
     return '% ' + str.replace(comment, '\n', '\n% ') + '\n'
-
-
-def _print_tree(obj, indent=''):
-    '''Recursively prints the tree structure of the matplotlib object.
-    '''
-    print(indent, type(obj))
-    for child in obj.get_children():
-        _print_tree(child, indent + '   ')
-    return
 
 
 def _get_color_definitions(data):
@@ -966,8 +958,7 @@ def _draw_image(data, obj):
     elif len(dims) == 3 and dims[2] in [3, 4]:
         # RGB (+alpha) information at each point
         # convert to PIL image (after upside-down flip)
-        from PIL import Image
-        image = Image.fromarray(numpy.flipud(img_array))
+        image = PIL.Image.fromarray(numpy.flipud(img_array))
         image.save(filename)
     else:
         raise RuntimeError('Unable to store image array.')
