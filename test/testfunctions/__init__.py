@@ -4,6 +4,7 @@ __all__ = [
   'annotate',
   'basic_sin',
   'circle_patch',
+  'heat',
   'legends2',
   'legends',
   'loglogplot',
@@ -14,6 +15,7 @@ __all__ = [
   ]
 # Failing:
 # TODO resurrect
+#  'colorbars',
 #  'histogram',
 #  'image_plot',
 #  'noise',
