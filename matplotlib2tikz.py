@@ -410,8 +410,9 @@ def _draw_axes(data, obj):
             # Getting the labels via get_* might not actually be suitable:
             # they might not reflect the current state.
             colorbar_ticklabels = colorbar.ax.get_xticklabels()
-            colorbar_styles.extend(_get_ticks(data, 'x', colorbar_ticks,
-                                                    colorbar_ticklabels))
+            colorbar_styles.extend(
+                _get_ticks(data, 'x', colorbar_ticks, colorbar_ticklabels)
+                )
 
         elif orientation == 'vertical':
             axis_options.append('colorbar')
@@ -431,8 +432,9 @@ def _draw_axes(data, obj):
             # Getting the labels via get_* might not actually be suitable:
             # they might not reflect the current state.
             colorbar_ticklabels = colorbar.ax.get_yticklabels()
-            colorbar_styles.extend(_get_ticks(data, 'y', colorbar_ticks,
-                                                    colorbar_ticklabels))
+            colorbar_styles.extend(
+                _get_ticks(data, 'y', colorbar_ticks, colorbar_ticklabels)
+                )
         else:
             raise RuntimeError(
                 'Unknown color bar orientation ''%s''. Abort.' % orientation
@@ -506,12 +508,14 @@ def _get_ticks(data, xy, ticks, ticklabels):
         # store the label anyway
         label = ticklabel.get_text()
         pgfplots_ticklabels.append(label)
-        # Check if the label is necessary.
-        # If *one* of the labels is, then all of them must
-        # appear in the TikZ plot.
-        is_label_necessary = (label and label != str(tick))
-        # TODO This seems not quite to be the test whether labels are
-        #      necessary.
+        # Check if the label is necessary. If one of the labels is, then all
+        # of them must appear in the TikZ plot.
+        try:
+            label_float = float(label.replace(u'\N{MINUS SIGN}', '-'))
+            is_label_necessary = is_label_necessary or \
+                (label and label_float != tick)
+        except ValueError:
+            is_label_necessary = True
 
     # Leave the ticks to PGFPlots if not in STRICT mode and if there are no
     # explicit labels.
