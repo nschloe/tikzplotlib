@@ -22,7 +22,7 @@ before_install:
   - sudo apt-get -y install poppler-utils
   - sudo apt-get -y install pandoc
   - sudo apt-get -y build-dep python-matplotlib python3-matplotlib
-  - sudo apt-get -y python-setuptools
+  - sudo apt-get -y install python-setuptools
   # Dependencies of Pillow, see
   # <https://pillow.readthedocs.org/en/latest/installation.html#linux-installation>.
   - sudo apt-get -y install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk
