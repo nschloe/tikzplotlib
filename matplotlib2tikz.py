@@ -339,10 +339,13 @@ def _draw_axes(data, obj):
     # For new matplotlib versions, we could replace the direction getter by
     # `get_ticks_direction()`, see
     # <https://github.com/matplotlib/matplotlib/pull/5290>.
-    tick_dirs = [tick._tickdir for tick in obj.xaxis.get_major_ticks()] + \
-                [tick._tickdir for tick in obj.yaxis.get_major_ticks()]
-    if _is_equal(tick_dirs):
-        direction = tick_dirs[0]
+    # Unfortunately, _tickdir doesn't seem to be quite accurate. See
+    # <https://github.com/matplotlib/matplotlib/issues/5311>.
+    # For now, just take the first tick direction of each of the axes.
+    x_tick_dirs = [tick._tickdir for tick in obj.xaxis.get_major_ticks()]
+    y_tick_dirs = [tick._tickdir for tick in obj.yaxis.get_major_ticks()]
+    if x_tick_dirs[0] == y_tick_dirs[0]:
+        direction = x_tick_dirs[0]
         if direction == 'in':
             # 'tick align=inside' is the PGFPlots default
             pass
@@ -502,19 +505,6 @@ def _draw_axes(data, obj):
         content.append('\\end{groupplot}\n\n')
 
     return data, content
-
-
-def _is_equal(iterator):
-    '''Returns true if all items in the iterator are identical, false
-    otherwise.
-    '''
-    # From http://stackoverflow.com/a/3844832/353337
-    try:
-        iterator = iter(iterator)
-        first = next(iterator)
-        return all(first == rest for rest in iterator)
-    except StopIteration:
-        return True
 
 
 def _get_ticks(data, xy, ticks, ticklabels):

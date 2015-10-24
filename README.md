@@ -11,7 +11,7 @@ This is matplotlib2tikz, a Python tool for converting matplotlib figures into
 [PGFPlots](https://www.ctan.org/pkg/pgfplots)
 ([TikZ](https://www.ctan.org/pkg/pgf)) figures like
 
-![](https://nschloe.github.io/matplotlib2tikz/latex.png)
+![](https://nschloe.github.io/matplotlib2tikz/latex2.png)
 
 for native inclusion into LaTeX.
 
@@ -52,6 +52,7 @@ ylabel={Voltage (mV)},
 xmin=0, xmax=2,
 ymin=-1, ymax=1,
 width=7.5cm,
+tick align=outside,
 xmajorgrids,
 x grid style={white},
 ymajorgrids,
