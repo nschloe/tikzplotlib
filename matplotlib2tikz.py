@@ -335,6 +335,24 @@ def _draw_axes(data, obj):
         _get_ticks(data, 'y', obj.get_yticks(), obj.get_yticklabels())
         )
 
+    # Find tick direction
+    # For new matplotlib versions, we could replace the direction getter by
+    # `get_ticks_direction()`, see
+    # <https://github.com/matplotlib/matplotlib/pull/5290>.
+    tick_dirs = [tick._tickdir for tick in obj.xaxis.get_major_ticks()] + \
+                [tick._tickdir for tick in obj.yaxis.get_major_ticks()]
+    if _is_equal(tick_dirs):
+        direction = tick_dirs[0]
+        if direction == 'in':
+            # 'tick align=inside' is the PGFPlots default
+            pass
+        elif direction == 'out':
+            axis_options.append('tick align=outside')
+        elif direction == 'inout':
+            axis_options.append('tick align=center')
+        else:
+            raise ValueError('Unknown ticks direction %s.' % direction)
+
     # Don't use get_{x,y}gridlines for gridlines; see discussion on
     # <http://sourceforge.net/p/matplotlib/mailman/message/25169234/>
     # Coordinate of the lines are entirely meaningless, but styles (colors,...
@@ -484,6 +502,19 @@ def _draw_axes(data, obj):
         content.append('\\end{groupplot}\n\n')
 
     return data, content
+
+
+def _is_equal(iterator):
+    '''Returns true if all items in the iterator are identical, false
+    otherwise.
+    '''
+    # From http://stackoverflow.com/a/3844832/353337
+    try:
+        iterator = iter(iterator)
+        first = next(iterator)
+        return all(first == rest for rest in iterator)
+    except StopIteration:
+        return True
 
 
 def _get_ticks(data, xy, ticks, ticklabels):
