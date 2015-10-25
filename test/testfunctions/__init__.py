@@ -10,6 +10,7 @@ __all__ = [
   'legends',
   'loglogplot',
   'logplot',
+  'noise',
   'subplots',
   'subplot4x4',
   'text_overlay'
@@ -18,7 +19,5 @@ __all__ = [
 # TODO resurrect
 #  'colorbars',
 #  'histogram',
-#  'image_plot',
-#  'noise',
 #  'noise2',
 #  'patches',
