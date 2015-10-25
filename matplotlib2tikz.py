@@ -1298,7 +1298,7 @@ def _draw_path(obj, data, path, draw_options=None):
         # Store the previous point for quadratic Beziers.
         prev = vert[0:2]
 
-    nodes_string = ''.join(nodes)
+    nodes_string = '\n'.join(nodes)
     if draw_options:
         path_command = '\\path [%s] %s;\n\n' % \
                        (', '.join(draw_options), nodes_string)
