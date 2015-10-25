@@ -1092,14 +1092,13 @@ def _draw_patchcollection(data, obj):
     '''
     content = []
     # Gather the draw options.
-    data, draw_options = _get_draw_options(data,
-                                           obj.get_edgecolor()[0],
-                                           obj.get_facecolor()[0]
-                                           )
+    data, draw_options = _get_draw_options(
+            data, obj.get_edgecolor()[0], obj.get_facecolor()[0]
+            )
     for path in obj.get_paths():
-        data, cont = _draw_path(obj, data, path,
-                                draw_options=draw_options
-                                )
+        data, cont = _draw_path(
+            obj, data, path, draw_options=draw_options
+            )
         content.append(cont)
     return data, content
 
@@ -1138,12 +1137,14 @@ def _get_draw_options(data, ec, fc):
 def _draw_patch(data, obj):
     '''Return the PGFPlots code for patches.
     '''
+    print(obj.get_edgecolor(), obj.get_facecolor())
 
     # Gather the draw options.
-    data, draw_options = _get_draw_options(data,
-                                           obj.get_edgecolor(),
-                                           obj.get_facecolor()
-                                           )
+    data, draw_options = _get_draw_options(
+            data,
+            obj.get_edgecolor(),
+            obj.get_facecolor()
+            )
 
     if (isinstance(obj, mpl.patches.Rectangle)):
         # rectangle specialization
@@ -1153,9 +1154,9 @@ def _draw_patch(data, obj):
         return _draw_ellipse(data, obj, draw_options)
     else:
         # regular patch
-        return _draw_path(obj, data, obj.get_path(),
-                          draw_options=draw_options
-                          )
+        return _draw_path(
+            obj, data, obj.get_path(), draw_options=draw_options
+            )
 
 
 def _draw_rectangle(data, obj, draw_options):
