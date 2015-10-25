@@ -204,7 +204,7 @@ def _is_colorbar_heuristic(obj):
     '''
     # Really, this is the heuristic? Yes.
     # TODO come up with something more accurate here
-    return obj.get_aspect() == 20.0
+    return obj.get_aspect() in [20.0, 1.0/20.0]
 
 
 def _draw_axes(data, obj):
