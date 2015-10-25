@@ -5,6 +5,7 @@ __all__ = [
   'basic_sin',
   'circle_patch',
   'heat',
+  'image_plot',
   'legends2',
   'legends',
   'loglogplot',
