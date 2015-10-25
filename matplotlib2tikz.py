@@ -1214,30 +1214,27 @@ def _draw_pathcollection(data, obj):
     fc = obj.get_facecolors()
     paths = obj.get_paths()
     # TODO always use [0]?
-    if ec is not None and len(ec) > 0:
+    try:
         ec = ec[0]
-    else:
+    except (TypeError, IndexError):
         ec = None
-    if fc is not None and len(fc) > 0:
+    try:
         fc = fc[0]
-    else:
+    except (TypeError, IndexError):
         fc = None
     for path in paths:
         data, do = _get_draw_options(data, ec, fc)
-        data, cont = _draw_path(obj, data, path,
-                                draw_options=do
-                                )
+        data, cont = _draw_path(
+            obj, data, path, draw_options=do
+            )
         content.append(cont)
     return data, content
 
 
-def _draw_path(obj, data, path,
-               draw_options=None
-               ):
+def _draw_path(obj, data, path, draw_options=None):
     '''Adds code for drawing an ordinary path in PGFPlots (TikZ).
     '''
-    if ('draw=white' in draw_options or 'draw=black' in draw_options) and \
-            'fill opacity=0' in draw_options:
+    if 'fill opacity=0' in draw_options:
         # For some reasons, matplotlib sometimes adds void paths with only
         # consist of one point, are white, and have no opacity. To not let
         # those clutter the output TeX file, bail out here.
@@ -1636,35 +1633,34 @@ def _handle_children(data, obj):
     '''
     content = []
     for child in obj.get_children():
-        if (isinstance(child, mpl.axes.Axes)):
+        if isinstance(child, mpl.axes.Axes):
             data, cont = _draw_axes(data, child)
             content.extend(cont)
-        elif (isinstance(child, mpl.lines.Line2D)):
+        elif isinstance(child, mpl.lines.Line2D):
             data, cont = _draw_line2d(data, child)
             content.extend(cont)
-        elif (isinstance(child, mpl.image.AxesImage)):
+        elif isinstance(child, mpl.image.AxesImage):
             data, cont = _draw_image(data, child)
             content.extend(cont)
-        elif (isinstance(child, mpl.patches.Patch)):
+        elif isinstance(child, mpl.patches.Patch):
             data, cont = _draw_patch(data, child)
             content.extend(cont)
-        elif (isinstance(child, mpl.collections.PolyCollection)):
+        elif isinstance(child, mpl.collections.PolyCollection):
             data, cont = _draw_polycollection(data, child)
             content.extend(cont)
-        elif (isinstance(child, mpl.collections.PatchCollection)):
+        elif isinstance(child, mpl.collections.PatchCollection):
             data, cont = _draw_patchcollection(data, child)
             content.extend(cont)
-        elif (isinstance(child, mpl.collections.PathCollection)):
+        elif isinstance(child, mpl.collections.PathCollection):
             data, cont = _draw_pathcollection(data, child)
             content.extend(cont)
-        elif (isinstance(child, mpl.legend.Legend)):
+        elif isinstance(child, mpl.legend.Legend):
             data = _draw_legend(data, child)
-        elif (isinstance(child, mpl.axis.XAxis) or
-              isinstance(child, mpl.axis.YAxis) or
-              isinstance(child, mpl.spines.Spine) or
-              isinstance(child, mpl.text.Text) or
-              isinstance(child, mpl.collections.QuadMesh)
-              ):
+        elif isinstance(child, mpl.axis.XAxis) or \
+                isinstance(child, mpl.axis.YAxis) or \
+                isinstance(child, mpl.spines.Spine) or \
+                isinstance(child, mpl.text.Text) or \
+                isinstance(child, mpl.collections.QuadMesh):
             pass
         else:
             print('matplotlib2tikz: Don''t know how to handle object ''%s''.' %
