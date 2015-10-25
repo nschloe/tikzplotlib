@@ -1137,8 +1137,6 @@ def _get_draw_options(data, ec, fc):
 def _draw_patch(data, obj):
     '''Return the PGFPlots code for patches.
     '''
-    print(obj.get_edgecolor(), obj.get_facecolor())
-
     # Gather the draw options.
     data, draw_options = _get_draw_options(
             data,
@@ -1464,7 +1462,7 @@ def _draw_text(data, obj):
     content = []
     properties = []
     style = []
-    if(isinstance(obj, mpl.text.Annotation)):
+    if isinstance(obj, mpl.text.Annotation):
         ann_xy = obj.xy
         ann_xycoords = obj.xycoords
         ann_xytext = obj.xyann
@@ -1508,12 +1506,11 @@ def _draw_text(data, obj):
                                        )
             content.append(the_arrow)
 
-    # 1: coordinates in axis system
+    # 1: coordinates
     # 2: properties (shapes, rotation, etc)
     # 3: text style
     # 4: the text
     #                   -------1--------2---3--4--
-    proto = '\\node at (axis cs:%.15g,%.15g)[\n  %s\n]{%s %s};\n'
     pos = obj.get_position()
     text = obj.get_text()
     size = obj.get_size()
@@ -1558,7 +1555,7 @@ def _draw_text(data, obj):
         # TODO Check if there is there any way to extract the dashdot
         # pattern from matplotlib instead of hardcoding
         # an approximation?
-        elif(bbox.get_ls() == 'dashdot'):
+        elif bbox.get_ls() == 'dashdot':
             properties.append(('dash pattern=on %.3gpt off %.3gpt on '
                                '%.3gpt off %.3gpt'
                                ) % (1.0 / scaling, 3.0 / scaling,
@@ -1580,7 +1577,7 @@ def _draw_text(data, obj):
     try:
         if int(obj.get_weight()) > 550:
             style.append('\\bfseries')
-    except:  # Not numeric
+    except ValueError:  # Not numeric
         vals = ['semibold',
                 'demibold',
                 'demi',
@@ -1591,11 +1588,26 @@ def _draw_text(data, obj):
                 ]
         if str(obj.get_weight()) in vals:
             style.append('\\bfseries')
-    content.append(proto
-                   % (pos[0], pos[1],
-                      ',\n  '.join(properties), ' '.join(style), text
-                      )
-                   )
+
+    if obj.get_axes():
+        # If the coordinates are relative to an axis, use `axis cs`.
+        tikz_pos = '(axis cs:%.15g,%.15g)' % pos
+    else:
+        # relative to the entire figure, it's a getting a littler harder. See
+        # <http://tex.stackexchange.com/a/274902/13262> for a solution to the
+        # problem:
+        tikz_pos = (
+            '({$(current bounding box.south west)!%.15g!'
+            '(current bounding box.south east)$}'
+            '|-'
+            '{$(current bounding box.south west)!%0.15g!'
+            '(current bounding box.north west)$})'
+            ) % pos
+
+    content.append(
+            '\\node at %s[\n  %s\n]{%s %s};\n' %
+            (tikz_pos, ',\n  '.join(properties), ' '.join(style), text)
+            )
     return data, content
 
 
