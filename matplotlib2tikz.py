@@ -344,17 +344,28 @@ def _draw_axes(data, obj):
     # For now, just take the first tick direction of each of the axes.
     x_tick_dirs = [tick._tickdir for tick in obj.xaxis.get_major_ticks()]
     y_tick_dirs = [tick._tickdir for tick in obj.yaxis.get_major_ticks()]
-    if x_tick_dirs[0] == y_tick_dirs[0]:
-        direction = x_tick_dirs[0]
-        if direction == 'in':
-            # 'tick align=inside' is the PGFPlots default
-            pass
-        elif direction == 'out':
-            axis_options.append('tick align=outside')
-        elif direction == 'inout':
-            axis_options.append('tick align=center')
+    if x_tick_dirs or y_tick_dirs:
+        if x_tick_dirs and y_tick_dirs:
+            if x_tick_dirs[0] == y_tick_dirs[0]:
+                direction = x_tick_dirs[0]
+            else:
+                direction = None
+        elif x_tick_dirs:
+            direction = x_tick_dirs[0]
         else:
-            raise ValueError('Unknown ticks direction %s.' % direction)
+            # y_tick_dirs must be present
+            direction = y_tick_dirs[0]
+
+        if direction:
+            if direction == 'in':
+                # 'tick align=inside' is the PGFPlots default
+                pass
+            elif direction == 'out':
+                axis_options.append('tick align=outside')
+            elif direction == 'inout':
+                axis_options.append('tick align=center')
+            else:
+                raise ValueError('Unknown ticks direction %s.' % direction)
 
     # Don't use get_{x,y}gridlines for gridlines; see discussion on
     # <http://sourceforge.net/p/matplotlib/mailman/message/25169234/>
