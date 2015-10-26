@@ -657,8 +657,8 @@ def _mpl_cmap2pgf_cmap(cmap):
                              % ((x, unit) + colors[k])
                              )
 
-    colormap_string = '{mymap}{[1%s] %s}' % \
-                      (unit, '; '.join(color_changes))
+    colormap_string = '{mymap}{[1%s]\n  %s\n}' % \
+                      (unit, ';\n  '.join(color_changes))
     is_custom_colormap = True
     return (colormap_string, is_custom_colormap)
 
