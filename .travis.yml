@@ -29,6 +29,7 @@ before_install:
 install:
   - pip install --upgrade pip
   - pip install setuptools --upgrade
+  - python -c "import setuptools"
   - pip install -r requirements.txt
   - pip install coveralls
   # Alternative: setup.py install.
