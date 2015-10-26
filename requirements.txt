@@ -1,3 +1,4 @@
+setuptools
 matplotlib >= 1.4.0
 ImageHash
 Pillow >= 3.0.0
