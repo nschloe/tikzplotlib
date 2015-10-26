@@ -10,7 +10,8 @@ python:
     # Get python 2.7 back in once travis bug
     # <https://github.com/travis-ci/travis-ci/issues/4948> is solved.
     #- "2.7"
-    - "3.4"
+    #- '3.4'
+    - '3.5.0'
 
 virtualenv:
   system_site_packages: true
