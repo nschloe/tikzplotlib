@@ -839,7 +839,7 @@ def _draw_line2d(data, obj):
         options = ', '.join(addplot_options)
         content.append('[' + options + ']\n')
 
-    content.append('coordinates {\n')
+    content.append('table {\n')
 
     # nschloe, Oct 2, 2015:
     #   The transform call yields warnings and it is unclear why. Perhaps
@@ -860,12 +860,12 @@ def _draw_line2d(data, obj):
         data['extra axis options'].add('unbounded coords=jump')
         for (x, y, is_masked) in zip(xdata, ydata, ydata.mask):
             if is_masked:
-                content.append('(%.15g,nan) ' % x)
+                content.append('%.15g nan\n' % x)
             else:
-                content.append('(%.15g,%.15g) ' % (x, y))
+                content.append('%.15g %.15g\n' % (x, y))
     else:
         for (x, y) in zip(xdata, ydata):
-            content.append('(%.15g,%.15g)\n' % (x, y))
+            content.append('%.15g %.15g\n' % (x, y))
     content.append('};\n')
 
     return data, content
