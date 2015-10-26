@@ -95,7 +95,8 @@ pip install matplotlib2tikz
 
 #### Manual installation
 
-Download matplotlib2tikz from https://github.com/nschloe/matplotlib2tikz.
+Download matplotlib2tikz from
+[the Python Package Index](https://pypi.python.org/pypi/matplotlib2tikz/).
 Place the matplotlib2tikz script in a directory where Python can find it (e.g.,
 `$PYTHONPATH`).  You can install it system-wide with
 ```
@@ -122,9 +123,9 @@ To use the resulting TikZ/PGFPlots figures, your LaTeX installation needs
 
 2. Instead of `pyplot.show()`, invoke matplotlib2tikz by
     ```python
-    tikz_save('myfile.tikz');
+    tikz_save('mytikz.tex');
     ```
-   to store the TikZ file as `myfile.tikz`. Load the library with:
+   to store the TikZ file as `mytikz.tex`. Load the library with:
     ```python
     from matplotlib2tikz import save as tikz_save
     ```
@@ -132,7 +133,7 @@ To use the resulting TikZ/PGFPlots figures, your LaTeX installation needs
    The scripts accepts several options, for example `height`, `width`,
    `encoding`, and some others. Invoke by
     ```python
-    tikz_save('myfile.tikz', figureheight='4cm', figurewidth='6cm')
+    tikz_save('mytikz.tex', figureheight='4cm', figurewidth='6cm')
     ```
    Note that height and width must be set large enough; setting it too low may
    result in a LaTeX compilation failure along the lines of `Dimension Too Large` or `Arithmetic Overflow`;
@@ -140,7 +141,7 @@ To use the resulting TikZ/PGFPlots figures, your LaTeX installation needs
    To specify the dimension of the plot from within the LaTeX document, try
     ```python
     tikz_save(
-        'myfile.tikz',
+        'mytikz.tex',
         figureheight = '\\figureheight',
         figurewidth = '\\figurewidth'
         )
@@ -151,11 +152,11 @@ To use the resulting TikZ/PGFPlots figures, your LaTeX installation needs
     \newlength\figurewidth
     \setlength\figureheight{4cm}
     \setlength\figurewidth{6cm}
-    \input{myfile.tikz}
+    \input{mytikz.tex}
     ```
 
-3. Add the contents of `myfile.tikz` into your LaTeX source code; a convenient
-   way of doing so is via `\input{/path/to/myfile.tikz}`. Also make sure that
+3. Add the contents of `mytikz.tex` into your LaTeX source code; a convenient
+   way of doing so is via `\input{/path/to/mytikz.tex}`. Also make sure that
    in the header of your document the packages for PGFPlots and proper Unicode
    support and are included:
     ```latex
