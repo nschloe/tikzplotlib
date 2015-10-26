@@ -1,23 +1,25 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Some patches and a color bar'
-sha = ''
+phash = '2f2cdbc23463659c'
 
 
 def plot():
     from matplotlib.patches import Circle, Wedge, Polygon
     from matplotlib.collections import PatchCollection
-    from matplotlib import pyplot as pp
+    from matplotlib import pyplot as plt
     import numpy as np
     import matplotlib as mpl
 
-    fig = pp.figure()
+    np.random.seed(123)
+
+    fig = plt.figure()
     ax = fig.add_subplot(111)
 
     N = 3
     x = np.random.rand(N)
     y = np.random.rand(N)
-    radii = 0.1*np.random.rand(N)
+    radii = 0.1 * np.random.rand(N)
     patches = []
     for x1, y1, r in zip(x, y, radii):
         circle = Circle((x1, y1), r)
@@ -51,6 +53,6 @@ def plot():
                         )
     p.set_array(np.array(colors))
     ax.add_collection(p)
-    pp.colorbar(p)
+    plt.colorbar(p)
 
     return fig

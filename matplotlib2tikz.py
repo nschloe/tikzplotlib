@@ -18,7 +18,7 @@ __email__ = 'nico.schloemer@gmail.com'
 __copyright__ = 'Copyright (c) 2010-2015, %s <%s>' % (__author__, __email__)
 __credits__ = []
 __license__ = 'MIT License'
-__version__ = '0.2.4'
+__version__ = '0.3.0'
 __maintainer__ = 'Nico Schlömer'
 __status__ = 'Production'
 
@@ -204,7 +204,7 @@ def _is_colorbar_heuristic(obj):
     '''
     # Really, this is the heuristic? Yes.
     # TODO come up with something more accurate here
-    return obj.get_aspect() == 20.0
+    return obj.get_aspect() in [20.0, 1.0/20.0]
 
 
 def _draw_axes(data, obj):
@@ -334,6 +334,38 @@ def _draw_axes(data, obj):
     axis_options.extend(
         _get_ticks(data, 'y', obj.get_yticks(), obj.get_yticklabels())
         )
+
+    # Find tick direction
+    # For new matplotlib versions, we could replace the direction getter by
+    # `get_ticks_direction()`, see
+    # <https://github.com/matplotlib/matplotlib/pull/5290>.
+    # Unfortunately, _tickdir doesn't seem to be quite accurate. See
+    # <https://github.com/matplotlib/matplotlib/issues/5311>.
+    # For now, just take the first tick direction of each of the axes.
+    x_tick_dirs = [tick._tickdir for tick in obj.xaxis.get_major_ticks()]
+    y_tick_dirs = [tick._tickdir for tick in obj.yaxis.get_major_ticks()]
+    if x_tick_dirs or y_tick_dirs:
+        if x_tick_dirs and y_tick_dirs:
+            if x_tick_dirs[0] == y_tick_dirs[0]:
+                direction = x_tick_dirs[0]
+            else:
+                direction = None
+        elif x_tick_dirs:
+            direction = x_tick_dirs[0]
+        else:
+            # y_tick_dirs must be present
+            direction = y_tick_dirs[0]
+
+        if direction:
+            if direction == 'in':
+                # 'tick align=inside' is the PGFPlots default
+                pass
+            elif direction == 'out':
+                axis_options.append('tick align=outside')
+            elif direction == 'inout':
+                axis_options.append('tick align=center')
+            else:
+                raise ValueError('Unknown ticks direction %s.' % direction)
 
     # Don't use get_{x,y}gridlines for gridlines; see discussion on
     # <http://sourceforge.net/p/matplotlib/mailman/message/25169234/>
@@ -1060,14 +1092,13 @@ def _draw_patchcollection(data, obj):
     '''
     content = []
     # Gather the draw options.
-    data, draw_options = _get_draw_options(data,
-                                           obj.get_edgecolor()[0],
-                                           obj.get_facecolor()[0]
-                                           )
+    data, draw_options = _get_draw_options(
+            data, obj.get_edgecolor()[0], obj.get_facecolor()[0]
+            )
     for path in obj.get_paths():
-        data, cont = _draw_path(obj, data, path,
-                                draw_options=draw_options
-                                )
+        data, cont = _draw_path(
+            obj, data, path, draw_options=draw_options
+            )
         content.append(cont)
     return data, content
 
@@ -1106,12 +1137,12 @@ def _get_draw_options(data, ec, fc):
 def _draw_patch(data, obj):
     '''Return the PGFPlots code for patches.
     '''
-
     # Gather the draw options.
-    data, draw_options = _get_draw_options(data,
-                                           obj.get_edgecolor(),
-                                           obj.get_facecolor()
-                                           )
+    data, draw_options = _get_draw_options(
+            data,
+            obj.get_edgecolor(),
+            obj.get_facecolor()
+            )
 
     if (isinstance(obj, mpl.patches.Rectangle)):
         # rectangle specialization
@@ -1121,9 +1152,9 @@ def _draw_patch(data, obj):
         return _draw_ellipse(data, obj, draw_options)
     else:
         # regular patch
-        return _draw_path(obj, data, obj.get_path(),
-                          draw_options=draw_options
-                          )
+        return _draw_path(
+            obj, data, obj.get_path(), draw_options=draw_options
+            )
 
 
 def _draw_rectangle(data, obj, draw_options):
@@ -1181,32 +1212,41 @@ def _draw_pathcollection(data, obj):
     # gather the draw options
     ec = obj.get_edgecolors()
     fc = obj.get_facecolors()
-    paths = obj.get_paths()
     # TODO always use [0]?
-    if ec is not None and len(ec) > 0:
+    try:
         ec = ec[0]
-    else:
+    except (TypeError, IndexError):
         ec = None
-    if fc is not None and len(fc) > 0:
+    try:
         fc = fc[0]
-    else:
+    except (TypeError, IndexError):
         fc = None
-    for path in paths:
-        data, do = _get_draw_options(data, ec, fc)
-        data, cont = _draw_path(obj, data, path,
-                                draw_options=do
-                                )
-        content.append(cont)
+    data, draw_options = _get_draw_options(data, ec, fc)
+    draw_options.extend(['mark=*', 'only marks'])
+
+    if obj.get_offsets() is not None:
+        a = '\n'.join([' '.join(map(str, line)) for line in obj.get_offsets()])
+        if draw_options:
+            content.append('\\addplot [%s] table {\n%s\n};\n' %
+                           (', '.join(draw_options), a))
+        else:
+            content.append('\\addplot table {\n%s\n};\n' % a)
+    elif obj.get_paths():
+        # Not sure if we need this here at all.
+        for path in obj.get_paths():
+            data, cont = _draw_path(
+                obj, data, path, draw_options=draw_options
+                )
+            content.append(cont)
+    else:
+        raise RuntimeError('Pathcollection without offsets and paths.')
     return data, content
 
 
-def _draw_path(obj, data, path,
-               draw_options=None
-               ):
+def _draw_path(obj, data, path, draw_options=None):
     '''Adds code for drawing an ordinary path in PGFPlots (TikZ).
     '''
-    if ('draw=white' in draw_options or 'draw=black' in draw_options) and \
-            'fill opacity=0' in draw_options:
+    if 'fill opacity=0' in draw_options:
         # For some reasons, matplotlib sometimes adds void paths with only
         # consist of one point, are white, and have no opacity. To not let
         # those clutter the output TeX file, bail out here.
@@ -1270,7 +1310,7 @@ def _draw_path(obj, data, path,
         # Store the previous point for quadratic Beziers.
         prev = vert[0:2]
 
-    nodes_string = ''.join(nodes)
+    nodes_string = '\n'.join(nodes)
     if draw_options:
         path_command = '\\path [%s] %s;\n\n' % \
                        (', '.join(draw_options), nodes_string)
@@ -1431,7 +1471,7 @@ def _draw_text(data, obj):
     content = []
     properties = []
     style = []
-    if(isinstance(obj, mpl.text.Annotation)):
+    if isinstance(obj, mpl.text.Annotation):
         ann_xy = obj.xy
         ann_xycoords = obj.xycoords
         ann_xytext = obj.xyann
@@ -1475,12 +1515,11 @@ def _draw_text(data, obj):
                                        )
             content.append(the_arrow)
 
-    # 1: coordinates in axis system
+    # 1: coordinates
     # 2: properties (shapes, rotation, etc)
     # 3: text style
     # 4: the text
     #                   -------1--------2---3--4--
-    proto = '\\node at (axis cs:%.15g,%.15g)[\n  %s\n]{%s %s};\n'
     pos = obj.get_position()
     text = obj.get_text()
     size = obj.get_size()
@@ -1525,7 +1564,7 @@ def _draw_text(data, obj):
         # TODO Check if there is there any way to extract the dashdot
         # pattern from matplotlib instead of hardcoding
         # an approximation?
-        elif(bbox.get_ls() == 'dashdot'):
+        elif bbox.get_ls() == 'dashdot':
             properties.append(('dash pattern=on %.3gpt off %.3gpt on '
                                '%.3gpt off %.3gpt'
                                ) % (1.0 / scaling, 3.0 / scaling,
@@ -1547,7 +1586,7 @@ def _draw_text(data, obj):
     try:
         if int(obj.get_weight()) > 550:
             style.append('\\bfseries')
-    except:  # Not numeric
+    except ValueError:  # Not numeric
         vals = ['semibold',
                 'demibold',
                 'demi',
@@ -1558,11 +1597,26 @@ def _draw_text(data, obj):
                 ]
         if str(obj.get_weight()) in vals:
             style.append('\\bfseries')
-    content.append(proto
-                   % (pos[0], pos[1],
-                      ',\n  '.join(properties), ' '.join(style), text
-                      )
-                   )
+
+    if obj.get_axes():
+        # If the coordinates are relative to an axis, use `axis cs`.
+        tikz_pos = '(axis cs:%.15g,%.15g)' % pos
+    else:
+        # relative to the entire figure, it's a getting a littler harder. See
+        # <http://tex.stackexchange.com/a/274902/13262> for a solution to the
+        # problem:
+        tikz_pos = (
+            '({$(current bounding box.south west)!%.15g!'
+            '(current bounding box.south east)$}'
+            '|-'
+            '{$(current bounding box.south west)!%0.15g!'
+            '(current bounding box.north west)$})'
+            ) % pos
+
+    content.append(
+            '\\node at %s[\n  %s\n]{%s %s};\n' %
+            (tikz_pos, ',\n  '.join(properties), ' '.join(style), text)
+            )
     return data, content
 
 
@@ -1591,35 +1645,34 @@ def _handle_children(data, obj):
     '''
     content = []
     for child in obj.get_children():
-        if (isinstance(child, mpl.axes.Axes)):
+        if isinstance(child, mpl.axes.Axes):
             data, cont = _draw_axes(data, child)
             content.extend(cont)
-        elif (isinstance(child, mpl.lines.Line2D)):
+        elif isinstance(child, mpl.lines.Line2D):
             data, cont = _draw_line2d(data, child)
             content.extend(cont)
-        elif (isinstance(child, mpl.image.AxesImage)):
+        elif isinstance(child, mpl.image.AxesImage):
             data, cont = _draw_image(data, child)
             content.extend(cont)
-        elif (isinstance(child, mpl.patches.Patch)):
+        elif isinstance(child, mpl.patches.Patch):
             data, cont = _draw_patch(data, child)
             content.extend(cont)
-        elif (isinstance(child, mpl.collections.PolyCollection)):
+        elif isinstance(child, mpl.collections.PolyCollection):
             data, cont = _draw_polycollection(data, child)
             content.extend(cont)
-        elif (isinstance(child, mpl.collections.PatchCollection)):
+        elif isinstance(child, mpl.collections.PatchCollection):
             data, cont = _draw_patchcollection(data, child)
             content.extend(cont)
-        elif (isinstance(child, mpl.collections.PathCollection)):
+        elif isinstance(child, mpl.collections.PathCollection):
             data, cont = _draw_pathcollection(data, child)
             content.extend(cont)
-        elif (isinstance(child, mpl.legend.Legend)):
+        elif isinstance(child, mpl.legend.Legend):
             data = _draw_legend(data, child)
-        elif (isinstance(child, mpl.axis.XAxis) or
-              isinstance(child, mpl.axis.YAxis) or
-              isinstance(child, mpl.spines.Spine) or
-              isinstance(child, mpl.text.Text) or
-              isinstance(child, mpl.collections.QuadMesh)
-              ):
+        elif isinstance(child, mpl.axis.XAxis) or \
+                isinstance(child, mpl.axis.YAxis) or \
+                isinstance(child, mpl.spines.Spine) or \
+                isinstance(child, mpl.text.Text) or \
+                isinstance(child, mpl.collections.QuadMesh):
             pass
         else:
             print('matplotlib2tikz: Don''t know how to handle object ''%s''.' %

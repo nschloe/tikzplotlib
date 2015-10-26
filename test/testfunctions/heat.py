@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Heat map with color bar'
-phash = 'f5a6f2702df00b38'
+phash = 'f5a6f2782df00b30'
 
 
 def plot():

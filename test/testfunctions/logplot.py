@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Log scaled plot'
-phash = 'ff56014e413ebf80'
+phash = 'a103fa09ee79bf80'
 
 
 def plot():

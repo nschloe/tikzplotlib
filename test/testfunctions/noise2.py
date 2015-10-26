@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-desc = 'Noise with a color bar'
-sha = ''
+desc = 'Noise with a horizontal color bar'
+phash = 'ff7c837da3016a01'
 
 
 def plot():
@@ -13,6 +13,7 @@ def plot():
     fig = pp.figure()
     ax = fig.add_subplot(111)
 
+    np.random.seed(123)
     data = np.clip(np.random.randn(250, 250), -1, 1)
 
     cax = ax.imshow(data, interpolation='nearest')

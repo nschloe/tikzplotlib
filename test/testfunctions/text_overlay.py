@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Regular plot with overlay text'
-phash = 'f74b837449b26c19'
+phash = 'b54b937449936c1b'
 
 
 def plot():

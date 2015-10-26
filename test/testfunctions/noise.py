@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Noise with a color bar'
-sha = ''
+phash = 'f54b0ba50bb90ba5'
 
 
 def plot():
     from numpy.random import randn
-    from matplotlib import pyplot as pp
+    from matplotlib import pyplot as plt
     import numpy as np
 
     # Make plot with vertical (default) colorbar
-    fig = pp.figure()
+    fig = plt.figure()
     ax = fig.add_subplot(111)
 
+    np.random.seed(123)
     data = np.clip(randn(250, 250), -1, 1)
 
     cax = ax.imshow(data, interpolation='nearest')

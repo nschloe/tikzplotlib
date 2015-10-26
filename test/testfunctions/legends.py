@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Plot with legends'
-phash = 'fdfc810607a12f2b'
+phash = 'fdfcc10617a10e2b'
 
 
 def plot():

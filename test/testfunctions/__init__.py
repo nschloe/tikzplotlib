@@ -5,10 +5,15 @@ __all__ = [
   'basic_sin',
   'circle_patch',
   'heat',
+  'image_plot',
   'legends2',
   'legends',
   'loglogplot',
   'logplot',
+  'noise',
+  'noise2',
+  'patches',
+  'scatter',
   'subplots',
   'subplot4x4',
   'text_overlay'
@@ -17,7 +22,3 @@ __all__ = [
 # TODO resurrect
 #  'colorbars',
 #  'histogram',
-#  'image_plot',
-#  'noise',
-#  'noise2',
-#  'patches',
