@@ -13,6 +13,7 @@ __all__ = [
   'noise',
   'noise2',
   'patches',
+  'scatter',
   'subplots',
   'subplot4x4',
   'text_overlay'

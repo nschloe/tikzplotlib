@@ -1212,7 +1212,6 @@ def _draw_pathcollection(data, obj):
     # gather the draw options
     ec = obj.get_edgecolors()
     fc = obj.get_facecolors()
-    paths = obj.get_paths()
     # TODO always use [0]?
     try:
         ec = ec[0]
@@ -1222,12 +1221,25 @@ def _draw_pathcollection(data, obj):
         fc = fc[0]
     except (TypeError, IndexError):
         fc = None
-    for path in paths:
-        data, do = _get_draw_options(data, ec, fc)
-        data, cont = _draw_path(
-            obj, data, path, draw_options=do
-            )
-        content.append(cont)
+    data, draw_options = _get_draw_options(data, ec, fc)
+    draw_options.extend(['mark=*', 'only marks'])
+
+    if obj.get_offsets() is not None:
+        a = '\n'.join([' '.join(map(str, line)) for line in obj.get_offsets()])
+        if draw_options:
+            content.append('\\addplot [%s] table {\n%s\n};\n' %
+                           (', '.join(draw_options), a))
+        else:
+            content.append('\\addplot table {\n%s\n};\n' % a)
+    elif obj.get_paths():
+        # Not sure if we need this here at all.
+        for path in obj.get_paths():
+            data, cont = _draw_path(
+                obj, data, path, draw_options=draw_options
+                )
+            content.append(cont)
+    else:
+        raise RuntimeError('Pathcollection without offsets and paths.')
     return data, content
 
 
