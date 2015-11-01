@@ -5,13 +5,18 @@
 sudo: required
 dist: trusty
 
-language: python
+
+# Work around travis bug:
+# https://github.com/travis-ci/travis-ci/issues/4948#issuecomment-152839021
+language: generic
+#language: python
+
 python:
     # Get python 2.7 back in once travis bug
     # <https://github.com/travis-ci/travis-ci/issues/4948> is solved.
-    #- "2.7"
-    #- '3.4'
-    - '3.5.0'
+    - "2.7"
+    - '3.4'
+    #- '3.5.0'
 
 virtualenv:
   system_site_packages: true
