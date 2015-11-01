@@ -936,13 +936,13 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
     return (data, None, None)
 
 
-MPLLINESTYLE_2_PGFPLOTSLINESTYLE = {'None': None,
-                                    '-': None,
-                                    ':': 'dotted',
-                                    '--': 'dashed',
-                                    '-.': 'dash pattern=on 1pt off 3pt '
-                                          'on 3pt off 3pt'
-                                    }
+MPLLINESTYLE_2_PGFPLOTSLINESTYLE = {
+    'None': None,
+    '-': None,
+    ':': 'dotted',
+    '--': 'dashed',
+    '-.': 'dash pattern=on 1pt off 3pt on 3pt off 3pt'
+    }
 
 
 def _mpl_linestyle2pgfp_linestyle(line_style):
@@ -1144,10 +1144,10 @@ def _draw_patch(data, obj):
             obj.get_facecolor()
             )
 
-    if (isinstance(obj, mpl.patches.Rectangle)):
+    if isinstance(obj, mpl.patches.Rectangle):
         # rectangle specialization
         return _draw_rectangle(data, obj, draw_options)
-    elif (isinstance(obj, mpl.patches.Ellipse)):
+    elif isinstance(obj, mpl.patches.Ellipse):
         # ellipse specialization
         return _draw_ellipse(data, obj, draw_options)
     else:
@@ -1246,10 +1246,12 @@ def _draw_pathcollection(data, obj):
 def _draw_path(obj, data, path, draw_options=None):
     '''Adds code for drawing an ordinary path in PGFPlots (TikZ).
     '''
-    if 'fill opacity=0' in draw_options:
-        # For some reasons, matplotlib sometimes adds void paths with only
-        # consist of one point, are white, and have no opacity. To not let
-        # those clutter the output TeX file, bail out here.
+    # For some reasons, matplotlib sometimes adds void paths which consist of
+    # only one point and have 0 fill opacity. To not let those clutter the
+    # output TeX file, bail out here.
+    if len(path.vertices) == 2 and \
+            all(path.vertices[0] == path.vertices[1]) and \
+            'fill opacity=0' in draw_options:
         return data, ''
 
     nodes = []
@@ -1525,8 +1527,12 @@ def _draw_text(data, obj):
     size = obj.get_size()
     bbox = obj.get_bbox_patch()
     converter = mpl.colors.ColorConverter()
-    scaling = 0.5 * size / data['font size']  # XXX: This is ugly
-    properties.append('scale=%.15g' % scaling)
+    # without the factor 0.5, the fonts are too big most of the time.
+    # TODO fix this
+    scaling = 0.5 * size / data['font size']
+    if scaling != 1.0:
+        properties.append('scale=%.15g' % scaling)
+
     if bbox is not None:
         bbox_style = bbox.get_boxstyle()
         if bbox.get_fill():
