@@ -1227,10 +1227,10 @@ def _draw_pathcollection(data, obj):
     if obj.get_offsets() is not None:
         a = '\n'.join([' '.join(map(str, line)) for line in obj.get_offsets()])
         if draw_options:
-            content.append('\\addplot [%s] table {%\n%s\n};\n' %
+            content.append('\\addplot [%s] table {%%\n%s\n};\n' %
                            (', '.join(draw_options), a))
         else:
-            content.append('\\addplot table {%\n%s\n};\n' % a)
+            content.append('\\addplot table {%%\n%s\n};\n' % a)
     elif obj.get_paths():
         # Not sure if we need this here at all.
         for path in obj.get_paths():
