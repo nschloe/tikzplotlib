@@ -657,8 +657,8 @@ def _mpl_cmap2pgf_cmap(cmap):
                              % ((x, unit) + colors[k])
                              )
 
-    colormap_string = '{mymap}{[1%s] %s}' % \
-                      (unit, '; '.join(color_changes))
+    colormap_string = '{mymap}{[1%s]\n  %s\n}' % \
+                      (unit, ';\n  '.join(color_changes))
     is_custom_colormap = True
     return (colormap_string, is_custom_colormap)
 
@@ -719,7 +719,7 @@ def _transform_to_data_coordinates(obj, xdata, ydata):
         points = numpy.array(zip(xdata, ydata))
         transform = matplotlib.transforms.composite_transform_factory(
             obj.get_transform(),
-            obj.get_axes().transData.inverted()
+            obj.axes.transData.inverted()
             )
         points_data = transform.transform(points)
         xdata, ydata = zip(*points_data)
@@ -839,7 +839,7 @@ def _draw_line2d(data, obj):
         options = ', '.join(addplot_options)
         content.append('[' + options + ']\n')
 
-    content.append('coordinates {\n')
+    content.append('table {%\n')
 
     # nschloe, Oct 2, 2015:
     #   The transform call yields warnings and it is unclear why. Perhaps
@@ -860,12 +860,12 @@ def _draw_line2d(data, obj):
         data['extra axis options'].add('unbounded coords=jump')
         for (x, y, is_masked) in zip(xdata, ydata, ydata.mask):
             if is_masked:
-                content.append('(%.15g,nan) ' % x)
+                content.append('%.15g nan\n' % x)
             else:
-                content.append('(%.15g,%.15g) ' % (x, y))
+                content.append('%.15g %.15g\n' % (x, y))
     else:
         for (x, y) in zip(xdata, ydata):
-            content.append('(%.15g,%.15g)\n' % (x, y))
+            content.append('%.15g %.15g\n' % (x, y))
     content.append('};\n')
 
     return data, content
@@ -1227,10 +1227,10 @@ def _draw_pathcollection(data, obj):
     if obj.get_offsets() is not None:
         a = '\n'.join([' '.join(map(str, line)) for line in obj.get_offsets()])
         if draw_options:
-            content.append('\\addplot [%s] table {\n%s\n};\n' %
+            content.append('\\addplot [%s] table {%%\n%s\n};\n' %
                            (', '.join(draw_options), a))
         else:
-            content.append('\\addplot table {\n%s\n};\n' % a)
+            content.append('\\addplot table {%%\n%s\n};\n' % a)
     elif obj.get_paths():
         # Not sure if we need this here at all.
         for path in obj.get_paths():
@@ -1598,7 +1598,7 @@ def _draw_text(data, obj):
         if str(obj.get_weight()) in vals:
             style.append('\\bfseries')
 
-    if obj.get_axes():
+    if obj.axes:
         # If the coordinates are relative to an axis, use `axis cs`.
         tikz_pos = '(axis cs:%.15g,%.15g)' % pos
     else:

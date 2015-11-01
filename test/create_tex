@@ -162,7 +162,7 @@ def _parse_options():
     parser.add_argument(
             'tests',
             metavar='TEST_NAME',
-            nargs='+',
+            nargs='*',
             type=str,
             help='tests to perform (default: all)'
             )

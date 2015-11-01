@@ -24,7 +24,7 @@ def check_hash(test, name):
     # import the test
     test.plot()
     # convert to tikz file
-    handle, tmp_base = tempfile.mkstemp(prefix=name)
+    _, tmp_base = tempfile.mkstemp(prefix=name)
     tikz_file = tmp_base + '_tikz.tex'
     matplotlib2tikz.save(
         tikz_file,
