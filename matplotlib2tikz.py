@@ -1294,7 +1294,7 @@ def _draw_path(obj, data, path, draw_options=None):
             nodes.append(('.. controls (axis cs:%.15g,%.15g) ' +
                           'and (axis cs:%.15g,%.15g) ' +
                           '.. (axis cs:%.15g,%.15g)')
-                         % tuple(Q1 + Q2 + Q3)
+                         % (Q1[0], Q1[1], Q2[0], Q2[1], Q3[0], Q3[1])
                          )
         elif code == mpl.path.Path.CURVE4:
             # Cubic Bezier curves.

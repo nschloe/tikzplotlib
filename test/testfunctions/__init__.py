@@ -4,6 +4,7 @@ __all__ = [
   'annotate',
   'basic_sin',
   'circle_patch',
+  'fancybox',
   'heat',
   'image_plot',
   'legends2',
