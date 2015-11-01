@@ -719,7 +719,7 @@ def _transform_to_data_coordinates(obj, xdata, ydata):
         points = numpy.array(zip(xdata, ydata))
         transform = matplotlib.transforms.composite_transform_factory(
             obj.get_transform(),
-            obj.get_axes().transData.inverted()
+            obj.axes.transData.inverted()
             )
         points_data = transform.transform(points)
         xdata, ydata = zip(*points_data)
@@ -1598,7 +1598,7 @@ def _draw_text(data, obj):
         if str(obj.get_weight()) in vals:
             style.append('\\bfseries')
 
-    if obj.get_axes():
+    if obj.axes:
         # If the coordinates are relative to an axis, use `axis cs`.
         tikz_pos = '(axis cs:%.15g,%.15g)' % pos
     else:
