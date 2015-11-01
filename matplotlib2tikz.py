@@ -1613,6 +1613,15 @@ def _draw_text(data, obj):
             '(current bounding box.north west)$})'
             ) % pos
 
+    if '\n' in text:
+        # http://tex.stackexchange.com/a/124114/13262
+        properties.append('align=left')
+        # Manipulating the text here is actually against mpl2tikz's policy not
+        # to do that. On the other hand, newlines should translate into
+        # newlines.
+        # We might want to remove this here in the future.
+        text = text.replace('\n ', '\\\\')
+
     content.append(
             '\\node at %s[\n  %s\n]{%s %s};\n' %
             (tikz_pos, ',\n  '.join(properties), ' '.join(style), text)
