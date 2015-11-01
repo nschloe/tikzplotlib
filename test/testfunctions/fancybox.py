@@ -2,7 +2,7 @@
 #
 # Taken from http://matplotlib.org/examples/pylab_examples/fancybox_demo.html
 desc = 'Fancybox'
-phash = '218b70a17c9654ff'
+phash = 'dd232dd0238cdc7a'
 
 import matplotlib.pyplot as plt
 import matplotlib.transforms as mtransforms
