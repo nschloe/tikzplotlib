@@ -204,6 +204,8 @@ def _is_colorbar_heuristic(obj):
     '''
     # Really, this is the heuristic? Yes.
     # TODO come up with something more accurate here
+    # Might help:
+    # TODO Are the colorbars exactly the l.collections.PolyCollection's?
     return obj.get_aspect() in [20.0, 1.0/20.0]
 
 
@@ -1060,52 +1062,6 @@ def _find_associated_colorbar(obj):
     return None
 
 
-def _is_colorbar(obj):
-    '''Returns 'True' if 'obj' is a  color bar, and 'False' otherwise.
-    '''
-    # TODO Are the colorbars exactly the l.collections.PolyCollection's?
-    if isinstance(obj, mpl.collections.PolyCollection):
-        arr = obj.get_array()
-        if arr is not None:
-            dims = arr.shape
-            return len(dims) == 1  # o rly?
-        else:
-            return False
-    else:
-        return False
-
-
-def _has_colorbar(obj):
-    '''Search for color bars as subobjects of obj, and return the first found.
-    If none is found, return None.
-    '''
-    colorbars = mpl.pyplot.findobj(obj, _is_colorbar)
-    if not colorbars:
-        return None
-    if not _equivalent(colorbars):
-        print('More than one color bar found. Use first one.')
-    return colorbars[0]
-
-
-def _equivalent(array):
-    '''Checks if the vectors consists of all the same objects.
-    '''
-    if not array:
-        return False
-    else:
-        for elem in array:
-            if elem != array[0]:
-                return False
-    return True
-
-
-def _draw_polycollection(data, obj):
-    '''Returns PGFPlots code for a number of polygons. Currently empty.
-    '''
-    print('matplotlib2tikz: Don''t know how to draw a PolyCollection.')
-    return data, ''
-
-
 def _draw_patchcollection(data, obj):
     '''Returns PGFPlots code for a number of patch objects.
     '''
@@ -1690,9 +1646,6 @@ def _handle_children(data, obj):
             content.extend(cont)
         elif isinstance(child, mpl.patches.Patch):
             data, cont = _draw_patch(data, child)
-            content.extend(cont)
-        elif isinstance(child, mpl.collections.PolyCollection):
-            data, cont = _draw_polycollection(data, child)
             content.extend(cont)
         elif isinstance(child, mpl.collections.PatchCollection):
             data, cont = _draw_patchcollection(data, child)
