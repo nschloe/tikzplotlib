@@ -327,6 +327,25 @@ def _draw_axes(data, obj):
             print('Non-automatic aspect ratio demanded, but neither height '
                   'nor width of the plot are given. Discard aspect ratio.')
 
+    # axis positions
+    xaxis_pos = obj.get_xaxis().label_position
+    if xaxis_pos == 'bottom':
+        # this is the default
+        pass
+    elif xaxis_pos == 'top':
+        axis_options.append('axis x line=top')
+    else:
+        raise ValueError('Illegal x axis position \'%s\'.' % xaxis_pos)
+
+    yaxis_pos = obj.get_yaxis().label_position
+    if yaxis_pos == 'left':
+        # this is the default
+        pass
+    elif yaxis_pos == 'right':
+        axis_options.append('axis y line=right')
+    else:
+        raise ValueError('Illegal y axis position \'%s\'.' % yaxis_pos)
+
     # get ticks
     axis_options.extend(
         _get_ticks(data, 'x', obj.get_xticks(), obj.get_xticklabels())
