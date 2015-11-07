@@ -1,14 +1,5 @@
 # -*- coding: utf-8 -*-
 #
-
-# imported modules
-import os
-# import numpy
-# import warnings
-import matplotlib as mpl
-# if 'DISPLAY' not in os.environ:
-#     # headless mode, for remote executions (and travis)
-#     mpl.use('Agg')
 from . import axes
 from . import legend
 from . import line2d
@@ -16,6 +7,9 @@ from . import image as img
 from . import path
 from . import patch
 from . import text as mytext
+
+import os
+import matplotlib as mpl
 from matplotlib2tikz import __version__
 
 

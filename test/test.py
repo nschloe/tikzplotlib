@@ -10,6 +10,10 @@ import hashlib
 import subprocess
 from PIL import Image
 import imagehash
+import matplotlib as mpl
+if 'DISPLAY' not in os.environ:
+    # headless mode, for remote executions (and travis)
+    mpl.use('Agg')
 from matplotlib import pyplot as pp
 
 
