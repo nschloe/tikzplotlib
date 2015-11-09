@@ -20,7 +20,7 @@ def read(fname):
 setup(
     name='matplotlib2tikz',
     version=__version__,
-    py_modules=['matplotlib2tikz'],
+    packages=['matplotlib2tikz'],
     url='https://github.com/nschloe/matplotlib2tikz',
     download_url='https://pypi.python.org/pypi/matplotlib2tikz',
     author=__author__,
