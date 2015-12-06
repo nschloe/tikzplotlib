@@ -244,6 +244,9 @@ def _recurse(data, obj):
         elif isinstance(child, mpl.collections.PathCollection):
             data, cont = path.draw_pathcollection(data, child)
             content.extend(cont)
+        elif isinstance(child, mpl.collections.LineCollection):
+            data, cont = line2d.draw_linecollection(data, child)
+            content.extend(cont)
         elif isinstance(child, mpl.legend.Legend):
             data = legend.draw_legend(data, child)
         elif isinstance(child, mpl.axis.XAxis) or \
