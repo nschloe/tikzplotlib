@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Errorbars'
-phash = '' # ??? 71937c2d96ac47d0
+phash = '03535ca5bae576c8'
 
 def plot():
     import matplotlib.pyplot as plt
