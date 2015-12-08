@@ -240,7 +240,7 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
         if 'lower' in dir(marker_face_color): # otherwise leads to AttributeError
             if marker_face_color is not None and \
             marker_face_color.lower() != 'none' and \
-            pgfplots_marker not in ['|', '_']:
+            pgfplots_marker not in ['|', '-']:
                 pgfplots_marker += '*'
         return (data, pgfplots_marker, marker_options)
     except KeyError:
