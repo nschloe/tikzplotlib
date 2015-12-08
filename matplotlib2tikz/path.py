@@ -5,7 +5,7 @@ from . import color
 import matplotlib as mpl
 
 
-def draw_path(obj, data, path, draw_options=None):
+def draw_path(obj, data, path, draw_options=None, simplify=None):
     '''Adds code for drawing an ordinary path in PGFPlots (TikZ).
     '''
     # For some reasons, matplotlib sometimes adds void paths which consist of
@@ -18,7 +18,7 @@ def draw_path(obj, data, path, draw_options=None):
 
     nodes = []
     prev = None
-    for vert, code in path.iter_segments():
+    for vert, code in path.iter_segments(simplify=simplify):
         # nschloe, Oct 2, 2015:
         #   The transform call yields warnings and it is unclear why. Perhaps
         #   the input data is not suitable? Anyhow, this should not happen.
