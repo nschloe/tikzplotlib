@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 from . import color as mycol
+from . import path as mypath
 
 
 def draw_line2d(data, obj):
@@ -10,39 +11,10 @@ def draw_line2d(data, obj):
     addplot_options = []
 
     # get the linewidth (in pt)
-    line_width = obj.get_linewidth()
+    line_width = _mpl_linewidth2pgfp_linewidth(data, obj.get_linewidth())
 
-    if data['strict']:
-        # Takes the matplotlib linewidths, and just translate them
-        # into PGFPlots.
-        try:
-            addplot_options.append(TIKZ_LINEWIDTHS[line_width])
-        except KeyError:
-            # explicit line width
-            addplot_options.append('line width=%spt' % line_width)
-    else:
-        # The following is an alternative approach to line widths.
-        # The default line width in matplotlib is 1.0pt, in PGFPlots 0.4pt
-        # ('thin').
-        # Match the two defaults, and scale for the rest.
-        scaled_line_width = line_width / 1.0  # scale by default line width
-        if scaled_line_width == 0.25:
-            addplot_options.append('ultra thin')
-        elif scaled_line_width == 0.5:
-            addplot_options.append('very thin')
-        elif scaled_line_width == 1.0:
-            pass  # PGFPlots default line width, 'thin'
-        elif scaled_line_width == 1.5:
-            addplot_options.append('semithick')
-        elif scaled_line_width == 2:
-            addplot_options.append('thick')
-        elif scaled_line_width == 3:
-            addplot_options.append('very thick')
-        elif scaled_line_width == 4:
-            addplot_options.append('ultra thick')
-        else:
-            # explicit line width
-            addplot_options.append('line width=%rpt' % (0.4 * line_width))
+    if line_width:
+        addplot_options.append(line_width)
 
     # get line color
     color = obj.get_color()
@@ -137,6 +109,51 @@ def draw_line2d(data, obj):
     return data, content
 
 
+def draw_linecollection(data, obj):
+    '''Returns Pgfplots code for a number of patch objects.
+    '''
+    content = []
+
+    edgecolors = obj.get_edgecolors()
+    linestyles = obj.get_linestyles()
+    linewidths = obj.get_linewidths()
+    paths = obj.get_paths()
+    
+    for i in range(len(paths)):
+        path = paths[i]
+        if i < len(edgecolors):
+            color = edgecolors[i]
+        else:
+            color = edgecolors[0]
+        if i < len(linestyles):
+            style = linestyles[i]
+        else:
+            style = linestyles[0]
+        if i < len(linewidths):
+            width = linewidths[i]
+        else:
+            width = linewidths[0]
+
+        data, options = mypath.get_draw_options(data, color, None)
+        
+        width = _mpl_linewidth2pgfp_linewidth(data, width)
+        if width:
+            options.append(width)
+        
+        if style[0] is not None:
+            show_line, linestyle = _mpl_linestyle2pgfp_linestyle(style)
+            if show_line and linestyle:
+                options.append(linestyle)
+            
+        # TODO what about masks?
+        data, cont = mypath.draw_path(obj, data, path,
+                                draw_options=options,
+                                simplify=False)
+        
+        content.append(cont)
+
+    return data, content
+
 # for matplotlib markers, see: http://matplotlib.org/api/markers_api.html
 MP_MARKER2PGF_MARKER = {
         '.': '*',  # point
@@ -166,9 +183,41 @@ MP_MARKER2PLOTMARKS = {
         'd': ('diamond', None),  # diamond
         'D': ('diamond', None),  # thin diamond
         '|': ('|', None),  # vertical line
-        '_': ('_', None)  # horizontal line
+        '_': ('-', None)  # horizontal line
         }
 
+def _mpl_linewidth2pgfp_linewidth(data,line_width):
+    if data['strict']:
+        # Takes the matplotlib linewidths, and just translate them
+        # into PGFPlots.
+        try:
+            return TIKZ_LINEWIDTHS[line_width]
+        except KeyError:
+            # explicit line width
+            return 'line width=%spt' % line_width
+    else:
+        # The following is an alternative approach to line widths.
+        # The default line width in matplotlib is 1.0pt, in PGFPlots 0.4pt
+        # ('thin').
+        # Match the two defaults, and scale for the rest.
+        scaled_line_width = line_width / 1.0  # scale by default line width
+        if scaled_line_width == 0.25:
+            return 'ultra thin'
+        elif scaled_line_width == 0.5:
+            return 'very thin'
+        elif scaled_line_width == 1.0:
+            pass  # PGFPlots default line width, 'thin'
+        elif scaled_line_width == 1.5:
+            return 'semithick'
+        elif scaled_line_width == 2:
+            return 'thick'
+        elif scaled_line_width == 3:
+            return 'very thick'
+        elif scaled_line_width == 4:
+            return 'ultra thick'
+        else:
+            # explicit line width
+            return 'line width=%rpt' % (0.4 * line_width)
 
 def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
     '''Translates a marker style of matplotlib to the corresponding style
@@ -188,10 +237,11 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
     try:
         data['pgfplots libs'].add('plotmarks')
         pgfplots_marker, marker_options = MP_MARKER2PLOTMARKS[mpl_marker]
-        if marker_face_color is not None and \
-           marker_face_color.lower() != 'none' and \
-           pgfplots_marker not in ['|', '_']:
-            pgfplots_marker += '*'
+        if 'lower' in dir(marker_face_color): # otherwise leads to AttributeError
+            if marker_face_color is not None and \
+            marker_face_color.lower() != 'none' and \
+            pgfplots_marker not in ['|', '-']:
+                pgfplots_marker += '*'
         return (data, pgfplots_marker, marker_options)
     except KeyError:
         pass
