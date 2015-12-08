@@ -227,7 +227,7 @@ To create a new release
 
 2. create a Git tag,
     ```
-    $ git tag -a v0.3.1
+    $ git tag v0.3.1
     $ git push --tags
     ```
     and
