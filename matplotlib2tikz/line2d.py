@@ -3,6 +3,7 @@
 from . import color as mycol
 from . import path as mypath
 
+import numpy
 
 def draw_line2d(data, obj):
     '''Returns the PGFPlots code for an Line2D environment.
@@ -118,7 +119,7 @@ def draw_linecollection(data, obj):
     linestyles = obj.get_linestyles()
     linewidths = obj.get_linewidths()
     paths = obj.get_paths()
-    
+
     for i in range(len(paths)):
         path = paths[i]
         if i < len(edgecolors):
@@ -135,21 +136,21 @@ def draw_linecollection(data, obj):
             width = linewidths[0]
 
         data, options = mypath.get_draw_options(data, color, None)
-        
+
         width = _mpl_linewidth2pgfp_linewidth(data, width)
         if width:
             options.append(width)
-        
+
         if style[0] is not None:
             show_line, linestyle = _mpl_linestyle2pgfp_linestyle(style)
             if show_line and linestyle:
                 options.append(linestyle)
-            
+
         # TODO what about masks?
         data, cont = mypath.draw_path(obj, data, path,
                                 draw_options=options,
                                 simplify=False)
-        
+
         content.append(cont)
 
     return data, content

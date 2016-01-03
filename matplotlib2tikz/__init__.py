@@ -5,10 +5,10 @@
 
 __author__ = 'Nico Schlömer'
 __email__ = 'nico.schloemer@gmail.com'
-__copyright__ = 'Copyright (c) 2010-2015, %s <%s>' % (__author__, __email__)
+__copyright__ = 'Copyright (c) 2010-2016, %s <%s>' % (__author__, __email__)
 __credits__ = []
 __license__ = 'MIT License'
-__version__ = '0.5.2'
+__version__ = '0.5.3'
 __maintainer__ = 'Nico Schlömer'
 __status__ = 'Production'
 

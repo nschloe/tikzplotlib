@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-
+import warnings
 
 def draw_legend(data, obj):
     '''Adds legend code to the EXTRA_AXIS_OPTIONS.
