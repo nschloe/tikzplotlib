@@ -115,7 +115,7 @@ def draw_pathcollection(data, obj):
     elif obj.get_paths():
         # Not sure if we need this here at all.
         for path in obj.get_paths():
-            data, cont = _draw_path(
+            data, cont = draw_path(
                 obj, data, path, draw_options=draw_options
                 )
             content.append(cont)
