@@ -3,6 +3,7 @@
 import warnings
 from . import color as mycol
 
+
 def draw_legend(data, obj):
     '''Adds legend code to the EXTRA_AXIS_OPTIONS.
     '''
@@ -74,7 +75,7 @@ def draw_legend(data, obj):
     if obj.get_frame_on():
         edgecolor = obj.get_frame().get_edgecolor()
         data, frame_xcolor, _ = mycol.mpl_color2xcolor(data, edgecolor)
-        if frame_xcolor != 'black': # black is default
+        if frame_xcolor != 'black':  # black is default
             legend_style.append('draw=%s' % frame_xcolor)
     else:
         legend_style.append('draw=none')
@@ -82,7 +83,7 @@ def draw_legend(data, obj):
     # Get the facecolor of the box
     facecolor = obj.get_frame().get_facecolor()
     data, fill_xcolor, _ = mycol.mpl_color2xcolor(data, facecolor)
-    if fill_xcolor != 'white': # white is default
+    if fill_xcolor != 'white':  # white is default
         legend_style.append('fill=%s' % fill_xcolor)
 
     # Get the horizontal alignement
@@ -93,14 +94,16 @@ def draw_legend(data, obj):
 
     for childAlignment in childrenAlignment:
         if alignment != childAlignment:
-            warnings.warn('Varying horizontal alignments in the legend. Using default.')
+            warnings.warn(
+                'Varying horizontal alignments in the legend. Using default.'
+                )
             alignment = None
             break
 
     # Write styles to data
     if legend_style:
         style = 'legend style={%s}' % ', '.join(legend_style)
-        data['extra axis options'].add(style)  
+        data['extra axis options'].add(style)
 
     if childAlignment:
         cellAlign = 'legend cell align={%s}' % alignment
