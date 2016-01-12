@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/nschloe/matplotlib2tikz.svg?branch=master)](https://travis-ci.org/nschloe/matplotlib2tikz)
 [![Code Health](https://landscape.io/github/nschloe/matplotlib2tikz/master/landscape.png)](https://landscape.io/github/nschloe/matplotlib2tikz/master)
-[![Coverage Status](https://coveralls.io/repos/nschloe/matplotlib2tikz/badge.svg?branch=master&service=github)](https://coveralls.io/github/nschloe/matplotlib2tikz?branch=master)
+[![codecov.io](https://codecov.io/github/nschloe/matplotlib2tikz/coverage.svg?branch=master)](https://codecov.io/github/nschloe/matplotlib2tikz?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/matplotlib2tikz/badge/?version=latest)](https://readthedocs.org/projects/matplotlib2tikz/?badge=latest)
 [![PyPi Version](https://img.shields.io/pypi/v/matplotlib2tikz.svg)](https://pypi.python.org/pypi/matplotlib2tikz)
 [![PyPi Downloads](https://img.shields.io/pypi/dm/matplotlib2tikz.svg)](https://pypi.python.org/pypi/matplotlib2tikz)
