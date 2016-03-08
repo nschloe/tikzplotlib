@@ -7,7 +7,6 @@ phash = '3333000f555454c6'
 
 def plot():
     from matplotlib import pyplot as plt
-    from matplotlib import style
     import numpy as np
 
     fig, ax = plt.subplots()
