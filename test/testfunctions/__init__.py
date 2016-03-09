@@ -5,6 +5,7 @@ __all__ = [
   'basic_sin',
   'circle_patch',
   'dual_axis',
+  'errorband',
   'errorbar',
   'fancybox',
   'heat',

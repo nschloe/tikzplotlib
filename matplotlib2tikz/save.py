@@ -238,7 +238,8 @@ def _recurse(data, obj):
         elif isinstance(child, mpl.patches.Patch):
             data, cont = patch.draw_patch(data, child)
             content.extend(cont)
-        elif isinstance(child, mpl.collections.PatchCollection):
+        elif isinstance(child, mpl.collections.PatchCollection) or \
+                isinstance(child, mpl.collections.PolyCollection):
             data, cont = patch.draw_patchcollection(data, child)
             content.extend(cont)
         elif isinstance(child, mpl.collections.PathCollection):
