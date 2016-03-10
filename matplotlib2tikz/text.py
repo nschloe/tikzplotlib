@@ -162,7 +162,7 @@ def draw_text(data, obj):
 
     if '\n' in text:
         # http://tex.stackexchange.com/a/124114/13262
-        properties.append('align=left')
+        properties.append('align=%s' % ha)
         # Manipulating the text here is actually against mpl2tikz's policy not
         # to do that. On the other hand, newlines should translate into
         # newlines.
