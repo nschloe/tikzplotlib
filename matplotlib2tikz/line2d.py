@@ -46,7 +46,7 @@ def draw_line2d(data, obj):
                 pgf_size = 1
             addplot_options.append('mark size=%d' % pgf_size)
 
-        mark_options = []
+        mark_options = ['solid']
         if extra_mark_options:
             mark_options.append(extra_mark_options)
         if marker_face_color is not None:
@@ -65,9 +65,7 @@ def draw_line2d(data, obj):
                     )
             if draw_xcolor != line_xcolor:
                 mark_options.append('draw=' + draw_xcolor)
-        if mark_options:
-            addplot_options.append('mark options={%s}' % ','.join(mark_options)
-                                   )
+        addplot_options.append('mark options={%s}' % ','.join(mark_options))
 
     if marker and not show_line:
         addplot_options.append('only marks')
