@@ -14,6 +14,7 @@ __all__ = [
   'legends',
   'loglogplot',
   'logplot',
+  'marker',
   'noise',
   'noise2',
   'patches',
