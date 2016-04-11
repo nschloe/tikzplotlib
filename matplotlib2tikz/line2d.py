@@ -46,6 +46,10 @@ def draw_line2d(data, obj):
                 pgf_size = 1
             addplot_options.append('mark size=%d' % pgf_size)
 
+        mark_every = obj.get_markevery()
+        if mark_every:
+            addplot_options.append('mark repeat=%d' % mark_every)
+
         mark_options = ['solid']
         if extra_mark_options:
             mark_options.append(extra_mark_options)
