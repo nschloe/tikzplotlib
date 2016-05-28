@@ -43,7 +43,8 @@ def draw_quadmesh(data, obj):
     # Crop the image to the actual content (removing the the regions otherwise
     # used for axes, etc.)
     # 'image.crop' expects the crop box to specify the left, upper, right, and
-    # lower pixel. 'cbox.extents' gives the left, lower, right, and upper pixel.
+    # lower pixel. 'cbox.extents' gives the left, lower, right, and upper
+    # pixel.
     box = (int(round(cbox.extents[0])),
            0,
            int(round(cbox.extents[2])),
