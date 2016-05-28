@@ -10,14 +10,13 @@ def plot():
 
     x = np.linspace(0*np.pi, 2*np.pi, 128)
     y = np.linspace(0*np.pi, 2*np.pi, 128)
-    X, Y = np.meshgrid(x,y)
+    X, Y = np.meshgrid(x, y)
     nu = 1e-5
     F = lambda t: np.exp(-2*nu*t)
-    u = lambda x,y,t:  np.sin(x)*np.cos(y)*F(t)
-    v = lambda x,y,t: -np.cos(x)*np.sin(y)*F(t)
+    u = lambda x, y, t:  np.sin(x)*np.cos(y)*F(t)
 
     fig, ax = plt.subplots()
-    p = ax.pcolormesh(X, Y, u(X,Y,0))
+    ax.pcolormesh(X, Y, u(X, Y, 0))
     ax.set_xlim(x[0], x[-1])
     ax.set_ylim(y[0], y[-1])
     ax.set_xlabel('x')
