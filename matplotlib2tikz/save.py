@@ -4,6 +4,7 @@ from . import axes
 from . import legend
 from . import line2d
 from . import image as img
+from . import quadmesh as qmsh
 from . import path
 from . import patch
 from . import text as mytext
@@ -24,6 +25,7 @@ def save(filepath,
          draw_rectangles=False,
          wrap=True,
          extra=None,
+         dpi=None,
          show_info=True
          ):
     '''Main function. Here, the recursion into the image starts and the
@@ -93,6 +95,10 @@ def save(filepath,
                   Default is ``None``.
     :type extra: a set of strings for the pfgplots axes.
 
+    :param dpi: DPI settings for QuadMesh plots.
+                Default is ``None``.
+    :type dpi: int
+
     :returns: None
 
 
@@ -112,6 +118,7 @@ def save(filepath,
     data['fheight'] = figureheight
     data['rel data path'] = tex_relative_path_to_data
     data['output dir'] = os.path.dirname(filepath)
+    data['base name'] = os.path.splitext(os.path.basename(filepath))[0]
     data['strict'] = strict
     data['draw rectangles'] = draw_rectangles
     data['tikz libs'] = set()
@@ -122,6 +129,7 @@ def save(filepath,
         data['extra axis options'] = extra.copy()
     else:
         data['extra axis options'] = set()
+    data['dpi'] = dpi
 
     # open file
     import codecs
@@ -248,13 +256,15 @@ def _recurse(data, obj):
         elif isinstance(child, mpl.collections.LineCollection):
             data, cont = line2d.draw_linecollection(data, child)
             content.extend(cont)
+        elif isinstance(child, mpl.collections.QuadMesh):
+            data, cont = qmsh.draw_quadmesh(data, child)
+            content.extend(cont)
         elif isinstance(child, mpl.legend.Legend):
             data = legend.draw_legend(data, child)
         elif isinstance(child, mpl.axis.XAxis) or \
                 isinstance(child, mpl.axis.YAxis) or \
                 isinstance(child, mpl.spines.Spine) or \
-                isinstance(child, mpl.text.Text) or \
-                isinstance(child, mpl.collections.QuadMesh):
+                isinstance(child, mpl.text.Text):
             pass
         else:
             print('matplotlib2tikz: Don''t know how to handle object ''%s''.' %
