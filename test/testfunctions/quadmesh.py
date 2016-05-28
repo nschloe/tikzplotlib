@@ -14,13 +14,16 @@ def plot():
     nu = 1e-5
     F = lambda t: np.exp(-2*nu*t)
     u = lambda x, y, t:  np.sin(x)*np.cos(y)*F(t)
+    v = lambda x, y, t: -np.cos(x)*np.sin(y)*F(t)
 
-    fig, ax = plt.subplots()
-    ax.pcolormesh(X, Y, u(X, Y, 0))
-    ax.set_xlim(x[0], x[-1])
-    ax.set_ylim(y[0], y[-1])
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
-    ax.set_title('Taylor--Green Vortex (u-velocity component)')
+    fig, axs = plt.subplots(2, figsize=(8, 12))
+    axs[0].pcolormesh(X, Y, u(X, Y, 0))
+    axs[1].pcolormesh(X, Y, v(X, Y, 0))
+    for ax in axs:
+        ax.set_xlim(x[0], x[-1])
+        ax.set_ylim(y[0], y[-1])
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+    axs[0].set_title('Taylor--Green Vortex')
 
     return fig
