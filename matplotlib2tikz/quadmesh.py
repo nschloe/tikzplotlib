@@ -2,7 +2,6 @@
 #
 import os
 import matplotlib as mpl
-from matplotlib.backends.backend_agg import RendererAgg
 
 from PIL import Image
 
@@ -32,6 +31,7 @@ def draw_quadmesh(data, obj):
     obj.figure.set_dpi(dpi)
 
     # Render the object and save as png file
+    from matplotlib.backends.backend_agg import RendererAgg
     cbox = obj.get_clip_box()
     width = int(round(cbox.extents[2]))
     height = int(round(cbox.extents[3]))
