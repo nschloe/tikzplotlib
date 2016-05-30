@@ -2,7 +2,8 @@
 #
 import os
 import matplotlib as mpl
-from matplotlib.backends import backend_agg
+from matplotlib.backends.backend_agg import RendererAgg
+
 from PIL import Image
 
 
@@ -34,7 +35,7 @@ def draw_quadmesh(data, obj):
     cbox = obj.get_clip_box()
     width = int(round(cbox.extents[2]))
     height = int(round(cbox.extents[3]))
-    ren = backend_agg.RendererAgg(width, height, dpi)
+    ren = RendererAgg(width, height, dpi)
     obj.draw(ren)
 
     # Generate a image from the render buffer
