@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 #
 import os
-import matplotlib as mpl
 
 from PIL import Image
 
@@ -23,10 +22,7 @@ def draw_quadmesh(data, obj):
     data['img number'] = data['img number'] + 1
 
     # Get the dpi for rendering and store the original dpi of the figure
-    if data['dpi']:
-        dpi = data['dpi']
-    else:
-        dpi = mpl.rcParams['savefig.dpi']
+    dpi = data['dpi']
     fig_dpi = obj.figure.get_dpi()
     obj.figure.set_dpi(dpi)
 

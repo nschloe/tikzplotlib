@@ -95,8 +95,9 @@ def save(filepath,
                   Default is ``None``.
     :type extra: a set of strings for the pfgplots axes.
 
-    :param dpi: DPI settings for QuadMesh plots.
-                Default is ``None``.
+    :param dpi: The resolution in dots per inch of the rendered image in case
+                of QuadMesh plots. If ``None`` it will default to the value
+                ``savefig.dpi`` from matplotlib.rcParams. Default is ``None``.
     :type dpi: int
 
     :returns: None
@@ -129,7 +130,10 @@ def save(filepath,
         data['extra axis options'] = extra.copy()
     else:
         data['extra axis options'] = set()
-    data['dpi'] = dpi
+    if dpi is None:
+        data['dpi'] = mpl.rcParams['savefig.dpi']
+    else:
+        data['dpi'] = dpi
 
     # open file
     import codecs
