@@ -18,6 +18,7 @@ __all__ = [
   'noise',
   'noise2',
   'patches',
+  'quadmesh',
   'scatter',
   'subplots',
   'subplot4x4',
