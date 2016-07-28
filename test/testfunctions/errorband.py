@@ -2,7 +2,7 @@
 #
 desc = 'Simple $\sin$ plot with an errorband, which generates a \
         mpl.collections.PolyCollection'
-phash = 'ef2c9732217456ac'
+phash = 'af2cd712256457ac'
 
 
 def plot():
