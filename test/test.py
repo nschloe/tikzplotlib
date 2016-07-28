@@ -14,7 +14,7 @@ import matplotlib as mpl
 if 'DISPLAY' not in os.environ:
     # headless mode, for remote executions (and travis)
     mpl.use('Agg')
-from matplotlib import pyplot as pp
+from matplotlib import pyplot as plt
 
 
 def test_generator():
@@ -26,7 +26,7 @@ def test_generator():
 
 def check_hash(test, name):
     # import the test
-    test.plot()
+    fig = test.plot()
     # convert to tikz file
     _, tmp_base = tempfile.mkstemp(prefix=name)
     tikz_file = tmp_base + '_tikz.tex'
@@ -38,7 +38,10 @@ def check_hash(test, name):
 
     # save reference figure
     mpl_reference = tmp_base + '_reference.pdf'
-    pp.savefig(mpl_reference)
+    plt.savefig(mpl_reference)
+
+    # close figure
+    plt.close(fig)
 
     # create a latex wrapper for the tikz
     wrapper = '''\\documentclass{standalone}
