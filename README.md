@@ -5,6 +5,7 @@
 [![codecov.io](https://codecov.io/github/nschloe/matplotlib2tikz/coverage.svg?branch=master)](https://codecov.io/github/nschloe/matplotlib2tikz?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/matplotlib2tikz/badge/?version=latest)](https://readthedocs.org/projects/matplotlib2tikz/?badge=latest)
 [![PyPi Version](https://img.shields.io/pypi/v/matplotlib2tikz.svg)](https://pypi.python.org/pypi/matplotlib2tikz)
+[![GitHub stars](https://img.shields.io/github/stars/nschloe/matplotlib2tikz.svg?style=social&label=Star&maxAge=2592000)](https://github.com/nschloe/matplotlib2tikz)
 
 This is matplotlib2tikz, a Python tool for converting matplotlib figures into
 [PGFPlots](https://www.ctan.org/pkg/pgfplots)
