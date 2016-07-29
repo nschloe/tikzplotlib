@@ -55,15 +55,11 @@ def draw_legend(data, obj):
         # upper center
         position = [0.5, 1.0 - 3 * pad]
         anchor = 'north'
-    elif obj._loc == 10:
+    else:
+        assert obj._loc == 10
         # center
         position = [0.5, 0.5]
-        anchor = 'center'  # does this work?
-    else:
-        position = None
-        anchor = None
-        warnings.warn('Unknown legend location ''%r''. Using default.'
-                      % obj._loc)
+        anchor = 'center'
 
     legend_style = []
     if position:
