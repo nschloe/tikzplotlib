@@ -227,17 +227,11 @@ To create a new release
 
 1. bump the `__version__` number,
 
-2. upload to PyPi,
+2. publish to PyPi and GitHub:
     ```
-    $ make upload
+    $ make publish
     ```
     and
-
-3. create a Git tag:
-    ```
-    $ git tag v0.3.1
-    $ git push --tags
-    ```
 
 
 ### License
