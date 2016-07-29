@@ -105,22 +105,14 @@ def draw_pathcollection(data, obj):
     data, draw_options = get_draw_options(data, ec, fc)
     draw_options.extend(['mark=*', 'only marks'])
 
-    if obj.get_offsets() is not None:
-        a = '\n'.join([' '.join(map(str, line)) for line in obj.get_offsets()])
-        if draw_options:
-            content.append('\\addplot [%s] table {%%\n%s\n};\n' %
-                           (', '.join(draw_options), a))
-        else:
-            content.append('\\addplot table {%%\n%s\n};\n' % a)
-    elif obj.get_paths():
-        # Not sure if we need this here at all.
-        for path in obj.get_paths():
-            data, cont = draw_path(
-                obj, data, path, draw_options=draw_options
-                )
-            content.append(cont)
+    assert obj.get_offsets() is not None
+    a = '\n'.join([' '.join(map(str, line)) for line in obj.get_offsets()])
+    if draw_options:
+        content.append('\\addplot [%s] table {%%\n%s\n};\n' %
+                       (', '.join(draw_options), a))
     else:
-        raise RuntimeError('Pathcollection without offsets and paths.')
+        content.append('\\addplot table {%%\n%s\n};\n' % a)
+
     return data, content
 
 
