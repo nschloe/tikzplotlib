@@ -43,35 +43,28 @@ def mpl_color2xcolor(data, matplotlib_color):
     for name, rgb in available_colors.items():
         if all(my_col[:3] == rgb):
             xcol = name
-            break
+            return data, xcol, my_col
 
-    if not xcol:
-        # Check if my_col is a multiple of a predefined color and 'black'.
-        for name, rgb in available_colors.items():
-            if rgb[0] != 0.0:
-                alpha = my_col[0] / rgb[0]
-            elif rgb[1] != 0.0:
-                alpha = my_col[1] / rgb[1]
-            elif rgb[2] != 0.0:
-                alpha = my_col[2] / rgb[2]
-            else:  # rgb=(0,0,0)
-                alpha = 0.0
+    # Check if my_col is a multiple of a predefined color and 'black'.
+    for name, rgb in available_colors.items():
+        if name == 'black':
+            continue
 
-            if all(my_col[:3] == alpha * rgb):
-                if alpha == 1.0:
-                    xcol = name
-                    break
-                elif alpha == 0.0:
-                    xcol = 'black'
-                    break
-                elif 0.0 < alpha and alpha < 1.0:
-                    # ... and round(alpha*100) == alpha*100:
-                    # Is the last condition really necessary?
-                    xcol = name + ('!%r!black' % (alpha * 100))
+        if rgb[0] != 0.0:
+            alpha = my_col[0] / rgb[0]
+        elif rgb[1] != 0.0:
+            alpha = my_col[1] / rgb[1]
+        else:
+            assert rgb[2] != 0.0
+            alpha = my_col[2] / rgb[2]
+
+        # The cases 0.0 (my_col == black) and 1.0 (my_col == rgb) are
+        # already accounted for by checking in available_colors above.
+        if all(my_col[:3] == alpha * rgb) and 0.0 < alpha and alpha < 1.0:
+            xcol = name + ('!%r!black' % (alpha * 100))
+            return data, xcol, my_col
 
     # Lookup failed, add it to the custom list.
-    if not xcol:
-        xcol = 'color' + str(len(data['custom colors']))
-        data['custom colors'][xcol] = my_col[:3]
-
+    xcol = 'color' + str(len(data['custom colors']))
+    data['custom colors'][xcol] = my_col[:3]
     return data, xcol, my_col
