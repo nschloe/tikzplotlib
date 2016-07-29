@@ -179,38 +179,6 @@ def draw_linecollection(data, obj):
 
     return data, content
 
-# for matplotlib markers, see: http://matplotlib.org/api/markers_api.html
-MP_MARKER2PGF_MARKER = {
-        '.': '*',  # point
-        'o': 'o',  # circle
-        '+': '+',  # plus
-        'x': 'x',  # x
-        'None': None,
-        ' ': None,
-        '': None
-        }
-
-# the following markers are only available with PGF's plotmarks library
-MP_MARKER2PLOTMARKS = {
-        'v': ('triangle', 'rotate=180'),  # triangle down
-        '1': ('triangle', 'rotate=180'),
-        '^': ('triangle', None),  # triangle up
-        '2': ('triangle', None),
-        '<': ('triangle', 'rotate=270'),  # triangle left
-        '3': ('triangle', 'rotate=270'),
-        '>': ('triangle', 'rotate=90'),  # triangle right
-        '4': ('triangle', 'rotate=90'),
-        's': ('square', None),
-        'p': ('pentagon', None),
-        '*': ('asterisk', None),
-        'h': ('star', None),  # hexagon 1
-        'H': ('star', None),  # hexagon 2
-        'd': ('diamond', None),  # diamond
-        'D': ('diamond', None),  # thin diamond
-        '|': ('|', None),  # vertical line
-        '_': ('-', None)  # horizontal line
-        }
-
 
 def _mpl_linewidth2pgfp_linewidth(data, line_width):
     if data['strict']:
@@ -246,13 +214,46 @@ def _mpl_linewidth2pgfp_linewidth(data, line_width):
             return 'line width=%rpt' % (0.4 * line_width)
 
 
+# for matplotlib markers, see: http://matplotlib.org/api/markers_api.html
+_MP_MARKER2PGF_MARKER = {
+        '.': '*',  # point
+        'o': 'o',  # circle
+        '+': '+',  # plus
+        'x': 'x',  # x
+        'None': None,
+        ' ': None,
+        '': None
+        }
+
+# the following markers are only available with PGF's plotmarks library
+_MP_MARKER2PLOTMARKS = {
+        'v': ('triangle', 'rotate=180'),  # triangle down
+        '1': ('triangle', 'rotate=180'),
+        '^': ('triangle', None),  # triangle up
+        '2': ('triangle', None),
+        '<': ('triangle', 'rotate=270'),  # triangle left
+        '3': ('triangle', 'rotate=270'),
+        '>': ('triangle', 'rotate=90'),  # triangle right
+        '4': ('triangle', 'rotate=90'),
+        's': ('square', None),
+        'p': ('pentagon', None),
+        '*': ('asterisk', None),
+        'h': ('star', None),  # hexagon 1
+        'H': ('star', None),  # hexagon 2
+        'd': ('diamond', None),  # diamond
+        'D': ('diamond', None),  # thin diamond
+        '|': ('|', None),  # vertical line
+        '_': ('-', None)  # horizontal line
+        }
+
+
 def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
     '''Translates a marker style of matplotlib to the corresponding style
     in PGFPlots.
     '''
     # try default list
     try:
-        pgfplots_marker = MP_MARKER2PGF_MARKER[mpl_marker]
+        pgfplots_marker = _MP_MARKER2PGF_MARKER[mpl_marker]
         if (marker_face_color is not None) and pgfplots_marker == 'o':
             pgfplots_marker = '*'
             data['pgfplots libs'].add('plotmarks')
@@ -263,24 +264,24 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
     # try plotmarks list
     try:
         data['pgfplots libs'].add('plotmarks')
-        pgfplots_marker, marker_options = MP_MARKER2PLOTMARKS[mpl_marker]
-        # otherwise leads to AttributeError
-        if 'lower' in dir(marker_face_color):
-            if marker_face_color is not None and \
-              marker_face_color.lower() != 'none' and \
-              pgfplots_marker not in ['|', '-']:
-                pgfplots_marker += '*'
+        pgfplots_marker, marker_options = _MP_MARKER2PLOTMARKS[mpl_marker]
+        if marker_face_color is not None and \
+           isinstance(marker_face_color, str) and \
+           marker_face_color.lower() != 'none' and \
+           pgfplots_marker not in ['|', '-']:
+            pgfplots_marker += '*'
         return (data, pgfplots_marker, marker_options)
     except KeyError:
         pass
-    if mpl_marker == ',':  # pixel
-        print('Unsupported marker ''%r''.' % mpl_marker)
-    else:
-        print('Unknown marker ''%r''.' % mpl_marker)
+
+    # There's no equivalent for the pixel marker in Pgfplots.
+    if mpl_marker == ',':
+        print('Unsupported marker '','' (pixel).')
+
     return (data, None, None)
 
 
-MPLLINESTYLE_2_PGFPLOTSLINESTYLE = {
+_MPLLINESTYLE_2_PGFPLOTSLINESTYLE = {
     '': None,
     'None': None,
     '-': None,
@@ -295,7 +296,7 @@ def _mpl_linestyle2pgfp_linestyle(line_style):
     in PGFPlots.
     '''
     show_line = (line_style != 'None')
-    style = MPLLINESTYLE_2_PGFPLOTSLINESTYLE[line_style]
+    style = _MPLLINESTYLE_2_PGFPLOTSLINESTYLE[line_style]
     return show_line, style
 
 
