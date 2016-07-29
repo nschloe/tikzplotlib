@@ -3,7 +3,6 @@
 __all__ = [
   'annotate',
   'basic_sin',
-  'circle_patch',
   'dual_axis',
   'errorband',
   'errorbar',
