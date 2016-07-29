@@ -36,6 +36,13 @@ def check_hash(test, name):
         show_info=True
         )
 
+    # To test height spec
+    matplotlib2tikz.save(
+        tikz_file + 'height',
+        figureheight='7.5cm',
+        show_info=True
+        )
+
     # save reference figure
     mpl_reference = tmp_base + '_reference.pdf'
     plt.savefig(mpl_reference)
