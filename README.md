@@ -13,33 +13,36 @@ This is matplotlib2tikz, a Python tool for converting matplotlib figures into
 
 ![](https://nschloe.github.io/matplotlib2tikz/latex3.png)
 
-for native inclusion into LaTeX.
+for native inclusion into LaTeX documents.
 
 The output of matplotlib2tikz is in
 [PGFPlots](http://pgfplots.sourceforge.net/pgfplots.pdf), a LaTeX library that
 sits on top of TikZ and describes graphs in terms of axes, data etc.
 Consequently, the output of matplotlib2tikz retains more information, can be
-more easily understood, and is more easily editable than [raw TikZ output](http://matplotlib.org/users/whats_new.html#pgf-tikz-backend). For
-example, the matplotlib figure
+more easily understood, and is more easily editable than [raw TikZ output](http://matplotlib.org/users/whats_new.html#pgf-tikz-backend).
+For example, the matplotlib figure
 ```python
-from matplotlib import pyplot as pp
+from matplotlib import pyplot as plt
 from matplotlib import style
 import numpy as np
-fig = pp.figure()
+fig = plt.figure()
 style.use('ggplot')
 t = np.arange(0.0, 2.0, 0.1)
 s = np.sin(2*np.pi*t)
 s2 = np.cos(2*np.pi*t)
-pp.plot(t, s, 'o-', lw=4.1)
-pp.plot(t, s2, 'o-', lw=4.1)
-pp.xlabel('time(s)')
-pp.ylabel('Voltage (mV)')
-pp.title('Simple plot $\\frac{\\alpha}{2}$')
-pp.grid(True)
+plt.plot(t, s, 'o-', lw=4.1)
+plt.plot(t, s2, 'o-', lw=4.1)
+plt.xlabel('time(s)')
+plt.ylabel('Voltage (mV)')
+plt.title('Simple plot $\\frac{\\alpha}{2}$')
+plt.grid(True)
+
+from matplotlib2tikz import save as tikz_save
+tikz_save('test.tex')
 ```
 (see above) gives
 ```latex
-% This file was created by matplotlib2tikz.
+% This file was created by matplotlib2tikz vx.y.z.
 \begin{tikzpicture}
 
 \definecolor{color1}{rgb}{0.203921568627451,0.541176470588235,0.741176470588235}
@@ -51,7 +54,6 @@ xlabel={time(s)},
 ylabel={Voltage (mV)},
 xmin=0, xmax=2,
 ymin=-1, ymax=1,
-width=7.5cm,
 tick align=outside,
 xmajorgrids,
 x grid style={white},
@@ -60,19 +62,19 @@ y grid style={white},
 axis line style={white},
 axis background/.style={fill=white!89.803921568627459!black}
 ]
-\addplot [line width=1.64pt, color0, mark=*, mark size=3, mark options={draw=black}]
-coordinates {
-(0,0)
-(0.1,0.587785252292473)
+\addplot [line width=1.64pt, color0, mark=*, mark size=3, mark options={solid,draw=black}]
+table {%
+0 0
+0.1 0.587785252292473
 % [...]
-(1.9,-0.587785252292473)
+1.9 -0.587785252292473
 };
-\addplot [line width=1.64pt, color1, mark=*, mark size=3, mark options={draw=black}]
-coordinates {
-(0,1)
-(0.1,0.809016994374947)
+\addplot [line width=1.64pt, color1, mark=*, mark size=3, mark options={solid,draw=black}]
+table {%
+0 1
+0.1 0.809016994374947
 % [...]
-(1.9,0.809016994374947)
+1.9 0.809016994374947
 };
 \end{axis}
 
