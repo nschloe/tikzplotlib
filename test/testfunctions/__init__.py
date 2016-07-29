@@ -11,6 +11,7 @@ __all__ = [
   'image_plot',
   'legends2',
   'legends',
+  'line_collection',
   'loglogplot',
   'logplot',
   'marker',
