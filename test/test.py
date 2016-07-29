@@ -33,7 +33,7 @@ def check_hash(test, name):
     matplotlib2tikz.save(
         tikz_file,
         figurewidth='7.5cm',
-        show_info=False
+        show_info=True
         )
 
     # save reference figure
