@@ -15,7 +15,7 @@ def plot():
     # note that plot returns a list of lines.  The 'l1, = plot' usage
     # extracts the first element of the list inot l1 using tuple
     # unpacking.  So l1 is a Line2D instance, not a sequence of lines
-    l1,    = plt.plot(t2, np.exp(-t2))
+    l1,    = plt.plot(t2, np.exp(-t2), linewidth=0.5)
     l2, l3 = plt.plot(t2, np.sin(2*np.pi*t2), '--go', t1, np.log(1+t1), '.')
     l4,    = plt.plot(t2, np.exp(-t2)*np.sin(2*np.pi*t2), 'rs-.')
 
