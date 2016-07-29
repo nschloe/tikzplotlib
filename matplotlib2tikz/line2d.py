@@ -5,6 +5,7 @@ from . import path as mypath
 
 import numpy
 
+
 def draw_line2d(data, obj):
     '''Returns the PGFPlots code for an Line2D environment.
     '''
@@ -149,9 +150,11 @@ def draw_linecollection(data, obj):
                 options.append(linestyle)
 
         # TODO what about masks?
-        data, cont = mypath.draw_path(obj, data, path,
-                                draw_options=options,
-                                simplify=False)
+        data, cont = mypath.draw_path(
+                obj, data, path,
+                draw_options=options,
+                simplify=False
+                )
 
         content.append(cont)
 
@@ -189,7 +192,8 @@ MP_MARKER2PLOTMARKS = {
         '_': ('-', None)  # horizontal line
         }
 
-def _mpl_linewidth2pgfp_linewidth(data,line_width):
+
+def _mpl_linewidth2pgfp_linewidth(data, line_width):
     if data['strict']:
         # Takes the matplotlib linewidths, and just translate them
         # into PGFPlots.
@@ -222,6 +226,7 @@ def _mpl_linewidth2pgfp_linewidth(data,line_width):
             # explicit line width
             return 'line width=%rpt' % (0.4 * line_width)
 
+
 def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
     '''Translates a marker style of matplotlib to the corresponding style
     in PGFPlots.
@@ -240,10 +245,11 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
     try:
         data['pgfplots libs'].add('plotmarks')
         pgfplots_marker, marker_options = MP_MARKER2PLOTMARKS[mpl_marker]
-        if 'lower' in dir(marker_face_color): # otherwise leads to AttributeError
+        # otherwise leads to AttributeError
+        if 'lower' in dir(marker_face_color):
             if marker_face_color is not None and \
-            marker_face_color.lower() != 'none' and \
-            pgfplots_marker not in ['|', '-']:
+              marker_face_color.lower() != 'none' and \
+              pgfplots_marker not in ['|', '-']:
                 pgfplots_marker += '*'
         return (data, pgfplots_marker, marker_options)
     except KeyError:
@@ -256,6 +262,7 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
 
 
 MPLLINESTYLE_2_PGFPLOTSLINESTYLE = {
+    '': None,
     'None': None,
     '-': None,
     ':': 'dotted',
@@ -269,42 +276,38 @@ def _mpl_linestyle2pgfp_linestyle(line_style):
     in PGFPlots.
     '''
     show_line = (line_style != 'None')
-    try:
-        style = MPLLINESTYLE_2_PGFPLOTSLINESTYLE[line_style]
-    except KeyError:
-        print('Unknown line style ''%r''. Using default.' % line_style)
-        style = None
+    style = MPLLINESTYLE_2_PGFPLOTSLINESTYLE[line_style]
     return show_line, style
 
 
-def _transform_to_data_coordinates(obj, xdata, ydata):
-    '''The coordinates might not be in data coordinates, but could be partly in
-    axes coordinates.  For example, the matplotlib command
-      axes.axvline(2)
-    will have the y coordinates set to 0 and 1, not to the limits. Therefore, a
-    two-stage transform has to be applied:
-      1. first transforming to display coordinates, then
-      2. from display to data.
-    In case of problems (non-invertible, or whatever), print a warning and
-    continue anyways.
-    '''
-    try:
-        import matplotlib.transforms
-        points = numpy.array(zip(xdata, ydata))
-        transform = matplotlib.transforms.composite_transform_factory(
-            obj.get_transform(),
-            obj.axes.transData.inverted()
-            )
-        points_data = transform.transform(points)
-        xdata, ydata = zip(*points_data)
-    except Exception as e:
-        print(xdata, ydata)
-        print(('Problem during transformation:\n' +
-               '   %s\n' +
-               'Continuing with original data.')
-              % e
-              )
-    return (xdata, ydata)
+# def _transform_to_data_coordinates(obj, xdata, ydata):
+#     '''The coordinates might not be in data coordinates, but could be partly
+#     in axes coordinates.  For example, the matplotlib command
+#       axes.axvline(2)
+#     will have the y coordinates set to 0 and 1, not to the limits. Therefore,
+#     a two-stage transform has to be applied:
+#       1. first transforming to display coordinates, then
+#       2. from display to data.
+#     In case of problems (non-invertible, or whatever), print a warning and
+#     continue anyways.
+#     '''
+#     try:
+#         import matplotlib.transforms
+#         points = numpy.array(zip(xdata, ydata))
+#         transform = matplotlib.transforms.composite_transform_factory(
+#             obj.get_transform(),
+#             obj.axes.transData.inverted()
+#             )
+#         points_data = transform.transform(points)
+#         xdata, ydata = zip(*points_data)
+#     except Exception as e:
+#         print(xdata, ydata)
+#         print(('Problem during transformation:\n' +
+#                '   %s\n' +
+#                'Continuing with original data.')
+#               % e
+#               )
+#     return (xdata, ydata)
 
 
 TIKZ_LINEWIDTHS = {0.1: 'ultra thin',
