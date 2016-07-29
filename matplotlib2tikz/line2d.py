@@ -125,14 +125,17 @@ def draw_linecollection(data, obj):
 
     for i in range(len(paths)):
         path = paths[i]
+
         if i < len(edgecolors):
             color = edgecolors[i]
         else:
             color = edgecolors[0]
+
         if i < len(linestyles):
             style = linestyles[i]
         else:
             style = linestyles[0]
+
         if i < len(linewidths):
             width = linewidths[i]
         else:
@@ -144,10 +147,26 @@ def draw_linecollection(data, obj):
         if width:
             options.append(width)
 
+        # linestyle is a string or dash tuple. Legal string values are
+        # solid|dashed|dashdot|dotted.  The dash tuple is (offset, onoffseq)
+        # where onoffseq is an even length tuple of on and off ink in points.
+        #
+        # solid: [(None, None), (None, None), ..., (None, None)]
+        # dashed: (0, (6.0, 6.0))
+        # dotted: (0, (1.0, 3.0))
+        # dashdot: (0, (3.0, 5.0, 1.0, 5.0))
         if style[0] is not None:
-            show_line, linestyle = _mpl_linestyle2pgfp_linestyle(style)
-            if show_line and linestyle:
-                options.append(linestyle)
+            assert isinstance(style, tuple)
+            if len(style[1]) == 2:
+                linestyle = 'dash pattern=on %dpt off %dpt' % \
+                            (int(style[1][0]), int(style[1][1]))
+            else:
+                assert len(style[1]) == 4
+                linestyle = 'dash pattern=on %dpt off %dpt on %dpt off %dpt' \
+                            % (int(style[1][0]), int(style[1][1]),
+                               int(style[1][2]), int(style[1][3]))
+
+            options.append(linestyle)
 
         # TODO what about masks?
         data, cont = mypath.draw_path(
