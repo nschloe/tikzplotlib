@@ -36,11 +36,11 @@ def check_hash(test, name):
         show_info=True
         )
 
-    # To test height spec
+    # test other height specs
     matplotlib2tikz.save(
-        tikz_file + 'height',
+        tikz_file + '.height',
         figureheight='7.5cm',
-        show_info=True
+        strict=True
         )
 
     # save reference figure
