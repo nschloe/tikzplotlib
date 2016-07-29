@@ -15,4 +15,6 @@ def plot():
     ax2 = ax.twinx()
     ax2.plot(20*dat, 20*dat**2)
 
+    ax.xaxis.tick_top()
+
     return fig

@@ -90,10 +90,7 @@ class Axes(object):
         elif aspect == 'equal':
             aspect_num = 1.0
         else:
-            try:
-                aspect_num = float(aspect)
-            except ValueError:
-                print('Aspect ratio not a number?!')
+            aspect_num = float(aspect)
 
         if data['fwidth'] and data['fheight']:
             # width and height overwrite aspect ratio
@@ -134,19 +131,17 @@ class Axes(object):
         if xaxis_pos == 'bottom':
             # this is the default
             pass
-        elif xaxis_pos == 'top':
-            self.axis_options.append('axis x line=top')
         else:
-            raise ValueError('Illegal x axis position \'%s\'.' % xaxis_pos)
+            assert xaxis_pos == 'top'
+            self.axis_options.append('axis x line=top')
 
         yaxis_pos = obj.get_yaxis().label_position
         if yaxis_pos == 'left':
             # this is the default
             pass
-        elif yaxis_pos == 'right':
-            self.axis_options.append('axis y line=right')
         else:
-            raise ValueError('Illegal y axis position \'%s\'.' % yaxis_pos)
+            assert yaxis_pos == 'right'
+            self.axis_options.append('axis y line=right')
 
         # get ticks
         self.axis_options.extend(
@@ -183,10 +178,9 @@ class Axes(object):
                     pass
                 elif direction == 'out':
                     self.axis_options.append('tick align=outside')
-                elif direction == 'inout':
-                    self.axis_options.append('tick align=center')
                 else:
-                    raise ValueError('Unknown ticks direction %s.' % direction)
+                    assert direction == 'inout'
+                    self.axis_options.append('tick align=center')
 
         # Don't use get_{x,y}gridlines for gridlines; see discussion on
         # <http://sourceforge.net/p/matplotlib/mailman/message/25169234/>
@@ -259,7 +253,9 @@ class Axes(object):
                     _get_ticks(data, 'x', colorbar_ticks, colorbar_ticklabels)
                     )
 
-            elif orientation == 'vertical':
+            else:
+                assert orientation == 'vertical'
+
                 self.axis_options.append('colorbar')
                 colorbar_ticks = colorbar.ax.get_yticks()
                 axis_limits = colorbar.ax.get_ylim()
@@ -279,11 +275,6 @@ class Axes(object):
                 colorbar_ticklabels = colorbar.ax.get_yticklabels()
                 colorbar_styles.extend(
                     _get_ticks(data, 'y', colorbar_ticks, colorbar_ticklabels)
-                    )
-            else:
-                raise RuntimeError(
-                    'Unknown color bar orientation ''%s''. Abort.' %
-                    orientation
                     )
 
             mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(
@@ -308,19 +299,19 @@ class Axes(object):
         else:
             self.content.append('\\begin{axis}')
 
-        ## anchors
-        #if hasattr(obj, '_matplotlib2tikz_anchors'):
-        #    try:
-        #        for coord, anchor_name in obj._matplotlib2tikz_anchors:
-        #            self.content.append(
-        #                '\\node (%s) at (axis cs:%e,%e) {};\n' %
-        #                (anchor_name, coord[0], coord[1])
-        #                )
-        #    except:
-        #        print('Axes attribute _matplotlib2tikz_anchors wrongly set:'
-        #              'Expected a list of ((x,y), anchor_name), got \'%s\''
-        #              % str(obj._matplotlib2tikz_anchors)
-        #              )
+        # # anchors
+        # if hasattr(obj, '_matplotlib2tikz_anchors'):
+        #     try:
+        #         for coord, anchor_name in obj._matplotlib2tikz_anchors:
+        #             self.content.append(
+        #                 '\\node (%s) at (axis cs:%e,%e) {};\n' %
+        #                 (anchor_name, coord[0], coord[1])
+        #                 )
+        #     except:
+        #         print('Axes attribute _matplotlib2tikz_anchors wrongly set:'
+        #               'Expected a list of ((x,y), anchor_name), got \'%s\''
+        #               % str(obj._matplotlib2tikz_anchors)
+        #               )
 
         return
 
@@ -397,10 +388,7 @@ def _mpl_cmap2pgf_cmap(cmap):
     '''Converts a color map as given in matplotlib to a color map as
     represented in PGFPlots.
     '''
-    if not isinstance(cmap, mpl.colors.LinearSegmentedColormap):
-        print('Don''t know how to handle color map. Using ''blackwhite''.')
-        is_custom_colormap = False
-        return ('blackwhite', is_custom_colormap)
+    assert isinstance(cmap, mpl.colors.LinearSegmentedColormap)
 
     if cmap.is_gray():
         is_custom_colormap = False

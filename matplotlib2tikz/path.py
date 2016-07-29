@@ -27,9 +27,9 @@ def draw_path(obj, data, path, draw_options=None, simplify=None):
         #         _transform_to_data_coordinates(obj, [vert[0]], [vert[1]])
         #         )
         # For path codes see: http://matplotlib.org/api/path_api.html
-        if code == mpl.path.Path.STOP:
-            pass
-        elif code == mpl.path.Path.MOVETO:
+        #
+        # if code == mpl.path.Path.STOP: pass
+        if code == mpl.path.Path.MOVETO:
             nodes.append('(axis cs:%.15g,%.15g)' % tuple(vert))
         elif code == mpl.path.Path.LINETO:
             nodes.append('--(axis cs:%.15g,%.15g)' % tuple(vert))
@@ -49,9 +49,9 @@ def draw_path(obj, data, path, draw_options=None, simplify=None):
             #
             # P0 is the point of the previous step which is needed to compute
             # Q1.
-            if prev is None:
-                raise RuntimeError('Cannot draw quadratic Bezier curves '
-                                   'as the beginning of of a path.')
+            #
+            # Cannot draw quadratic Bezier curves as the beginning of of a path
+            assert prev is not None
             Q1 = 1. / 3. * prev + 2. / 3. * vert[0:2]
             Q2 = 2. / 3. * vert[0:2] + 1. / 3. * vert[2:4]
             Q3 = vert[2:4]
@@ -67,10 +67,10 @@ def draw_path(obj, data, path, draw_options=None, simplify=None):
                           '.. (axis cs:%.15g,%.15g)')
                          % tuple(vert)
                          )
-        elif code == mpl.path.Path.CLOSEPOLY:
-            nodes.append('--cycle')
         else:
-            raise RuntimeError('Unknown path code %d. Abort.' % code)
+            assert code == mpl.path.Path.CLOSEPOLY
+            nodes.append('--cycle')
+
         # Store the previous point for quadratic Beziers.
         prev = vert[0:2]
 
@@ -105,22 +105,14 @@ def draw_pathcollection(data, obj):
     data, draw_options = get_draw_options(data, ec, fc)
     draw_options.extend(['mark=*', 'only marks'])
 
-    if obj.get_offsets() is not None:
-        a = '\n'.join([' '.join(map(str, line)) for line in obj.get_offsets()])
-        if draw_options:
-            content.append('\\addplot [%s] table {%%\n%s\n};\n' %
-                           (', '.join(draw_options), a))
-        else:
-            content.append('\\addplot table {%%\n%s\n};\n' % a)
-    elif obj.get_paths():
-        # Not sure if we need this here at all.
-        for path in obj.get_paths():
-            data, cont = draw_path(
-                obj, data, path, draw_options=draw_options
-                )
-            content.append(cont)
+    assert obj.get_offsets() is not None
+    a = '\n'.join([' '.join(map(str, line)) for line in obj.get_offsets()])
+    if draw_options:
+        content.append('\\addplot [%s] table {%%\n%s\n};\n' %
+                       (', '.join(draw_options), a))
     else:
-        raise RuntimeError('Pathcollection without offsets and paths.')
+        content.append('\\addplot table {%%\n%s\n};\n' % a)
+
     return data, content
 
 

@@ -5,6 +5,7 @@ from . import path as mypath
 
 import numpy
 
+
 def draw_line2d(data, obj):
     '''Returns the PGFPlots code for an Line2D environment.
     '''
@@ -40,7 +41,7 @@ def draw_line2d(data, obj):
         mark_size = obj.get_markersize()
         if mark_size:
             # setting half size because pgfplots counts the radius/half-width
-            pgf_size = int(mark_size / 2)
+            pgf_size = int(0.5 * mark_size)
             # make sure we didn't round off to zero by accident
             if pgf_size == 0 and mark_size != 0:
                 pgf_size = 1
@@ -124,14 +125,17 @@ def draw_linecollection(data, obj):
 
     for i in range(len(paths)):
         path = paths[i]
+
         if i < len(edgecolors):
             color = edgecolors[i]
         else:
             color = edgecolors[0]
+
         if i < len(linestyles):
             style = linestyles[i]
         else:
             style = linestyles[0]
+
         if i < len(linewidths):
             width = linewidths[i]
         else:
@@ -143,53 +147,40 @@ def draw_linecollection(data, obj):
         if width:
             options.append(width)
 
+        # linestyle is a string or dash tuple. Legal string values are
+        # solid|dashed|dashdot|dotted.  The dash tuple is (offset, onoffseq)
+        # where onoffseq is an even length tuple of on and off ink in points.
+        #
+        # solid: [(None, None), (None, None), ..., (None, None)]
+        # dashed: (0, (6.0, 6.0))
+        # dotted: (0, (1.0, 3.0))
+        # dashdot: (0, (3.0, 5.0, 1.0, 5.0))
         if style[0] is not None:
-            show_line, linestyle = _mpl_linestyle2pgfp_linestyle(style)
-            if show_line and linestyle:
-                options.append(linestyle)
+            assert isinstance(style, tuple)
+            if len(style[1]) == 2:
+                linestyle = 'dash pattern=on %dpt off %dpt' % \
+                            (int(style[1][0]), int(style[1][1]))
+            else:
+                assert len(style[1]) == 4
+                linestyle = 'dash pattern=on %dpt off %dpt on %dpt off %dpt' \
+                            % (int(style[1][0]), int(style[1][1]),
+                               int(style[1][2]), int(style[1][3]))
+
+            options.append(linestyle)
 
         # TODO what about masks?
-        data, cont = mypath.draw_path(obj, data, path,
-                                draw_options=options,
-                                simplify=False)
+        data, cont = mypath.draw_path(
+                obj, data, path,
+                draw_options=options,
+                simplify=False
+                )
 
         content.append(cont)
 
     return data, content
 
-# for matplotlib markers, see: http://matplotlib.org/api/markers_api.html
-MP_MARKER2PGF_MARKER = {
-        '.': '*',  # point
-        'o': 'o',  # circle
-        '+': '+',  # plus
-        'x': 'x',  # x
-        'None': None,
-        ' ': None,
-        '': None
-        }
 
-# the following markers are only available with PGF's plotmarks library
-MP_MARKER2PLOTMARKS = {
-        'v': ('triangle', 'rotate=180'),  # triangle down
-        '1': ('triangle', 'rotate=180'),
-        '^': ('triangle', None),  # triangle up
-        '2': ('triangle', None),
-        '<': ('triangle', 'rotate=270'),  # triangle left
-        '3': ('triangle', 'rotate=270'),
-        '>': ('triangle', 'rotate=90'),  # triangle right
-        '4': ('triangle', 'rotate=90'),
-        's': ('square', None),
-        'p': ('pentagon', None),
-        '*': ('asterisk', None),
-        'h': ('star', None),  # hexagon 1
-        'H': ('star', None),  # hexagon 2
-        'd': ('diamond', None),  # diamond
-        'D': ('diamond', None),  # thin diamond
-        '|': ('|', None),  # vertical line
-        '_': ('-', None)  # horizontal line
-        }
-
-def _mpl_linewidth2pgfp_linewidth(data,line_width):
+def _mpl_linewidth2pgfp_linewidth(data, line_width):
     if data['strict']:
         # Takes the matplotlib linewidths, and just translate them
         # into PGFPlots.
@@ -222,13 +213,47 @@ def _mpl_linewidth2pgfp_linewidth(data,line_width):
             # explicit line width
             return 'line width=%rpt' % (0.4 * line_width)
 
+
+# for matplotlib markers, see: http://matplotlib.org/api/markers_api.html
+_MP_MARKER2PGF_MARKER = {
+        '.': '*',  # point
+        'o': 'o',  # circle
+        '+': '+',  # plus
+        'x': 'x',  # x
+        'None': None,
+        ' ': None,
+        '': None
+        }
+
+# the following markers are only available with PGF's plotmarks library
+_MP_MARKER2PLOTMARKS = {
+        'v': ('triangle', 'rotate=180'),  # triangle down
+        '1': ('triangle', 'rotate=180'),
+        '^': ('triangle', None),  # triangle up
+        '2': ('triangle', None),
+        '<': ('triangle', 'rotate=270'),  # triangle left
+        '3': ('triangle', 'rotate=270'),
+        '>': ('triangle', 'rotate=90'),  # triangle right
+        '4': ('triangle', 'rotate=90'),
+        's': ('square', None),
+        'p': ('pentagon', None),
+        '*': ('asterisk', None),
+        'h': ('star', None),  # hexagon 1
+        'H': ('star', None),  # hexagon 2
+        'd': ('diamond', None),  # diamond
+        'D': ('diamond', None),  # thin diamond
+        '|': ('|', None),  # vertical line
+        '_': ('-', None)  # horizontal line
+        }
+
+
 def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
     '''Translates a marker style of matplotlib to the corresponding style
     in PGFPlots.
     '''
     # try default list
     try:
-        pgfplots_marker = MP_MARKER2PGF_MARKER[mpl_marker]
+        pgfplots_marker = _MP_MARKER2PGF_MARKER[mpl_marker]
         if (marker_face_color is not None) and pgfplots_marker == 'o':
             pgfplots_marker = '*'
             data['pgfplots libs'].add('plotmarks')
@@ -239,23 +264,25 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
     # try plotmarks list
     try:
         data['pgfplots libs'].add('plotmarks')
-        pgfplots_marker, marker_options = MP_MARKER2PLOTMARKS[mpl_marker]
-        if 'lower' in dir(marker_face_color): # otherwise leads to AttributeError
-            if marker_face_color is not None and \
-            marker_face_color.lower() != 'none' and \
-            pgfplots_marker not in ['|', '-']:
-                pgfplots_marker += '*'
+        pgfplots_marker, marker_options = _MP_MARKER2PLOTMARKS[mpl_marker]
+        if marker_face_color is not None and \
+           isinstance(marker_face_color, str) and \
+           marker_face_color.lower() != 'none' and \
+           pgfplots_marker not in ['|', '-']:
+            pgfplots_marker += '*'
         return (data, pgfplots_marker, marker_options)
     except KeyError:
         pass
-    if mpl_marker == ',':  # pixel
-        print('Unsupported marker ''%r''.' % mpl_marker)
-    else:
-        print('Unknown marker ''%r''.' % mpl_marker)
+
+    # There's no equivalent for the pixel marker in Pgfplots.
+    if mpl_marker == ',':
+        print('Unsupported marker '','' (pixel).')
+
     return (data, None, None)
 
 
-MPLLINESTYLE_2_PGFPLOTSLINESTYLE = {
+_MPLLINESTYLE_2_PGFPLOTSLINESTYLE = {
+    '': None,
     'None': None,
     '-': None,
     ':': 'dotted',
@@ -269,42 +296,38 @@ def _mpl_linestyle2pgfp_linestyle(line_style):
     in PGFPlots.
     '''
     show_line = (line_style != 'None')
-    try:
-        style = MPLLINESTYLE_2_PGFPLOTSLINESTYLE[line_style]
-    except KeyError:
-        print('Unknown line style ''%r''. Using default.' % line_style)
-        style = None
+    style = _MPLLINESTYLE_2_PGFPLOTSLINESTYLE[line_style]
     return show_line, style
 
 
-def _transform_to_data_coordinates(obj, xdata, ydata):
-    '''The coordinates might not be in data coordinates, but could be partly in
-    axes coordinates.  For example, the matplotlib command
-      axes.axvline(2)
-    will have the y coordinates set to 0 and 1, not to the limits. Therefore, a
-    two-stage transform has to be applied:
-      1. first transforming to display coordinates, then
-      2. from display to data.
-    In case of problems (non-invertible, or whatever), print a warning and
-    continue anyways.
-    '''
-    try:
-        import matplotlib.transforms
-        points = numpy.array(zip(xdata, ydata))
-        transform = matplotlib.transforms.composite_transform_factory(
-            obj.get_transform(),
-            obj.axes.transData.inverted()
-            )
-        points_data = transform.transform(points)
-        xdata, ydata = zip(*points_data)
-    except Exception as e:
-        print(xdata, ydata)
-        print(('Problem during transformation:\n' +
-               '   %s\n' +
-               'Continuing with original data.')
-              % e
-              )
-    return (xdata, ydata)
+# def _transform_to_data_coordinates(obj, xdata, ydata):
+#     '''The coordinates might not be in data coordinates, but could be partly
+#     in axes coordinates.  For example, the matplotlib command
+#       axes.axvline(2)
+#     will have the y coordinates set to 0 and 1, not to the limits. Therefore,
+#     a two-stage transform has to be applied:
+#       1. first transforming to display coordinates, then
+#       2. from display to data.
+#     In case of problems (non-invertible, or whatever), print a warning and
+#     continue anyways.
+#     '''
+#     try:
+#         import matplotlib.transforms
+#         points = numpy.array(zip(xdata, ydata))
+#         transform = matplotlib.transforms.composite_transform_factory(
+#             obj.get_transform(),
+#             obj.axes.transData.inverted()
+#             )
+#         points_data = transform.transform(points)
+#         xdata, ydata = zip(*points_data)
+#     except Exception as e:
+#         print(xdata, ydata)
+#         print(('Problem during transformation:\n' +
+#                '   %s\n' +
+#                'Continuing with original data.')
+#               % e
+#               )
+#     return (xdata, ydata)
 
 
 TIKZ_LINEWIDTHS = {0.1: 'ultra thin',

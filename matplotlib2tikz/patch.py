@@ -67,7 +67,7 @@ def _draw_rectangle(data, obj, draw_options):
 def _draw_ellipse(data, obj, draw_options):
     '''Return the PGFPlots code for ellipses.
     '''
-    if (isinstance(obj, mpl.patches.Circle)):
+    if isinstance(obj, mpl.patches.Circle):
         # circle specialization
         return _draw_circle(data, obj, draw_options)
     x, y = obj.center

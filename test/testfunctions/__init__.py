@@ -3,7 +3,6 @@
 __all__ = [
   'annotate',
   'basic_sin',
-  'circle_patch',
   'dual_axis',
   'errorband',
   'errorbar',
@@ -12,6 +11,7 @@ __all__ = [
   'image_plot',
   'legends2',
   'legends',
+  'line_collection',
   'loglogplot',
   'logplot',
   'marker',

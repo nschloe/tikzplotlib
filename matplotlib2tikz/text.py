@@ -86,20 +86,34 @@ def draw_text(data, obj):
                           % (bbox_style.pad * data['font size'])
                           )
         # Rounded boxes
-        if(isinstance(bbox_style, mpl.patches.BoxStyle.Round)):
+        if isinstance(bbox_style, mpl.patches.BoxStyle.Round):
             properties.append('rounded corners')
-        elif(isinstance(bbox_style, mpl.patches.BoxStyle.RArrow)):
+        elif isinstance(bbox_style, mpl.patches.BoxStyle.RArrow):
             data['tikz libs'].add('shapes.arrows')
             properties.append('single arrow')
-        elif(isinstance(bbox_style, mpl.patches.BoxStyle.LArrow)):
+        elif isinstance(bbox_style, mpl.patches.BoxStyle.LArrow):
             data['tikz libs'].add('shapes.arrows')
             properties.append('single arrow')
             properties.append('shape border rotate=180')
-        # Sawtooth, Roundtooth or Round4 not supported atm
-        # Round4 should be easy with 'rounded rectangle'
-        # directive though.
+        elif isinstance(bbox_style, mpl.patches.BoxStyle.DArrow):
+            data['tikz libs'].add('shapes.arrows')
+            properties.append('double arrow')
+        elif isinstance(bbox_style, mpl.patches.BoxStyle.Circle):
+            properties.append('circle')
+        elif isinstance(bbox_style, mpl.patches.BoxStyle.Roundtooth):
+            properties.append('decorate')
+            properties.append(
+                'decoration={snake,amplitude=0.5,segment length=3}'
+                )
+        elif isinstance(bbox_style, mpl.patches.BoxStyle.Sawtooth):
+            properties.append('decorate')
+            properties.append(
+                'decoration={zigzag,amplitude=0.5,segment length=3}'
+                )
         else:
-            pass  # Rectangle
+            # TODO Round4
+            assert isinstance(bbox_style, mpl.patches.BoxStyle.Square)
+
         # Line style
         if bbox.get_ls() == 'dotted':
             properties.append('dotted')
@@ -115,7 +129,7 @@ def draw_text(data, obj):
                                     6.0 / scaling, 3.0 / scaling)
                               )
         else:
-            pass  # solid
+            assert bbox.get_ls() == 'solid'
 
     ha = obj.get_ha()
     va = obj.get_va()
@@ -128,22 +142,30 @@ def draw_text(data, obj):
             )
     properties.append('text=%s' % col)
     properties.append('rotate=%.1f' % obj.get_rotation())
-    if obj.get_style() != 'normal':
+
+    if obj.get_style() == 'italic':
         style.append('\\itshape')
-    try:
-        if int(obj.get_weight()) > 550:
-            style.append('\\bfseries')
-    except ValueError:  # Not numeric
-        vals = ['semibold',
-                'demibold',
-                'demi',
-                'bold',
-                'heavy',
-                'extra bold',
-                'black'
-                ]
-        if str(obj.get_weight()) in vals:
-            style.append('\\bfseries')
+    else:
+        assert obj.get_style() == 'normal'
+
+    # From matplotlib/font_manager.py:
+    # weight_dict = {
+    #     'ultralight' : 100,
+    #     'light'      : 200,
+    #     'normal'     : 400,
+    #     'regular'    : 400,
+    #     'book'       : 400,
+    #     'medium'     : 500,
+    #     'roman'      : 500,
+    #     'semibold'   : 600,
+    #     'demibold'   : 600,
+    #     'demi'       : 600,
+    #     'bold'       : 700,
+    #     'heavy'      : 800,
+    #     'extra bold' : 800,
+    #     'black'      : 900}
+    if obj.get_weight() > 550:
+        style.append('\\bfseries')
 
     if obj.axes:
         # If the coordinates are relative to an axis, use `axis cs`.

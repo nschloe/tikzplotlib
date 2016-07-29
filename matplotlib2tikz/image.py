@@ -35,13 +35,12 @@ def draw_image(data, obj):
                           vmin=clims[0],
                           vmax=clims[1]
                           )
-    elif len(dims) == 3 and dims[2] in [3, 4]:
+    else:
         # RGB (+alpha) information at each point
+        assert len(dims) == 3 and dims[2] in [3, 4]
         # convert to PIL image (after upside-down flip)
         image = PIL.Image.fromarray(numpy.flipud(img_array))
         image.save(filename)
-    else:
-        raise RuntimeError('Unable to store image array.')
 
     # write the corresponding information to the TikZ file
     extent = obj.get_extent()
