@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Dual axis plot'
-phash = '41a3dc4b76a9ca35'
+phash = '43a35c4b76a94eb8'
 
 
 def plot():

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'A circle path'
-phash = 'fdad095a93b22326'
+phash = 'fda9095293b62366'
 
 
 def plot():

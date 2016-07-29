@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Annotations'
-phash = '218b70a17c9654ff'
+phash = 'ab8a78a1549654fe'
+
 
 def plot():
     from matplotlib import pyplot as pp

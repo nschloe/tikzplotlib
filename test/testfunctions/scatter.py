@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Scatter plot'
-phash = '5fd2594c653c87b0'
+phash = '5fd219cc653c85a5'
 
 
 def plot():

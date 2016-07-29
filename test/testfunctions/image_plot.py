@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'An \\texttt{imshow} plot'
-phash = '7558d3b35ce34b04'
+phash = '7558d3b30f634b06'
 
 
 def plot():

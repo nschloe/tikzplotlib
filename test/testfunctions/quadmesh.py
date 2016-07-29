@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Plot Taylor--Green Vortex using pcolormesh'
-phash = 'ff1a857849847ba2'
+phash = 'ff1a8578c9847b22'
 
 
 def plot():
@@ -12,9 +12,15 @@ def plot():
     y = np.linspace(0*np.pi, 2*np.pi, 128)
     X, Y = np.meshgrid(x, y)
     nu = 1e-5
-    F = lambda t: np.exp(-2*nu*t)
-    u = lambda x, y, t:  np.sin(x)*np.cos(y)*F(t)
-    v = lambda x, y, t: -np.cos(x)*np.sin(y)*F(t)
+
+    def F(t):
+        return np.exp(-2*nu*t)
+
+    def u(x, y, t):
+        return np.sin(x)*np.cos(y)*F(t)
+
+    def v(x, y, t):
+        return -np.cos(x)*np.sin(y)*F(t)
 
     fig, axs = plt.subplots(2, figsize=(8, 12))
     axs[0].pcolormesh(X, Y, u(X, Y, 0))
