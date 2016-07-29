@@ -27,7 +27,11 @@ def plot():
             )
     plt.gca().add_artist(leg1)
 
-    for loc in range(2, 11):
+    loc = 2
+    leg = plt.legend((l1,), ('loc %d' % loc,), loc=loc, frameon=False)
+    plt.gca().add_artist(leg)
+
+    for loc in range(3, 11):
         leg = plt.legend((l1,), ('loc %d' % loc,), loc=loc)
         leg.get_frame().set_facecolor('#00FFCC')
         leg.get_frame().set_edgecolor('#0000FF')

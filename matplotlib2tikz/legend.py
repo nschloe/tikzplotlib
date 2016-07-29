@@ -5,7 +5,7 @@ from . import color as mycol
 
 
 def draw_legend(data, obj):
-    '''Adds legend code to the EXTRA_AXIS_OPTIONS.
+    '''Adds legend code.
     '''
     texts = []
     childrenAlignment = []
@@ -82,7 +82,7 @@ def draw_legend(data, obj):
     if fill_xcolor != 'white':  # white is default
         legend_style.append('fill=%s' % fill_xcolor)
 
-    # Get the horizontal alignement
+    # Get the horizontal alignment
     if len(childrenAlignment) > 0:
         alignment = childrenAlignment[0]
     else:
