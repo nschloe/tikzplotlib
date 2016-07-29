@@ -32,20 +32,6 @@ def draw_text(data, obj):
                             obj.arrow_patch.get_ec()
                             )
                         arrow_style.append(col)
-                    elif obj.arrowprops['ec'] is not None:
-                        data, col, _ = color.mpl_color2xcolor(
-                            data,
-                            obj.arrowprops['ec']
-                            )
-                        arrow_style.append(col)
-                    elif obj.arrowprops['edgecolor'] is not None:
-                        data, col, _ = color.mpl_color2xcolor(
-                            data,
-                            obj.arrowprops['edgecolor']
-                            )
-                        arrow_style.append(col)
-                    else:
-                        pass
 
             arrow_proto = '\\draw[%s] (axis cs:%.15g,%.15g) ' \
                           '-- (axis cs:%.15g,%.15g);\n'
