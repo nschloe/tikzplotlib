@@ -41,7 +41,7 @@ def draw_line2d(data, obj):
         mark_size = obj.get_markersize()
         if mark_size:
             # setting half size because pgfplots counts the radius/half-width
-            pgf_size = int(mark_size / 2)
+            pgf_size = int(0.5 * mark_size)
             # make sure we didn't round off to zero by accident
             if pgf_size == 0 and mark_size != 0:
                 pgf_size = 1

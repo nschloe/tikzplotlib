@@ -106,6 +106,7 @@ def write_document_header(file_handle, figure_width):
 \\usepackage{fontspec}
 \\usepackage{graphicx}
 \\usepackage{pgfplots}
+\\usetikzlibrary{shapes.arrows}
 \\usepgfplotslibrary{groupplots}
 \\pgfplotsset{compat=newest}
 \\newlength\\figwidth%%

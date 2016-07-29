@@ -55,6 +55,7 @@ def check_hash(test, name):
 \\usepackage[utf8]{inputenc}
 \\usepackage{pgfplots}
 \\usepgfplotslibrary{groupplots}
+\\usetikzlibrary{shapes.arrows}
 \\pgfplotsset{compat=newest}
 \\begin{document}
 \\input{%s}
