@@ -388,10 +388,7 @@ def _mpl_cmap2pgf_cmap(cmap):
     '''Converts a color map as given in matplotlib to a color map as
     represented in PGFPlots.
     '''
-    if not isinstance(cmap, mpl.colors.LinearSegmentedColormap):
-        print('Don''t know how to handle color map. Using ''blackwhite''.')
-        is_custom_colormap = False
-        return ('blackwhite', is_custom_colormap)
+    assert isinstance(cmap, mpl.colors.LinearSegmentedColormap)
 
     if cmap.is_gray():
         is_custom_colormap = False
