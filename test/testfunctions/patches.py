@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Some patches and a color bar'
-phash = '4fa4dbc2b463651c'
+phash = '3f83496cb526e51c'
 
 
 def plot():
-    from matplotlib.patches import Circle, Wedge, Polygon
+    from matplotlib.patches import Circle, Ellipse, Polygon, Rectangle, Wedge
     from matplotlib.collections import PatchCollection
     from matplotlib import pyplot as plt
     import numpy as np
@@ -24,6 +24,22 @@ def plot():
     for x1, y1, r in zip(x, y, radii):
         circle = Circle((x1, y1), r)
         patches.append(circle)
+
+    ellipse = Ellipse(
+            xy=[1.0, 0.5],
+            width=1.0,
+            height=0.5,
+            angle=45.0
+            )
+    patches.append(ellipse)
+
+    rect = Rectangle(
+            xy=[0.0, 0.25],
+            width=1.0,
+            height=0.5,
+            angle=-45.0
+            )
+    patches.append(rect)
 
     x = np.random.rand(N)
     y = np.random.rand(N)
