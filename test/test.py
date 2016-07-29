@@ -32,15 +32,16 @@ def check_hash(test, name):
     tikz_file = tmp_base + '_tikz.tex'
     matplotlib2tikz.save(
         tikz_file,
-        figurewidth='7.5cm',
-        show_info=True
+        figurewidth='7.5cm'
         )
 
     # test other height specs
     matplotlib2tikz.save(
         tikz_file + '.height',
         figureheight='7.5cm',
-        strict=True
+        show_info=True,
+        strict=True,
+        draw_rectangles=True
         )
 
     # save reference figure
