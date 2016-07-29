@@ -147,13 +147,6 @@ def save(filepath,
 
     disclaimer = 'This file was created by matplotlib2tikz v%s.' % __version__
 
-    if show_info:
-        disclaimer += \
-            '\nThe lastest updates can be retrieved from\n\n' \
-            + 'https://github.com/nschloe/matplotlib2tikz\n\n' \
-            + 'where you can also submit bug reports and leave' \
-            + 'comments.\n'
-
     # write disclaimer to the file header
     file_handle.write(_tex_comment(disclaimer))
 
