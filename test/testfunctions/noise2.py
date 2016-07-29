@@ -5,7 +5,6 @@ phash = '775ca33da3816983'
 
 
 def plot():
-    from numpy.random import randn
     from matplotlib import pyplot as pp
     import numpy as np
 
