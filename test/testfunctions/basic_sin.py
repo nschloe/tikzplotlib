@@ -15,7 +15,7 @@ def plot():
         s2 = np.cos(2*np.pi*t)
         A = plt.cm.jet(np.linspace(0, 1, 10))
         plt.plot(t, s, 'o-', lw=4.1, color=A[5])
-        plt.plot(t, s2, 'o-', lw=4.1)
+        plt.plot(t, s2, 'o-', lw=4.1, alpha=0.3)
         plt.xlabel('time(s)')
         # plt.xlabel('time(s) _ % $ \\')
         plt.ylabel('Voltage (mV)')
