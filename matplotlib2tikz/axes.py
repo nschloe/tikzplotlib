@@ -388,6 +388,17 @@ def _mpl_cmap2pgf_cmap(cmap):
     '''Converts a color map as given in matplotlib to a color map as
     represented in PGFPlots.
     '''
+    if isinstance(cmap, mpl.colors.LinearSegmentedColormap):
+        return _handle_linear_segmented_color_map(cmap)
+    elif isinstance(cmap, mpl.colors.ListedColormap):
+        return _handle_listed_color_map(cmap)
+    else:
+        raise RuntimeError(
+          'Only LinearSegmentedColormap and ListedColormap are supported'
+          )
+
+
+def _handle_linear_segmented_color_map(cmap):
     assert isinstance(cmap, mpl.colors.LinearSegmentedColormap)
 
     if cmap.is_gray():
@@ -424,32 +435,31 @@ def _mpl_cmap2pgf_cmap(cmap):
             red_comp = red[k_red][1]
             k_red += 1
         else:
-            red_comp = _linear_interpolation(x, (red[k_red - 1][0],
-                                                 red[k_red][0]),
-                                             (red[k_red - 1][2], red[k_red][1])
-                                             )
+            red_comp = _linear_interpolation(
+                    x,
+                    (red[k_red - 1][0], red[k_red][0]),
+                    (red[k_red - 1][2], red[k_red][1])
+                    )
 
         if green[k_green][0] == x:
             green_comp = green[k_green][1]
             k_green += 1
         else:
-            green_comp = _linear_interpolation(x,
-                                               (green[k_green - 1][0],
-                                                green[k_green][0]),
-                                               (green[k_green - 1][2],
-                                                green[k_green][1])
-                                               )
+            green_comp = _linear_interpolation(
+                    x,
+                    (green[k_green - 1][0], green[k_green][0]),
+                    (green[k_green - 1][2], green[k_green][1])
+                    )
 
         if blue[k_blue][0] == x:
             blue_comp = blue[k_blue][1]
             k_blue += 1
         else:
-            blue_comp = _linear_interpolation(x,
-                                              (blue[k_blue - 1][0],
-                                               blue[k_blue][0]),
-                                              (blue[k_blue - 1][2],
-                                               blue[k_blue][1])
-                                              )
+            blue_comp = _linear_interpolation(
+                    x,
+                    (blue[k_blue - 1][0], blue[k_blue][0]),
+                    (blue[k_blue - 1][2], blue[k_blue][1])
+                    )
 
         X.append(x)
         colors.append((red_comp, green_comp, blue_comp))
@@ -478,6 +488,31 @@ def _mpl_cmap2pgf_cmap(cmap):
 
     colormap_string = '{mymap}{[1%s]\n  %s\n}' % \
                       (unit, ';\n  '.join(color_changes))
+    is_custom_colormap = True
+    return (colormap_string, is_custom_colormap)
+
+
+def _handle_listed_color_map(cmap):
+    assert isinstance(cmap, mpl.colors.ListedColormap)
+
+    unit = 'pt'
+    if cmap.N is None or cmap.N == len(cmap.colors):
+        colors = [
+            'rgb(%d%s)=(%.15g,%.15g,%.15g)'
+            % (k, unit, color[0], color[1], color[2])
+            for (k, color) in enumerate(cmap.colors)
+            ]
+    else:
+        reps = int(float(cmap.N) / len(cmap.colors) - 0.5) + 1
+        repeated_cols = reps * cmap.colors
+        colors = [
+            'rgb(%d%s)=(%.15g,%.15g,%.15g)'
+            % (k, unit, color[0], color[1], color[2])
+            for (k, color) in enumerate(repeated_cols[:cmap.N])
+            ]
+
+    colormap_string = '{mymap}{[1%s]\n  %s\n}' % \
+                      (unit, ';\n  '.join(colors))
     is_custom_colormap = True
     return (colormap_string, is_custom_colormap)
 

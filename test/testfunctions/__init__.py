@@ -22,7 +22,8 @@ __all__ = [
   'scatter',
   'subplots',
   'subplot4x4',
-  'text_overlay'
+  'text_overlay',
+  'viridis'
   ]
 # Failing:
 # TODO resurrect
