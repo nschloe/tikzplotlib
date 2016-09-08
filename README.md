@@ -231,8 +231,6 @@ To create a new release
     ```
     $ make publish
     ```
-    and
-
 
 ### License
 
