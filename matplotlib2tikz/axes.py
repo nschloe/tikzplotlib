@@ -377,7 +377,6 @@ def _get_ticks(data, xy, ticks, ticklabels):
 def _is_colorbar_heuristic(obj):
     '''Find out if the object is in fact a color bar.
     '''
-    # Really, this is the heuristic? Yes.
     # TODO come up with something more accurate here
     # Might help:
     # TODO Are the colorbars exactly the l.collections.PolyCollection's?
@@ -387,8 +386,17 @@ def _is_colorbar_heuristic(obj):
         # e.g., aspect == 'equal'
         return False
 
-    return (aspect >= 10.0 and len(obj.get_xticks()) == 0) or \
-           (aspect <= 0.10 and len(obj.get_yticks()) == 0)
+    # Assume that something is a colorbar if and only if the ratio is above 5.0
+    # and there are no ticks on the corresponding axis. This isn't always true,
+    # though: The ratio of a color can be freely adjusted by the aspect
+    # keyword, e.g.,
+    #
+    #    plt.colorbar(im, aspect=5)
+    #
+    limit_ratio = 5.0
+
+    return (aspect >= limit_ratio and len(obj.get_xticks()) == 0) or \
+           (aspect <= 1.0/limit_ratio and len(obj.get_yticks()) == 0)
 
 
 def _mpl_cmap2pgf_cmap(cmap):
