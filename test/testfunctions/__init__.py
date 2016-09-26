@@ -9,6 +9,7 @@ __all__ = [
   'fancybox',
   'heat',
   'image_plot',
+  'image_plot2',
   'legends2',
   'legends',
   'line_collection',
