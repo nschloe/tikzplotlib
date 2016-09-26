@@ -381,7 +381,14 @@ def _is_colorbar_heuristic(obj):
     # TODO come up with something more accurate here
     # Might help:
     # TODO Are the colorbars exactly the l.collections.PolyCollection's?
-    return obj.get_aspect() in [20.0, 1.0/20.0]
+    try:
+        aspect = float(obj.get_aspect())
+    except ValueError:
+        # e.g., aspect == 'equal'
+        return False
+
+    return (aspect >= 10.0 and len(obj.get_xticks()) == 0) or \
+           (aspect <= 0.10 and len(obj.get_yticks()) == 0)
 
 
 def _mpl_cmap2pgf_cmap(cmap):

@@ -14,7 +14,7 @@ def plot():
     ax = plt.gca()
 
     im = ax.imshow(da, cmap='viridis')
-    plt.colorbar(im, aspect=10, shrink=0.8)
+    plt.colorbar(im, aspect=10, shrink=0.5)
 
     plt.title('A new figure')
 
