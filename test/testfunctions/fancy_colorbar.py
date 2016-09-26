@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-desc = 'Another \\texttt{imshow} plot'
+desc = 'Test colorbar options'
 phash = 'f50f0be941f841f4'
 
 
