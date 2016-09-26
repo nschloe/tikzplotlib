@@ -284,6 +284,7 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
 _MPLLINESTYLE_2_PGFPLOTSLINESTYLE = {
     '': None,
     'None': None,
+    'none': None,  # happens when using plt.boxplot()
     '-': None,
     ':': 'dotted',
     '--': 'dashed',
