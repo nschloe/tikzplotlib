@@ -8,7 +8,7 @@ __email__ = 'nico.schloemer@gmail.com'
 __copyright__ = 'Copyright (c) 2010-2016, %s <%s>' % (__author__, __email__)
 __credits__ = []
 __license__ = 'MIT License'
-__version__ = '0.5.12'
+__version__ = '0.5.13'
 __maintainer__ = 'Nico Schlömer'
 __status__ = 'Production'
 

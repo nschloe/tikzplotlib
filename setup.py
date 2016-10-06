@@ -25,7 +25,7 @@ setup(
     download_url='https://pypi.python.org/pypi/matplotlib2tikz',
     author=__author__,
     author_email=__email__,
-    requires=['matplotlib (>=1.4.0)', 'numpy'],
+    requires=['matplotlib (>=1.4.0)', 'numpy', 'Pillow (>= 3.0.0)'],
     description='convert matplotlib figures into TikZ/PGFPlots',
     long_description=read('README.rst'),
     license=__license__,
