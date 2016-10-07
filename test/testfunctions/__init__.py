@@ -23,9 +23,11 @@ __all__ = [
   'scatter',
   'subplots',
   'subplot4x4',
+  'subplots_with_colorbars',
   'text_overlay',
   'viridis'
   ]
+
 # Failing:
 # TODO resurrect
 #  'colorbars',

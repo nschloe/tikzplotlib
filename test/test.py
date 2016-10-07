@@ -6,7 +6,6 @@ import testfunctions
 import os
 import tempfile
 from importlib import import_module
-import hashlib
 import subprocess
 from PIL import Image
 import imagehash
@@ -19,7 +18,6 @@ from matplotlib import pyplot as plt
 
 def test_generator():
     for name in testfunctions.__all__:
-        print(name)
         test = import_module('testfunctions.' + name)
         yield check_hash, test, name
 
