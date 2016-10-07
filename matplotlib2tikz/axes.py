@@ -24,7 +24,12 @@ class Axes(object):
         self.is_subplot = False
 
         if isinstance(obj, mpl.axes.Subplot):
-            geom = obj.get_geometry()
+            # https://github.com/matplotlib/matplotlib/issues/7225#issuecomment-252173667
+            geom = obj \
+                .get_subplotspec() \
+                .get_topmost_subplotspec()\
+                .get_geometry()
+
             self.nsubplots = geom[0] * geom[1]
             if self.nsubplots > 1:
                 is_groupplot = True
@@ -34,7 +39,8 @@ class Axes(object):
 
                 if is_groupplot:
                     self.is_subplot = True
-                    self.subplot_index = geom[2]
+                    # subplotspec geometry positioning is 0-based
+                    self.subplot_index = geom[2] + 1
                     if self.subplot_index == 1:
                         self.content.append(
                             '\\begin{groupplot}[group style='
