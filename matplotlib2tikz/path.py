@@ -96,9 +96,10 @@ def draw_pathcollection(data, obj):
     labels = ['x' + 21*' ', 'y' + 21*' ']
     dd = obj.get_offsets()
 
-    draw_options = ['scatter', 'only marks']
+    draw_options = ['only marks']
     table_options = []
     if obj.get_array() is not None:
+        draw_options.append('scatter')
         dd = numpy.column_stack([dd, obj.get_array()])
         labels.append('colordata' + 13*' ')
         draw_options.append('scatter src=explicit')
