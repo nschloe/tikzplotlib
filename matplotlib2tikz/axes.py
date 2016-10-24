@@ -519,17 +519,18 @@ def _handle_listed_color_map(cmap):
     # check for predefined colormaps in both matplotlib and pgfplots
     from matplotlib import pyplot as plt
     cm_translate = {
-            'autumn': 'autumn',
-            'cool': 'cool',
-            'copper': 'copper',
-            'gray': 'gray',
-            'hot': 'hot2',
-            'hsv': 'hsv',
-            'jet': 'jet',
-            'spring': 'spring',
-            'summer': 'summer',
+            # All the rest are LinearSegmentedColorMaps. :/
+            # 'autumn': 'autumn',
+            # 'cool': 'cool',
+            # 'copper': 'copper',
+            # 'gray': 'blackwhite',
+            # 'hot': 'hot2',
+            # 'hsv': 'hsv',
+            # 'jet': 'jet',
+            # 'spring': 'spring',
+            # 'summer': 'summer',
             'viridis': 'viridis',
-            'winter': 'winter',
+            # 'winter': 'winter',
             }
     for mpl_cm, pgf_cm in cm_translate.items():
         if cmap.colors == plt.get_cmap(mpl_cm).colors:
