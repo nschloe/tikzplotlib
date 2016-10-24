@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 from . import color
+from .axes import _mpl_cmap2pgf_cmap
 
 import matplotlib as mpl
 import numpy
@@ -117,6 +118,15 @@ def draw_pathcollection(data, obj):
     # linewidths = obj.get_linewidths()
     data, draw_options = get_draw_options(data, ec, fc)
     draw_options.extend(['scatter', 'only marks'])
+
+    if obj.get_cmap():
+        mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(
+                obj.get_cmap()
+                )
+        if is_custom_cmap:
+            draw_options.append('colormap=' + mycolormap)
+        else:
+            draw_options.append('colormap/' + mycolormap)
 
     if draw_options:
         content.append('\\addplot [%s] ' % (', '.join(draw_options)))
