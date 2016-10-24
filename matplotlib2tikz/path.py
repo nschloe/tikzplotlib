@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 #
 from . import color
+from .axes import _mpl_cmap2pgf_cmap
 
 import matplotlib as mpl
+import numpy
 
 
 def draw_path(obj, data, path, draw_options=None, simplify=None):
@@ -88,30 +90,76 @@ def draw_pathcollection(data, obj):
     '''Returns PGFPlots code for a number of patch objects.
     '''
     content = []
-    # TODO Use those properties
-    # linewidths = obj.get_linewidths()
-    # gather the draw options
-    ec = obj.get_edgecolors()
-    fc = obj.get_facecolors()
-    # TODO always use [0]?
-    try:
-        ec = ec[0]
-    except (TypeError, IndexError):
-        ec = None
-    try:
-        fc = fc[0]
-    except (TypeError, IndexError):
-        fc = None
-    data, draw_options = get_draw_options(data, ec, fc)
-    draw_options.extend(['mark=*', 'only marks'])
 
+    # gather data
     assert obj.get_offsets() is not None
-    a = '\n'.join([' '.join(map(str, line)) for line in obj.get_offsets()])
-    if draw_options:
-        content.append('\\addplot [%s] table {%%\n%s\n};\n' %
-                       (', '.join(draw_options), a))
+    labels = ['x' + 21*' ', 'y' + 21*' ']
+    dd = obj.get_offsets()
+
+    draw_options = ['only marks']
+    table_options = []
+    if obj.get_array() is not None:
+        draw_options.append('scatter')
+        dd = numpy.column_stack([dd, obj.get_array()])
+        labels.append('colordata' + 13*' ')
+        draw_options.append('scatter src=explicit')
+        table_options.extend(['x=x', 'y=y', 'meta=colordata'])
+        ec = None
+        fc = None
     else:
-        content.append('\\addplot table {%%\n%s\n};\n' % a)
+        # gather the draw options
+        ec = obj.get_edgecolors()
+        fc = obj.get_facecolors()
+        try:
+            ec = ec[0]
+        except (TypeError, IndexError):
+            ec = None
+        try:
+            fc = fc[0]
+        except (TypeError, IndexError):
+            fc = None
+
+    # TODO Use linewidths
+    # linewidths = obj.get_linewidths()
+    data, extra_draw_options = get_draw_options(data, ec, fc)
+    draw_options.extend(extra_draw_options)
+
+    if obj.get_cmap():
+        mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(
+                obj.get_cmap()
+                )
+        if is_custom_cmap:
+            draw_options.append('colormap=' + mycolormap)
+        else:
+            draw_options.append('colormap/' + mycolormap)
+
+    if len(obj.get_sizes()) == len(dd):
+        # See Pgfplots manual, chapter 4.25.
+        # In Pgfplots, \mark size specifies raddi, in matplotlib circle areas.
+        radii = numpy.sqrt(obj.get_sizes() / numpy.pi)
+        dd = numpy.column_stack([dd, radii])
+        labels.append('sizedata' + 14*' ')
+        draw_options.extend([
+            'visualization depends on='
+            '{\\thisrow{sizedata} \\as\perpointmarksize}',
+            'scatter/@pre marker code/.append style='
+            '{/tikz/mark size=\perpointmarksize}',
+            ])
+
+    if draw_options:
+        content.append('\\addplot [%s]\n' % (', '.join(draw_options)))
+    else:
+        content.append('\\addplot\n')
+
+    if table_options:
+        content.append('table [%s]{%%\n' % ', '.join(table_options))
+    else:
+        content.append('table {%\n')
+    content.append((' '.join(labels)).strip() + '\n')
+    fmt = (' '.join(dd.shape[1] * ['%+.15e'])) + '\n'
+    for d in dd:
+        content.append(fmt % tuple(d))
+    content.append('};\n')
 
     return data, content
 
@@ -144,4 +192,5 @@ def get_draw_options(data, ec, fc):
             draw_options.append('fill opacity=%.15g' % fc_rgba[3])
     # TODO Use those properties
     # linewidths = obj.get_linewidths()
+
     return data, draw_options

@@ -3,8 +3,6 @@
 from . import color as mycol
 from . import path as mypath
 
-import numpy
-
 
 def draw_line2d(data, obj):
     '''Returns the PGFPlots code for an Line2D environment.
@@ -54,7 +52,9 @@ def draw_line2d(data, obj):
         mark_options = ['solid']
         if extra_mark_options:
             mark_options.append(extra_mark_options)
-        if marker_face_color is not None:
+        if marker_face_color == 'none':
+            mark_options.append('fill opacity=0')
+        elif marker_face_color is not None:
             data, face_xcolor, _ = mycol.mpl_color2xcolor(
                     data,
                     marker_face_color
@@ -266,7 +266,6 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
         data['pgfplots libs'].add('plotmarks')
         pgfplots_marker, marker_options = _MP_MARKER2PLOTMARKS[mpl_marker]
         if marker_face_color is not None and \
-           isinstance(marker_face_color, str) and \
            marker_face_color.lower() != 'none' and \
            pgfplots_marker not in ['|', '-']:
             pgfplots_marker += '*'
