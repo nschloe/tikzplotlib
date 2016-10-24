@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Multiple legend positions'
-phash = 'd568d464b8542bbb'
+phash = 'd558f444f0542bbb'
 
 
 def plot():
