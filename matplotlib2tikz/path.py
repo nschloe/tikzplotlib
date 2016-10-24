@@ -100,7 +100,7 @@ def draw_pathcollection(data, obj):
     table_options = []
     if obj.get_array() is not None:
         dd = numpy.column_stack([dd, obj.get_array()])
-        labels.append('colordata' + 12*' ')
+        labels.append('colordata' + 13*' ')
         draw_options.append('scatter src=explicit')
         table_options.extend(['x=x', 'y=y', 'meta=colordata'])
         ec = None
@@ -131,6 +131,19 @@ def draw_pathcollection(data, obj):
             draw_options.append('colormap=' + mycolormap)
         else:
             draw_options.append('colormap/' + mycolormap)
+
+    if len(obj.get_sizes()) == len(dd):
+        # See Pgfplots manual, chapter 4.25.
+        # In Pgfplots, \mark size specifies raddi, in matplotlib circle areas.
+        radii = numpy.sqrt(obj.get_sizes() / numpy.pi)
+        dd = numpy.column_stack([dd, radii])
+        labels.append('sizedata' + 14*' ')
+        draw_options.extend([
+            'visualization depends on='
+            '{\\thisrow{sizedata} \\as\perpointmarksize}',
+            'scatter/@pre marker code/.append style='
+            '{/tikz/mark size=\perpointmarksize}',
+            ])
 
     if draw_options:
         content.append('\\addplot [%s]\n' % (', '.join(draw_options)))
