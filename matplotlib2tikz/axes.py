@@ -516,6 +516,11 @@ def _handle_linear_segmented_color_map(cmap):
 def _handle_listed_color_map(cmap):
     assert isinstance(cmap, mpl.colors.ListedColormap)
 
+    from matplotlib import pyplot as plt
+    if cmap.colors == plt.get_cmap('viridis').colors:
+        is_custom_colormap = False
+        return ('viridis', is_custom_colormap)
+
     unit = 'pt'
     if cmap.N is None or cmap.N == len(cmap.colors):
         colors = [
