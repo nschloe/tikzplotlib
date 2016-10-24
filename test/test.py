@@ -127,3 +127,5 @@ def check_hash(test, name):
             print('Uploaded output PNG file to %s' % out.decode('utf-8'))
 
     assert test.phash == phash
+
+    return
