@@ -7,3 +7,4 @@ MANIFEST
 README.rst
 dist/
 build/
+.cache/
