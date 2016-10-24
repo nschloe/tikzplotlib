@@ -21,8 +21,10 @@ def draw_legend(data, obj):
     pad = 0.03
     if obj._loc == 0:
         # best
-        print('Legend location "best" not yet implemented, choosing "upper',
-              'right" instead.')
+        print(
+            'Legend location "best" not yet implemented, '
+            'choosing "upper right" instead.'
+            )
         position = None
         anchor = None
     elif obj._loc == 1:

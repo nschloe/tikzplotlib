@@ -220,6 +220,9 @@ def _recurse(data, obj):
     content = []
     for child in obj.get_children():
         if isinstance(child, mpl.axes.Axes):
+            # Reset 'extra axis options' for every new Axes environment.
+            data['extra axis options'] = set()
+
             ax = axes.Axes(data, child)
             if not ax.is_colorbar:
                 # Run through the children objects, gather the content.
