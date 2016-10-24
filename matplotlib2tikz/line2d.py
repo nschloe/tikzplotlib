@@ -266,7 +266,6 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
         data['pgfplots libs'].add('plotmarks')
         pgfplots_marker, marker_options = _MP_MARKER2PLOTMARKS[mpl_marker]
         if marker_face_color is not None and \
-           isinstance(marker_face_color, str) and \
            marker_face_color.lower() != 'none' and \
            pgfplots_marker not in ['|', '-']:
             pgfplots_marker += '*'
