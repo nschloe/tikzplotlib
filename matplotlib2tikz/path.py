@@ -192,4 +192,5 @@ def get_draw_options(data, ec, fc):
             draw_options.append('fill opacity=%.15g' % fc_rgba[3])
     # TODO Use those properties
     # linewidths = obj.get_linewidths()
+
     return data, draw_options

@@ -8,6 +8,7 @@ __all__ = [
   'errorbar',
   'fancybox',
   'fancy_colorbar',
+  'fillstyle',
   'heat',
   'image_plot',
   'legends2',

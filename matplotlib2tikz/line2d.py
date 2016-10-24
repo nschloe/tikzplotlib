@@ -52,7 +52,9 @@ def draw_line2d(data, obj):
         mark_options = ['solid']
         if extra_mark_options:
             mark_options.append(extra_mark_options)
-        if marker_face_color is not None:
+        if marker_face_color == 'none':
+            mark_options.append('fill opacity=0')
+        elif marker_face_color is not None:
             data, face_xcolor, _ = mycol.mpl_color2xcolor(
                     data,
                     marker_face_color
