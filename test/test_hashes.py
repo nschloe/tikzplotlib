@@ -103,7 +103,10 @@ def test_hash(name):
                 ['curl', '-sT', mpl_reference, 'chunk.io'],
                 stderr=subprocess.STDOUT
                 )
-            print('Uploaded reference matplotlib PDF file to %s' % out)
+            print(
+                'Uploaded reference matplotlib PDF file to %s' %
+                out.decode('utf-8')
+                )
 
             out = subprocess.check_output(
                 ['curl', '-sT', tikz_file, 'chunk.io'],
