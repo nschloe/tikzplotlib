@@ -6,6 +6,7 @@ import testfunctions
 import os
 import tempfile
 from importlib import import_module
+import pytest
 import subprocess
 from PIL import Image
 import imagehash
@@ -16,13 +17,9 @@ if 'DISPLAY' not in os.environ:
 from matplotlib import pyplot as plt
 
 
-def test_generator():
-    for name in testfunctions.__all__:
-        test = import_module('testfunctions.' + name)
-        yield check_hash, test, name
-
-
-def check_hash(test, name):
+@pytest.mark.parametrize('name', testfunctions.__all__)
+def test_hash(name):
+    test = import_module('testfunctions.' + name)
     # import the test
     fig = test.plot()
     # convert to tikz file
