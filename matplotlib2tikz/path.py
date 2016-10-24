@@ -89,29 +89,8 @@ def draw_pathcollection(data, obj):
     '''Returns PGFPlots code for a number of patch objects.
     '''
     content = []
-    # TODO Use those properties
-    # linewidths = obj.get_linewidths()
-    # gather the draw options
-    ec = obj.get_edgecolors()
-    fc = obj.get_facecolors()
-    # TODO always use [0]?
-    try:
-        ec = ec[0]
-    except (TypeError, IndexError):
-        ec = None
-    try:
-        fc = fc[0]
-    except (TypeError, IndexError):
-        fc = None
-    data, draw_options = get_draw_options(data, ec, fc)
-    draw_options.extend(['mark=*', 'only marks'])
 
-    if draw_options:
-        content.append('\\addplot [%s] ' % (', '.join(draw_options)))
-    else:
-        content.append('\\addplot ')
-
-    # add data
+    # gather data
     assert obj.get_offsets() is not None
     labels = ['x' + 21*' ', 'y' + 21*' ']
     dd = obj.get_offsets()
@@ -119,6 +98,30 @@ def draw_pathcollection(data, obj):
     if obj.get_array() is not None:
         dd = numpy.column_stack([dd, obj.get_array()])
         labels.append('colordata' + 12*' ')
+        ec = None
+        fc = None
+    else:
+        # gather the draw options
+        ec = obj.get_edgecolors()
+        fc = obj.get_facecolors()
+        try:
+            ec = ec[0]
+        except (TypeError, IndexError):
+            ec = None
+        try:
+            fc = fc[0]
+        except (TypeError, IndexError):
+            fc = None
+
+    # TODO Use linewidths
+    # linewidths = obj.get_linewidths()
+    data, draw_options = get_draw_options(data, ec, fc)
+    draw_options.extend(['scatter', 'only marks'])
+
+    if draw_options:
+        content.append('\\addplot [%s] ' % (', '.join(draw_options)))
+    else:
+        content.append('\\addplot ')
 
     content.append('table {%\n')
     content.append((' '.join(labels)).strip() + '\n')
