@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Simple $\sin$ and $\cos$ plots with markers'
-phash = 'ff2c46a6a9560547'
+phash = 'ff2c46a629564547'
 
 
 def plot():
