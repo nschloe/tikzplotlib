@@ -32,6 +32,7 @@ before_install:
   # <https://pillow.readthedocs.org/en/latest/installation.html#linux-installation>.
   - sudo apt-get -y install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk
   - sudo apt-get -y install python-pytest python3-pytest
+  - sudo apt-get -y install python-pip python3-pip
   - pip install pytest-cov
 
 install:
