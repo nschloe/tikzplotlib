@@ -96,9 +96,13 @@ def draw_pathcollection(data, obj):
     labels = ['x' + 21*' ', 'y' + 21*' ']
     dd = obj.get_offsets()
 
+    draw_options = ['scatter', 'only marks']
+    table_options = []
     if obj.get_array() is not None:
         dd = numpy.column_stack([dd, obj.get_array()])
         labels.append('colordata' + 12*' ')
+        draw_options.append('scatter src=explicit')
+        table_options.extend(['x=x', 'y=y', 'meta=colordata'])
         ec = None
         fc = None
     else:
@@ -116,8 +120,8 @@ def draw_pathcollection(data, obj):
 
     # TODO Use linewidths
     # linewidths = obj.get_linewidths()
-    data, draw_options = get_draw_options(data, ec, fc)
-    draw_options.extend(['scatter', 'only marks'])
+    data, extra_draw_options = get_draw_options(data, ec, fc)
+    draw_options.extend(extra_draw_options)
 
     if obj.get_cmap():
         mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(
@@ -129,11 +133,14 @@ def draw_pathcollection(data, obj):
             draw_options.append('colormap/' + mycolormap)
 
     if draw_options:
-        content.append('\\addplot [%s] ' % (', '.join(draw_options)))
+        content.append('\\addplot [%s]\n' % (', '.join(draw_options)))
     else:
-        content.append('\\addplot ')
+        content.append('\\addplot\n')
 
-    content.append('table {%\n')
+    if table_options:
+        content.append('table [%s]{%%\n' % ', '.join(table_options))
+    else:
+        content.append('table {%\n')
     content.append((' '.join(labels)).strip() + '\n')
     fmt = (' '.join(dd.shape[1] * ['%+.15e'])) + '\n'
     for d in dd:
