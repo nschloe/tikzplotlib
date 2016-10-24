@@ -3,6 +3,7 @@
 from . import color
 
 import matplotlib as mpl
+import numpy
 
 
 def draw_path(obj, data, path, draw_options=None, simplify=None):
@@ -105,13 +106,26 @@ def draw_pathcollection(data, obj):
     data, draw_options = get_draw_options(data, ec, fc)
     draw_options.extend(['mark=*', 'only marks'])
 
-    assert obj.get_offsets() is not None
-    a = '\n'.join([' '.join(map(str, line)) for line in obj.get_offsets()])
     if draw_options:
-        content.append('\\addplot [%s] table {%%\n%s\n};\n' %
-                       (', '.join(draw_options), a))
+        content.append('\\addplot [%s] ' % (', '.join(draw_options)))
     else:
-        content.append('\\addplot table {%%\n%s\n};\n' % a)
+        content.append('\\addplot ')
+
+    # add data
+    assert obj.get_offsets() is not None
+    labels = ['x' + 21*' ', 'y' + 21*' ']
+    dd = obj.get_offsets()
+
+    if obj.get_array() is not None:
+        dd = numpy.column_stack([dd, obj.get_array()])
+        labels.append('colordata' + 12*' ')
+
+    content.append('table {%\n')
+    content.append((' '.join(labels)).strip() + '\n')
+    fmt = (' '.join(dd.shape[1] * ['%+.15e'])) + '\n'
+    for d in dd:
+        content.append(fmt % tuple(d))
+    content.append('};\n')
 
     return data, content
 

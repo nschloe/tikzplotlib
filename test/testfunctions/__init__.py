@@ -21,6 +21,7 @@ __all__ = [
   'patches',
   'quadmesh',
   'scatter',
+  'scatter_colormap',
   'subplots',
   'subplot4x4',
   'subplots_with_colorbars',

@@ -3,8 +3,6 @@
 from . import color as mycol
 from . import path as mypath
 
-import numpy
-
 
 def draw_line2d(data, obj):
     '''Returns the PGFPlots code for an Line2D environment.
