@@ -8,6 +8,7 @@ def plot():
     from matplotlib import pyplot as plt
     import numpy as np
     fig = plt.figure()
+    np.random.seed(123)
     plt.scatter(
             np.random.randn(10),
             np.random.randn(10),
