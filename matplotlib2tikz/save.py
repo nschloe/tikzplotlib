@@ -145,6 +145,11 @@ def save(filepath,
     # gather the file content
     data, content = _recurse(data, figure)
 
+    # Check if there is still an open groupplot environment. This occurs if not
+    # all of the group plot slots are used.
+    if 'is_in_groupplot_env' in data and data['is_in_groupplot_env']:
+        content.extend('\\end{groupplot}\n\n')
+
     disclaimer = 'This file was created by matplotlib2tikz v%s.' % __version__
 
     # write disclaimer to the file header
@@ -225,7 +230,7 @@ def _recurse(data, obj):
 
             ax = axes.Axes(data, child)
             if not ax.is_colorbar:
-                # Run through the children objects, gather the content.
+                # Run through the child objects, gather the content.
                 data, children_content = _recurse(data, child)
                 # add extra axis options from children
                 if data['extra axis options']:
@@ -233,7 +238,7 @@ def _recurse(data, obj):
                 # populate content
                 content.extend(ax.get_begin_code())
                 content.extend(children_content)
-                content.extend(ax.get_end_code())
+                content.extend(ax.get_end_code(data))
         elif isinstance(child, mpl.lines.Line2D):
             data, cont = line2d.draw_line2d(data, child)
             content.extend(cont)
