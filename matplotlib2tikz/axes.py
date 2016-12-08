@@ -41,11 +41,13 @@ class Axes(object):
                     self.is_subplot = True
                     # subplotspec geometry positioning is 0-based
                     self.subplot_index = geom[2] + 1
-                    if self.subplot_index == 1:
+                    if 'is_in_groupplot_env' not in data \
+                      or not data['is_in_groupplot_env']:
                         self.content.append(
                             '\\begin{groupplot}[group style='
                             '{group size=%.d by %.d}]\n' % (geom[1], geom[0])
                             )
+                        data['is_in_groupplot_env'] = True
                         data['pgfplots libs'].add('groupplots')
 
         self.axis_options = []
@@ -327,10 +329,11 @@ class Axes(object):
             content.append('[\n' + ',\n'.join(self.axis_options) + '\n]\n')
         return content
 
-    def get_end_code(self):
+    def get_end_code(self, data):
         if not self.is_subplot:
             return '\\end{axis}\n\n'
         elif self.is_subplot and self.nsubplots == self.subplot_index:
+            data['is_in_groupplot_env'] = False
             return '\\end{groupplot}\n\n'
         else:
             return ''
