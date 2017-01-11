@@ -208,7 +208,7 @@ def _print_pgfplot_libs_message(data):
     print('=========================================================')
     print('Please add the following lines to your LaTeX preamble:\n')
     print('\\usepackage[utf8]{inputenc}')
-    print('\\usepackage{fontspec}',
+    print('\\usepackage{fontspec}'
           '% This Line only for XeLaTeX and LuaLaTeX')
     print('\\usepackage{pgfplots}')
     if tikzlibs:
