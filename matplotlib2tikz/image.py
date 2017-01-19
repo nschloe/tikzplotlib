@@ -33,7 +33,8 @@ def draw_image(data, obj):
                           arr=img_array,
                           cmap=obj.get_cmap(),
                           vmin=clims[0],
-                          vmax=clims[1]
+                          vmax=clims[1],
+                          origin=obj.origin
                           )
     else:
         # RGB (+alpha) information at each point
