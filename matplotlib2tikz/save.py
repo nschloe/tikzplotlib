@@ -130,8 +130,13 @@ def save(filepath,
         data['extra axis options'] = extra.copy()
     else:
         data['extra axis options'] = set()
+
     if dpi is None:
-        data['dpi'] = mpl.rcParams['savefig.dpi']
+        savefig_dpi = mpl.rcParams['savefig.dpi']
+        if isinstance(savefig_dpi, str):
+            data['dpi'] = mpl.rcParams['figure.dpi']
+        else:
+            data['dpi'] = savefig_dpi
     else:
         data['dpi'] = dpi
 
