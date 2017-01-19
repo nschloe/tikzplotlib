@@ -18,9 +18,10 @@ def draw_image(data, obj):
     file_exists = True
     while file_exists:
         data['img number'] = data['img number'] + 1
-        filename = os.path.join(data['output dir'],
-                                'img' + str(data['img number']) + '.png'
-                                )
+        filename = os.path.join(
+            data['output dir'],
+            data['base name'] + str(data['img number']) + '.png'
+        )
         file_exists = os.path.isfile(filename)
 
     # store the image as in a file
