@@ -234,7 +234,7 @@ class Axes(object):
             self.axis_options.append('axis line style={%s}' % col)
 
         # background color
-        bgcolor = obj.get_axis_bgcolor()
+        bgcolor = obj.get_facecolor()
         data, col, _ = color.mpl_color2xcolor(data, bgcolor)
         if col != 'white':
             self.axis_options.append('axis background/.style={fill=%s}' % col)
