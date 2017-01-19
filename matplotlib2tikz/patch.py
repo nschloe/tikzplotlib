@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 #
-from . import color
 from . import path as mypath
 
 import matplotlib as mpl
@@ -34,8 +33,12 @@ def draw_patchcollection(data, obj):
     '''
     content = []
     # Gather the draw options.
+    edge_colors = obj.get_edgecolor()
+    edge_color = None if len(edge_colors) == 0 else edge_colors[0]
+    face_colors = obj.get_facecolor()
+    face_color = None if len(face_colors) == 0 else face_colors[0]
     data, draw_options = mypath.get_draw_options(
-            data, obj.get_edgecolor()[0], obj.get_facecolor()[0]
+            data, edge_color, face_color
             )
     for path in obj.get_paths():
         data, cont = mypath.draw_path(

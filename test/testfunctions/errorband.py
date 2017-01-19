@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-desc = 'Simple $\sin$ plot with an errorband, which generates a \
+desc = 'Simple $\sin$ plot with an errorband, which generates an \
         mpl.collections.PolyCollection'
 phash = 'af2cd712256457ac'
 
