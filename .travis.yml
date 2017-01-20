@@ -15,6 +15,7 @@ virtualenv:
 addons:
   apt:
     packages:
+      - pgf
       - texlive-latex-base
       - texlive-latex-extra
       # for ImageHash
