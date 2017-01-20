@@ -11,7 +11,7 @@ from . import text as mytext
 
 import os
 import matplotlib as mpl
-from matplotlib2tikz import __version__
+from .__about__ import __version__
 
 
 def save(filepath,
