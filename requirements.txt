@@ -1,5 +1,0 @@
-matplotlib >= 1.4.0
-numpy
-ImageHash
-Pillow >= 3.4.0
-readme
