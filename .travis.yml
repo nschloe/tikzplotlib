@@ -1,47 +1,44 @@
-# We cannot enable container-based infrastructure for now since we need TeXlive
-# from a PPA
-#sudo: false
-sudo: true
 dist: trusty
 
-
-# Work around travis bug:
-# https://github.com/travis-ci/travis-ci/issues/4948#issuecomment-152839021
-#language: generic
 language: python
 
 python:
-    # Get python 2.7 back in once travis bug
-    # <https://github.com/travis-ci/travis-ci/issues/4948> is solved.
     - '2.7'
     - '3.4'
-    #- '3.5.0'
 
 virtualenv:
   system_site_packages: true
 
+addons:
+  apt:
+    packages:
+      - pgf
+      - texlive-latex-base
+      - texlive-latex-extra
+      # for ImageHash
+      - python-scipy
+      - python3-scipy
+      #
+      - poppler-utils
+      - pandoc
+      # Dependencies of Pillow, see
+      # <https://pillow.readthedocs.org/en/latest/installation.html#linux-installation>.
+      - libtiff5-dev
+      - libjpeg8-dev
+      - zlib1g-dev
+      - libfreetype6-dev
+      - liblcms2-dev
+      - libwebp-dev
+      - tcl8.6-dev
+      - tk8.6-dev
+      - python-tk
+
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get -y install texlive-latex-base texlive-latex-extra
-  - sudo apt-get -y install python-scipy python3-scipy  # for ImageHash
-  - sudo apt-get -y install poppler-utils
-  - sudo apt-get -y install pandoc
-  - sudo apt-get -y build-dep python-matplotlib python3-matplotlib
-  - sudo apt-get -y install python-setuptools python3-setuptools
-  # Dependencies of Pillow, see
-  # <https://pillow.readthedocs.org/en/latest/installation.html#linux-installation>.
-  - sudo apt-get -y install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk
-  - sudo apt-get -y install python-pytest python3-pytest
-  - sudo apt-get -y install python-pip python3-pip
-  - pip install pytest-cov
+  - pip install pytest pytest-cov
 
 install:
-  - sudo pip install -r requirements.txt
-  - sudo pip3 install -r requirements.txt
-  # Alternative: setup.py install.
-  # Using pip makes sure that the package is pip-compatible, too.
-  - sudo pip install .
-  - sudo pip3 install .
+  - pip install -r test_requirements.txt
+  - pip install .
 
 cache: pip
 
@@ -57,7 +54,7 @@ script:
   # cd into test directory to make sure we're using the pip-installed
   # matplotlib2tikz.
   - cd test
-  - pytest --cov matplotlib2tikz
+  - MPLBACKEND=Agg pytest --cov matplotlib2tikz
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

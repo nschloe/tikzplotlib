@@ -42,7 +42,7 @@ class Axes(object):
                     # subplotspec geometry positioning is 0-based
                     self.subplot_index = geom[2] + 1
                     if 'is_in_groupplot_env' not in data \
-                      or not data['is_in_groupplot_env']:
+                            or not data['is_in_groupplot_env']:
                         self.content.append(
                             '\\begin{groupplot}[group style='
                             '{group size=%.d by %.d}]\n' % (geom[1], geom[0])
@@ -234,7 +234,13 @@ class Axes(object):
             self.axis_options.append('axis line style={%s}' % col)
 
         # background color
-        bgcolor = obj.get_axis_bgcolor()
+        try:
+            # mpl 2.*
+            bgcolor = obj.get_facecolor()
+        except AttributeError:
+            # mpl 1.*
+            bgcolor = obj.get_axis_bgcolor()
+
         data, col, _ = color.mpl_color2xcolor(data, bgcolor)
         if col != 'white':
             self.axis_options.append('axis background/.style={fill=%s}' % col)

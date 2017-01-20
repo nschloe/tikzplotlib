@@ -10,10 +10,6 @@ import pytest
 import subprocess
 from PIL import Image
 import imagehash
-import matplotlib as mpl
-if 'DISPLAY' not in os.environ:
-    # headless mode, for remote executions (and travis)
-    mpl.use('Agg')
 from matplotlib import pyplot as plt
 
 
@@ -64,11 +60,26 @@ def test_hash(name):
     os.chdir(os.path.dirname(tex_file))
 
     # compile the output to pdf
-    tex_out = subprocess.check_output(
-        # use pdflatex for now until travis features a more modern lualatex
-        ['pdflatex', '--interaction=nonstopmode', tex_file],
-        stderr=subprocess.STDOUT
-        )
+    try:
+        tex_out = subprocess.check_output(
+            # use pdflatex for now until travis features a more modern lualatex
+            ['pdflatex', '--interaction=nonstopmode', tex_file],
+            stderr=subprocess.STDOUT
+            )
+    except subprocess.CalledProcessError as e:
+        print('Command output:')
+        print('=' * 70)
+        print(repr(e.output))
+        print('=' * 70)
+        if 'DISPLAY' not in os.environ:
+            cmd = ['curl', '-sT', tikz_file, 'chunk.io']
+            out = subprocess.check_output(
+                cmd,
+                stderr=subprocess.STDOUT
+                )
+            print('Uploaded TikZ file to %s' % out.decode('utf-8'))
+        raise
+
     pdf_file = tmp_base + '.pdf'
 
     # Convert PDF to PNG.

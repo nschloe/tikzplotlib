@@ -11,7 +11,7 @@ from . import text as mytext
 
 import os
 import matplotlib as mpl
-from matplotlib2tikz import __version__
+from .__about__ import __version__
 
 
 def save(filepath,
@@ -130,8 +130,13 @@ def save(filepath,
         data['extra axis options'] = extra.copy()
     else:
         data['extra axis options'] = set()
+
     if dpi is None:
-        data['dpi'] = mpl.rcParams['savefig.dpi']
+        savefig_dpi = mpl.rcParams['savefig.dpi']
+        if isinstance(savefig_dpi, int):
+            data['dpi'] = savefig_dpi
+        else:
+            data['dpi'] = mpl.rcParams['figure.dpi']
     else:
         data['dpi'] = dpi
 

@@ -4,7 +4,11 @@ from distutils.core import setup
 import os
 import codecs
 
-from matplotlib2tikz import __version__, __license__, __author__, __email__
+# https://packaging.python.org/single_source_version/
+base_dir = os.path.abspath(os.path.dirname(__file__))
+about = {}
+with open(os.path.join(base_dir, 'matplotlib2tikz', '__about__.py')) as f:
+    exec(f.read(), about)
 
 
 def read(fname):
@@ -17,18 +21,24 @@ def read(fname):
         content = ''
     return content
 
+
 setup(
     name='matplotlib2tikz',
-    version=__version__,
+    version=about['__version__'],
     packages=['matplotlib2tikz'],
     url='https://github.com/nschloe/matplotlib2tikz',
     download_url='https://pypi.python.org/pypi/matplotlib2tikz',
-    author=__author__,
-    author_email=__email__,
-    requires=['matplotlib (>=1.4.0)', 'numpy', 'Pillow (>= 3.0.0)'],
+    author=about['__author__'],
+    author_email=about['__email__'],
+    install_requires=[
+        'matplotlib >=1.4.0',
+        'numpy',
+        'Pillow >= 3.0.0',
+        'pipdated',
+        ],
     description='convert matplotlib figures into TikZ/PGFPlots',
     long_description=read('README.rst'),
-    license=__license__,
+    license=about['__license__'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: MIT License',
