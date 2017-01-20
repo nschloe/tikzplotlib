@@ -70,13 +70,10 @@ def test_hash(name):
             ['pdflatex', '--interaction=nonstopmode', tex_file],
             stderr=subprocess.STDOUT
             )
-    except subprocess.CalledProcessError:
-        print('XXX EXCEPT')
-        print('DISPLAY' in os.environ)
-        print(tikz_file)
+    except subprocess.CalledProcessError as e:
+        print(e.output)
         if 'DISPLAY' not in os.environ:
             cmd = ['curl', '-sT', tikz_file, 'chunk.io']
-            print(cmd)
             out = subprocess.check_output(
                 cmd,
                 stderr=subprocess.STDOUT
