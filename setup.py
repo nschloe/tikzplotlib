@@ -35,7 +35,7 @@ setup(
         'numpy',
         'Pillow >= 3.0.0'
         ],
-    test_requires=[
+    test_require=[
         'ImageHash'
         ],
     description='convert matplotlib figures into TikZ/PGFPlots',
