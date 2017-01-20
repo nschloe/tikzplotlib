@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Simple $\sin$ plot with some labels'
-phash = '5f34e1ce21c3e5c1'
+# phash = '5f34e1ce21c3e5c1'
+phash = '1f36e1ce21c1e7c1'
 
 
 def plot():

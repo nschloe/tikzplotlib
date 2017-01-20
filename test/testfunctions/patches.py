@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Some patches and a color bar'
-phash = '7db1494c8762f11e'
+#phash = '7db1494c8762f11e'
+phash = '7ff8494a87627116'
 
 
 def plot():
