@@ -33,7 +33,8 @@ setup(
     install_requires=[
         'matplotlib >=1.4.0',
         'numpy',
-        'Pillow >= 3.0.0'
+        'Pillow >= 3.0.0',
+        'pipdated',
         ],
     description='convert matplotlib figures into TikZ/PGFPlots',
     long_description=read('README.rst'),

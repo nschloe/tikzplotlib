@@ -15,3 +15,9 @@ from matplotlib2tikz.__about__ import (
         )
 
 from matplotlib2tikz.save import save
+
+import pipdated
+if pipdated.needs_checking('matplotlib2tikz'):
+    msg = pipdated.check('matplotlib2tikz', __version__)
+    if msg:
+        print(msg)
