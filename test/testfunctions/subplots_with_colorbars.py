@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Subplots with colorbars'
-phash = '6bc03fc02a9fc03f'
+# phash = '6bc03fc02a9fc03f'
+phash = '6bc42fd02b95c03f'
 
 
 def plot():

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Noise with a horizontal color bar'
-phash = '775ca33da3816983'
+phash = '5f5ca33da3816983'
 
 
 def plot():

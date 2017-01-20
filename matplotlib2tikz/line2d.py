@@ -52,18 +52,27 @@ def draw_line2d(data, obj):
         mark_options = ['solid']
         if extra_mark_options:
             mark_options.append(extra_mark_options)
-        if marker_face_color == 'none':
+        if marker_face_color in [None, 'none']:
             mark_options.append('fill opacity=0')
-        elif marker_face_color is not None:
+        else:
             data, face_xcolor, _ = mycol.mpl_color2xcolor(
                     data,
                     marker_face_color
                     )
             if face_xcolor != line_xcolor:
                 mark_options.append('fill=' + face_xcolor)
-        if (marker_edge_color is not None) and \
-                ((type(marker_edge_color) != type(marker_face_color)) or
-                    (marker_edge_color != marker_face_color)):
+
+        face_and_edge_have_equal_color = \
+            marker_edge_color == marker_face_color
+        # Sometimes, the colors are given as arrays. Collapse them into a
+        # single boolean.
+        try:
+            face_and_edge_have_equal_color = \
+                all(face_and_edge_have_equal_color)
+        except TypeError:
+            pass
+
+        if not face_and_edge_have_equal_color:
             data, draw_xcolor, _ = mycol.mpl_color2xcolor(
                     data,
                     marker_edge_color

@@ -3,13 +3,21 @@
 '''Script to convert Matplotlib generated figures into TikZ/PGFPlots figures.
 '''
 
-__author__ = 'Nico Schlömer'
-__email__ = 'nico.schloemer@gmail.com'
-__copyright__ = 'Copyright (c) 2010-2016, %s <%s>' % (__author__, __email__)
-__credits__ = []
-__license__ = 'MIT License'
-__version__ = '0.5.16'
-__maintainer__ = 'Nico Schlömer'
-__status__ = 'Production'
+from matplotlib2tikz.__about__ import (
+        __author__,
+        __email__,
+        __copyright__,
+        __credits__,
+        __license__,
+        __version__,
+        __maintainer__,
+        __status__
+        )
 
 from matplotlib2tikz.save import save
+
+import pipdated
+if pipdated.needs_checking('matplotlib2tikz'):
+    msg = pipdated.check('matplotlib2tikz', __version__)
+    if msg:
+        print(msg)

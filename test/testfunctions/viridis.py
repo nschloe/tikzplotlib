@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Viridis color map'
-phash = 'fd7e03fc03ad0381'
+# phash = 'fd7e03fc03ad0381'
+phash = 'fd7e03fc03bc0381'
 
 
 def plot():

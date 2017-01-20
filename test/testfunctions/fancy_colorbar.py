@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Test colorbar options'
-phash = 'b733c9dc03dc4952'
+# phash = 'b733c9dc03dc4952'
+phash = 'b733c9fc03dc4942'
 
 
 def plot():
