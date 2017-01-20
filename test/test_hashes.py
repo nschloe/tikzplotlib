@@ -70,7 +70,7 @@ def test_hash(name):
             ['pdflatex', '--interaction=nonstopmode', tex_file],
             stderr=subprocess.STDOUT
             )
-    except OSError:
+    except subprocess.CalledProcessError:
         if 'DISPLAY' not in os.environ:
             out = subprocess.check_output(
                 ['curl', '-sT', tikz_file, 'chunk.io'],
