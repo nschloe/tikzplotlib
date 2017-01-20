@@ -1,13 +1,5 @@
-# We cannot enable container-based infrastructure for now since we need TeXlive
-# from a PPA
-#sudo: false
-sudo: true
 dist: trusty
 
-
-# Work around travis bug:
-# https://github.com/travis-ci/travis-ci/issues/4948#issuecomment-152839021
-#language: generic
 language: python
 
 python:
@@ -20,17 +12,30 @@ python:
 virtualenv:
   system_site_packages: true
 
+addons:
+  apt:
+    packages:
+      - texlive-latex-base
+      - texlive-latex-extra
+      # for ImageHash
+      - python-scipy
+      - python3-scipy
+      #
+      - poppler-utils
+      - pandoc
+      # Dependencies of Pillow, see
+      # <https://pillow.readthedocs.org/en/latest/installation.html#linux-installation>.
+      - libtiff5-dev
+      - libjpeg8-dev
+      - zlib1g-dev
+      - libfreetype6-dev
+      - liblcms2-dev
+      - libwebp-dev
+      - tcl8.6-dev
+      - tk8.6-dev
+      - python-tk
+
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get -y install texlive-latex-base texlive-latex-extra
-  - sudo apt-get -y install python-scipy python3-scipy  # for ImageHash
-  - sudo apt-get -y install poppler-utils
-  - sudo apt-get -y install pandoc
-  - sudo apt-get -y build-dep python-matplotlib python3-matplotlib
-  - sudo apt-get -y install python-setuptools python3-setuptools
-  # Dependencies of Pillow, see
-  # <https://pillow.readthedocs.org/en/latest/installation.html#linux-installation>.
-  - sudo apt-get -y install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk
   - pip install pytest pytest-cov
 
 install:
