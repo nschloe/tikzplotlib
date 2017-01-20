@@ -64,18 +64,21 @@ def test_hash(name):
     os.chdir(os.path.dirname(tex_file))
 
     # compile the output to pdf
-    tex_out = subprocess.check_output(
-        # use pdflatex for now until travis features a more modern lualatex
-        ['pdflatex', '--interaction=nonstopmode', tex_file],
-        stderr=subprocess.STDOUT
-        )
-    # FIXME
-    out = subprocess.check_output(
-        ['curl', '-sT', tikz_file, 'chunk.io'],
-        stderr=subprocess.STDOUT
-        )
-    print('Uploaded TikZ file to %s' % out.decode('utf-8'))
-    #
+    try:
+        tex_out = subprocess.check_output(
+            # use pdflatex for now until travis features a more modern lualatex
+            ['pdflatex', '--interaction=nonstopmode', tex_file],
+            stderr=subprocess.STDOUT
+            )
+    except OSError:
+        if 'DISPLAY' not in os.environ:
+            out = subprocess.check_output(
+                ['curl', '-sT', tikz_file, 'chunk.io'],
+                stderr=subprocess.STDOUT
+                )
+            print('Uploaded TikZ file to %s' % out.decode('utf-8'))
+        raise
+
     pdf_file = tmp_base + '.pdf'
 
     # Convert PDF to PNG.
