@@ -31,9 +31,9 @@ setup(
     author=about['__author__'],
     author_email=about['__email__'],
     install_requires=[
-        'matplotlib (>=1.4.0)',
+        'matplotlib >=1.4.0',
         'numpy',
-        'Pillow (>= 3.0.0)'
+        'Pillow >= 3.0.0'
         ],
     test_requires=[
         'ImageHash'
