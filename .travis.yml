@@ -39,6 +39,7 @@ before_install:
   - pip install pytest pytest-cov
 
 install:
+  - pip install -r test_requirements.txt
   - pip install "matplotlib < 2.0"  # for now
   - pip install .
 
