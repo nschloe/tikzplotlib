@@ -133,10 +133,10 @@ def save(filepath,
 
     if dpi is None:
         savefig_dpi = mpl.rcParams['savefig.dpi']
-        if isinstance(savefig_dpi, str):
-            data['dpi'] = mpl.rcParams['figure.dpi']
-        else:
+        if isinstance(savefig_dpi, int):
             data['dpi'] = savefig_dpi
+        else:
+            data['dpi'] = mpl.rcParams['figure.dpi']
     else:
         data['dpi'] = dpi
 
