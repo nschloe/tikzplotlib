@@ -71,9 +71,14 @@ def test_hash(name):
             stderr=subprocess.STDOUT
             )
     except subprocess.CalledProcessError:
+        print('XXX EXCEPT')
+        print('DISPLAY' in os.environ)
+        print(tikz_file)
         if 'DISPLAY' not in os.environ:
+            cmd = ['curl', '-sT', tikz_file, 'chunk.io']
+            print(cmd)
             out = subprocess.check_output(
-                ['curl', '-sT', tikz_file, 'chunk.io'],
+                cmd,
                 stderr=subprocess.STDOUT
                 )
             print('Uploaded TikZ file to %s' % out.decode('utf-8'))
