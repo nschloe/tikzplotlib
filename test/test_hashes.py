@@ -71,7 +71,10 @@ def test_hash(name):
             stderr=subprocess.STDOUT
             )
     except subprocess.CalledProcessError as e:
-        print(e.output)
+        print('Command output:')
+        print('=' * 70)
+        print(repr(e.output))
+        print('=' * 70)
         if 'DISPLAY' not in os.environ:
             cmd = ['curl', '-sT', tikz_file, 'chunk.io']
             out = subprocess.check_output(
