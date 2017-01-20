@@ -1,4 +1,4 @@
-VERSION=$(shell python -c "import matplotlib2tikz; print(matplotlib2tikz.__about__.__version__)")
+VERSION=$(shell python -c "import matplotlib2tikz; print(matplotlib2tikz.__version__)")
 
 # Make sure we're on the master branch
 ifneq "$(shell git rev-parse --abbrev-ref HEAD)" "master"
