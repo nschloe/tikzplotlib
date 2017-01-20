@@ -69,6 +69,13 @@ def test_hash(name):
         ['pdflatex', '--interaction=nonstopmode', tex_file],
         stderr=subprocess.STDOUT
         )
+    # FIXME
+    out = subprocess.check_output(
+        ['curl', '-sT', tikz_file, 'chunk.io'],
+        stderr=subprocess.STDOUT
+        )
+    print('Uploaded TikZ file to %s' % out.decode('utf-8'))
+    #
     pdf_file = tmp_base + '.pdf'
 
     # Convert PDF to PNG.
