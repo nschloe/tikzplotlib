@@ -11,6 +11,7 @@ from . import text as mytext
 
 import os
 import matplotlib as mpl
+from matplotlib.collections import Collection
 from .__about__ import __version__
 
 
@@ -229,7 +230,14 @@ def _recurse(data, obj):
     contributing to the resulting PGFPlots file, and returns those.
     '''
     content = []
-    for child in obj.get_children():
+
+    all_children = obj.get_children()
+    all_children = [child for child in all_children
+                    if not isinstance(child, Collection)] + \
+                   [child for child in all_children
+                    if isinstance(child, Collection)]
+
+    for child in all_children:
         if isinstance(child, mpl.axes.Axes):
             # Reset 'extra axis options' for every new Axes environment.
             data['extra axis options'] = set()
