@@ -3,6 +3,7 @@
 __all__ = [
   'annotate',
   'basic_sin',
+  'boxplot',
   'dual_axis',
   'errorband',
   'errorbar',
