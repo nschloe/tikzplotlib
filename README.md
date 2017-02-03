@@ -90,9 +90,10 @@ contains great examples of how to make your plot look even better.
 #### Python Package Index
 
 matplotlib2tikz is [available from the Python Package
-Index](https://pypi.python.org/pypi/matplotlib2tikz/), so simply type
+Index](https://pypi.python.org/pypi/matplotlib2tikz/), so to install/upgrade
+simply type
 ```
-pip install matplotlib2tikz
+pip install -U matplotlib2tikz
 ```
 
 #### Manual installation
