@@ -4,6 +4,8 @@ __all__ = [
   'annotate',
   'basic_sin',
   'boxplot',
+  'barchart_legend',
+  'barchart',
   'dual_axis',
   'errorband',
   'errorbar',

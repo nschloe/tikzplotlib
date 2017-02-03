@@ -22,7 +22,6 @@ def save(filepath,
          textsize=10.0,
          tex_relative_path_to_data=None,
          strict=False,
-         draw_rectangles=False,
          wrap=True,
          extra=None,
          dpi=None,
@@ -75,16 +74,6 @@ def save(filepath,
                    can decide where to put the ticks.
     :type strict: bool
 
-    :param draw_rectangles: Whether or not to draw Rectangle objects.
-                            You normally don't want that as legend, axes, and
-                            other entities which are natively taken care of by
-                            PGFPlots are represented as rectangles in
-                            matplotlib. Some plot types (such as bar plots)
-                            cannot otherwise be represented though.
-                            Don't expect working or clean output when using
-                            this option.
-    :type draw_rectangles: bool
-
     :param wrap: Whether ``'\\begin{tikzpicture}'`` and
                  ``'\\end{tikzpicture}'`` will be written. One might need to
                  provide custom arguments to the environment (eg. scale= etc.).
@@ -121,11 +110,14 @@ def save(filepath,
     data['output dir'] = os.path.dirname(filepath)
     data['base name'] = os.path.splitext(os.path.basename(filepath))[0]
     data['strict'] = strict
-    data['draw rectangles'] = draw_rectangles
     data['tikz libs'] = set()
     data['pgfplots libs'] = set()
     data['font size'] = textsize
     data['custom colors'] = {}
+    # rectangle_legends is used to keep track of which rectangles have already
+    # had \addlegendimage added. There should be only one \addlegenimage per 
+    # bar chart data series.
+    data['rectangle_legends'] = set()
     if extra:
         data['extra axis options'] = extra.copy()
     else:

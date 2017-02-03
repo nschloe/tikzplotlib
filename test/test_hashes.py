@@ -32,7 +32,6 @@ def test_hash(name):
         figureheight='7.5cm',
         show_info=True,
         strict=True,
-        draw_rectangles=True
         )
 
     # save reference figure
