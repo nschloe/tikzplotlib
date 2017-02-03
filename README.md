@@ -90,9 +90,10 @@ contains great examples of how to make your plot look even better.
 #### Python Package Index
 
 matplotlib2tikz is [available from the Python Package
-Index](https://pypi.python.org/pypi/matplotlib2tikz/), so simply type
+Index](https://pypi.python.org/pypi/matplotlib2tikz/), so to install/upgrade
+simply type
 ```
-pip install matplotlib2tikz
+pip install -U matplotlib2tikz
 ```
 
 #### Manual installation
@@ -187,7 +188,7 @@ please visit
 
 matplotlib2tikz has automatic unit testing to make sure that the software
 doesn't accidentally get worse over time. In `test/testfunctions/`, a number of
-test cases are specified. Those are
+test cases are specified. Those
 
  * run through matplotlib2tikz,
  * the resulting LaTeX file is compiled into a PDF (`pdflatex`),
@@ -204,14 +205,14 @@ The final pHash may depend on any of the tools used during the process. For
 example, if your version of [Pillow](https://pypi.python.org/pypi/Pillow/3.0.0)
 is too old, the pHash function might operate slightly differently and produce a
 slightly different pHash, resulting in a failing test. If tests are failing on
-your local machine, you should first make sure to have an up-to-date Pillow, .
+your local machine, you should first make sure to have an up-to-date Pillow.
 
 If you would like to contribute a test, just take a look at the examples in
 `test/testfunctions/`. Essentially a test consists of three things:
 
   * a description,
-  * a function that creates the image in matplotlib, and
-  * a pHash.
+  * a pHash, and
+  * a function that creates the image in matplotlib.
 
 Just add your file, add it to `test/testfunction/__init__.py`, and run the
 tests. A failing test will always print out the pHash, so you can leave it
