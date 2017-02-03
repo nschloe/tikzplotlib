@@ -126,6 +126,10 @@ def save(filepath,
     data['pgfplots libs'] = set()
     data['font size'] = textsize
     data['custom colors'] = {}
+    # rectangle_legends is used to keep track of which rectangles have already
+    # had \addlegendimage added. There should be only one \addlegenimage per 
+    # bar chart data series.
+    data['rectangle_legends'] = set()
     if extra:
         data['extra axis options'] = extra.copy()
     else:
