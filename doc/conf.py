@@ -43,7 +43,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'matplotlib2tikz'
-copyright = u'2010, Nico Schlömer'
+copyright = u'2010-2017, Nico Schlömer'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
