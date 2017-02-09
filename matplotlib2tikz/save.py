@@ -215,12 +215,35 @@ def _print_pgfplot_libs_message(data):
     print('=========================================================')
     return
 
+class _ContentManager(object):
+    """ Basic Content Manager for matplotlib2tikz 
+
+    This manager uses a dictionary to map z-order to an array of content
+    to be drawn at the z-order.
+    """
+    def __init__(self):
+        self._content = dict()
+
+    def extend(self, content, zorder):
+        """ Extends with a list and a z-order
+        """
+        if zorder not in self._content:
+            self._content[zorder] = []
+        self._content[zorder].extend(content)
+
+    def flatten(self):
+        content_out = []
+        all_z = sorted(self._content.keys())
+        for z in all_z:
+            content_out.extend(self._content[z])
+        return content_out
+
 
 def _recurse(data, obj):
     '''Iterates over all children of the current object, gathers the contents
     contributing to the resulting PGFPlots file, and returns those.
     '''
-    content = []
+    content = _ContentManager()
     for child in obj.get_children():
         if isinstance(child, mpl.axes.Axes):
             # Reset 'extra axis options' for every new Axes environment.
@@ -234,34 +257,35 @@ def _recurse(data, obj):
                 if data['extra axis options']:
                     ax.axis_options.extend(data['extra axis options'])
                 # populate content
-                content.extend(ax.get_begin_code())
-                content.extend(children_content)
-                content.extend(ax.get_end_code(data))
+                content.extend(
+                        ax.get_begin_code() + 
+                        children_content +
+                        [ax.get_end_code(data)], 0)
         elif isinstance(child, mpl.lines.Line2D):
             data, cont = line2d.draw_line2d(data, child)
-            content.extend(cont)
+            content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.image.AxesImage):
             data, cont = img.draw_image(data, child)
-            content.extend(cont)
+            content.extend(cont, child.get_zorder())
             # # Really necessary?
             # data, children_content = _recurse(data, child)
             # content.extend(children_content)
         elif isinstance(child, mpl.patches.Patch):
             data, cont = patch.draw_patch(data, child)
-            content.extend(cont)
+            content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.collections.PatchCollection) or \
                 isinstance(child, mpl.collections.PolyCollection):
             data, cont = patch.draw_patchcollection(data, child)
-            content.extend(cont)
+            content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.collections.PathCollection):
             data, cont = path.draw_pathcollection(data, child)
-            content.extend(cont)
+            content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.collections.LineCollection):
             data, cont = line2d.draw_linecollection(data, child)
-            content.extend(cont)
+            content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.collections.QuadMesh):
             data, cont = qmsh.draw_quadmesh(data, child)
-            content.extend(cont)
+            content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.legend.Legend):
             data = legend.draw_legend(data, child)
         elif isinstance(child, mpl.axis.XAxis) or \
@@ -276,5 +300,5 @@ def _recurse(data, obj):
     if isinstance(obj, mpl.axes.Subplot) or isinstance(obj, mpl.figure.Figure):
         for text in obj.texts:
             data, cont = mytext.draw_text(data, text)
-            content.extend(cont)
-    return data, content
+            content.extend(cont, text.get_zorder())
+    return data, content.flatten()
