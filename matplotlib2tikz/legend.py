@@ -4,7 +4,7 @@ import warnings
 from . import color as mycol
 
 
-def draw_legend(data, obj):
+def draw_legend(data, obj, legend_at):
     '''Adds legend code.
     '''
     texts = []
@@ -13,8 +13,15 @@ def draw_legend(data, obj):
         texts.append('%s' % text.get_text())
         childrenAlignment.append('%s' % text.get_horizontalalignment())
 
+    #import pdb; pdb.set_trace()
+
     cont = 'legend entries={{%s}}' % '},{'.join(texts)
     data['extra axis options'].add(cont)
+
+    if hasattr(obj, '_ncol'):
+        data['extra axis options'].add(
+            'legend columns={}'.format(obj._ncol)
+        )
 
     # Get the location.
     # http://matplotlib.org/api/legend_api.html
@@ -68,6 +75,11 @@ def draw_legend(data, obj):
         # center
         position = [0.5, 0.5]
         anchor = 'center'
+
+    if legend_at:
+        assert len(legend_at) == 2, 'legend_at hast to be a tuple of two ' \
+                                    'elements and not {}'.format(legend_at)
+        position = legend_at
 
     legend_style = []
     if position:

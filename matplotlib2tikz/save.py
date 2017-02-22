@@ -27,7 +27,8 @@ def save(filepath,
          wrap=True,
          extra=None,
          dpi=None,
-         show_info=True
+         show_info=True,
+         legend_at=None
          ):
     '''Main function. Here, the recursion into the image starts and the
     contents are picked up. The actual file gets written in this routine.
@@ -127,6 +128,8 @@ def save(filepath,
     data['pgfplots libs'] = set()
     data['font size'] = textsize
     data['custom colors'] = {}
+    data['legend_at'] = legend_at
+
     if extra:
         data['extra axis options'] = extra.copy()
     else:
@@ -231,11 +234,22 @@ def _recurse(data, obj):
     '''
     content = []
 
+    # Hack for plots with plt.plot and plt.scatter:
+    # When the plot contains normal lines (plt.plot) and plt.scatter,
+    # the legend displays first the lines and than the scatter.
+    # However, the get_children returns first the scatter and than the lines.
+    # Therefore in the resulting *.tex files the connection between the legend
+    # and the plots are wrong.
+
     all_children = obj.get_children()
     all_children = [child for child in all_children
                     if not isinstance(child, Collection)] + \
                    [child for child in all_children
                     if isinstance(child, Collection)]
+
+    import inspect
+    print(inspect.getfile(obj.get_children), all_children, obj.collections if
+    hasattr(obj, 'collections') else 0)
 
     for child in all_children:
         if isinstance(child, mpl.axes.Axes):
@@ -279,7 +293,7 @@ def _recurse(data, obj):
             data, cont = qmsh.draw_quadmesh(data, child)
             content.extend(cont)
         elif isinstance(child, mpl.legend.Legend):
-            data = legend.draw_legend(data, child)
+            data = legend.draw_legend(data, child, data['legend_at'])
         elif isinstance(child, mpl.axis.XAxis) or \
                 isinstance(child, mpl.axis.YAxis) or \
                 isinstance(child, mpl.spines.Spine) or \
