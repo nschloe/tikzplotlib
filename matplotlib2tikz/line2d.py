@@ -10,6 +10,12 @@ def draw_line2d(data, obj):
     content = []
     addplot_options = []
 
+    # If line is of length 0, do nothing.  Otherwise, an empty \addplot table
+    # will be created, which will be interpreted as an external data source
+    # in either the file '' or '.tex'.  Instead, render nothing.
+    if len(obj.get_xdata()) == 0:
+        return data, []
+
     # get the linewidth (in pt)
     line_width = _mpl_linewidth2pgfp_linewidth(data, obj.get_linewidth())
 

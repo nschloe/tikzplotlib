@@ -3,6 +3,10 @@
 __all__ = [
   'annotate',
   'basic_sin',
+  'boxplot',
+  'barchart_legend',
+  'barchart_errorbars',
+  'barchart',
   'dual_axis',
   'errorband',
   'errorbar',

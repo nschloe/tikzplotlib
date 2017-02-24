@@ -51,14 +51,36 @@ def draw_patchcollection(data, obj):
 def _draw_rectangle(data, obj, draw_options):
     '''Return the PGFPlots code for rectangles.
     '''
-    if not data['draw rectangles']:
+
+    # Objects with labels are plot objects (from bar charts, etc).
+    # Even those without labels explicitly set have a label of
+    # "_nolegend_".  Everything else should be skipped because
+    # they likely correspong to axis/legend objects which are
+    # handled by PGFPlots
+    label = obj.get_label()
+    if label == '':
         return data, []
+
+    # get real label, bar charts by default only give rectangles
+    # labels of "_nolegend_"
+    # See http://stackoverflow.com/questions/35881290/how-to-get-the-label-on-bar-plot-stacked-bar-plot-in-matplotlib
+    handles,labels = obj.axes.get_legend_handles_labels()
+    labelsFound = [label for h,label in zip(handles, labels) if obj in h.get_children()]
+    if len(labelsFound) == 1:
+        label = labelsFound[0]
+
+    legend = ''
+    if label != '_nolegend_' and label not in data['rectangle_legends']:
+        data['rectangle_legends'].add(label)
+        legend = ('\\addlegendimage{ybar,ybar legend,%s};\n'
+                 ) % (','.join(draw_options))
 
     left_lower_x = obj.get_x()
     left_lower_y = obj.get_y()
-    cont = ('\draw[%s] (axis cs:%.15g,%.15g) '
+    cont = ('%s\draw[%s] (axis cs:%.15g,%.15g) '
             'rectangle (axis cs:%.15g,%.15g);\n'
-            ) % (','.join(draw_options),
+            ) % (legend,
+                 ','.join(draw_options),
                  left_lower_x,
                  left_lower_y,
                  left_lower_x + obj.get_width(),
