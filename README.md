@@ -87,26 +87,14 @@ contains great examples of how to make your plot look even better.
 
 ### Installation
 
-#### Python Package Index
-
 matplotlib2tikz is [available from the Python Package
-Index](https://pypi.python.org/pypi/matplotlib2tikz/), so to install/upgrade
+Index](https://pypi.python.org/pypi/matplotlib2tikz/), so
 simply type
 ```
 pip install -U matplotlib2tikz
 ```
+to install/update.
 
-#### Manual installation
-
-Download matplotlib2tikz from
-[the Python Package Index](https://pypi.python.org/pypi/matplotlib2tikz/).
-Place the matplotlib2tikz script in a directory where Python can find it (e.g.,
-`$PYTHONPATH`).  You can install it system-wide with
-```
-python setup.py install
-```
-or place the script `matplotlib2tikz.py` into the directory where you intend to
-use it.
 
 #### Dependencies
 
