@@ -122,9 +122,9 @@ def save(filepath,
     data['rectangle_legends'] = set()
     data['legend_at'] = legend_at
     if extra:
-        data['extra axis options'] = extra.copy()
+        data['extra axis options default'] = extra.copy()
     else:
-        data['extra axis options'] = set()
+        data['extra axis options default'] = set()
 
     if dpi is None:
         savefig_dpi = mpl.rcParams['savefig.dpi']
@@ -268,7 +268,7 @@ def _recurse(data, obj):
     for child in all_children:
         if isinstance(child, mpl.axes.Axes):
             # Reset 'extra axis options' for every new Axes environment.
-            data['extra axis options'] = set()
+            data['extra axis options'] = data['extra axis options default']
 
             ax = axes.Axes(data, child)
             if not ax.is_colorbar:
