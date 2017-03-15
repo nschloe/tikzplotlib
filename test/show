@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 import argparse
-from matplotlib import pyplot as pp
+from matplotlib import pyplot as plt
 from importlib import import_module
 
 import testfunctions
@@ -16,7 +16,7 @@ def _main():
     test = import_module('testfunctions.' + test_name)
 
     test.plot()
-    pp.show()
+    plt.show()
     return
 
 
