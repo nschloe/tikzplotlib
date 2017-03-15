@@ -8,7 +8,7 @@ from matplotlib.patches import FancyBboxPatch
 
 desc = 'Fancybox'
 # phash = 'dd232dd0239dd85a'
-phash = '9d2325dc23cdd85a'
+phash = '9d2327dc23cdd81a'
 
 
 # Bbox object around which the fancy box will be drawn.
