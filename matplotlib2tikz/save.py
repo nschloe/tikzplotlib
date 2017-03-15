@@ -115,13 +115,13 @@ def save(filepath,
     data['font size'] = textsize
     data['custom colors'] = {}
     # rectangle_legends is used to keep track of which rectangles have already
-    # had \addlegendimage added. There should be only one \addlegenimage per 
+    # had \addlegendimage added. There should be only one \addlegenimage per
     # bar chart data series.
     data['rectangle_legends'] = set()
     if extra:
-        data['extra axis options'] = extra.copy()
+        data['extra axis options [base]'] = extra.copy()
     else:
-        data['extra axis options'] = set()
+        data['extra axis options [base]'] = set()
 
     if dpi is None:
         savefig_dpi = mpl.rcParams['savefig.dpi']
@@ -216,7 +216,7 @@ def _print_pgfplot_libs_message(data):
     return
 
 class _ContentManager(object):
-    """ Basic Content Manager for matplotlib2tikz 
+    """ Basic Content Manager for matplotlib2tikz
 
     This manager uses a dictionary to map z-order to an array of content
     to be drawn at the z-order.
@@ -247,7 +247,8 @@ def _recurse(data, obj):
     for child in obj.get_children():
         if isinstance(child, mpl.axes.Axes):
             # Reset 'extra axis options' for every new Axes environment.
-            data['extra axis options'] = set()
+            data['extra axis options'] = \
+                data['extra axis options [base]'].copy()
 
             ax = axes.Axes(data, child)
             if not ax.is_colorbar:
@@ -258,7 +259,7 @@ def _recurse(data, obj):
                     ax.axis_options.extend(data['extra axis options'])
                 # populate content
                 content.extend(
-                        ax.get_begin_code() + 
+                        ax.get_begin_code() +
                         children_content +
                         [ax.get_end_code(data)], 0)
         elif isinstance(child, mpl.lines.Line2D):
