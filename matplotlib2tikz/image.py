@@ -30,6 +30,10 @@ def draw_image(data, obj):
     dims = img_array.shape
     if len(dims) == 2:  # the values are given as one real number: look at cmap
         clims = obj.get_clim()
+
+        if obj.origin == "lower":
+            img_array = numpy.flipud(img_array)
+
         mpl.pyplot.imsave(fname=filename,
                           arr=img_array,
                           cmap=obj.get_cmap(),
