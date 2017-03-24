@@ -27,6 +27,7 @@ __all__ = [
   'quadmesh',
   'scatter',
   'scatter_colormap',
+  'sharex_and_y',
   'subplots',
   'subplot4x4',
   'subplots_with_colorbars',
