@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 #
 import warnings
+
+import numpy
+
 from . import color as mycol
 
 
@@ -19,52 +22,126 @@ def draw_legend(data, obj):
     # Get the location.
     # http://matplotlib.org/api/legend_api.html
     pad = 0.03
-    if obj._loc == 0:
+    loc = obj._loc
+    if loc == 0:
         # best
-        print(
-            'Legend location "best" not yet implemented, '
-            'choosing "upper right" instead.'
-            )
-        position = None
-        anchor = None
-    elif obj._loc == 1:
+        # Create a renderer
+        from matplotlib.backends import backend_agg
+        renderer = backend_agg.RendererAgg(width=obj.figure.get_figwidth(),
+                                           height=obj.figure.get_figheight(),
+                                           dpi=obj.figure.dpi)
+
+        # Rectangles of the legend and of the axes
+        # Lower left and upper right points
+        x0_legend, x1_legend = obj._legend_box \
+            .get_window_extent(renderer).get_points()
+        x0_axes, x1_axes = obj.axes.get_window_extent(renderer).get_points()
+        dimension_legend = x1_legend - x0_legend
+        dimension_axes = x1_axes - x0_axes
+
+        # To determine the actual position of the legend, check which corner
+        # (or center) of the legend is closest to the corresponding corner
+        # (or center) of the axes box.
+        # 1. Key points of the legend
+        lower_left_legend = x0_legend
+        lower_right_legend = numpy.array([x1_legend[0], x0_legend[1]],
+                                         dtype=numpy.float_)
+        upper_left_legend = numpy.array([x0_legend[0], x1_legend[1]],
+                                        dtype=numpy.float_)
+        upper_right_legend = x1_legend
+        center_legend = x0_legend + dimension_legend / 2.
+        center_left_legend = numpy.array(
+            [x0_legend[0], x0_legend[1] + dimension_legend[1] / 2.],
+            dtype=numpy.float_)
+        center_right_legend = numpy.array(
+            [x1_legend[0], x0_legend[1] + dimension_legend[1] / 2.],
+            dtype=numpy.float_)
+        lower_center_legend = numpy.array(
+            [x0_legend[0] + dimension_legend[0] / 2., x0_legend[1]],
+            dtype=numpy.float_)
+        upper_center_legend = numpy.array(
+            [x0_legend[0] + dimension_legend[0] / 2., x1_legend[1]],
+            dtype=numpy.float_)
+
+        # 2. Key points of the axes
+        lower_left_axes = x0_axes
+        lower_right_axes = numpy.array([x1_axes[0], x0_axes[1]],
+                                       dtype=numpy.float_)
+        upper_left_axes = numpy.array([x0_axes[0], x1_axes[1]],
+                                      dtype=numpy.float_)
+        upper_right_axes = x1_axes
+        center_axes = x0_axes + dimension_axes / 2.
+        center_left_axes = numpy.array(
+            [x0_axes[0], x0_axes[1] + dimension_axes[1] / 2.],
+            dtype=numpy.float_)
+        center_right_axes = numpy.array(
+            [x1_axes[0], x0_axes[1] + dimension_axes[1] / 2.],
+            dtype=numpy.float_)
+        lower_center_axes = numpy.array(
+            [x0_axes[0] + dimension_axes[0] / 2., x0_axes[1]],
+            dtype=numpy.float_)
+        upper_center_axes = numpy.array(
+            [x0_axes[0] + dimension_axes[0] / 2., x1_axes[1]],
+            dtype=numpy.float_)
+
+        # 3. Compute the distances between comparable points.
+        distances = {
+            1: upper_right_axes - upper_right_legend,  # upper right
+            2: upper_left_axes - upper_left_legend,  # upper left
+            3: lower_left_axes - lower_left_legend,  # lower left
+            4: lower_right_axes - lower_right_legend,  # lower right
+            # 5:, Not Implemented  # right
+            6: center_left_axes - center_left_legend,  # center left
+            7: center_right_axes - center_right_legend,  # center right
+            8: lower_center_axes - lower_center_legend,  # lower center
+            9: upper_center_axes - upper_center_legend,  # upper center
+            10: center_axes - center_legend  # center
+        }
+        for k, v in distances.items():
+            distances[k] = numpy.linalg.norm(v, ord=2)
+
+        # 4. Take the shortest distance between key points as the final
+        # location
+        loc = min(distances, key=distances.get)
+
+    if loc == 1:
         # upper right
         position = None
         anchor = None
-    elif obj._loc == 2:
+    elif loc == 2:
         # upper left
         position = [pad, 1.0 - pad]
         anchor = 'north west'
-    elif obj._loc == 3:
+    elif loc == 3:
         # lower left
         position = [pad, pad]
         anchor = 'south west'
-    elif obj._loc == 4:
+    elif loc == 4:
         # lower right
         position = [1.0 - pad, pad]
         anchor = 'south east'
-    elif obj._loc == 5:
+    elif loc == 5:
         # right
         position = [1.0 - pad, 0.5]
         anchor = 'west'
-    elif obj._loc == 6:
+    elif loc == 6:
         # center left
         position = [3 * pad, 0.5]
         anchor = 'east'
-    elif obj._loc == 7:
+    elif loc == 7:
         # center right
         position = [1.0 - 3 * pad, 0.5]
         anchor = 'west'
-    elif obj._loc == 8:
+    elif loc == 8:
         # lower center
         position = [0.5, 3 * pad]
         anchor = 'south'
-    elif obj._loc == 9:
+    elif loc == 9:
         # upper center
         position = [0.5, 1.0 - 3 * pad]
         anchor = 'north'
     else:
-        assert obj._loc == 10
+        assert loc == 10
         # center
         position = [0.5, 0.5]
         anchor = 'center'
@@ -100,7 +177,7 @@ def draw_legend(data, obj):
         if alignment != childAlignment:
             warnings.warn(
                 'Varying horizontal alignments in the legend. Using default.'
-                )
+            )
             alignment = None
             break
 

@@ -15,6 +15,7 @@ __all__ = [
   'fillstyle',
   'heat',
   'image_plot',
+  'legend_best_location',
   'legends2',
   'legends',
   'line_collection',
