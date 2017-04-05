@@ -25,6 +25,7 @@ __all__ = [
   'noise2',
   'patches',
   'quadmesh',
+  'rotated_labels',
   'scatter',
   'scatter_colormap',
   'sharex_and_y',

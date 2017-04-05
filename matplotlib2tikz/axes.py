@@ -198,6 +198,35 @@ class Axes(object):
                     assert direction == 'inout'
                     self.axis_options.append('tick align=center')
 
+        # Set each rotation for every label
+        x_tick_labels_rotation = \
+            [label.get_rotation() for label in obj.xaxis.get_majorticklabels()]
+        if any(x_tick_labels_rotation) != 0:
+            # check if every value is the same
+            if len(set(x_tick_labels_rotation)) == 1:
+                self.axis_options.append('xticklabel style = {rotate=%d}' %
+                                         x_tick_labels_rotation[0])
+            else:
+                value = 'every x tick label/.style = {\n' \
+                    'rotate={,%s}[\\ticknum]\n' \
+                    '}' % ','.join(str(x) for x in x_tick_labels_rotation)
+
+                self.axis_options.append(value)
+
+        y_tick_labels_rotation = \
+            [label.get_rotation() for label in obj.yaxis.get_majorticklabels()]
+        if any(y_tick_labels_rotation) != 0:
+            # check if every value is the same
+            if len(set(y_tick_labels_rotation)) == 1:
+                self.axis_options.append('yticklabel style = {rotate=%d}' %
+                                         y_tick_labels_rotation[0])
+            else:
+                value = 'every y tick label/.style = {\n' \
+                    'rotate={,%s}[\\ticknum]\n' \
+                    '}' % ','.join(str(x) for x in y_tick_labels_rotation)
+
+                self.axis_options.append(value)
+
         # Don't use get_{x,y}gridlines for gridlines; see discussion on
         # <http://sourceforge.net/p/matplotlib/mailman/message/25169234/>
         # Coordinate of the lines are entirely meaningless, but styles
