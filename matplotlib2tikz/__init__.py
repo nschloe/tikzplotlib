@@ -14,7 +14,7 @@ from matplotlib2tikz.__about__ import (
         __status__
         )
 
-from matplotlib2tikz.save import save
+from matplotlib2tikz.save import get_tikz_code, save
 
 import pipdated
 if pipdated.needs_checking('matplotlib2tikz'):
