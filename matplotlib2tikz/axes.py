@@ -389,7 +389,10 @@ def _get_ticks(data, xy, ticks, ticklabels):
         pgfplots_ticks.append(tick)
         # store the label anyway
         label = ticklabel.get_text()
-        pgfplots_ticklabels.append(label)
+        if ticklabel.get_visible():
+            pgfplots_ticklabels.append(label)
+        else:
+            is_label_required = True
         # Check if the label is necessary. If one of the labels is, then all
         # of them must appear in the TikZ plot.
         if label:
