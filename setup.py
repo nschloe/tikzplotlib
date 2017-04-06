@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-from distutils.core import setup
+from setuptools import setup
 import os
 import codecs
 
