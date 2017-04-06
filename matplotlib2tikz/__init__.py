@@ -14,10 +14,8 @@ from matplotlib2tikz.__about__ import (
         __status__
         )
 
-from matplotlib2tikz.save import save
+from matplotlib2tikz.save import get_tikz_code, save
 
 import pipdated
-if pipdated.needs_checking('matplotlib2tikz'):
-    msg = pipdated.check('matplotlib2tikz', __version__)
-    if msg:
-        print(msg)
+if pipdated.needs_checking(__name__):
+    print(pipdated.check(__name__, __version__))

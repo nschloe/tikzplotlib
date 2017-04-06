@@ -9,24 +9,27 @@ from . import path
 from . import patch
 from . import text as mytext
 
-import os
-import matplotlib as mpl
 from .__about__ import __version__
 
+import codecs
+import os
+import matplotlib as mpl
 
-def save(filepath,
-         figure='gcf',
-         encoding=None,
-         figurewidth=None,
-         figureheight=None,
-         textsize=10.0,
-         tex_relative_path_to_data=None,
-         strict=False,
-         wrap=True,
-         extra=None,
-         dpi=None,
-         show_info=True
-         ):
+
+def get_tikz_code(
+        filepath,
+        figure='gcf',
+        encoding=None,
+        figurewidth=None,
+        figureheight=None,
+        textsize=10.0,
+        tex_relative_path_to_data=None,
+        strict=False,
+        wrap=True,
+        extra=None,
+        dpi=None,
+        show_info=True
+        ):
     '''Main function. Here, the recursion into the image starts and the
     contents are picked up. The actual file gets written in this routine.
 
@@ -132,13 +135,6 @@ def save(filepath,
     else:
         data['dpi'] = dpi
 
-    # open file
-    import codecs
-    file_handle = codecs.open(filepath, 'w', encoding)
-
-    if show_info:
-        print('file encoding: {0}'.format(file_handle.encoding))
-
     # gather the file content
     data, content = _recurse(data, figure)
 
@@ -150,32 +146,45 @@ def save(filepath,
     disclaimer = 'This file was created by matplotlib2tikz v%s.' % __version__
 
     # write disclaimer to the file header
-    file_handle.write(_tex_comment(disclaimer))
+    code = ''''''
+    code += _tex_comment(disclaimer)
 
     # write the contents
     if wrap:
-        file_handle.write('\\begin{tikzpicture}\n\n')
+        code += '\\begin{tikzpicture}\n\n'
 
     coldefs = _get_color_definitions(data)
     if coldefs:
-        file_handle.write('\n'.join(coldefs))
-        file_handle.write('\n\n')
+        code += '\n'.join(coldefs)
+        code += '\n\n'
 
-    try:
-        file_handle.write(''.join(content))
-    except UnicodeEncodeError:
-        # We're probably using Python 2, so use proper unicode treatment
-        file_handle.write(unicode(''.join(content)).encode('utf-8'))
+    code += ''.join(content)
 
     if wrap:
-        file_handle.write('\\end{tikzpicture}')
-
-    # close file
-    file_handle.close()
+        code += '\\end{tikzpicture}'
 
     # print message about necessary pgfplot libs to command line
     if show_info:
         _print_pgfplot_libs_message(data)
+    return code
+
+
+def save(*args, **kwargs):
+    '''Same as `get_tikz_code()`, but actually saves the code to a file.
+    '''
+    code = get_tikz_code(*args, **kwargs)
+
+    file_handle = codecs.open(
+            args[0],
+            'w',
+            kwargs['encoding'] if 'encoding' in kwargs else None
+            )
+    try:
+        file_handle.write(code)
+    except UnicodeEncodeError:
+        # We're probably using Python 2, so use proper unicode treatment
+        file_handle.write(unicode(code).encode('utf-8'))
+    file_handle.close()
     return
 
 

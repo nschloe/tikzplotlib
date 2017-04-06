@@ -8,3 +8,4 @@ README.rst
 dist/
 build/
 .cache/
+*.egg-info/
