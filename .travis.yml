@@ -4,10 +4,7 @@ language: python
 
 python:
     - '2.7'
-    - '3.4'
-
-virtualenv:
-  system_site_packages: true
+    - '3.6'
 
 addons:
   apt:
@@ -53,8 +50,7 @@ before_script:
 script:
   # cd into test directory to make sure we're using the pip-installed
   # matplotlib2tikz.
-  - cd test
-  - MPLBACKEND=Agg pytest --cov matplotlib2tikz
+  - cd test && MPLBACKEND=Agg pytest --cov matplotlib2tikz
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
