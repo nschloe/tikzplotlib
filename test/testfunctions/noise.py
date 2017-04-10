@@ -2,7 +2,7 @@
 #
 desc = 'Noise with a color bar'
 # phash = 'f54b0ba50bb10bf4'
-phash = 'fd5a0bb503f50354'
+phash = 'f55a0bb503fd0354'
 
 
 def plot():

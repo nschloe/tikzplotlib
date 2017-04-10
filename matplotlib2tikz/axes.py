@@ -199,33 +199,27 @@ class Axes(object):
                     self.axis_options.append('tick align=center')
 
         # Set each rotation for every label
-        x_tick_labels_rotation = \
-            [label.get_rotation() for label in obj.xaxis.get_majorticklabels()]
-        if any(x_tick_labels_rotation) != 0:
-            # check if every value is the same
-            if len(set(x_tick_labels_rotation)) == 1:
-                self.axis_options.append('xticklabel style = {rotate=%d}' %
-                                         x_tick_labels_rotation[0])
-            else:
-                value = 'every x tick label/.style = {\n' \
-                    'rotate={,%s}[\\ticknum]\n' \
-                    '}' % ','.join(str(x) for x in x_tick_labels_rotation)
+        x_tick_rotation_and_horizontal_alignment = \
+            self.__get_label_rotation_and_horizontal_alignment(obj, data, 'x')
+        if x_tick_rotation_and_horizontal_alignment:
+            self.axis_options.append(x_tick_rotation_and_horizontal_alignment)
 
-                self.axis_options.append(value)
+        y_tick_rotation_and_horizontal_alignment = \
+            self.__get_label_rotation_and_horizontal_alignment(obj, data, 'y')
+        if y_tick_rotation_and_horizontal_alignment:
+            self.axis_options.append(y_tick_rotation_and_horizontal_alignment)
 
-        y_tick_labels_rotation = \
-            [label.get_rotation() for label in obj.yaxis.get_majorticklabels()]
-        if any(y_tick_labels_rotation) != 0:
-            # check if every value is the same
-            if len(set(y_tick_labels_rotation)) == 1:
-                self.axis_options.append('yticklabel style = {rotate=%d}' %
-                                         y_tick_labels_rotation[0])
-            else:
-                value = 'every y tick label/.style = {\n' \
-                    'rotate={,%s}[\\ticknum]\n' \
-                    '}' % ','.join(str(x) for x in y_tick_labels_rotation)
+        # Set tick position
+        x_tick_position_string, x_tick_position = \
+            self.__get_tick_position(obj, data, 'x')
+        y_tick_position_string, y_tick_position = \
+            self.__get_tick_position(obj, data, 'y')
 
-                self.axis_options.append(value)
+        if x_tick_position == y_tick_position and x_tick_position is not None:
+            self.axis_options.append("tick pos=%s" % x_tick_position)
+        else:
+            self.axis_options.append(x_tick_position_string)
+            self.axis_options.append(y_tick_position_string)
 
         # Don't use get_{x,y}gridlines for gridlines; see discussion on
         # <http://sourceforge.net/p/matplotlib/mailman/message/25169234/>
@@ -388,6 +382,113 @@ class Axes(object):
         #               )
 
         return
+
+    def __get_label_rotation_and_horizontal_alignment(self, obj, data, axes):
+        tick_label_text_width = None
+        tick_label_text_width_identifier = "%s tick label text width" % axes
+        if tick_label_text_width_identifier in data['extra axis options']:
+            tick_label_text_width = data['extra axis options [base]']
+            [tick_label_text_width_identifier]
+            del data['extra axis options'][tick_label_text_width_identifier]
+
+        label_style = ""
+
+        major_tick_labels = obj.xaxis.get_majorticklabels() if axes == 'x' \
+            else obj.yaxis.get_majorticklabels()
+
+        if len(major_tick_labels) == 0:
+            return None
+
+        tick_labels_rotation = \
+            [label.get_rotation() for label in major_tick_labels]
+        tick_labels_rotation_same_value = len(set(tick_labels_rotation)) == 1
+
+        tick_labels_horizontal_alignment = \
+            [label.get_horizontalalignment() for label in major_tick_labels]
+        tick_labels_horizontal_alignment_same_value = \
+            len(set(tick_labels_horizontal_alignment)) == 1
+
+        if tick_labels_rotation_same_value and \
+                tick_labels_horizontal_alignment_same_value:
+            values = []
+
+            if any(tick_labels_rotation) != 0:
+                values.append('rotate=%d' % tick_labels_rotation[0])
+
+            if tick_label_text_width:
+                values.append('align=%s' % tick_labels_horizontal_alignment[0])
+                values.append('text width=%s' % tick_label_text_width)
+            else:
+                print('Horizontal alignment will be ignored as no \'%s tick '
+                      'label text width\' has been passed in the \'extra\' '
+                      'parameter' % axes)
+
+            if len(values) > 0:
+                label_style = \
+                    '%sticklabel style = {%s}' % (axes, ','.join(values))
+        else:
+            values = []
+
+            if tick_labels_rotation_same_value:
+                values.append('rotate=%d' % tick_labels_rotation[0])
+            else:
+                values.append('rotate={%s,0}[\\ticknum]'
+                              % ','.join(str(x) for x in tick_labels_rotation))
+
+            if tick_label_text_width:
+                if tick_labels_horizontal_alignment_same_value:
+                    values.append('align=%s' %
+                                  tick_labels_horizontal_alignment[0])
+                    values.append('text width=%s' % tick_label_text_width)
+                else:
+                    for idx, x in enumerate(tick_labels_horizontal_alignment):
+                        label_style += '%s_tick_label_ha_%d/.initial = %s' \
+                            % (axes, idx, x)
+
+                    values.append(
+                        'align=\pgfkeysvalueof{/pgfplots/'
+                        '%s_tick_label_ha_\\ticknum}' % axes)
+                    values.append('text width=%s' % tick_label_text_width)
+            else:
+                print('Horizontal alignment will be ignored as no \'%s tick '
+                      'label text width\' has been passed in the \'extra\' '
+                      'parameter' % axes)
+
+            label_style = 'every %s tick label/.style = {\n' \
+                '%s\n' \
+                '}' % (axes, ',\n'.join(values))
+
+        return label_style
+
+    def __get_tick_position(self, obj, data, axes):
+        major_ticks = obj.xaxis.majorTicks if axes == 'x' else \
+            obj.yaxis.majorTicks
+
+        major_ticks_bottom = [tick.tick1On for tick in major_ticks]
+        major_ticks_top = [tick.tick2On for tick in major_ticks]
+
+        major_ticks_bottom_show_all = False
+        if len(set(major_ticks_bottom)) == 1 and major_ticks_bottom[0] is True:
+            major_ticks_bottom_show_all = True
+
+        major_ticks_top_show_all = False
+        if len(set(major_ticks_top)) == 1 and major_ticks_top[0] is True:
+            major_ticks_top_show_all = True
+
+        major_ticks_position = None
+        if not major_ticks_bottom_show_all and not major_ticks_top_show_all:
+            position_string = "%smajorticks=false" % axes
+        elif major_ticks_bottom_show_all and major_ticks_top_show_all:
+            major_ticks_position = 'both'
+        elif major_ticks_bottom_show_all:
+            major_ticks_position = 'left'
+        elif major_ticks_top_show_all:
+            major_ticks_position = 'right'
+
+        if major_ticks_position:
+            position_string = "%stick pos=%s" % (axes, major_ticks_position)
+
+        return position_string, major_ticks_position
 
     def get_begin_code(self):
         content = self.content

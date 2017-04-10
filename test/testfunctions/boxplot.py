@@ -3,12 +3,13 @@
 
 This test plots a box plot with three data series. The causes an empty Line2D
 to be plotted.  Without care, this can turn into an empty table in PGFPlot
-which crashes latex (due to it treating an empty table as a table with 
+which crashes latex (due to it treating an empty table as a table with
 external data in the file '' or '.tex')
 See: https://github.com/nschloe/matplotlib2tikz/pull/134
 """
 desc = 'BoxPlot'
-phash = '6bc6f6b95e0000fe'
+phash = '6be3e6b95e8000de'
+
 
 def plot():
     import matplotlib.pyplot as plt

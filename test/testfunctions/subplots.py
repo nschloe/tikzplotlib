@@ -2,7 +2,7 @@
 #
 desc = 'Two subplots on top of each other'
 # phash = '5f219566e19d64c6'
-phash = '1f21d53629de26c6'
+phash = '1f21c53639de26c6'
 
 
 def plot():

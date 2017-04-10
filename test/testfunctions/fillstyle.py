@@ -2,7 +2,7 @@
 #
 desc = 'fillstyle "none"'
 # phash = '015752594e6d3ebc'
-phash = 'a103fa59ee613e94'
+phash = 'a103fa09ee613e9e'
 
 
 def plot():

@@ -7,7 +7,8 @@ patches that should not be plotted in PGFPlots (e.g. axis, legend)
 
 """
 desc = 'Bar Chart'
-phash = '5f09a9e6b3728742'
+phash = '5f09a9e6b172874a'
+
 
 def plot():
     import matplotlib.pyplot as plt
