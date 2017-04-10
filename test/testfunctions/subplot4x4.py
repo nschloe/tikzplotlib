@@ -2,7 +2,7 @@
 #
 desc = '$4\\times 4$ subplots'
 # phash = 'a19c3f529adc3313'
-phash = 'eb9c3f129edc0303'
+phash = 'ab9c3f52dadc0303'
 
 
 def plot():

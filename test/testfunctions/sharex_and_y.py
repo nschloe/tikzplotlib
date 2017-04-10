@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Tick label visibility with sharex and sharey'
-phash = '9bed5812ff11a892'
+phash = '9bcdbc02ff919812'
 
 
 def plot():

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 desc = 'Rotated labels'
-phash = 'a91fa323753d8d03'
+phash = 'a91fa2a3713dcc0b'
 
 
 def plot():

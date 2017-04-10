@@ -2,7 +2,7 @@
 #
 desc = 'Subplots with colorbars'
 # phash = '6bc03fc02a9fc03f'
-phash = '6bc42fd02b95c03f'
+phash = '6bc42fd06a95c03f'
 
 
 def plot():

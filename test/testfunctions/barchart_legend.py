@@ -6,12 +6,13 @@ rectangle patches witch are difficult to tell from other rectangle
 patches that should not be plotted in PGFPlots (e.g. axis, legend)
 
 This also tests legends on barcharts. Which are difficult because
-in PGFPlots, they have no \\addplot, and thus legend must be 
+in PGFPlots, they have no \\addplot, and thus legend must be
 manually added.
 
 """
 desc = 'Bar Chart'
-phash = '5f09a9e633728dc4'
+phash = '5f19a966937285cc'
+
 
 def plot():
     import matplotlib.pyplot as plt
