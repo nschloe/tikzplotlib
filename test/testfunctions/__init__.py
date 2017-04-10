@@ -26,6 +26,7 @@ __all__ = [
   'patches',
   'quadmesh',
   'rotated_labels',
+  'tick_positions',
   'scatter',
   'scatter_colormap',
   'sharex_and_y',

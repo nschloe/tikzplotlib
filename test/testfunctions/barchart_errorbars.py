@@ -6,7 +6,8 @@ at the correct z-order to be sucessful.
 
 """
 desc = 'Bar Chart With Errorbars'
-phash = '5f09a9e4b37287c2'
+phash = '5f09a9e6b1728746'
+
 
 def plot():
     import matplotlib.pyplot as plt
