@@ -2,7 +2,7 @@
 #
 desc = 'Plot Taylor--Green Vortex using pcolormesh'
 # phash = 'ff1a8578c9847b22'
-phash = '7f1a8578c9857932'
+phash = '7f1a8578498579b2'
 
 
 def plot():

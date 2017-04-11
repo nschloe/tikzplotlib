@@ -2,7 +2,7 @@
 #
 desc = 'Regular plot with overlay text'
 # phash = '770b23744b93c68d'
-phash = '370b233649d3f64c'
+phash = '37092b3649d3f64c'
 
 
 def plot():
