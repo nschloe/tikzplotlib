@@ -162,8 +162,9 @@ def get_tikz_code(
     # write the contents
     if wrap:
         code += '\\begin{tikzpicture}\n\n'
-        for options in data['extra picture options']:
-            code += options + ',\n'
+        if extra_picture_opt:
+            for options in data['extra picture options']:
+                code += options + ',\n'
 
 
     coldefs = _get_color_definitions(data)
