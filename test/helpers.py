@@ -61,7 +61,7 @@ def assert_phash(fig, reference_phash):
     except subprocess.CalledProcessError as e:
         print('Command output:')
         print('=' * 70)
-        print(repr(e.output))
+        print(e.output)
         print('=' * 70)
         if 'DISPLAY' not in os.environ:
             cmd = ['curl', '-sT', tikz_file, 'chunk.io']
