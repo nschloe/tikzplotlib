@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 desc = 'Legend best positions'
-phash = '972ea93316ba6e05'
+phash = '879d991d2c877c1c'
 
 
 def plot():
