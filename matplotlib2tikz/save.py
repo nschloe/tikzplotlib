@@ -26,7 +26,8 @@ def get_tikz_code(
         tex_relative_path_to_data=None,
         strict=False,
         wrap=True,
-        extra=None,
+        extra_axis_opt=None,
+        extra_picture_opt=None,
         dpi=None,
         show_info=True
         ):
@@ -83,9 +84,13 @@ def get_tikz_code(
                  Default is ``True``.
     :type wrap: bool
 
-    :param extra: Extra axis options to be passed (as a set) to pgfplots.
+    :param extra_axis_opt: Extra axis options to be passed (as a set) to pgfplots.
                   Default is ``None``.
-    :type extra: a set of strings for the pfgplots axes.
+    :type extra_axis_opt: a set of strings for the pfgplots axes.
+
+    :param extra_picture_opt: Extra tikzpicture options to be passed (as a set) to pgfplots.
+                  Default is ``None``.
+    :type extra_picture_opt: a set of strings for the pfgplots tikzpicture.
 
     :param dpi: The resolution in dots per inch of the rendered image in case
                 of QuadMesh plots. If ``None`` it will default to the value
@@ -121,10 +126,15 @@ def get_tikz_code(
     # had \addlegendimage added. There should be only one \addlegenimage per
     # bar chart data series.
     data['rectangle_legends'] = set()
-    if extra:
-        data['extra axis options [base]'] = extra.copy()
+    if extra_axis_opt:
+        data['extra axis options [base]'] = extra_axis_opt.copy()
     else:
         data['extra axis options [base]'] = set()
+
+    if extra_picture_opt:
+        data['extra picture options'] = extra_picture_opt.copy()
+    else:
+        data['extra picture options'] = set()
 
     if dpi is None:
         savefig_dpi = mpl.rcParams['savefig.dpi']
@@ -152,6 +162,9 @@ def get_tikz_code(
     # write the contents
     if wrap:
         code += '\\begin{tikzpicture}\n\n'
+        for options in data['extra picture options']:
+            code += options + ',\n'
+
 
     coldefs = _get_color_definitions(data)
     if coldefs:
