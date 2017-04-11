@@ -123,15 +123,15 @@ def draw_legend(data, obj):
     elif loc == 5:
         # right
         position = [1.0 - pad, 0.5]
-        anchor = 'west'
+        anchor = 'east'
     elif loc == 6:
         # center left
         position = [3 * pad, 0.5]
-        anchor = 'east'
+        anchor = 'west'
     elif loc == 7:
         # center right
         position = [1.0 - 3 * pad, 0.5]
-        anchor = 'west'
+        anchor = 'east'
     elif loc == 8:
         # lower center
         position = [0.5, 3 * pad]
