@@ -10,7 +10,7 @@ import imagehash
 from matplotlib import pyplot as plt
 
 
-def assert_phash(fig, reference_phash):
+def compute_phash(fig):
     # convert to tikz file
     _, tmp_base = tempfile.mkstemp()
     tikz_file = tmp_base + '_tikz.tex'
@@ -82,7 +82,15 @@ def assert_phash(fig, reference_phash):
     png_file = tmp_base + '-1.png'
 
     # compute the phash of the PNG
-    phash = imagehash.phash(Image.open(png_file)).__str__()
+    return (
+        imagehash.phash(Image.open(png_file)).__str__(), png_file, pdf_file,
+        tex_out, ptp_out, mpl_reference, tikz_file
+        )
+
+
+def assert_phash(fig, reference_phash):
+    phash, png_file, pdf_file, tex_out, ptp_out, mpl_reference, tikz_file =\
+        compute_phash(fig)
 
     if reference_phash != phash:
         # Compute the Hamming distance between the two 64-bit numbers
