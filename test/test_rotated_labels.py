@@ -139,3 +139,4 @@ def test_rotated_labels_parameters_no_ticks():
 
     # delete file
     os.unlink(tikz_file)
+    return
