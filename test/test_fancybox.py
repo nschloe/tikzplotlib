@@ -38,7 +38,7 @@ def box1(ax):
 
     ax.text(
         0.1, 0.8,
-        r' boxstyle=\'round, pad=0.1\'',
+        ' boxstyle=\'round, pad=0.1\'',
         size=10, transform=ax.transAxes
         )
 
