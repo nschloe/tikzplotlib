@@ -123,7 +123,7 @@ def get_tikz_code(
     data['font size'] = textsize
     data['custom colors'] = {}
     data['extra tikzpicture parameters'] = extra_tikzpicture_parameters
-    data['extra axis parameters'] = extra_axis_parameters
+    data['extra axis options [base]'] = extra_axis_parameters.copy()
     # rectangle_legends is used to keep track of which rectangles have already
     # had \addlegendimage added. There should be only one \addlegenimage per
     # bar chart data series.
@@ -261,16 +261,16 @@ def _recurse(data, obj):
     for child in obj.get_children():
         if isinstance(child, mpl.axes.Axes):
             # Reset 'extra axis parameters' for every new Axes environment.
-            #data['extra axis parameters'] = \
-            #    data['extra axis parameters'].copy()
+            data['extra axis options'] = \
+                data['extra axis options [base]'].copy()
 
             ax = axes.Axes(data, child)
             if not ax.is_colorbar:
                 # Run through the child objects, gather the content.
                 data, children_content = _recurse(data, child)
                 # add extra axis options from children
-                if data['extra axis parameters']:
-                    ax.axis_options.extend(data['extra axis parameters'])
+                if data['extra axis options']:
+                    ax.axis_options.extend(data['extra axis options'])
                 # populate content
                 content.extend(
                         ax.get_begin_code() +
