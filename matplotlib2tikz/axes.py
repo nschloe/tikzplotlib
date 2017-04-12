@@ -386,10 +386,11 @@ class Axes(object):
     def __get_label_rotation_and_horizontal_alignment(self, obj, data, axes):
         tick_label_text_width = None
         tick_label_text_width_identifier = "%s tick label text width" % axes
-        if tick_label_text_width_identifier in data['extra axis parameters']:
-            tick_label_text_width = data['extra axis parameters']
-            [tick_label_text_width_identifier]
-            del data['extra axis parameters'][tick_label_text_width_identifier]
+        if tick_label_text_width_identifier in data['extra axis options']:
+            tick_label_text_width = data['extra axis options [base]'] \
+                [tick_label_text_width_identifier]
+            del data['extra axis options'][tick_label_text_width_identifier]
+
 
         label_style = ""
 
