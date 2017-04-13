@@ -3,6 +3,7 @@
 import matplotlib2tikz
 
 import os
+import shutil
 import tempfile
 import subprocess
 from PIL import Image
@@ -93,6 +94,9 @@ def assert_phash(fig, reference_phash):
         compute_phash(fig)
 
     if reference_phash != phash:
+        # Copy pdf_file in test directory
+        shutil.copy(pdf_file, os.path.dirname(os.path.abspath(__file__)))
+
         # Compute the Hamming distance between the two 64-bit numbers
         hamming_dist = \
             bin(int(phash, 16) ^ int(reference_phash, 16)).count('1')

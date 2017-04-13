@@ -62,7 +62,7 @@ def test_rotated_labels_parameters(x_alignment, y_alignment,
     matplotlib2tikz.save(
         tikz_file,
         figurewidth='7.5cm',
-        extra=extra_dict
+        extra_axis_parameters=extra_dict
         )
 
     # close figure
@@ -101,7 +101,7 @@ def test_rotated_labels_parameters_different_values(x_tick_label_width,
     matplotlib2tikz.save(
         tikz_file,
         figurewidth='7.5cm',
-        extra=extra_dict
+        extra_axis_parameters=extra_dict
         )
 
     # close figure
