@@ -19,7 +19,7 @@ def plot():
     fig = pp.figure(figsize=figsize)
     ax = pp.axes([0, 0, 1, 1], frameon=False)
     ax.set_axis_off()
-    pp.imshow(lena, origin='lower')
+    pp.imshow(lena)
     # Set the current color map to HSV.
     pp.hsv()
     pp.colorbar()
@@ -27,4 +27,4 @@ def plot():
 
 
 def test():
-    helpers.assert_phash(plot(), '7558d3b30f634b06')
+    helpers.assert_phash(plot(), '75c3d34d1d0d4b91')
