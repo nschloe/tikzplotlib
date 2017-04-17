@@ -177,6 +177,10 @@ def draw_text(data, obj):
         # We might want to remove this here in the future.
         text = text.replace('\n ', '\\\\')
 
+    # Make sure % and & are translated correctly
+    text = text.replace('&', '\&')
+    text = text.replace('%', '\%')
+
     content.append(
             '\\node at %s[\n  %s\n]{%s %s};\n' %
             (tikz_pos, ',\n  '.join(properties), ' '.join(style), text)
