@@ -46,7 +46,7 @@ def draw_image(data, obj):
         assert len(dims) == 3 and dims[2] in [3, 4]
         # convert to PIL image
         image = PIL.Image.fromarray(img_array)
-        image.save(filename)
+        image.save(filename, origin=obj.origin)
 
     # write the corresponding information to the TikZ file
     extent = obj.get_extent()
