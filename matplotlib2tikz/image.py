@@ -29,7 +29,7 @@ def draw_image(data, obj):
 
     if obj.origin == "lower":
         img_array = numpy.flipud(img_array)
-        
+
     dims = img_array.shape
     if len(dims) == 2:  # the values are given as one real number: look at cmap
         clims = obj.get_clim()
