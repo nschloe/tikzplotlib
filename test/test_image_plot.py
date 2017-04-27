@@ -11,9 +11,11 @@ try:
 except ImportError:
     raise RuntimeError('PIL must be installed to run this example')
 
-#the picture 'lena.png' with origin='lower' is flipped upside-down. So it has to be upside-down in the pdf-file as well.
+# the picture 'lena.png' with origin='lower' is flipped upside-down.
+# So it has to be upside-down in the pdf-file as well.
 
-def plot1(): #test for monochrome picture
+# test for monochrome picture
+def plot1():
 
     this_dir = os.path.dirname(os.path.realpath(__file__))
     lena = Image.open(os.path.join(this_dir, 'lena.png'))
@@ -29,7 +31,9 @@ def plot1(): #test for monochrome picture
     pp.colorbar()
     return fig
 
-def plot2(): #test for rgb picture
+
+# test for rgb picture
+def plot2():
 
     this_dir = os.path.dirname(os.path.realpath(__file__))
     lena = Image.open(os.path.join(this_dir, 'lena.png'))
@@ -44,14 +48,13 @@ def plot2(): #test for rgb picture
     pp.colorbar()
     return fig
 
+
 @pytest.mark.parametrize(
     'plot, phash', [
         (plot1, '455361ec211d72fb'),
         (plot2, '7558d3b30f634b06'),
     ]
     )
-
 def test(plot, phash):
     helpers.assert_phash(plot(), phash)
     return
-

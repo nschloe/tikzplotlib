@@ -30,7 +30,7 @@ def get_tikz_code(
         extra_tikzpicture_parameters=None,
         dpi=None,
         show_info=True
-        ):
+):
     '''Main function. Here, the recursion into the image starts and the
     contents are picked up. The actual file gets written in this routine.
 
