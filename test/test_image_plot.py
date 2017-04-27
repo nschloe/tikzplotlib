@@ -14,6 +14,7 @@ except ImportError:
 # the picture 'lena.png' with origin='lower' is flipped upside-down.
 # So it has to be upside-down in the pdf-file as well.
 
+
 # test for monochrome picture
 def plot1():
 
