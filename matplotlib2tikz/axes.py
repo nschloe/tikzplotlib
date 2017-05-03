@@ -300,6 +300,7 @@ class Axes(object):
                 colorbar_ticklabels = colorbar.ax.get_xticklabels()
                 colorbar_ticklabels_minor = colorbar.ax.get_xticklabels(
                     'minor')
+
                 colorbar_styles.extend(
                     _get_ticks(data, 'x', colorbar_ticks, colorbar_ticklabels)
                     )
@@ -334,6 +335,7 @@ class Axes(object):
                 # Getting the labels via get_* might not actually be suitable:
                 # they might not reflect the current state.
                 colorbar_ticklabels = colorbar.ax.get_yticklabels()
+                colorbar_ylabel = colorbar.ax.get_ylabel()
                 colorbar_ticklabels_minor = colorbar.ax.get_yticklabels(
                     'minor')
                 colorbar_styles.extend(
@@ -344,6 +346,7 @@ class Axes(object):
                         data, 'minor y', colorbar_ticks_minor,
                         colorbar_ticklabels_minor)
                     )
+                colorbar_styles.append('ylabel={'+ colorbar_ylabel +'}')
 
             mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(
                     colorbar.get_cmap()
