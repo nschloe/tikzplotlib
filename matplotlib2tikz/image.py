@@ -27,9 +27,6 @@ def draw_image(data, obj):
     # store the image as in a file
     img_array = obj.get_array()
 
-    if obj.origin == "lower":
-        img_array = numpy.flipud(img_array)
-
     dims = img_array.shape
     if len(dims) == 2:  # the values are given as one real number: look at cmap
         clims = obj.get_clim()
@@ -45,6 +42,8 @@ def draw_image(data, obj):
         # RGB (+alpha) information at each point
         assert len(dims) == 3 and dims[2] in [3, 4]
         # convert to PIL image
+        if obj.origin == "lower":
+            img_array = numpy.flipud(img_array)
         image = PIL.Image.fromarray(img_array)
         image.save(filename, origin=obj.origin)
 
