@@ -53,4 +53,4 @@ def plot():
 
 
 def test():
-    helpers.assert_phash(plot(), '4b52b5bdb45ca462')
+    helpers.assert_phash(plot(), '5356a5adac9cac62')
