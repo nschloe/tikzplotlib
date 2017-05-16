@@ -21,8 +21,9 @@ def draw_legend(data, obj):
 
     # Get the location.
     # http://matplotlib.org/api/legend_api.html
-    pad = 0.03
+    pad = 0.01
     loc = obj._loc
+    bbox_center = obj.get_bbox_to_anchor()._bbox._points[1]
     if loc == 0:
         # best
         # Create a renderer
@@ -106,44 +107,74 @@ def draw_legend(data, obj):
 
     if loc == 1:
         # upper right
-        position = None
+        if obj._bbox_to_anchor:
+            position = [bbox_center[0], bbox_center[1]]
+        else:
+            position = None
         anchor = None
     elif loc == 2:
         # upper left
-        position = [pad, 1.0 - pad]
+        if obj._bbox_to_anchor:
+            position = [bbox_center[0], bbox_center[1]]
+        else:
+            position = [pad, 1.0 - pad]
         anchor = 'north west'
     elif loc == 3:
         # lower left
-        position = [pad, pad]
+        if obj._bbox_to_anchor:
+            position = [pad + bbox_center[0], pad + bbox_center[1]]
+        else:
+            position = [pad, pad]
         anchor = 'south west'
     elif loc == 4:
         # lower right
-        position = [1.0 - pad, pad]
+        if obj._bbox_to_anchor:
+            position = [bbox_center[0], bbox_center[1]]
+        else:
+            position = [1.0 - pad, pad]
         anchor = 'south east'
     elif loc == 5:
         # right
-        position = [1.0 - pad, 0.5]
+        if obj._bbox_to_anchor:
+            position = [bbox_center[0], bbox_center[1]]
+        else:
+            position = [1.0 - pad, 0.5]
         anchor = 'east'
     elif loc == 6:
         # center left
-        position = [3 * pad, 0.5]
+        if obj._bbox_to_anchor:
+            position = [bbox_center[0], bbox_center[1]]
+        else:
+            position = [3 * pad, 0.5]
         anchor = 'west'
     elif loc == 7:
         # center right
-        position = [1.0 - 3 * pad, 0.5]
+        if obj._bbox_to_anchor:
+            position = [bbox_center[0], bbox_center[1]]
+        else:
+            position = [1.0 - 3 * pad, 0.5]
         anchor = 'east'
     elif loc == 8:
         # lower center
-        position = [0.5, 3 * pad]
+        if obj._bbox_to_anchor:
+            position = [bbox_center[0], bbox_center[1]]
+        else:
+            position = [0.5, 3 * pad]
         anchor = 'south'
     elif loc == 9:
         # upper center
-        position = [0.5, 1.0 - 3 * pad]
+        if obj._bbox_to_anchor:
+            position = [bbox_center[0], bbox_center[1]]
+        else:
+            position = [0.5, 1.0 - 3 * pad]
         anchor = 'north'
     else:
         assert loc == 10
         # center
-        position = [0.5, 0.5]
+        if obj._bbox_to_anchor:
+            position = [bbox_center[0], bbox_center[1]]
+        else:
+            position = [0.5, 0.5]
         anchor = 'center'
 
     legend_style = []
@@ -181,6 +212,18 @@ def draw_legend(data, obj):
             alignment = None
             break
 
+    # Set color of lines in legend
+    set_colors = False
+    data['legend colors']=[]
+    for i in range(obj.legendHandles.__len__()):
+        if obj.legendHandles[i].get_color() != 'k':
+            set_colors = True
+        if set_colors:
+            data, legend_color, _ = mycol.mpl_color2xcolor(data,\
+                                            obj.legendHandles[i].get_color())
+            data['legend colors'].append('\\addlegendimage{no markers, %s}' \
+                % legend_color + '\n')
+
     # Write styles to data
     if legend_style:
         style = 'legend style={%s}' % ', '.join(legend_style)
@@ -189,5 +232,6 @@ def draw_legend(data, obj):
     if childAlignment:
         cellAlign = 'legend cell align={%s}' % alignment
         data['extra axis options'].add(cellAlign)
+
 
     return data

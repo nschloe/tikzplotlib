@@ -309,6 +309,8 @@ def _recurse(data, obj):
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.legend.Legend):
             data = legend.draw_legend(data, child)
+            if data['legend colors']:
+                content.extend(data['legend colors'], 0)
         elif isinstance(child, mpl.axis.XAxis) or \
                 isinstance(child, mpl.axis.YAxis) or \
                 isinstance(child, mpl.spines.Spine) or \
