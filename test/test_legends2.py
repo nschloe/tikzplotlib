@@ -31,4 +31,4 @@ def plot():
 
 
 def test():
-    helpers.assert_phash(plot(), '6b447a5a62d4952f')
+    helpers.assert_phash(plot(), '6f547e5072d0852f')
