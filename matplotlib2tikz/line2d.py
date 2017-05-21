@@ -89,6 +89,9 @@ def draw_line2d(data, obj):
 
     if marker and not show_line:
         addplot_options.append('only marks')
+        
+    if obj.get_label().startswith("_line"):
+        addplot_options.append("forget plot")
 
     # process options
     content.append('\\addplot ')
