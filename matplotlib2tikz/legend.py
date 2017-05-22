@@ -214,18 +214,28 @@ def draw_legend(data, obj):
 
     # Set color of lines in legend
     set_colors = False
-    data['legend colors']=[]
+    temp = []
     for i in range(obj.legendHandles.__len__()):
         try:
-            if obj.legendHandles[i].get_color() != 'k':
-                set_colors = True
+            data, legend_color, _ = mycol.mpl_color2xcolor(data, \
+                                                           obj.legendHandles[
+                                                               i].get_color())
+            temp.append('\\addlegendimage{no markers, %s}' \
+                                         % legend_color + '\n')
+
         except:
             set_colors = False
-        if set_colors:
-            data, legend_color, _ = mycol.mpl_color2xcolor(data,\
-                                            obj.legendHandles[i].get_color())
-            data['legend colors'].append('\\addlegendimage{no markers, %s}' \
-                % legend_color + '\n')
+            break
+        if obj.legendHandles[i].get_color() != 'k':
+            set_colors = True
+        else:
+            set_colors = False
+
+    if set_colors:
+        data['legend colors'] = temp
+    else:
+        data['legend colors'] = None
+
     # Write styles to data
     if legend_style:
         style = 'legend style={%s}' % ', '.join(legend_style)
