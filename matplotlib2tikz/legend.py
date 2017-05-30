@@ -17,11 +17,11 @@ def draw_legend(data, obj):
         childrenAlignment.append('%s' % text.get_horizontalalignment())
 
     cont = 'legend entries={{%s}}' % '},{'.join(texts)
-    data['extra axis parameters'].add(cont)
+    data['extra axis options'].add(cont)
 
     # Get the location.
     # http://matplotlib.org/api/legend_api.html
-    pad = 0.01
+    pad = 0.03
     loc = obj._loc
     if loc == 0:
         # best
@@ -190,14 +190,13 @@ def draw_legend(data, obj):
     # Set color of lines in legend
     temp = []
     colors = set()
-    for i in range(obj.legendHandles.__len__()):
+    for handle in obj.legendHandles:
         try:
             data, legend_color, _ = mycol.mpl_color2xcolor(data,
-                                                           obj.legendHandles[
-                                                               i].get_color())
+                                                           handle.get_color())
             colors.add(legend_color)
-            temp.append('\\addlegendimage{no markers, %s}'
-                                         % legend_color + '\n')
+            temp.append('\\addlegendimage{no markers, %s}\n'
+                                         % legend_color)
         except:
             break
 
@@ -209,10 +208,10 @@ def draw_legend(data, obj):
     # Write styles to data
     if legend_style:
         style = 'legend style={%s}' % ', '.join(legend_style)
-        data['extra axis parameters'].add(style)
+        data['extra axis options'].add(style)
 
     if childAlignment:
         cellAlign = 'legend cell align={%s}' % alignment
-        data['extra axis parameters'].add(cellAlign)
+        data['extra axis options'].add(cellAlign)
 
     return data
