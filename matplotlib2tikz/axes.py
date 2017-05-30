@@ -394,7 +394,6 @@ class Axes(object):
                 [tick_label_text_width_identifier]
             del data['extra axis options'][tick_label_text_width_identifier]
 
-
         label_style = ""
 
         major_tick_labels = obj.xaxis.get_majorticklabels() if axes == 'x' \

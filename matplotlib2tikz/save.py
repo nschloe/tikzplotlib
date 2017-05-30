@@ -26,8 +26,8 @@ def get_tikz_code(
         tex_relative_path_to_data=None,
         strict=False,
         wrap=True,
-        extra_axis_parameters=set(),
-        extra_tikzpicture_parameters=set(),
+        extra_axis_parameters=None,
+        extra_tikzpicture_parameters=None,
         dpi=None,
         show_info=True
 ):
@@ -84,13 +84,15 @@ def get_tikz_code(
                  Default is ``True``.
     :type wrap: bool
 
-    :param extra_axis_parameters: Extra axis options to be passed (as a set) to pgfplots.
-                  Default is ``None``.
+    :param extra_axis_parameters: Extra axis options to be passed (as a set)
+                                    to pgfplots. Default is ``None``.
     :type extra_axis_parameters: a set of strings for the pfgplots axes.
 
-    :param extra_tikzpicture_parameters: Extra tikzpicture options to be passed (as a set) to pgfplots.
+    :param extra_tikzpicture_parameters: Extra tikzpicture options to be passed
+                                        (as a set) to pgfplots.
 
-    :type extra_tikzpicture_parameters: a set of strings for the pfgplots tikzpicture.
+    :type extra_tikzpicture_parameters: a set of strings for the pfgplots
+                                        tikzpicture.
 
     :param dpi: The resolution in dots per inch of the rendered image in case
                 of QuadMesh plots. If ``None`` it will default to the value
@@ -123,11 +125,14 @@ def get_tikz_code(
     data['font size'] = textsize
     data['custom colors'] = {}
     data['extra tikzpicture parameters'] = extra_tikzpicture_parameters
-    data['extra axis parameters'] = extra_axis_parameters
     # rectangle_legends is used to keep track of which rectangles have already
     # had \addlegendimage added. There should be only one \addlegenimage per
     # bar chart data series.
     data['rectangle_legends'] = set()
+    if extra_axis_parameters:
+        data['extra axis options [base]'] = extra_axis_parameters.copy()
+    else:
+        data['extra axis options [base]'] = set()
 
     if dpi is None:
         savefig_dpi = mpl.rcParams['savefig.dpi']
@@ -155,8 +160,9 @@ def get_tikz_code(
     # write the contents
     if wrap:
         code += '\\begin{tikzpicture}\n\n'
-        code += ',\n'.join(data['extra tikzpicture parameters'])
-        code += '\n'
+        if extra_tikzpicture_parameters:
+            code += ',\n'.join(data['extra tikzpicture parameters'])
+            code += '\n'
 
     coldefs = _get_color_definitions(data)
     if coldefs:
@@ -261,16 +267,16 @@ def _recurse(data, obj):
     for child in obj.get_children():
         if isinstance(child, mpl.axes.Axes):
             # Reset 'extra axis parameters' for every new Axes environment.
-            #data['extra axis parameters'] = \
-            #    data['extra axis parameters'].copy()
+            data['extra axis options'] = \
+                data['extra axis options [base]'].copy()
 
             ax = axes.Axes(data, child)
             if not ax.is_colorbar:
                 # Run through the child objects, gather the content.
                 data, children_content = _recurse(data, child)
                 # add extra axis options from children
-                if data['extra axis parameters']:
-                    ax.axis_options.extend(data['extra axis parameters'])
+                if data['extra axis options']:
+                    ax.axis_options.extend(data['extra axis options'])
                 # populate content
                 content.extend(
                         ax.get_begin_code() +
