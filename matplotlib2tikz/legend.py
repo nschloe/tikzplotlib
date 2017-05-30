@@ -23,7 +23,6 @@ def draw_legend(data, obj):
     # http://matplotlib.org/api/legend_api.html
     pad = 0.01
     loc = obj._loc
-    bbox_center = obj.get_bbox_to_anchor()._bbox._points[1]
     if loc == 0:
         # best
         # Create a renderer
@@ -107,75 +106,51 @@ def draw_legend(data, obj):
 
     if loc == 1:
         # upper right
-        if obj._bbox_to_anchor:
-            position = [bbox_center[0], bbox_center[1]]
-        else:
-            position = None
+        position = None
         anchor = None
     elif loc == 2:
         # upper left
-        if obj._bbox_to_anchor:
-            position = [bbox_center[0], bbox_center[1]]
-        else:
-            position = [pad, 1.0 - pad]
+        position = [pad, 1.0 - pad]
         anchor = 'north west'
     elif loc == 3:
         # lower left
-        if obj._bbox_to_anchor:
-            position = [pad + bbox_center[0], pad + bbox_center[1]]
-        else:
-            position = [pad, pad]
+        position = [pad, pad]
         anchor = 'south west'
     elif loc == 4:
         # lower right
-        if obj._bbox_to_anchor:
-            position = [bbox_center[0], bbox_center[1]]
-        else:
-            position = [1.0 - pad, pad]
+        position = [1.0 - pad, pad]
         anchor = 'south east'
     elif loc == 5:
         # right
-        if obj._bbox_to_anchor:
-            position = [bbox_center[0], bbox_center[1]]
-        else:
-            position = [1.0 - pad, 0.5]
+        position = [1.0 - pad, 0.5]
         anchor = 'east'
     elif loc == 6:
         # center left
-        if obj._bbox_to_anchor:
-            position = [bbox_center[0], bbox_center[1]]
-        else:
-            position = [3 * pad, 0.5]
+        position = [3 * pad, 0.5]
         anchor = 'west'
     elif loc == 7:
         # center right
-        if obj._bbox_to_anchor:
-            position = [bbox_center[0], bbox_center[1]]
-        else:
-            position = [1.0 - 3 * pad, 0.5]
+        position = [1.0 - 3 * pad, 0.5]
         anchor = 'east'
     elif loc == 8:
         # lower center
-        if obj._bbox_to_anchor:
-            position = [bbox_center[0], bbox_center[1]]
-        else:
-            position = [0.5, 3 * pad]
+        position = [0.5, 3 * pad]
         anchor = 'south'
     elif loc == 9:
         # upper center
-        if obj._bbox_to_anchor:
-            position = [bbox_center[0], bbox_center[1]]
-        else:
-            position = [0.5, 1.0 - 3 * pad]
+        position = [0.5, 1.0 - 3 * pad]
         anchor = 'north'
     else:
         assert loc == 10
         # center
-        if obj._bbox_to_anchor:
-            position = [bbox_center[0], bbox_center[1]]
-        else:
-            position = [0.5, 0.5]
+        position = [0.5, 0.5]
         anchor = 'center'
+
+    # In case of given position via bbox_to_anchor parameter the center
+    # of legend is changed as follows:
+    if obj._bbox_to_anchor:
+        bbox_center = obj.get_bbox_to_anchor()._bbox._points[1]
+        position = [bbox_center[0], bbox_center[1]]
 
     legend_style = []
     if position:
