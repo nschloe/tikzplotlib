@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #
+from __future__ import print_function
+
 import six
 
 from . import color as mycol
@@ -15,6 +17,7 @@ def draw_line2d(data, obj):
     # If line is of length 0, do nothing.  Otherwise, an empty \addplot table
     # will be created, which will be interpreted as an external data source
     # in either the file '' or '.tex'.  Instead, render nothing.
+    # pylint: disable=len-as-condition
     if len(obj.get_xdata()) == 0:
         return data, []
 

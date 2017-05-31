@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #
+from __future__ import print_function
+
 import codecs
 import os
 import matplotlib as mpl
@@ -290,8 +292,13 @@ def _recurse(data, obj):
         elif isinstance(child, mpl.patches.Patch):
             data, cont = patch.draw_patch(data, child)
             content.extend(cont, child.get_zorder())
-        elif isinstance(child, mpl.collections.PatchCollection) or \
-                isinstance(child, mpl.collections.PolyCollection):
+        elif isinstance(
+                child,
+                (
+                    mpl.collections.PatchCollection,
+                    mpl.collections.PolyCollection
+                )
+                ):
             data, cont = patch.draw_patchcollection(data, child)
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.collections.PathCollection):
@@ -305,16 +312,18 @@ def _recurse(data, obj):
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.legend.Legend):
             data = legend.draw_legend(data, child)
-        elif isinstance(child, mpl.axis.XAxis) or \
-                isinstance(child, mpl.axis.YAxis) or \
-                isinstance(child, mpl.spines.Spine) or \
-                isinstance(child, mpl.text.Text):
+        elif isinstance(
+                child,
+                (
+                    mpl.axis.XAxis, mpl.axis.YAxis,
+                    mpl.spines.Spine, mpl.text.Text
+                )):
             pass
         else:
             print('matplotlib2tikz: Don''t know how to handle object ''%s''.' %
                   type(child))
     # XXX: This is ugly
-    if isinstance(obj, mpl.axes.Subplot) or isinstance(obj, mpl.figure.Figure):
+    if isinstance(obj, (mpl.axes.Subplot, mpl.figure.Figure)):
         for text in obj.texts:
             data, cont = mytext.draw_text(data, text)
             content.extend(cont, text.get_zorder())

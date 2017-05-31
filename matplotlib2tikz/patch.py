@@ -21,11 +21,11 @@ def draw_patch(data, obj):
     elif isinstance(obj, mpl.patches.Ellipse):
         # ellipse specialization
         return _draw_ellipse(data, obj, draw_options)
-    else:
-        # regular patch
-        return mypath.draw_path(
-            data, obj.get_path(), draw_options=draw_options
-            )
+
+    # regular patch
+    return mypath.draw_path(
+        data, obj.get_path(), draw_options=draw_options
+        )
 
 
 def draw_patchcollection(data, obj):
@@ -33,10 +33,16 @@ def draw_patchcollection(data, obj):
     '''
     content = []
     # Gather the draw options.
-    edge_colors = obj.get_edgecolor()
-    edge_color = None if len(edge_colors) == 0 else edge_colors[0]
-    face_colors = obj.get_facecolor()
-    face_color = None if len(face_colors) == 0 else face_colors[0]
+    try:
+        edge_color = obj.get_edgecolor()[0]
+    except IndexError:
+        edge_color = None
+
+    try:
+        face_color = obj.get_facecolor()[0]
+    except IndexError:
+        face_color = None
+
     data, draw_options = mypath.get_draw_options(
             data, edge_color, face_color
             )

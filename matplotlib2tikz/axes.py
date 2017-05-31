@@ -399,8 +399,8 @@ class Axes(object):
         elif self.is_subplot and self.nsubplots == self.subplot_index:
             data['is_in_groupplot_env'] = False
             return '\\end{groupplot}\n\n'
-        else:
-            return ''
+
+        return ''
 
 
 def _get_label_rotation_and_horizontal_alignment(
@@ -421,7 +421,7 @@ def _get_label_rotation_and_horizontal_alignment(
         obj.xaxis.get_majorticklabels() if axes_obj == 'x' \
         else obj.yaxis.get_majorticklabels()
 
-    if len(major_tick_labels) == 0:
+    if not major_tick_labels:
         return None
 
     tick_labels_rotation = \
@@ -448,7 +448,7 @@ def _get_label_rotation_and_horizontal_alignment(
                   'label text width\' has been passed in the \'extra\' '
                   'parameter' % axes_obj)
 
-        if len(values) > 0:
+        if values:
             label_style = \
                 '%sticklabel style = {%s}' % (axes_obj, ','.join(values))
     else:
@@ -733,16 +733,16 @@ def _handle_listed_color_map(cmap):
     if cmap.N is None or cmap.N == len(cmap.colors):
         colors = [
             'rgb(%d%s)=(%.15g,%.15g,%.15g)'
-            % (k, unit, color[0], color[1], color[2])
-            for (k, color) in enumerate(cmap.colors)
+            % (k, unit, rgb[0], rgb[1], rgb[2])
+            for (k, rgb) in enumerate(cmap.colors)
             ]
     else:
         reps = int(float(cmap.N) / len(cmap.colors) - 0.5) + 1
         repeated_cols = reps * cmap.colors
         colors = [
             'rgb(%d%s)=(%.15g,%.15g,%.15g)'
-            % (k, unit, color[0], color[1], color[2])
-            for (k, color) in enumerate(repeated_cols[:cmap.N])
+            % (k, unit, rgb[0], rgb[1], rgb[2])
+            for (k, rgb) in enumerate(repeated_cols[:cmap.N])
             ]
 
     colormap_string = '{mymap}{[1%s]\n  %s\n}' % \
