@@ -144,7 +144,6 @@ def assert_phash(fig, reference_phash):
             print('Uploaded output PNG file to %s' % out.decode('utf-8'))
 
     assert reference_phash == phash
-
     return
 
 
