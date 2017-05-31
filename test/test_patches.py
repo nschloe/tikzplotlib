@@ -49,7 +49,7 @@ def plot():
         Wedge((0.8, 0.3), .2, 45, 90, width=0.10),  # Ring sector
         ]
 
-    for i in range(N):
+    for _ in range(N):
         polygon = Polygon(np.random.rand(N, 2), True)
         patches.append(polygon)
 

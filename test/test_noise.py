@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 #
+from __future__ import print_function
+
 import helpers
 
-from numpy.random import randn
-from matplotlib import pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
 import pytest
 
 
@@ -14,7 +15,7 @@ def plot1():
     ax = fig.add_subplot(111)
 
     np.random.seed(123)
-    data = np.clip(randn(250, 250), -1, 1)
+    data = np.clip(np.random.randn(250, 250), -1, 1)
 
     cax = ax.imshow(data, interpolation='nearest')
     ax.set_title('Gaussian noise with vertical colorbar')
@@ -59,5 +60,5 @@ def test(plot, reference_phash):
 if __name__ == '__main__':
     # plot1()
     # plt.show()
-    phash, _, _, _, _, _, _ = helpers.compute_phash(plot2())
-    print(phash)
+    ph, _, _, _, _, _, _ = helpers.compute_phash(plot2())
+    print(ph)

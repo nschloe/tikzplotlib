@@ -28,7 +28,7 @@ def plot():
     w = 0.25
 
     ax.bar(x-w, y1, w, color='b', align='center', label='Data 1')
-    ax.bar(x,   y2, w, color='g', align='center', label='Data 2')
+    ax.bar(x, y2, w, color='g', align='center', label='Data 2')
     ax.bar(x+w, y3, w, color='r', align='center', label='Data 3')
     ax.legend()
 

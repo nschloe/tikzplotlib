@@ -23,7 +23,7 @@ def plot():
     w = 0.25
 
     ax.bar(x-w, y1, w, color='b', align='center')
-    ax.bar(x,   y2, w, color='g', align='center')
+    ax.bar(x, y2, w, color='g', align='center')
     ax.bar(x+w, y3, w, color='r', align='center')
 
     return fig
