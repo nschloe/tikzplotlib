@@ -20,10 +20,11 @@ sits on top of TikZ and describes graphs in terms of axes, data etc.
 Consequently, the output of matplotlib2tikz retains more information, can be
 more easily understood, and is more easily editable than [raw TikZ output](http://matplotlib.org/users/whats_new.html#pgf-tikz-backend).
 For example, the matplotlib figure
-```python
+```python,test
 import matplotlib.pyplot as plt
 from matplotlib import style
 import numpy as np
+
 fig = plt.figure()
 style.use('ggplot')
 t = np.arange(0.0, 2.0, 0.1)

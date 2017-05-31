@@ -31,7 +31,8 @@ addons:
       - python-tk
 
 before_install:
-  - pip install pytest pytest-cov
+  - pip install pytest pytest-cov code_extract
+  - code_extract README.md test/readme_test.py --filter python,test
 
 install:
   - pip install -r test_requirements.txt
