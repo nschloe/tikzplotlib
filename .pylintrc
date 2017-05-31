@@ -1,0 +1,8 @@
+[MESSAGES CONTROL]
+
+disable=
+    invalid-name,
+    missing-docstring,
+    bad-continuation,
+    duplicate-code,
+    fixme,

@@ -31,10 +31,11 @@ addons:
       - python-tk
 
 before_install:
-  - pip install pytest pytest-cov code_extract
+  - pip install pytest pytest-cov code_extract pylint
   # Make sure to put the readme test at the very end; otherwise it's messing
   # around with the other tests.
   - code_extract README.md test/zzz_readme_test.py --filter python,test
+  - pylint matplotlib2tikz
 
 install:
   - pip install -r test_requirements.txt
