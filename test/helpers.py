@@ -2,13 +2,14 @@
 #
 import matplotlib2tikz
 
-import os
-import shutil
-import tempfile
-import subprocess
-from PIL import Image
 import imagehash
-from matplotlib import pyplot as plt
+import matplotlib
+import matplotlib.pyplot as plt
+import os
+from PIL import Image
+import shutil
+import subprocess
+import tempfile
 
 
 def compute_phash(fig):
@@ -144,4 +145,17 @@ def assert_phash(fig, reference_phash):
 
     assert reference_phash == phash
 
+    return
+
+
+def print_tree(obj, indent=''):
+    '''Recursively prints the tree structure of the matplotlib object.
+    '''
+    if isinstance(obj, matplotlib.text.Text):
+        print(indent, type(obj).__name__, '("%s")' % obj.get_text())
+    else:
+        print(indent, type(obj).__name__)
+
+    for child in obj.get_children():
+        print_tree(child, indent + '   ')
     return
