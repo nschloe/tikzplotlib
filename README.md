@@ -24,6 +24,8 @@ For example, the matplotlib figure
 import matplotlib.pyplot as plt
 import numpy as np
 
+plt.style.use('ggplot')
+
 t = np.arange(0.0, 2.0, 0.1)
 s = np.sin(2*np.pi*t)
 s2 = np.cos(2*np.pi*t)
@@ -49,9 +51,10 @@ tikz_save('test.tex')
 title={Simple plot $\frac{\alpha}{2}$},
 xlabel={time(s)},
 ylabel={Voltage (mV)},
-xmin=0, xmax=2,
-ymin=-1, ymax=1,
+xmin=-0.095, xmax=1.995,
+ymin=-1.1, ymax=1.1,
 tick align=outside,
+tick pos=left,
 xmajorgrids,
 x grid style={white},
 ymajorgrids,
@@ -59,14 +62,14 @@ y grid style={white},
 axis line style={white},
 axis background/.style={fill=white!89.803921568627459!black}
 ]
-\addplot [line width=1.64pt, color0, mark=*, mark size=3, mark options={solid,draw=black}]
+\addplot [line width=1.64pt, color0, mark=*, mark size=3, mark options={solid}]
 table {%
 0 0
 0.1 0.587785252292473
 % [...]
 1.9 -0.587785252292473
 };
-\addplot [line width=1.64pt, color1, mark=*, mark size=3, mark options={solid,draw=black}]
+\addplot [line width=1.64pt, color1, mark=*, mark size=3, mark options={solid}]
 table {%
 0 1
 0.1 0.809016994374947
