@@ -51,12 +51,12 @@ def plot2():
 
 
 @pytest.mark.parametrize(
-    'plot, phash', [
+    'plot, reference_phash', [
         (plot1, '455361ec211d72fb'),
         (plot2, '7558d3b30f634b06'),
     ]
     )
-def test(plot, phash):
+def test(plot, reference_phash):
     phash = helpers.Phash(plot())
-    assert phash.phash == phash, phash.get_details()
+    assert phash.phash == reference_phash, phash.get_details()
     return

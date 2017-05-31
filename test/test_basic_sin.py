@@ -25,4 +25,4 @@ def plot():
 
 def test():
     phash = Phash(plot())
-    assert phash.phash == '1f86e1f521c6e5c1', phash.get_details()
+    assert phash.phash == '1f36e5ce21c1e5c1', phash.get_details()
