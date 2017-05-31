@@ -22,11 +22,10 @@ more easily understood, and is more easily editable than [raw TikZ output](http:
 For example, the matplotlib figure
 ```python,test
 import matplotlib.pyplot as plt
-from matplotlib import style
 import numpy as np
 
-fig = plt.figure()
-style.use('ggplot')
+plt.style.use('ggplot')
+
 t = np.arange(0.0, 2.0, 0.1)
 s = np.sin(2*np.pi*t)
 s2 = np.cos(2*np.pi*t)
