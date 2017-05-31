@@ -16,7 +16,7 @@ def plot():
             )
     t = np.arange(0.0, 5.0, 0.01)
     s = np.cos(2*np.pi*t)
-    line, = ax.plot(t, s, color='blue')
+    ax.plot(t, s, color='blue')
     ax.annotate(
             'text',
             xy=(4., 1.),

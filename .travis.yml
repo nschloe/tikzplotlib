@@ -51,7 +51,8 @@ before_script:
 
 # run tests
 script:
-  - pylint matplotlib2tikz
+  - pylint matplotlib2tikz/
+  - pylint test/*py
   # cd into test directory to make sure we're using the pip-installed
   # matplotlib2tikz.
   - cd test && MPLBACKEND=Agg pytest --cov matplotlib2tikz
