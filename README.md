@@ -1,7 +1,6 @@
 # matplotlib2tikz
 
 [![Build Status](https://travis-ci.org/nschloe/matplotlib2tikz.svg?branch=master)](https://travis-ci.org/nschloe/matplotlib2tikz)
-[![Code Health](https://landscape.io/github/nschloe/matplotlib2tikz/master/landscape.png)](https://landscape.io/github/nschloe/matplotlib2tikz/master)
 [![codecov](https://codecov.io/gh/nschloe/matplotlib2tikz/branch/master/graph/badge.svg)](https://codecov.io/gh/nschloe/matplotlib2tikz)
 [![Documentation Status](https://readthedocs.org/projects/matplotlib2tikz/badge/?version=latest)](https://readthedocs.org/projects/matplotlib2tikz/?badge=latest)
 [![PyPi Version](https://img.shields.io/pypi/v/matplotlib2tikz.svg)](https://pypi.python.org/pypi/matplotlib2tikz)
@@ -22,7 +21,7 @@ Consequently, the output of matplotlib2tikz retains more information, can be
 more easily understood, and is more easily editable than [raw TikZ output](http://matplotlib.org/users/whats_new.html#pgf-tikz-backend).
 For example, the matplotlib figure
 ```python
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
 from matplotlib import style
 import numpy as np
 fig = plt.figure()
