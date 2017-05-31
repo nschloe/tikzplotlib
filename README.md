@@ -10,7 +10,7 @@ This is matplotlib2tikz, a Python tool for converting matplotlib figures into
 [PGFPlots](https://www.ctan.org/pkg/pgfplots)
 ([TikZ](https://www.ctan.org/pkg/pgf)) figures like
 
-![](https://nschloe.github.io/matplotlib2tikz/latex3.png)
+![](https://nschloe.github.io/matplotlib2tikz/example.png)
 
 for native inclusion into LaTeX documents.
 
