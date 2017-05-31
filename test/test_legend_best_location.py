@@ -47,7 +47,7 @@ def plot():
     axes[7].legend((l,), ('UC',), loc=0)
 
     # Legend best location is "center"
-    l, = axes[8].plot(
+    l = axes[8].plot(
             t[:10],
             2 * np.cos(10 * t[:10]),
             t[-10:],
@@ -62,5 +62,5 @@ def plot():
 
 def test():
     phash = helpers.Phash(plot())
-    assert phash.phash == '879d991d2c877c1c', phash.get_details()
+    assert phash.phash == '879d991d0e877c1c', phash.get_details()
     return
