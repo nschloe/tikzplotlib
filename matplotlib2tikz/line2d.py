@@ -3,6 +3,8 @@
 from . import color as mycol
 from . import path as mypath
 
+import six
+
 
 def draw_line2d(data, obj):
     '''Returns the PGFPlots code for an Line2D environment.
@@ -58,7 +60,9 @@ def draw_line2d(data, obj):
         mark_options = ['solid']
         if extra_mark_options:
             mark_options.append(extra_mark_options)
-        if marker_face_color is None or marker_face_color == 'none':
+        if marker_face_color is None or \
+           (isinstance(marker_face_color, six.string_types) and
+               marker_face_color == 'none'):
             mark_options.append('fill opacity=0')
         else:
             data, face_xcolor, _ = mycol.mpl_color2xcolor(
