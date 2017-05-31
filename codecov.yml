@@ -1,1 +1,6 @@
 comment: no
+# https://github.com/codecov/support/issues/396#issuecomment-300879528
+codecov:
+  disable_default_path_fixes: true
+fixes:
+  - ".*/dist-packages/::"
