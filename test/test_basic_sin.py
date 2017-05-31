@@ -25,4 +25,4 @@ def plot():
 
 
 def test():
-    assert_phash(plot(), '1f36e5c621c1e7c1')
+    assert_phash(plot(), '1f86e1f521c6e5c1')

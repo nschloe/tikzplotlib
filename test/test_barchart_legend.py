@@ -10,8 +10,7 @@ in PGFPlots, they have no \\addplot, and thus legend must be
 manually added.
 
 """
-desc = 'Bar Chart'
-phash = '5f19a966937285cc'
+from helpers import Phash
 
 
 def plot():
@@ -35,3 +34,7 @@ def plot():
 
     return fig
 
+
+def test():
+    phash = Phash(plot())
+    assert phash.phash == '5f19a966937285cc', phash.get_details()

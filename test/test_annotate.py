@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-from helpers import assert_phash
+from helpers import Phash
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -37,4 +37,5 @@ def plot():
 
 
 def test():
-    assert_phash(plot(), 'ab8a79a1549654be')
+    phash = Phash(plot())
+    assert phash.phash == 'ab8a79a1549654bg', phash.get_details()
