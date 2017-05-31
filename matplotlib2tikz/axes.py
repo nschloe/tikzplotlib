@@ -346,7 +346,7 @@ class Axes(object):
                         data, 'minor y', colorbar_ticks_minor,
                         colorbar_ticklabels_minor)
                     )
-                colorbar_styles.append('ylabel={'+ colorbar_ylabel +'}')
+                colorbar_styles.append('ylabel={' + colorbar_ylabel + '}')
 
             mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(
                     colorbar.get_cmap()
@@ -390,8 +390,9 @@ class Axes(object):
         tick_label_text_width = None
         tick_label_text_width_identifier = "%s tick label text width" % axes
         if tick_label_text_width_identifier in data['extra axis options']:
-            tick_label_text_width = data['extra axis options [base]'] \
-                [tick_label_text_width_identifier]
+            tick_label_text_width = data['extra axis options [base]'][
+                        tick_label_text_width_identifier
+                        ]
             del data['extra axis options'][tick_label_text_width_identifier]
 
         label_style = ""

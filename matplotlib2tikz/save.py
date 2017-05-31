@@ -235,6 +235,7 @@ def _print_pgfplot_libs_message(data):
     print('=========================================================')
     return
 
+
 class _ContentManager(object):
     """ Basic Content Manager for matplotlib2tikz
 

@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 #
-from helpers import assert_phash
-
-from matplotlib import pyplot as plt
-from matplotlib import style
-import numpy as np
+from helpers import Phash
 
 
 def plot():
+    from matplotlib import pyplot as plt
+    import numpy as np
+
     fig = plt.figure()
     with plt.style.context(('ggplot')):
         t = np.arange(0.0, 2.0, 0.1)
@@ -25,4 +24,5 @@ def plot():
 
 
 def test():
-    assert_phash(plot(), '1f36e5c621c1e7c1')
+    phash = Phash(plot())
+    assert phash.phash == '1f36e5c621c1e7c1', phash.get_details()

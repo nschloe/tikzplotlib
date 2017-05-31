@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-import helpers
+from helpers import Phash
 
 
 def plot():
@@ -18,4 +18,5 @@ def plot():
 
 
 def test():
-    helpers.assert_phash(plot(), '5382544c16bdde75')
+    phash = Phash(plot())
+    assert phash.phash == '5382544c16bdde75', phash.get_details()
