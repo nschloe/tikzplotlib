@@ -174,6 +174,7 @@ class Axes(object):
         # Unfortunately, _tickdir doesn't seem to be quite accurate. See
         # <https://github.com/matplotlib/matplotlib/issues/5311>.
         # For now, just take the first tick direction of each of the axes.
+        # pylint: disable=protected-access
         x_tick_dirs = [tick._tickdir for tick in obj.xaxis.get_major_ticks()]
         y_tick_dirs = [tick._tickdir for tick in obj.yaxis.get_major_ticks()]
         if x_tick_dirs or y_tick_dirs:
@@ -225,6 +226,7 @@ class Axes(object):
         # <http://sourceforge.net/p/matplotlib/mailman/message/25169234/>
         # Coordinate of the lines are entirely meaningless, but styles
         # (colors,...) are respected.
+        # pylint: disable=protected-access
         if obj.xaxis._gridOnMajor:
             self.axis_options.append('xmajorgrids')
         elif obj.xaxis._gridOnMinor:
@@ -237,6 +239,7 @@ class Axes(object):
             if col != 'black':
                 self.axis_options.append('x grid style={%s}' % col)
 
+        # pylint: disable=protected-access
         if obj.yaxis._gridOnMajor:
             self.axis_options.append('ymajorgrids')
         elif obj.yaxis._gridOnMinor:
@@ -613,6 +616,7 @@ def _handle_linear_segmented_color_map(cmap):
     # Label the 3 elements in each row in the cdict entry for a given color as
     # (x, y0, y1).  Then for values of x between x[i] and x[i+1] the color
     # value is interpolated between y1[i] and y0[i+1].
+    # pylint: disable=protected-access
     segdata = cmap._segmentdata
     red = segdata['red']
     green = segdata['green']

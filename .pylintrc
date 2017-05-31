@@ -5,6 +5,7 @@ disable=
     duplicate-code,
     fixme,
     invalid-name,
+    locally-disabled,
     missing-docstring,
     too-many-branches,
     too-many-statements,
