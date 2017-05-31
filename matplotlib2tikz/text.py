@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-from . import color
-
 import matplotlib as mpl
+
+from . import color
 
 
 def draw_text(data, obj):
@@ -189,15 +189,18 @@ def _transform_positioning(ha, va):
     Not quite accurate but the results are equivalent more or less.'''
     if ha == 'center' and va == 'center':
         return None
-    else:
-        ha_mpl_to_tikz = {'right': 'east',
-                          'left': 'west',
-                          'center': ''
-                          }
-        va_mpl_to_tikz = {'top': 'north',
-                          'bottom': 'south',
-                          'center': '',
-                          'baseline': 'base'
-                          }
-        return ('anchor=%s %s' % (va_mpl_to_tikz[va], ha_mpl_to_tikz[ha])
-                ).strip()
+
+    ha_mpl_to_tikz = {
+            'right': 'east',
+            'left': 'west',
+            'center': ''
+            }
+    va_mpl_to_tikz = {
+            'top': 'north',
+            'bottom': 'south',
+            'center': '',
+            'baseline': 'base'
+            }
+    return (
+        'anchor=%s %s' % (va_mpl_to_tikz[va], ha_mpl_to_tikz[ha])
+        ).strip()

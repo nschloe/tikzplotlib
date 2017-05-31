@@ -31,7 +31,7 @@ def plot():
         x-w, y1, w, color='b', yerr=y1err, align='center', error_kw=errBarStyle
         )
     ax.bar(
-        x,   y2, w, color='g', yerr=y2err, align='center', error_kw=errBarStyle
+        x, y2, w, color='g', yerr=y2err, align='center', error_kw=errBarStyle
         )
     ax.bar(
         x+w, y3, w, color='r', yerr=y3err, align='center', error_kw=errBarStyle

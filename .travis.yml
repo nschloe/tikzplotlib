@@ -31,7 +31,7 @@ addons:
       - python-tk
 
 before_install:
-  - pip install pytest pytest-cov code_extract
+  - pip install pytest pytest-cov code_extract pylint
   # Make sure to put the readme test at the very end; otherwise it's messing
   # around with the other tests.
   - code_extract README.md test/zzz_readme_test.py --filter python,test
@@ -51,6 +51,8 @@ before_script:
 
 # run tests
 script:
+  - pylint matplotlib2tikz/
+  - pylint test/*py
   # cd into test directory to make sure we're using the pip-installed
   # matplotlib2tikz.
   - cd test && MPLBACKEND=Agg pytest --cov matplotlib2tikz

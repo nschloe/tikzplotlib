@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-from . import path as mypath
-
 import matplotlib as mpl
+
+from . import path as mypath
 
 
 def draw_patch(data, obj):
@@ -21,11 +21,11 @@ def draw_patch(data, obj):
     elif isinstance(obj, mpl.patches.Ellipse):
         # ellipse specialization
         return _draw_ellipse(data, obj, draw_options)
-    else:
-        # regular patch
-        return mypath.draw_path(
-            obj, data, obj.get_path(), draw_options=draw_options
-            )
+
+    # regular patch
+    return mypath.draw_path(
+        data, obj.get_path(), draw_options=draw_options
+        )
 
 
 def draw_patchcollection(data, obj):
@@ -33,16 +33,22 @@ def draw_patchcollection(data, obj):
     '''
     content = []
     # Gather the draw options.
-    edge_colors = obj.get_edgecolor()
-    edge_color = None if len(edge_colors) == 0 else edge_colors[0]
-    face_colors = obj.get_facecolor()
-    face_color = None if len(face_colors) == 0 else face_colors[0]
+    try:
+        edge_color = obj.get_edgecolor()[0]
+    except IndexError:
+        edge_color = None
+
+    try:
+        face_color = obj.get_facecolor()[0]
+    except IndexError:
+        face_color = None
+
     data, draw_options = mypath.get_draw_options(
             data, edge_color, face_color
             )
     for path in obj.get_paths():
         data, cont = mypath.draw_path(
-            obj, data, path, draw_options=draw_options
+            data, path, draw_options=draw_options
             )
         content.append(cont)
     return data, content
@@ -81,7 +87,7 @@ def _draw_rectangle(data, obj, draw_options):
 
     left_lower_x = obj.get_x()
     left_lower_y = obj.get_y()
-    cont = ('%s\draw[%s] (axis cs:%.15g,%.15g) '
+    cont = ('%s\\draw[%s] (axis cs:%.15g,%.15g) '
             'rectangle (axis cs:%.15g,%.15g);\n'
             ) % (legend,
                  ','.join(draw_options),
@@ -100,7 +106,7 @@ def _draw_ellipse(data, obj, draw_options):
         # circle specialization
         return _draw_circle(data, obj, draw_options)
     x, y = obj.center
-    cont = '\draw[%s] (axis cs:%.15g,%.15g) ellipse (%.15g and %.15g);\n' % \
+    cont = '\\draw[%s] (axis cs:%.15g,%.15g) ellipse (%.15g and %.15g);\n' % \
         (','.join(draw_options),
          x, y,
          0.5 * obj.width, 0.5 * obj.height
@@ -112,7 +118,7 @@ def _draw_circle(data, obj, draw_options):
     '''Return the PGFPlots code for circles.
     '''
     x, y = obj.center
-    cont = '\draw[%s] (axis cs:%.15g,%.15g) circle (%.15g);\n' % \
+    cont = '\\draw[%s] (axis cs:%.15g,%.15g) circle (%.15g);\n' % \
         (','.join(draw_options),
          x, y,
          obj.get_radius()

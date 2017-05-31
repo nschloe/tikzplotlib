@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 #
+import os
+import tempfile
+
 import matplotlib2tikz
 
 import pytest
-import tempfile
-import os
 from matplotlib import pyplot as plt
 
 
@@ -21,26 +22,28 @@ def __plot():
 
 
 @pytest.mark.parametrize(
-    "x_alignment, y_alignment, x_tick_label_width,"
-    "y_tick_label_width, rotation", [
-        (None,     None,     "1rem", "3rem", 90),
-        (None,     "center", "1rem", "3rem", 90),
-        ("center", None,     "1rem", "3rem", 90),
-        ("center", "center", None,   "3rem", 90),
-        ("left",   "left",   None,   "3rem", 90),
-        ("right",  "right",  None,   "3rem", 90),
-        ("center", "center", "1rem", None,   90),
-        ("left",   "left",   "2rem", None,   90),
-        ("right",  "right",  "3rem", None,   90),
-        ("center", "center", "1rem", "3rem", 90),
-        ("left",   "left",   "2rem", "3rem", 90),
-        ("right",  "right",  "3rem", "3rem", 90),
-        ("left",   "right",  "2rem", "3rem", 90),
-        ("right",  "left",   "3rem", "3rem", 90),
+    'x_alignment, y_alignment, x_tick_label_width,'
+    'y_tick_label_width, rotation', [
+        (None, None, '1rem', '3rem', 90),
+        (None, 'center', '1rem', '3rem', 90),
+        ('center', None, '1rem', '3rem', 90),
+        ('center', 'center', None, '3rem', 90),
+        ('left', 'left', None, '3rem', 90),
+        ('right', 'right', None, '3rem', 90),
+        ('center', 'center', '1rem', None, 90),
+        ('left', 'left', '2rem', None, 90),
+        ('right', 'right', '3rem', None, 90),
+        ('center', 'center', '1rem', '3rem', 90),
+        ('left', 'left', '2rem', '3rem', 90),
+        ('right', 'right', '3rem', '3rem', 90),
+        ('left', 'right', '2rem', '3rem', 90),
+        ('right', 'left', '3rem', '3rem', 90),
     ])
-def test_rotated_labels_parameters(x_alignment, y_alignment,
-                                   x_tick_label_width, y_tick_label_width,
-                                   rotation):
+def test_rotated_labels_parameters(
+        x_alignment, y_alignment,
+        x_tick_label_width, y_tick_label_width,
+        rotation
+        ):
     fig, _ = __plot()
 
     if x_alignment:
@@ -73,14 +76,16 @@ def test_rotated_labels_parameters(x_alignment, y_alignment,
     return
 
 
-@pytest.mark.parametrize("x_tick_label_width, y_tick_label_width", [
-    (None,   None),
-    ("1rem", None),
-    (None,   "3rem"),
-    ("2rem", "3rem"),
+@pytest.mark.parametrize('x_tick_label_width, y_tick_label_width', [
+    (None, None),
+    ('1rem', None),
+    (None, '3rem'),
+    ('2rem', '3rem'),
 ])
-def test_rotated_labels_parameters_different_values(x_tick_label_width,
-                                                    y_tick_label_width):
+def test_rotated_labels_parameters_different_values(
+        x_tick_label_width,
+        y_tick_label_width
+        ):
     fig, ax = __plot()
 
     plt.xticks(ha='left', rotation=90)

@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 #
+from __future__ import print_function
+
+import os
+import shutil
+import subprocess
+import tempfile
+
 import matplotlib2tikz
 
 import imagehash
 import matplotlib
 import matplotlib.pyplot as plt
-import os
 from PIL import Image
-import shutil
-import subprocess
-import tempfile
 
 
 class Phash(object):
