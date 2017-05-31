@@ -2,12 +2,11 @@
 #
 from helpers import Phash
 
-from matplotlib import pyplot as plt
-from matplotlib import style
-import numpy as np
-
 
 def plot():
+    from matplotlib import pyplot as plt
+    import numpy as np
+
     fig = plt.figure()
     with plt.style.context(('ggplot')):
         t = np.arange(0.0, 2.0, 0.1)

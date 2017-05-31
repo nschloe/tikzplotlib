@@ -5,8 +5,8 @@ import helpers
 
 def plot():
     from matplotlib import pyplot as plt
-    from matplotlib import style
     import numpy as np
+
     fig = plt.figure()
     with plt.style.context(('fivethirtyeight')):
         np.random.seed(123)

@@ -39,3 +39,8 @@ def plot():
 def test():
     phash = Phash(plot())
     assert phash.phash == 'ab8a79a1549654be', phash.get_details()
+
+
+if __name__ == '__main__':
+    plot()
+    plt.show()
