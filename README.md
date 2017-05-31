@@ -24,8 +24,6 @@ For example, the matplotlib figure
 import matplotlib.pyplot as plt
 import numpy as np
 
-plt.style.use('ggplot')
-
 t = np.arange(0.0, 2.0, 0.1)
 s = np.sin(2*np.pi*t)
 s2 = np.cos(2*np.pi*t)
