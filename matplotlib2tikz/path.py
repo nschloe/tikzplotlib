@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-from . import color
-from .axes import _mpl_cmap2pgf_cmap
-
 import matplotlib as mpl
 import numpy
+
+from . import color
+from .axes import _mpl_cmap2pgf_cmap
 
 
 def draw_path(obj, data, path, draw_options=None, simplify=None):
@@ -141,9 +141,9 @@ def draw_pathcollection(data, obj):
         labels.append('sizedata' + 14*' ')
         draw_options.extend([
             'visualization depends on='
-            '{\\thisrow{sizedata} \\as\perpointmarksize}',
+            '{\\thisrow{sizedata} \\as\\perpointmarksize}',
             'scatter/@pre marker code/.append style='
-            '{/tikz/mark size=\perpointmarksize}',
+            '{/tikz/mark size=\\perpointmarksize}',
             ])
 
     if draw_options:

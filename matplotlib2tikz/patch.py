@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-from . import path as mypath
-
 import matplotlib as mpl
+
+from . import path as mypath
 
 
 def draw_patch(data, obj):
@@ -81,7 +81,7 @@ def _draw_rectangle(data, obj, draw_options):
 
     left_lower_x = obj.get_x()
     left_lower_y = obj.get_y()
-    cont = ('%s\draw[%s] (axis cs:%.15g,%.15g) '
+    cont = ('%s\\draw[%s] (axis cs:%.15g,%.15g) '
             'rectangle (axis cs:%.15g,%.15g);\n'
             ) % (legend,
                  ','.join(draw_options),
@@ -100,7 +100,7 @@ def _draw_ellipse(data, obj, draw_options):
         # circle specialization
         return _draw_circle(data, obj, draw_options)
     x, y = obj.center
-    cont = '\draw[%s] (axis cs:%.15g,%.15g) ellipse (%.15g and %.15g);\n' % \
+    cont = '\\draw[%s] (axis cs:%.15g,%.15g) ellipse (%.15g and %.15g);\n' % \
         (','.join(draw_options),
          x, y,
          0.5 * obj.width, 0.5 * obj.height
@@ -112,7 +112,7 @@ def _draw_circle(data, obj, draw_options):
     '''Return the PGFPlots code for circles.
     '''
     x, y = obj.center
-    cont = '\draw[%s] (axis cs:%.15g,%.15g) circle (%.15g);\n' % \
+    cont = '\\draw[%s] (axis cs:%.15g,%.15g) circle (%.15g);\n' % \
         (','.join(draw_options),
          x, y,
          obj.get_radius()

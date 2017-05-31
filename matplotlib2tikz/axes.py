@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-from . import color
-
 import matplotlib as mpl
 import numpy
+
+from . import color
 
 
 class Axes(object):
@@ -450,7 +450,7 @@ class Axes(object):
                             % (axes, idx, x)
 
                     values.append(
-                        'align=\pgfkeysvalueof{/pgfplots/'
+                        'align=\\pgfkeysvalueof{/pgfplots/'
                         '%s_tick_label_ha_\\ticknum}' % axes)
                     values.append('text width=%s' % tick_label_text_width)
             else:

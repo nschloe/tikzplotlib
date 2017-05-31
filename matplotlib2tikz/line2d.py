@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
+import six
+
 from . import color as mycol
 from . import path as mypath
-
-import six
 
 
 def draw_line2d(data, obj):
@@ -142,9 +142,7 @@ def draw_linecollection(data, obj):
     linewidths = obj.get_linewidths()
     paths = obj.get_paths()
 
-    for i in range(len(paths)):
-        path = paths[i]
-
+    for i, path in enumerate(paths):
         if i < len(edgecolors):
             color = edgecolors[i]
         else:

@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 #
+import codecs
+import os
+import matplotlib as mpl
+
 from . import axes
 from . import legend
 from . import line2d
@@ -10,10 +14,6 @@ from . import patch
 from . import text as mytext
 
 from .__about__ import __version__
-
-import codecs
-import os
-import matplotlib as mpl
 
 
 def get_tikz_code(

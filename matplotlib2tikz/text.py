@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-from . import color
-
 import matplotlib as mpl
+
+from . import color
 
 
 def draw_text(data, obj):
