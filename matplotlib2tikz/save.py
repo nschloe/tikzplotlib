@@ -3,6 +3,7 @@
 import codecs
 import os
 import matplotlib as mpl
+import six
 
 from . import axes
 from . import legend
@@ -19,7 +20,6 @@ from .__about__ import __version__
 def get_tikz_code(
         filepath,
         figure='gcf',
-        encoding=None,
         figurewidth=None,
         figureheight=None,
         textsize=10.0,
@@ -30,7 +30,7 @@ def get_tikz_code(
         extra_tikzpicture_parameters=None,
         dpi=None,
         show_info=True
-):
+        ):
     '''Main function. Here, the recursion into the image starts and the
     contents are picked up. The actual file gets written in this routine.
 
@@ -38,8 +38,6 @@ def get_tikz_code(
 
     :param filepath: The file to which the TikZ output will be written.
     :type filepath: str
-
-    :param encoding: Which encoding to use for the file.
 
     :param figurewidth: If not ``None``, this will be used as figure width
                         within the TikZ/PGFPlots output. If ``figureheight``
@@ -185,16 +183,13 @@ def save(*args, **kwargs):
     '''
     code = get_tikz_code(*args, **kwargs)
 
-    file_handle = codecs.open(
-            args[0],
-            'w',
-            kwargs['encoding'] if 'encoding' in kwargs else None
-            )
+    encoding = kwargs['encoding'] if 'encoding' in kwargs else None
+    file_handle = codecs.open(args[0], 'w', encoding)
     try:
         file_handle.write(code)
     except UnicodeEncodeError:
-        # We're probably using Python 2, so use proper unicode treatment
-        file_handle.write(unicode(code).encode('utf-8'))
+        # We're probably using Python 2, so treat unicode explicitly
+        file_handle.write(six.text_type(code).encode('utf-8'))
     file_handle.close()
     return
 
