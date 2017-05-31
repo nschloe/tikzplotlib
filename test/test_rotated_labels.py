@@ -70,6 +70,7 @@ def test_rotated_labels_parameters(x_alignment, y_alignment,
 
     # delete file
     os.unlink(tikz_file)
+    return
 
 
 @pytest.mark.parametrize("x_tick_label_width, y_tick_label_width", [
@@ -109,6 +110,7 @@ def test_rotated_labels_parameters_different_values(x_tick_label_width,
 
     # delete file
     os.unlink(tikz_file)
+    return
 
 
 def test_rotated_labels_parameters_no_ticks():

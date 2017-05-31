@@ -192,7 +192,8 @@ def plot():
 
 
 def test():
-    helpers.assert_phash(plot(), '9d2327dc23cdd81a')
+    phash = helpers.Phash(plot())
+    assert phash.phash == '9d2327dc23cdd81a', phash.get_details()
 
 
 if __name__ == '__main__':

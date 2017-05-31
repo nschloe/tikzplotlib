@@ -57,5 +57,6 @@ def plot2():
     ]
     )
 def test(plot, phash):
-    helpers.assert_phash(plot(), phash)
+    phash = helpers.Phash(plot())
+    assert phash.phash == phash, phash.get_details()
     return
