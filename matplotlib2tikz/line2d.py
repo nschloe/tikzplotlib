@@ -187,7 +187,7 @@ def draw_linecollection(data, obj):
 
         # TODO what about masks?
         data, cont = mypath.draw_path(
-                obj, data, path,
+                data, path,
                 draw_options=options,
                 simplify=False
                 )

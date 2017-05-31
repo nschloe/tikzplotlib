@@ -7,7 +7,7 @@ from . import color
 from .axes import _mpl_cmap2pgf_cmap
 
 
-def draw_path(obj, data, path, draw_options=None, simplify=None):
+def draw_path(data, path, draw_options=None, simplify=None):
     '''Adds code for drawing an ordinary path in PGFPlots (TikZ).
     '''
     # For some reasons, matplotlib sometimes adds void paths which consist of

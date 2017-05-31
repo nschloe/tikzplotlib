@@ -24,7 +24,7 @@ def draw_patch(data, obj):
     else:
         # regular patch
         return mypath.draw_path(
-            obj, data, obj.get_path(), draw_options=draw_options
+            data, obj.get_path(), draw_options=draw_options
             )
 
 
@@ -42,7 +42,7 @@ def draw_patchcollection(data, obj):
             )
     for path in obj.get_paths():
         data, cont = mypath.draw_path(
-            obj, data, path, draw_options=draw_options
+            data, path, draw_options=draw_options
             )
         content.append(cont)
     return data, content
