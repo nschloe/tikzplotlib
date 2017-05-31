@@ -20,3 +20,7 @@ def plot():
 
 def test():
     helpers.assert_phash(plot(), 'fd7e03fc03bc0381')
+
+
+if __name__ == '__main__':
+    helpers.print_tree(plot())
