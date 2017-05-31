@@ -37,6 +37,7 @@ def plot():
 
 
 def test():
+    plt.close('all')
     phash = Phash(plot())
     assert phash.phash == 'ab8a79a1549654be', phash.get_details()
 
