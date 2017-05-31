@@ -63,17 +63,21 @@ def _draw_rectangle(data, obj, draw_options):
 
     # get real label, bar charts by default only give rectangles
     # labels of "_nolegend_"
-    # See http://stackoverflow.com/questions/35881290/how-to-get-the-label-on-bar-plot-stacked-bar-plot-in-matplotlib
-    handles,labels = obj.axes.get_legend_handles_labels()
-    labelsFound = [label for h,label in zip(handles, labels) if obj in h.get_children()]
+    # See
+    # <http://stackoverflow.com/questions/35881290/how-to-get-the-label-on-bar-plot-stacked-bar-plot-in-matplotlib>
+    handles, labels = obj.axes.get_legend_handles_labels()
+    labelsFound = [
+        label for h, label in zip(handles, labels) if obj in h.get_children()
+        ]
     if len(labelsFound) == 1:
         label = labelsFound[0]
 
     legend = ''
     if label != '_nolegend_' and label not in data['rectangle_legends']:
         data['rectangle_legends'].add(label)
-        legend = ('\\addlegendimage{ybar,ybar legend,%s};\n'
-                 ) % (','.join(draw_options))
+        legend = (
+            '\\addlegendimage{ybar,ybar legend,%s};\n'
+            ) % (','.join(draw_options))
 
     left_lower_x = obj.get_x()
     left_lower_y = obj.get_y()
