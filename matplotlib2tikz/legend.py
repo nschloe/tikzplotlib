@@ -188,22 +188,15 @@ def draw_legend(data, obj):
             break
 
     # Set color of lines in legend
-    temp = []
-    colors = set()
+    data['legend colors'] = []
     for handle in obj.legendHandles:
         try:
             data, legend_color, _ = mycol.mpl_color2xcolor(data,
                                                            handle.get_color())
-            colors.add(legend_color)
-            temp.append('\\addlegendimage{no markers, %s}\n'
+            data['legend colors'].append('\\addlegendimage{no markers, %s}\n'
                                          % legend_color)
         except:
             break
-
-    if colors.issubset(set(['black'])):
-        data['legend colors'] = None
-    else:
-        data['legend colors'] = temp
 
     # Write styles to data
     if legend_style:
