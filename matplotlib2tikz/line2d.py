@@ -12,7 +12,7 @@ def get_legend_label_(line):
         ax = line.axes
         leg = ax.get_legend()
         return label in [l.get_label() for l in leg.get_lines()]
-    except:
+    except AttributeError:
         return None
 
 def draw_line2d(data, obj):
