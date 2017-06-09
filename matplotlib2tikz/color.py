@@ -17,7 +17,7 @@ def mpl_color2xcolor(data, matplotlib_color):
         'red':  numpy.array([1, 0, 0]),
         'green': numpy.array([0, 1, 0]),
         'blue': numpy.array([0, 0, 1]),
-        'brown': numpy.array([0.75, 0.5,  0.25]),
+        'brown': numpy.array([0.75, 0.5, 0.25]),
         'lime': numpy.array([0.75, 1, 0]),
         'orange': numpy.array([1, 0.5, 0]),
         'pink': numpy.array([1, 0.75, 0.75]),
@@ -60,7 +60,7 @@ def mpl_color2xcolor(data, matplotlib_color):
 
         # The cases 0.0 (my_col == black) and 1.0 (my_col == rgb) are
         # already accounted for by checking in available_colors above.
-        if all(my_col[:3] == alpha * rgb) and 0.0 < alpha and alpha < 1.0:
+        if all(my_col[:3] == alpha * rgb) and 0.0 < alpha < 1.0:
             xcol = name + ('!%r!black' % (alpha * 100))
             return data, xcol, my_col
 

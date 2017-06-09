@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-from helpers import assert_phash
+from helpers import Phash
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -16,7 +16,7 @@ def plot():
             )
     t = np.arange(0.0, 5.0, 0.01)
     s = np.cos(2*np.pi*t)
-    line, = ax.plot(t, s, color='blue')
+    ax.plot(t, s, color='blue')
     ax.annotate(
             'text',
             xy=(4., 1.),
@@ -37,4 +37,11 @@ def plot():
 
 
 def test():
-    assert_phash(plot(), 'ab8a79a1549654be')
+    plt.close('all')
+    phash = Phash(plot())
+    assert phash.phash == 'ab8a79a1549654be', phash.get_details()
+
+
+if __name__ == '__main__':
+    plot()
+    plt.show()

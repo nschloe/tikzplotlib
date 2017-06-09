@@ -35,6 +35,7 @@ setup(
         'numpy',
         'Pillow >= 3.0.0',
         'pipdated',
+        'six',
         ],
     description='convert matplotlib figures into TikZ/PGFPlots',
     long_description=read('README.rst'),

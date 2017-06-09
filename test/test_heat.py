@@ -9,6 +9,7 @@ def plot():
     import numpy as np
 
     fig = plt.figure()
+    # pylint: disable=invalid-slice-index
     x, y = np.ogrid[-10:10:100j, -10:10:100j]
     extent = (x.min(), x.max(), y.min(), y.max())
     cmap = matplotlib.cm.get_cmap('gray')
@@ -19,4 +20,5 @@ def plot():
 
 
 def test():
-    helpers.assert_phash(plot(), 'fda6837883788378')
+    phash = helpers.Phash(plot())
+    assert phash.phash == 'fda6837883788378', phash.get_details()

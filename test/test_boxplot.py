@@ -7,7 +7,7 @@ which crashes latex (due to it treating an empty table as a table with
 external data in the file '' or '.tex')
 See: https://github.com/nschloe/matplotlib2tikz/pull/134
 '''
-import helpers
+from helpers import Phash
 
 
 def plot():
@@ -50,4 +50,5 @@ def plot():
 
 
 def test():
-    helpers.assert_phash(plot(), '6be3e6b95e8000de')
+    phash = Phash(plot())
+    assert phash.phash == '6be3e6b95e8000de', phash.get_details()

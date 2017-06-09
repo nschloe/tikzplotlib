@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 #
+from __future__ import print_function
+
+import codecs
+import os
+import matplotlib as mpl
+import six
+
 from . import axes
 from . import legend
 from . import line2d
@@ -11,15 +18,10 @@ from . import text as mytext
 
 from .__about__ import __version__
 
-import codecs
-import os
-import matplotlib as mpl
-
 
 def get_tikz_code(
         filepath,
         figure='gcf',
-        encoding=None,
         figurewidth=None,
         figureheight=None,
         textsize=10.0,
@@ -30,7 +32,7 @@ def get_tikz_code(
         extra_tikzpicture_parameters=None,
         dpi=None,
         show_info=True
-):
+        ):
     '''Main function. Here, the recursion into the image starts and the
     contents are picked up. The actual file gets written in this routine.
 
@@ -38,8 +40,6 @@ def get_tikz_code(
 
     :param filepath: The file to which the TikZ output will be written.
     :type filepath: str
-
-    :param encoding: Which encoding to use for the file.
 
     :param figurewidth: If not ``None``, this will be used as figure width
                         within the TikZ/PGFPlots output. If ``figureheight``
@@ -185,16 +185,13 @@ def save(*args, **kwargs):
     '''
     code = get_tikz_code(*args, **kwargs)
 
-    file_handle = codecs.open(
-            args[0],
-            'w',
-            kwargs['encoding'] if 'encoding' in kwargs else None
-            )
+    encoding = kwargs['encoding'] if 'encoding' in kwargs else None
+    file_handle = codecs.open(args[0], 'w', encoding)
     try:
         file_handle.write(code)
     except UnicodeEncodeError:
-        # We're probably using Python 2, so use proper unicode treatment
-        file_handle.write(unicode(code).encode('utf-8'))
+        # We're probably using Python 2, so treat unicode explicitly
+        file_handle.write(six.text_type(code).encode('utf-8'))
     file_handle.close()
     return
 
@@ -234,6 +231,7 @@ def _print_pgfplot_libs_message(data):
         print('\\usepgfplotslibrary{' + pgfplotslibs + '}')
     print('=========================================================')
     return
+
 
 class _ContentManager(object):
     """ Basic Content Manager for matplotlib2tikz
@@ -294,8 +292,13 @@ def _recurse(data, obj):
         elif isinstance(child, mpl.patches.Patch):
             data, cont = patch.draw_patch(data, child)
             content.extend(cont, child.get_zorder())
-        elif isinstance(child, mpl.collections.PatchCollection) or \
-                isinstance(child, mpl.collections.PolyCollection):
+        elif isinstance(
+                child,
+                (
+                    mpl.collections.PatchCollection,
+                    mpl.collections.PolyCollection
+                )
+                ):
             data, cont = patch.draw_patchcollection(data, child)
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.collections.PathCollection):
@@ -309,16 +312,18 @@ def _recurse(data, obj):
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.legend.Legend):
             data = legend.draw_legend(data, child)
-        elif isinstance(child, mpl.axis.XAxis) or \
-                isinstance(child, mpl.axis.YAxis) or \
-                isinstance(child, mpl.spines.Spine) or \
-                isinstance(child, mpl.text.Text):
+        elif isinstance(
+                child,
+                (
+                    mpl.axis.XAxis, mpl.axis.YAxis,
+                    mpl.spines.Spine, mpl.text.Text
+                )):
             pass
         else:
             print('matplotlib2tikz: Don''t know how to handle object ''%s''.' %
                   type(child))
     # XXX: This is ugly
-    if isinstance(obj, mpl.axes.Subplot) or isinstance(obj, mpl.figure.Figure):
+    if isinstance(obj, (mpl.axes.Subplot, mpl.figure.Figure)):
         for text in obj.texts:
             data, cont = mytext.draw_text(data, text)
             content.extend(cont, text.get_zorder())

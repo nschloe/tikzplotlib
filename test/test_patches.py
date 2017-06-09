@@ -49,7 +49,7 @@ def plot():
         Wedge((0.8, 0.3), .2, 45, 90, width=0.10),  # Ring sector
         ]
 
-    for i in range(N):
+    for _ in range(N):
         polygon = Polygon(np.random.rand(N, 2), True)
         patches.append(polygon)
 
@@ -84,4 +84,6 @@ def plot():
 
 
 def test():
-    helpers.assert_phash(plot(), '7ff8494a87627116')
+    phash = helpers.Phash(plot())
+    assert phash.phash == '7ff8494a87627116', phash.get_details()
+    return

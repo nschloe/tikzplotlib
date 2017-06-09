@@ -30,12 +30,12 @@ def plot():
 
     # Legend best location is "center left"
     l, = axes[4].plot(t[30:], 2 * np.cos(10 * t[30:]), linewidth=0.5)
-    l2, l3 = axes[4].plot(t, -1.5 * np.ones_like(t), t, 1.5 * np.ones_like(t))
+    axes[4].plot(t, -1.5 * np.ones_like(t), t, 1.5 * np.ones_like(t))
     axes[4].legend((l,), ('CL',), loc=0)
 
     # Legend best location is "center right"
     l, = axes[5].plot(t[:30], 2 * np.cos(10 * t[:30]), linewidth=0.5)
-    l2, l3 = axes[5].plot(t, -1.5 * np.ones_like(t), t, 1.5 * np.ones_like(t))
+    axes[5].plot(t, -1.5 * np.ones_like(t), t, 1.5 * np.ones_like(t))
     axes[5].legend((l,), ('CR',), loc=0)
 
     # Legend best location is "lower center"
@@ -47,13 +47,20 @@ def plot():
     axes[7].legend((l,), ('UC',), loc=0)
 
     # Legend best location is "center"
-    l, l1 = axes[8].plot(t[:10], 2 * np.cos(10 * t[:10]), t[-10:],
-                         2 * np.cos(10 * t[-10:]), linewidth=0.5)
-    l2, l3 = axes[8].plot(t, -2 * np.ones_like(t), t, 2 * np.ones_like(t))
+    l = axes[8].plot(
+            t[:10],
+            2 * np.cos(10 * t[:10]),
+            t[-10:],
+            2 * np.cos(10 * t[-10:]),
+            linewidth=0.5
+            )
+    axes[8].plot(t, -2 * np.ones_like(t), t, 2 * np.ones_like(t))
     axes[8].legend((l,), ('C',), loc=0)
 
     return fig
 
 
 def test():
-    helpers.assert_phash(plot(), '879d991d2c877c1c')
+    phash = helpers.Phash(plot())
+    assert phash.phash == '879d991d0e877c1c', phash.get_details()
+    return

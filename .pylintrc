@@ -1,0 +1,15 @@
+[MESSAGES CONTROL]
+
+disable=
+    bad-continuation,
+    duplicate-code,
+    fixme,
+    invalid-name,
+    locally-disabled,
+    missing-docstring,
+    no-member,
+    too-few-public-methods,
+    too-many-branches,
+    too-many-statements,
+    too-many-arguments,
+    too-many-locals

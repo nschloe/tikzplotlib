@@ -1,7 +1,6 @@
 # matplotlib2tikz
 
 [![Build Status](https://travis-ci.org/nschloe/matplotlib2tikz.svg?branch=master)](https://travis-ci.org/nschloe/matplotlib2tikz)
-[![Code Health](https://landscape.io/github/nschloe/matplotlib2tikz/master/landscape.png)](https://landscape.io/github/nschloe/matplotlib2tikz/master)
 [![codecov](https://codecov.io/gh/nschloe/matplotlib2tikz/branch/master/graph/badge.svg)](https://codecov.io/gh/nschloe/matplotlib2tikz)
 [![Documentation Status](https://readthedocs.org/projects/matplotlib2tikz/badge/?version=latest)](https://readthedocs.org/projects/matplotlib2tikz/?badge=latest)
 [![PyPi Version](https://img.shields.io/pypi/v/matplotlib2tikz.svg)](https://pypi.python.org/pypi/matplotlib2tikz)
@@ -11,7 +10,7 @@ This is matplotlib2tikz, a Python tool for converting matplotlib figures into
 [PGFPlots](https://www.ctan.org/pkg/pgfplots)
 ([TikZ](https://www.ctan.org/pkg/pgf)) figures like
 
-![](https://nschloe.github.io/matplotlib2tikz/latex3.png)
+![](https://nschloe.github.io/matplotlib2tikz/example.png)
 
 for native inclusion into LaTeX documents.
 
@@ -21,12 +20,12 @@ sits on top of TikZ and describes graphs in terms of axes, data etc.
 Consequently, the output of matplotlib2tikz retains more information, can be
 more easily understood, and is more easily editable than [raw TikZ output](http://matplotlib.org/users/whats_new.html#pgf-tikz-backend).
 For example, the matplotlib figure
-```python
-from matplotlib import pyplot as plt
-from matplotlib import style
+```python,test
+import matplotlib.pyplot as plt
 import numpy as np
-fig = plt.figure()
-style.use('ggplot')
+
+plt.style.use('ggplot')
+
 t = np.arange(0.0, 2.0, 0.1)
 s = np.sin(2*np.pi*t)
 s2 = np.cos(2*np.pi*t)
@@ -52,9 +51,10 @@ tikz_save('test.tex')
 title={Simple plot $\frac{\alpha}{2}$},
 xlabel={time(s)},
 ylabel={Voltage (mV)},
-xmin=0, xmax=2,
-ymin=-1, ymax=1,
+xmin=-0.095, xmax=1.995,
+ymin=-1.1, ymax=1.1,
 tick align=outside,
+tick pos=left,
 xmajorgrids,
 x grid style={white},
 ymajorgrids,
@@ -62,14 +62,14 @@ y grid style={white},
 axis line style={white},
 axis background/.style={fill=white!89.803921568627459!black}
 ]
-\addplot [line width=1.64pt, color0, mark=*, mark size=3, mark options={solid,draw=black}]
+\addplot [line width=1.64pt, color0, mark=*, mark size=3, mark options={solid}]
 table {%
 0 0
 0.1 0.587785252292473
 % [...]
 1.9 -0.587785252292473
 };
-\addplot [line width=1.64pt, color1, mark=*, mark size=3, mark options={solid,draw=black}]
+\addplot [line width=1.64pt, color1, mark=*, mark size=3, mark options={solid}]
 table {%
 0 1
 0.1 0.809016994374947
