@@ -89,7 +89,9 @@ def draw_line2d(data, obj):
 
     if marker and not show_line:
         addplot_options.append('only marks')
-        
+
+    # Check if a line is not in a legend and forget it if so,
+    # fixes bug #167:
     if obj.get_label().startswith("_line"):
         addplot_options.append("forget plot")
 
