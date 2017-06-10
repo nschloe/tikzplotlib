@@ -76,12 +76,8 @@ def draw_path(data, path, draw_options=None, simplify=None):
         # Store the previous point for quadratic Beziers.
         prev = vert[0:2]
 
-    nodes_string = '\n'.join(nodes)
-    if draw_options:
-        path_command = '\\path [%s] %s;\n\n' % \
-                       (', '.join(draw_options), nodes_string)
-    else:
-        path_command = '\\path %s;\n\n' % nodes_string
+    do = '[{}]'.format(', '.join(draw_options)) if draw_options else ''
+    path_command = '\\path {} {};\n\n'.format(do, '\n'.join(nodes))
 
     return data, path_command
 
@@ -146,15 +142,12 @@ def draw_pathcollection(data, obj):
             '{/tikz/mark size=\\perpointmarksize}',
             ])
 
-    if draw_options:
-        content.append('\\addplot [%s]\n' % (', '.join(draw_options)))
-    else:
-        content.append('\\addplot\n')
+    do = ' [{}]'.format(', '.join(draw_options)) if draw_options else ''
+    content.append('\\addplot{}\n'.format(do))
 
-    if table_options:
-        content.append('table [%s]{%%\n' % ', '.join(table_options))
-    else:
-        content.append('table {%\n')
+    to = ' [{}]'.format(', '.join(table_options)) if table_options else ''
+    content.append('table{}{{%\n'.format(to))
+
     content.append((' '.join(labels)).strip() + '\n')
     fmt = (' '.join(dd.shape[1] * ['%+.15e'])) + '\n'
     for d in dd:

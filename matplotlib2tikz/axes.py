@@ -32,10 +32,9 @@ class Axes(object):
 
             self.nsubplots = geom[0] * geom[1]
             if self.nsubplots > 1:
-                is_groupplot = True
                 # Is this an axis-colorbar pair? No need for groupplot then.
-                if self.nsubplots == 2 and _find_associated_colorbar(obj):
-                    is_groupplot = False
+                is_groupplot = \
+                    self.nsubplots != 2 or not _find_associated_colorbar(obj)
 
                 if is_groupplot:
                     self.is_subplot = True
@@ -179,10 +178,9 @@ class Axes(object):
         y_tick_dirs = [tick._tickdir for tick in obj.yaxis.get_major_ticks()]
         if x_tick_dirs or y_tick_dirs:
             if x_tick_dirs and y_tick_dirs:
-                if x_tick_dirs[0] == y_tick_dirs[0]:
-                    direction = x_tick_dirs[0]
-                else:
-                    direction = None
+                direction = \
+                    x_tick_dirs[0] if x_tick_dirs[0] == y_tick_dirs[0] \
+                    else None
             elif x_tick_dirs:
                 direction = x_tick_dirs[0]
             else:
@@ -559,10 +557,8 @@ def _get_ticks(data, xy, ticks, ticklabels):
                         )
                     )
         else:
-            if 'minor' in xy:
-                axis_options.append('%stick={}' % xy)
-            else:
-                axis_options.append('%stick=\\empty' % xy)
+            val = '{}' if 'minor' in xy else '\\empty'
+            axis_options.append('%stick=%s' % (xy, val))
 
         if is_label_required:
             axis_options.append('%sticklabels={%s}'
@@ -602,12 +598,10 @@ def _mpl_cmap2pgf_cmap(cmap):
     '''
     if isinstance(cmap, mpl.colors.LinearSegmentedColormap):
         return _handle_linear_segmented_color_map(cmap)
-    elif isinstance(cmap, mpl.colors.ListedColormap):
-        return _handle_listed_color_map(cmap)
-    else:
-        raise RuntimeError(
-          'Only LinearSegmentedColormap and ListedColormap are supported'
-          )
+
+    assert isinstance(cmap, mpl.colors.ListedColormap), \
+        'Only LinearSegmentedColormap and ListedColormap are supported'
+    return _handle_listed_color_map(cmap)
 
 
 def _handle_linear_segmented_color_map(cmap):
