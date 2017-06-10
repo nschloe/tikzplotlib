@@ -51,8 +51,8 @@ def draw_image(data, obj):
     # write the corresponding information to the TikZ file
     extent = obj.get_extent()
 
-    # the format specification will only accept tuples, not lists
-    if isinstance(extent, list):  # convert to () list
+    # the format specification will only accept tuples
+    if not isinstance(extent, tuple):
         extent = tuple(extent)
 
     rel_filepath = os.path.basename(filename)

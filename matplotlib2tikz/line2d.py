@@ -200,6 +200,17 @@ def draw_linecollection(data, obj):
     return data, content
 
 
+TIKZ_LINEWIDTHS = {
+        0.1: 'ultra thin',
+        0.2: 'very thin',
+        0.4: 'thin',
+        0.6: 'semithick',
+        0.8: 'thick',
+        1.2: 'very thick',
+        1.6: 'ultra thick'
+        }
+
+
 def _mpl_linewidth2pgfp_linewidth(data, line_width):
     if data['strict']:
         # Takes the matplotlib linewidths, and just translate them
@@ -297,7 +308,7 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
     if mpl_marker == ',':
         print('Unsupported marker '','' (pixel).')
 
-    return (data, None, None)
+    return data, None, None
 
 
 _MPLLINESTYLE_2_PGFPLOTSLINESTYLE = {
@@ -348,13 +359,3 @@ def _mpl_linestyle2pgfp_linestyle(line_style):
 #               % e
 #               )
 #     return (xdata, ydata)
-
-
-TIKZ_LINEWIDTHS = {0.1: 'ultra thin',
-                   0.2: 'very thin',
-                   0.4: 'thin',
-                   0.6: 'semithick',
-                   0.8: 'thick',
-                   1.2: 'very thick',
-                   1.6: 'ultra thick'
-                   }

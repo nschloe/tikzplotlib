@@ -134,14 +134,13 @@ def get_tikz_code(
     else:
         data['extra axis options [base]'] = set()
 
-    if dpi is None:
-        savefig_dpi = mpl.rcParams['savefig.dpi']
-        if isinstance(savefig_dpi, int):
-            data['dpi'] = savefig_dpi
-        else:
-            data['dpi'] = mpl.rcParams['figure.dpi']
-    else:
+    if dpi:
         data['dpi'] = dpi
+    else:
+        savefig_dpi = mpl.rcParams['savefig.dpi']
+        data['dpi'] = \
+            savefig_dpi if isinstance(savefig_dpi, int) \
+            else mpl.rcParams['figure.dpi']
 
     # gather the file content
     data, content = _recurse(data, figure)
