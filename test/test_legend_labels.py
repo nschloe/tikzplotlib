@@ -29,5 +29,5 @@ def test():
 
 
 if __name__ == '__main__':
-    print(helpers.Phash(plot()).phash)
-    # helpers.compare_with_latex(plot())
+    # print(helpers.Phash(plot()).phash)
+    helpers.compare_with_latex(plot())
