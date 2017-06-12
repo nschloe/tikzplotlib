@@ -24,7 +24,7 @@ def plot():
 
 def test():
     phash = helpers.Phash(plot())
-    assert phash.phash == 'fb7c5e0aaed60094', phash.get_details()
+    assert phash.phash == 'eb785e0aaed6c190', phash.get_details()
     return
 
 
