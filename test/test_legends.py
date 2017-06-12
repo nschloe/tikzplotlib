@@ -30,4 +30,10 @@ def plot():
 
 
 def test():
-    helpers.assert_phash(plot(), '7f7ca18386d10eaa')
+    phash = helpers.Phash(plot())
+    assert phash.phash == '7f7ca18386d10eaa', phash.get_details()
+    return
+
+
+if __name__ == '__main__':
+    helpers.compare_with_latex(plot())

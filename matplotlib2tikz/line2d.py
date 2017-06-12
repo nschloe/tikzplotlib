@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 #
+from __future__ import print_function
+
+import six
+
 from . import color as mycol
 from . import path as mypath
 
@@ -13,6 +17,7 @@ def draw_line2d(data, obj):
     # If line is of length 0, do nothing.  Otherwise, an empty \addplot table
     # will be created, which will be interpreted as an external data source
     # in either the file '' or '.tex'.  Instead, render nothing.
+    # pylint: disable=len-as-condition
     if len(obj.get_xdata()) == 0:
         return data, []
 
@@ -58,7 +63,9 @@ def draw_line2d(data, obj):
         mark_options = ['solid']
         if extra_mark_options:
             mark_options.append(extra_mark_options)
-        if marker_face_color in [None, 'none']:
+        if marker_face_color is None or \
+           (isinstance(marker_face_color, six.string_types) and
+               marker_face_color == 'none'):
             mark_options.append('fill opacity=0')
         else:
             data, face_xcolor, _ = mycol.mpl_color2xcolor(
@@ -138,9 +145,7 @@ def draw_linecollection(data, obj):
     linewidths = obj.get_linewidths()
     paths = obj.get_paths()
 
-    for i in range(len(paths)):
-        path = paths[i]
-
+    for i, path in enumerate(paths):
         if i < len(edgecolors):
             color = edgecolors[i]
         else:
@@ -185,7 +190,7 @@ def draw_linecollection(data, obj):
 
         # TODO what about masks?
         data, cont = mypath.draw_path(
-                obj, data, path,
+                data, path,
                 draw_options=options,
                 simplify=False
                 )
@@ -193,6 +198,17 @@ def draw_linecollection(data, obj):
         content.append(cont)
 
     return data, content
+
+
+TIKZ_LINEWIDTHS = {
+        0.1: 'ultra thin',
+        0.2: 'very thin',
+        0.4: 'thin',
+        0.6: 'semithick',
+        0.8: 'thick',
+        1.2: 'very thick',
+        1.6: 'ultra thick'
+        }
 
 
 def _mpl_linewidth2pgfp_linewidth(data, line_width):
@@ -210,23 +226,23 @@ def _mpl_linewidth2pgfp_linewidth(data, line_width):
         # ('thin').
         # Match the two defaults, and scale for the rest.
         scaled_line_width = line_width / 1.0  # scale by default line width
-        if scaled_line_width == 0.25:
-            return 'ultra thin'
-        elif scaled_line_width == 0.5:
-            return 'very thin'
-        elif scaled_line_width == 1.0:
-            pass  # PGFPlots default line width, 'thin'
-        elif scaled_line_width == 1.5:
-            return 'semithick'
-        elif scaled_line_width == 2:
-            return 'thick'
-        elif scaled_line_width == 3:
-            return 'very thick'
-        elif scaled_line_width == 4:
-            return 'ultra thick'
-        else:
+        literals = {
+            0.25: 'ultra thin',
+            0.5: 'very thin',
+            1.0: None,  # default, 'thin'
+            1.5: 'semithick',
+            2: 'thick',
+            3: 'very thick',
+            4: 'ultra thick',
+            }
+
+        try:
+            out = literals[scaled_line_width]
+        except KeyError:
             # explicit line width
-            return 'line width=%rpt' % (0.4 * line_width)
+            out = 'line width=%rpt' % (0.4 * line_width)
+
+        return out
 
 
 # for matplotlib markers, see: http://matplotlib.org/api/markers_api.html
@@ -292,7 +308,7 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
     if mpl_marker == ',':
         print('Unsupported marker '','' (pixel).')
 
-    return (data, None, None)
+    return data, None, None
 
 
 _MPLLINESTYLE_2_PGFPLOTSLINESTYLE = {
@@ -343,13 +359,3 @@ def _mpl_linestyle2pgfp_linestyle(line_style):
 #               % e
 #               )
 #     return (xdata, ydata)
-
-
-TIKZ_LINEWIDTHS = {0.1: 'ultra thin',
-                   0.2: 'very thin',
-                   0.4: 'thin',
-                   0.6: 'semithick',
-                   0.8: 'thick',
-                   1.2: 'very thick',
-                   1.6: 'ultra thick'
-                   }

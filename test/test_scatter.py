@@ -5,8 +5,8 @@ import helpers
 
 def plot():
     from matplotlib import pyplot as plt
-    from matplotlib import style
     import numpy as np
+
     fig = plt.figure()
     with plt.style.context(('fivethirtyeight')):
         np.random.seed(123)
@@ -18,4 +18,6 @@ def plot():
 
 
 def test():
-    helpers.assert_phash(plot(), '7f425b584d603f85')
+    phash = helpers.Phash(plot())
+    assert phash.phash == '7f425b584d603f85', phash.get_details()
+    return

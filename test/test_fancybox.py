@@ -12,11 +12,11 @@ from matplotlib.patches import FancyBboxPatch
 bb = mtransforms.Bbox([[0.3, 0.4], [0.7, 0.6]])
 
 
-def draw_bbox(ax, bb):
+def draw_bbox(ax, bb_obj):
     # boxstyle=square with pad=0, i.e. bbox itself.
     p_bbox = FancyBboxPatch(
-            (bb.xmin, bb.ymin),
-            abs(bb.width), abs(bb.height),
+            (bb_obj.xmin, bb_obj.ymin),
+            abs(bb_obj.width), abs(bb_obj.height),
             boxstyle='square,pad=0.',
             ec='k', fc='none', zorder=10.,
             )
@@ -192,4 +192,12 @@ def plot():
 
 
 def test():
-    helpers.assert_phash(plot(), '9d2327dc23cdd81a')
+    phash = helpers.Phash(plot())
+    assert phash.phash == 'dd2325dc23cdd81a', phash.get_details()
+
+
+if __name__ == '__main__':
+    plot()
+    plt.show()
+    # phash, _, _, _, _, _, _ = helpers.compute_phash(plot2())
+    # print(phash)

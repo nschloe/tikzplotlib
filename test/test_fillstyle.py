@@ -17,4 +17,5 @@ def plot():
 
 
 def test():
-    helpers.assert_phash(plot(), 'a103fa09ee613e9e')
+    phash = helpers.Phash(plot())
+    assert phash.phash == 'a103fa59ee613e86', phash.get_details()

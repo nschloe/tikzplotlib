@@ -11,10 +11,10 @@ def draw_legend(data, obj):
     '''Adds legend code.
     '''
     texts = []
-    childrenAlignment = []
+    children_alignment = []
     for text in obj.texts:
         texts.append('%s' % text.get_text())
-        childrenAlignment.append('%s' % text.get_horizontalalignment())
+        children_alignment.append('%s' % text.get_horizontalalignment())
 
     cont = 'legend entries={{%s}}' % '},{'.join(texts)
     data['extra axis options'].add(cont)
@@ -22,6 +22,7 @@ def draw_legend(data, obj):
     # Get the location.
     # http://matplotlib.org/api/legend_api.html
     pad = 0.03
+    # pylint: disable=protected-access
     loc = obj._loc
     if loc == 0:
         # best
@@ -33,8 +34,9 @@ def draw_legend(data, obj):
 
         # Rectangles of the legend and of the axes
         # Lower left and upper right points
-        x0_legend, x1_legend = obj._legend_box \
-            .get_window_extent(renderer).get_points()
+        # pylint: disable=protected-access
+        x0_legend, x1_legend = \
+            obj._legend_box.get_window_extent(renderer).get_points()
         x0_axes, x1_axes = obj.axes.get_window_extent(renderer).get_points()
         dimension_legend = x1_legend - x0_legend
         dimension_axes = x1_axes - x0_axes
@@ -174,19 +176,24 @@ def draw_legend(data, obj):
         legend_style.append('fill=%s' % fill_xcolor)
 
     # Get the horizontal alignment
-    if len(childrenAlignment) > 0:
-        alignment = childrenAlignment[0]
-    else:
+    try:
+        alignment = children_alignment[0]
+    except IndexError:
         alignment = None
 
-    for childAlignment in childrenAlignment:
-        if alignment != childAlignment:
+    for child_alignment in children_alignment:
+        if alignment != child_alignment:
             warnings.warn(
                 'Varying horizontal alignments in the legend. Using default.'
             )
             alignment = None
             break
 
+    if alignment:
+        data['extra axis options'].add(
+            'legend cell align={%s}' % alignment
+            )
+      
     # Set color of lines in legend
     data['legend colors'] = []
     for handle in obj.legendHandles:
@@ -201,7 +208,7 @@ def draw_legend(data, obj):
         data['extra axis options'].add(style)
 
     if childAlignment:
-        cellAlign = 'legend cell align={%s}' % alignment
-        data['extra axis options'].add(cellAlign)
+        cell_align = 'legend cell align={%s}' % alignment
+        data['extra axis options'].add(cell_align)
 
     return data
