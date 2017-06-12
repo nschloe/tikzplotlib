@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-from helpers import Phash
+import helpers
 
 
 def plot():
@@ -24,5 +24,9 @@ def plot():
 
 
 def test():
-    phash = Phash(plot())
+    phash = helpers.Phash(plot())
     assert phash.phash == '1f36e5c621c1e7c1', phash.get_details()
+
+
+if __name__ == '__main__':
+    helpers.compare_with_latex(plot())
