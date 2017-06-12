@@ -11,6 +11,7 @@ import matplotlib2tikz
 
 import imagehash
 import matplotlib
+import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 from PIL import Image
 
@@ -149,6 +150,30 @@ class Phash(object):
                 )
             print('Uploaded output PNG file to %s' % out.decode('utf-8'))
         return
+
+
+def compare_with_latex(fig):
+
+    # Store original as PNG
+    _, prefix = tempfile.mkstemp()
+    filename = prefix + '.png'
+    plt.savefig(filename, bbox_inches='tight')
+
+    # Get PNG of LaTeX conversion
+    obj = Phash(fig)
+
+    # Display both
+    plt.figure()
+    plt.subplot(121)
+    img0 = mpimg.imread(filename)
+    plt.imshow(img0)
+    #
+    plt.subplot(122)
+    img1 = mpimg.imread(obj.png_file)
+    plt.imshow(img1)
+
+    plt.show()
+    return
 
 
 def print_tree(obj, indent=''):
