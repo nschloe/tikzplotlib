@@ -62,5 +62,5 @@ def plot():
 
 def test():
     phash = helpers.Phash(plot())
-    assert phash.phash == '879d991d0e877c1c', phash.get_details()
+    assert phash.phash == '839f990d0e877c1d', phash.get_details()
     return

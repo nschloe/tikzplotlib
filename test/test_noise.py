@@ -47,7 +47,7 @@ def plot2():
 
 @pytest.mark.parametrize(
     'plot, reference_phash', [
-        (plot1, 'f55a0bb503fd0354'),
+        (plot1, 'fd5a0ba503fd0354'),
         (plot2, '5f5ca33da3816983'),
     ]
     )

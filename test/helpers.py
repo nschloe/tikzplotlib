@@ -83,9 +83,10 @@ class Phash(object):
         pdf_file = tmp_base + '.pdf'
 
         # Convert PDF to PNG.
+        # Use a high resolution here to cover small changes.
         ptp_out = subprocess.check_output(
             [
-                'pdftoppm', '-rx', '600', '-ry', '600', '-png',
+                'pdftoppm', '-r', '2400', '-png',
                 pdf_file, tmp_base
             ],
             stderr=subprocess.STDOUT
