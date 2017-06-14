@@ -287,14 +287,14 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
         pgfplots_marker = _MP_MARKER2PGF_MARKER[mpl_marker]
         if (marker_face_color is not None) and pgfplots_marker == 'o':
             pgfplots_marker = '*'
-            data['pgfplots libs'].add('plotmarks')
+            data['tikz libs'].add('plotmarks')
         marker_options = None
         return (data, pgfplots_marker, marker_options)
     except KeyError:
         pass
     # try plotmarks list
     try:
-        data['pgfplots libs'].add('plotmarks')
+        data['tikz libs'].add('plotmarks')
         pgfplots_marker, marker_options = _MP_MARKER2PLOTMARKS[mpl_marker]
         if marker_face_color is not None and \
            marker_face_color.lower() != 'none' and \
