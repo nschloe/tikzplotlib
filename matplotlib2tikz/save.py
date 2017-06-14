@@ -31,7 +31,8 @@ def get_tikz_code(
         extra_axis_parameters=None,
         extra_tikzpicture_parameters=None,
         dpi=None,
-        show_info=True
+        show_info=True,
+        filter_obj=None
         ):
     '''Main function. Here, the recursion into the image starts and the
     contents are picked up. The actual file gets written in this routine.
@@ -143,7 +144,7 @@ def get_tikz_code(
             else mpl.rcParams['figure.dpi']
 
     # gather the file content
-    data, content = _recurse(data, figure)
+    data, content, _ = _recurse(data, figure, filter_obj)
 
     # Check if there is still an open groupplot environment. This occurs if not
     # all of the group plot slots are used.
@@ -256,12 +257,16 @@ class _ContentManager(object):
         return content_out
 
 
-def _recurse(data, obj):
+def _recurse(data, obj, filter_obj):
     '''Iterates over all children of the current object, gathers the contents
     contributing to the resulting PGFPlots file, and returns those.
     '''
+    rendered = []
+    leg = None
     content = _ContentManager()
     for child in obj.get_children():
+        if filter_obj is not None and not filter_obj(child):
+            continue
         if isinstance(child, mpl.axes.Axes):
             # Reset 'extra axis parameters' for every new Axes environment.
             data['extra axis options'] = \
@@ -270,7 +275,7 @@ def _recurse(data, obj):
             ax = axes.Axes(data, child)
             if not ax.is_colorbar:
                 # Run through the child objects, gather the content.
-                data, children_content = _recurse(data, child)
+                data, children_content, children_rendered = _recurse(data, child, filter_obj)
                 # add extra axis options from children
                 if data['extra axis options']:
                     ax.axis_options.extend(data['extra axis options'])
@@ -279,18 +284,22 @@ def _recurse(data, obj):
                         ax.get_begin_code() +
                         children_content +
                         [ax.get_end_code(data)], 0)
+                rendered.extend(children_rendered)
         elif isinstance(child, mpl.lines.Line2D):
             data, cont = line2d.draw_line2d(data, child)
             content.extend(cont, child.get_zorder())
+            rendered.append(child)
         elif isinstance(child, mpl.image.AxesImage):
             data, cont = img.draw_image(data, child)
             content.extend(cont, child.get_zorder())
+            rendered.append(child)
             # # Really necessary?
-            # data, children_content = _recurse(data, child)
+            # data, children_content = _recurse(data, child, filter_obj)
             # content.extend(children_content)
         elif isinstance(child, mpl.patches.Patch):
             data, cont = patch.draw_patch(data, child)
             content.extend(cont, child.get_zorder())
+            rendered.append(child)
         elif isinstance(
                 child,
                 (
@@ -300,17 +309,21 @@ def _recurse(data, obj):
                 ):
             data, cont = patch.draw_patchcollection(data, child)
             content.extend(cont, child.get_zorder())
+            rendered.append(child)
         elif isinstance(child, mpl.collections.PathCollection):
             data, cont = path.draw_pathcollection(data, child)
             content.extend(cont, child.get_zorder())
+            rendered.append(child)
         elif isinstance(child, mpl.collections.LineCollection):
             data, cont = line2d.draw_linecollection(data, child)
             content.extend(cont, child.get_zorder())
+            rendered.append(child)
         elif isinstance(child, mpl.collections.QuadMesh):
             data, cont = qmsh.draw_quadmesh(data, child)
             content.extend(cont, child.get_zorder())
+            rendered.append(child)
         elif isinstance(child, mpl.legend.Legend):
-            data = legend.draw_legend(data, child)
+            leg = child
         elif isinstance(
                 child,
                 (
@@ -326,4 +339,16 @@ def _recurse(data, obj):
         for text in obj.texts:
             data, cont = mytext.draw_text(data, text)
             content.extend(cont, text.get_zorder())
-    return data, content.flatten()
+        # Do legend
+        if leg is not None:
+            handles, labels = obj.get_legend_handles_labels()
+            texts = ['']*len(rendered)
+            for h, l in zip(handles, labels):
+                if isinstance(h, mpl.container.Container):
+                    texts[rendered.index(h[0])] = l
+                else:
+                    texts[rendered.index(h)] = l
+            legend.draw_legend(data, leg, texts)
+    elif leg is not None:
+        print('matplotlib2tikz: Don''t know how to handle legend outside a figure.')
+    return data, content.flatten(), rendered

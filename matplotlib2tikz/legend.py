@@ -7,15 +7,9 @@ import numpy
 from . import color as mycol
 
 
-def draw_legend(data, obj):
+def draw_legend(data, obj, texts):
     '''Adds legend code.
     '''
-    texts = []
-    children_alignment = []
-    for text in obj.texts:
-        texts.append('%s' % text.get_text())
-        children_alignment.append('%s' % text.get_horizontalalignment())
-
     cont = 'legend entries={{%s}}' % '},{'.join(texts)
     data['extra axis options'].add(cont)
 
@@ -171,17 +165,17 @@ def draw_legend(data, obj):
 
     # Get the horizontal alignment
     try:
-        alignment = children_alignment[0]
+        alignment = obj.get_texts()[0].get_horizontalalignment()
     except IndexError:
         alignment = None
 
-    for child_alignment in children_alignment:
-        if alignment != child_alignment:
-            warnings.warn(
-                'Varying horizontal alignments in the legend. Using default.'
-            )
-            alignment = None
-            break
+    # for child_alignment in children_alignment:
+    #     if alignment != child_alignment:
+    #         warnings.warn(
+    #             'Varying horizontal alignments in the legend. Using default.'
+    #         )
+    #         alignment = None
+    #         break
 
     if alignment:
         data['extra axis options'].add(
