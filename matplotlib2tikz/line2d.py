@@ -7,6 +7,17 @@ import six
 from . import color as mycol
 from . import path as mypath
 
+def get_legend_label_(line):
+    '''Check if line is in legend
+    '''
+
+    label = line.get_label()
+    try:
+        ax = line.axes
+        leg = ax.get_legend()
+        return label in [l.get_label() for l in leg.get_lines()]
+    except AttributeError:
+        return None
 
 def draw_line2d(data, obj):
     '''Returns the PGFPlots code for an Line2D environment.
@@ -96,6 +107,11 @@ def draw_line2d(data, obj):
 
     if marker and not show_line:
         addplot_options.append('only marks')
+
+    # Check if a line is not in a legend and forget it if so,
+    # fixes bug #167:
+    if not get_legend_label_(obj):
+        addplot_options.append("forget plot")
 
     # process options
     content.append('\\addplot ')
