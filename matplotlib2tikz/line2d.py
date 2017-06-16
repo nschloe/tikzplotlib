@@ -7,6 +7,17 @@ import six
 from . import color as mycol
 from . import path as mypath
 
+def get_legend_label_(line):
+    '''Check if line is in legend
+    '''
+
+    label = line.get_label()
+    try:
+        ax = line.axes
+        leg = ax.get_legend()
+        return label in [l.get_label() for l in leg.get_lines()]
+    except AttributeError:
+        return None
 
 def draw_line2d(data, obj):
     '''Returns the PGFPlots code for an Line2D environment.
@@ -96,6 +107,11 @@ def draw_line2d(data, obj):
 
     if marker and not show_line:
         addplot_options.append('only marks')
+
+    # Check if a line is not in a legend and forget it if so,
+    # fixes bug #167:
+    if not get_legend_label_(obj):
+        addplot_options.append("forget plot")
 
     # process options
     content.append('\\addplot ')
@@ -287,14 +303,14 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
         pgfplots_marker = _MP_MARKER2PGF_MARKER[mpl_marker]
         if (marker_face_color is not None) and pgfplots_marker == 'o':
             pgfplots_marker = '*'
-            data['pgfplots libs'].add('plotmarks')
+            data['tikz libs'].add('plotmarks')
         marker_options = None
         return (data, pgfplots_marker, marker_options)
     except KeyError:
         pass
     # try plotmarks list
     try:
-        data['pgfplots libs'].add('plotmarks')
+        data['tikz libs'].add('plotmarks')
         pgfplots_marker, marker_options = _MP_MARKER2PLOTMARKS[mpl_marker]
         if marker_face_color is not None and \
            marker_face_color.lower() != 'none' and \

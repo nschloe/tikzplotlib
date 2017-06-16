@@ -185,13 +185,18 @@ def draw_legend(data, obj):
         if alignment != child_alignment:
             warnings.warn(
                 'Varying horizontal alignments in the legend. Using default.'
-            )
+                )
             alignment = None
             break
 
     if alignment:
         data['extra axis options'].add(
-            'legend cell align={%s}' % alignment
+            'legend cell align={{{}}}'.format(alignment)
+            )
+
+    if obj._ncol != 1:
+        data['extra axis options'].add(
+            'legend columns={}'.format(obj._ncol)
             )
       
     # Set color of lines in legend
