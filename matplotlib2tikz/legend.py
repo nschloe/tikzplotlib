@@ -148,6 +148,12 @@ def draw_legend(data, obj):
         position = [0.5, 0.5]
         anchor = 'center'
 
+    # In case of given position via bbox_to_anchor parameter the center
+    # of legend is changed as follows:
+    if obj._bbox_to_anchor:
+        bbox_center = obj.get_bbox_to_anchor()._bbox._points[1]
+        position = [bbox_center[0], bbox_center[1]]
+
     legend_style = []
     if position:
         legend_style.append('at={(%.15g,%.15g)}' % (position[0], position[1]))
@@ -192,10 +198,22 @@ def draw_legend(data, obj):
         data['extra axis options'].add(
             'legend columns={}'.format(obj._ncol)
             )
+      
+    # Set color of lines in legend
+    data['legend colors'] = []
+    for handle in obj.legendHandles:
+        data, legend_color, _ = mycol.mpl_color2xcolor(data,
+                                                           handle.get_color())
+        data['legend colors'].append('\\addlegendimage{no markers, %s}\n'
+                                         % legend_color)
 
     # Write styles to data
     if legend_style:
         style = 'legend style={%s}' % ', '.join(legend_style)
         data['extra axis options'].add(style)
+
+    if childAlignment:
+        cell_align = 'legend cell align={%s}' % alignment
+        data['extra axis options'].add(cell_align)
 
     return data
