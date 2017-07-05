@@ -207,7 +207,7 @@ def draw_legend(data, obj):
                                                             handle.get_color())
             data['legend colors'].append('\\addlegendimage{no markers, %s}\n'
                                         % legend_color)
-        except(AttributeError):
+        except AttributeError:
             data['legend colors'] = []
 
     # Write styles to data
