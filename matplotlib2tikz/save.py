@@ -124,6 +124,7 @@ def get_tikz_code(
     data['pgfplots libs'] = set()
     data['font size'] = textsize
     data['custom colors'] = {}
+    data['legend colors'] = []
     data['extra tikzpicture parameters'] = extra_tikzpicture_parameters
     # rectangle_legends is used to keep track of which rectangles have already
     # had \addlegendimage added. There should be only one \addlegenimage per
@@ -311,6 +312,8 @@ def _recurse(data, obj):
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.legend.Legend):
             data = legend.draw_legend(data, child)
+            if data['legend colors']:
+                content.extend(data['legend colors'], 0)
         elif isinstance(
                 child,
                 (
