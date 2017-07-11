@@ -124,6 +124,7 @@ def get_tikz_code(
     data['pgfplots libs'] = set()
     data['font size'] = textsize
     data['custom colors'] = {}
+    data['legend colors'] = []
     data['extra tikzpicture parameters'] = extra_tikzpicture_parameters
     # rectangle_legends is used to keep track of which rectangles have already
     # had \addlegendimage added. There should be only one \addlegenimage per

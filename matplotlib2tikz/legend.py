@@ -200,7 +200,6 @@ def draw_legend(data, obj):
             )
 
     # Set color of lines in legend
-    data['legend colors'] = []
     for handle in obj.legendHandles:
         try:
             data, legend_color, _ = mycol.mpl_color2xcolor(data,
@@ -208,7 +207,7 @@ def draw_legend(data, obj):
             data['legend colors'].append('\\addlegendimage{no markers, %s}\n'
                                         % legend_color)
         except AttributeError:
-            data['legend colors'] = []
+            pass
 
     # Write styles to data
     if legend_style:
