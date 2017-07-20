@@ -133,7 +133,7 @@ def get_tikz_code(
     data['custom colors'] = {}
     data['legend colors'] = []
     data['extra tikzpicture parameters'] = extra_tikzpicture_parameters
-    data['axenv'] = axis_environment
+    data['axis environment'] = axis_environment
     data['show_info'] = show_info
     # rectangle_legends is used to keep track of which rectangles have already
     # had \addlegendimage added. There should be only one \addlegenimage per
@@ -286,7 +286,7 @@ def _recurse(data, obj):
                 if data['extra axis options']:
                     ax.axis_options.extend(data['extra axis options'])
                 # populate content and add axis environment if wished
-                if data['axenv']:
+                if data['axis environment']:
                     content.extend(
                             ax.get_begin_code() +
                             children_content +
