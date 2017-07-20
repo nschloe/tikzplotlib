@@ -286,7 +286,7 @@ def _recurse(data, obj):
                 if data['extra axis options']:
                     ax.axis_options.extend(data['extra axis options'])
                 # populate content and add axis environment if wished
-                if(data['axenv']):
+                if data['axenv']:
                     content.extend(
                             ax.get_begin_code() +
                             children_content +
@@ -294,7 +294,7 @@ def _recurse(data, obj):
                 else:
                     content.extend(children_content, 0)
                     # print axis environment options, if told to show infos
-                    if(data['show_info']):
+                    if data['show_info']:
                         print("=========================================================")
                         print("These would have been the properties of the environment:")
                         print(''.join(ax.get_begin_code()[1:]))
