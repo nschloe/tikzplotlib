@@ -193,9 +193,8 @@ def get_tikz_code(
 def save(*args, **kwargs):
     '''Same as `get_tikz_code()`, but actually saves the code to a file.
     '''
+    encoding = kwargs.pop('encoding', None)
     code = get_tikz_code(*args, **kwargs)
-
-    encoding = kwargs['encoding'] if 'encoding' in kwargs else None
     file_handle = codecs.open(args[0], 'w', encoding)
     try:
         file_handle.write(code)
