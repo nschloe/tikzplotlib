@@ -195,8 +195,6 @@ def save(*args, **kwargs):
     '''
     encoding = kwargs.pop('encoding', None)
     code = get_tikz_code(*args, **kwargs)
-
-    
     file_handle = codecs.open(args[0], 'w', encoding)
     try:
         file_handle.write(code)
