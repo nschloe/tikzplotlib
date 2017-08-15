@@ -34,7 +34,7 @@ setup(
         'matplotlib >=1.4.0',
         'numpy',
         'Pillow >= 3.0.0',
-        'pipdated',
+        'pipdate',
         'six',
         ],
     description='convert matplotlib figures into TikZ/PGFPlots',
