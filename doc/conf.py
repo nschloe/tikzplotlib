@@ -16,7 +16,7 @@ import sys
 import os
 
 import mock
-MOCK_MODULES = ['matplotlib']
+MOCK_MODULES = ['matplotlib', 'pipdate']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 
