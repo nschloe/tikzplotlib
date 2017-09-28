@@ -34,9 +34,11 @@ setup(
         'matplotlib >=1.4.0',
         'numpy',
         'Pillow >= 3.0.0',
-        'pipdate',
         'six',
         ],
+    extras_require={
+        'update': ['pipdate'],
+        },
     description='convert matplotlib figures into TikZ/PGFPlots',
     long_description=read('README.rst'),
     license=about['__license__'],
