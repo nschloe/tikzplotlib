@@ -225,7 +225,7 @@ class Axes(object):
         # pylint: disable=protected-access
         if obj.xaxis._gridOnMajor:
             self.axis_options.append('xmajorgrids')
-        elif obj.xaxis._gridOnMinor:
+        if obj.xaxis._gridOnMinor:
             self.axis_options.append('xminorgrids')
 
         xlines = obj.get_xgridlines()
@@ -238,7 +238,7 @@ class Axes(object):
         # pylint: disable=protected-access
         if obj.yaxis._gridOnMajor:
             self.axis_options.append('ymajorgrids')
-        elif obj.yaxis._gridOnMinor:
+        if obj.yaxis._gridOnMinor:
             self.axis_options.append('yminorgrids')
 
         ylines = obj.get_ygridlines()
