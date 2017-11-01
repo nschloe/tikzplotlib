@@ -150,7 +150,7 @@ def draw_text(data, obj):
     #     'heavy'      : 800,
     #     'extra bold' : 800,
     #     'black'      : 900}
-    if obj.get_weight() > 550:
+    if int(obj.get_weight()) > 550:
         style.append('\\bfseries')
 
     if obj.axes:

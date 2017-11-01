@@ -56,7 +56,6 @@ jobs:
       # The actual test
       - run: cd test/ && MPLBACKEND=Agg pytest --cov matplotlib2tikz
       # submit to codecov
-      - run: apt-get install -y curl
       - run: bash <(curl -s https://codecov.io/bash)
 
 # workflow builds don't support forked PRs yet, cf.
