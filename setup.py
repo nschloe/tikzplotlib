@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-from setuptools import setup
+from setuptools import setup, find_packages
 import os
 import codecs
 
@@ -25,7 +25,7 @@ def read(fname):
 setup(
     name='matplotlib2tikz',
     version=about['__version__'],
-    packages=['matplotlib2tikz'],
+    packages=find_packages(),
     url='https://github.com/nschloe/matplotlib2tikz',
     download_url='https://pypi.python.org/pypi/matplotlib2tikz',
     author=about['__author__'],
