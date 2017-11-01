@@ -22,3 +22,8 @@ def test():
     phash = helpers.Phash(plot())
     assert phash.phash == 'bbcdbc12ef119812', phash.get_details()
     return
+
+
+if __name__ == '__main__':
+    plot()
+    plt.show()
