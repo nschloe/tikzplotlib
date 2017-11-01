@@ -39,14 +39,15 @@ jobs:
       - run: apt-get install -y texlive-latex-base texlive-latex-extra python3-pip wget
       - run: pip3 install -U pytest pytest-cov code_extract pylint
       - checkout
-      - run: code-extract ~/matplotlib2tikz/README.md ~/matplotlib2tikz/test/zzz_readme_test.py --filter python,test
+      - run: cd ~/matplotlib2tikz
+      - run: code-extract README.md test/zzz_readme_test.py --filter python,test
       # install latest pgfplots
       - run: mkdir -p $TEXMFLOCAL
       - run: wget http://mirrors.ctan.org/install/graphics/pgf/contrib/pgfplots.tds.zip -O /tmp/pgfplots.zip
       - run: unzip /tmp/pgfplots.zip -d $TEXMFLOCAL
       - run: texhash
       # install
-      - run: pip2 install -r test_requirements.txt
+      - run: pip3 install -r test_requirements.txt
       - run: pip3 install .
       # lint
       - run: pylint setup.py
