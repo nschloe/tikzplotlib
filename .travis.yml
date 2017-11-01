@@ -3,7 +3,8 @@ dist: trusty
 language: python
 
 python:
-    - '2.7'
+    # The images have different hashes on Python 2.7.
+    # - '2.7'
     - '3.6'
 
 addons:
