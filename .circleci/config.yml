@@ -34,7 +34,7 @@ jobs:
       - image: ubuntu:17.10
     steps:
       - run: apt-get update
-      - run: apt-get install -y pgf texlive-latex-base texlive-latex-extra
+      - run: apt-get install -y texlive-latex-base texlive-latex-extra
       - run: pip3 install -U pytest pytest-cov code_extract pylint
       - run: code_extract README.md test/zzz_readme_test.py --filter python,test
       - checkout
