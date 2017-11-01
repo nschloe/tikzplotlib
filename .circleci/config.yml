@@ -34,7 +34,7 @@ jobs:
       - image: ubuntu:17.10
     steps:
       - run: apt-get update
-      - run: apt-get install -y texlive-latex-base texlive-latex-extra python3-pip
+      - run: apt-get install -y texlive-latex-base texlive-latex-extra python3-pip wget
       - run: pip3 install -U pytest pytest-cov code_extract pylint
       - checkout
       - run: code-extract ~/matplotlib2tikz/README.md ~/matplotlib2tikz/test/zzz_readme_test.py --filter python,test
