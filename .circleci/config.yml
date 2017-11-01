@@ -36,7 +36,7 @@ jobs:
       - TEXMFLOCAL: "/tmp/texmf/"
     steps:
       - run: apt-get update
-      - run: apt-get install -y texlive-latex-base texlive-latex-extra python3-pip python3-tk wget poppler-utils
+      - run: apt-get install -y texlive-latex-base texlive-latex-extra python3-pip python3-tk wget poppler-utils curl
       - run: pip3 install -U pytest pytest-cov code_extract pylint
       - checkout
       - run: cd ~/matplotlib2tikz
