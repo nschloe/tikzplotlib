@@ -160,7 +160,7 @@ def draw_text(data, obj):
             'black'
             ] or (isinstance(weight, int) and weight > 550):
         style.append('\\bfseries')
-    elif weights == 'light' or (isinstance(weight, int) and weight < 300):
+    elif weight == 'light' or (isinstance(weight, int) and weight < 300):
         style.append('\\lfseries')
 
     if obj.axes:
