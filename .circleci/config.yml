@@ -32,6 +32,8 @@ jobs:
     working_directory: ~/matplotlib2tikz
     docker:
       - image: ubuntu:17.10
+    environment:
+      - TEXMFLOCAL: "/tmp/texmf/"
     steps:
       - run: apt-get update
       - run: apt-get install -y texlive-latex-base texlive-latex-extra python3-pip wget
@@ -39,7 +41,7 @@ jobs:
       - checkout
       - run: code-extract ~/matplotlib2tikz/README.md ~/matplotlib2tikz/test/zzz_readme_test.py --filter python,test
       # install latest pgfplots
-      - run: export TEXMFLOCAL=/tmp/texmf/ && mkdir -p $TEXMFLOCAL
+      - run: mkdir -p $TEXMFLOCAL
       - run: wget http://mirrors.ctan.org/install/graphics/pgf/contrib/pgfplots.tds.zip -O /tmp/pgfplots.zip
       - run: unzip /tmp/pgfplots.zip -d $TEXMFLOCAL
       - run: texhash
