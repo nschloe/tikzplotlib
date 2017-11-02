@@ -43,9 +43,15 @@ def draw_image(data, obj):
         # RGB (+alpha) information at each point
         assert len(dims) == 3 and dims[2] in [3, 4]
         # convert to PIL image
-        if obj.origin == "lower":
+        if obj.origin == 'lower':
             img_array = numpy.flipud(img_array)
-        image = PIL.Image.fromarray(img_array)
+
+        # Convert mpl image to PIL
+        image = PIL.Image.fromarray(numpy.uint8(img_array*255))
+
+        # If the input image is PIL:
+        # image = PIL.Image.fromarray(img_array)
+
         image.save(filename, origin=obj.origin)
 
     # write the corresponding information to the TikZ file

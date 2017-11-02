@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #
+from __future__ import division
+
 import matplotlib as mpl
 import numpy
 
@@ -18,6 +20,15 @@ def mpl_color2xcolor(data, matplotlib_color):
     xcol = None
     # RGB values (as taken from xcolor.dtx):
     available_colors = {
+        # List white first such that for gray values, the combination
+        # white!<x>!black is preferred over, e.g., gray!<y>!black. Note that
+        # the order of the dictionary is respected from Python 3.6 on.
+        'white': numpy.array([1, 1, 1]),
+        'lightgray': numpy.array([0.75, 0.75, 0.75]),
+        'gray': numpy.array([0.5, 0.5, 0.5]),
+        'darkgray': numpy.array([0.25, 0.25, 0.25]),
+        'black': numpy.array([0, 0, 0]),
+        #
         'red':  numpy.array([1, 0, 0]),
         'green': numpy.array([0, 1, 0]),
         'blue': numpy.array([0, 0, 1]),
@@ -28,11 +39,6 @@ def mpl_color2xcolor(data, matplotlib_color):
         'purple': numpy.array([0.75, 0, 0.25]),
         'teal': numpy.array([0, 0.5, 0.5]),
         'violet': numpy.array([0.5, 0, 0.5]),
-        'black': numpy.array([0, 0, 0]),
-        'darkgray': numpy.array([0.25, 0.25, 0.25]),
-        'gray': numpy.array([0.5, 0.5, 0.5]),
-        'lightgray': numpy.array([0.75, 0.75, 0.75]),
-        'white': numpy.array([1, 1, 1])
         # The colors cyan, magenta, yellow, and olive are also
         # predefined by xcolor, but their RGB approximation of the
         # native CMYK values is not very good. Don't use them here.
@@ -71,4 +77,5 @@ def mpl_color2xcolor(data, matplotlib_color):
     # Lookup failed, add it to the custom list.
     xcol = 'color' + str(len(data['custom colors']))
     data['custom colors'][xcol] = my_col[:3]
+
     return data, xcol, my_col
