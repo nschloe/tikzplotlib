@@ -1,10 +1,11 @@
 # matplotlib2tikz
 
-[![CircleCI](https://circleci.com/gh/nschloe/matplotlib2tikz.svg?style=svg)](https://circleci.com/gh/nschloe/matplotlib2tikz)
+[![CircleCI](https://img.shields.io/circleci/project/github/nschloe/matplotlib2tikz/master.svg)](https://circleci.com/gh/nschloe/matplotlib2tikz/tree/master)
 [![codecov](https://codecov.io/gh/nschloe/matplotlib2tikz/branch/master/graph/badge.svg)](https://codecov.io/gh/nschloe/matplotlib2tikz)
 [![Documentation Status](https://readthedocs.org/projects/matplotlib2tikz/badge/?version=latest)](https://readthedocs.org/projects/matplotlib2tikz/?badge=latest)
 [![PyPi Version](https://img.shields.io/pypi/v/matplotlib2tikz.svg)](https://pypi.python.org/pypi/matplotlib2tikz)
-[![GitHub stars](https://img.shields.io/github/stars/nschloe/matplotlib2tikz.svg?style=social&label=Star&maxAge=2592000)](https://github.com/nschloe/matplotlib2tikz)
+[![awesome](https://img.shields.io/badge/awesome-yes-brightgreen.svg)](https://img.shields.io/badge/awesome-yes-brightgreen.svg)
+[![GitHub stars](https://img.shields.io/github/stars/nschloe/matplotlib2tikz.svg?style=social&label=Stars&maxAge=2592000)](https://github.com/nschloe/matplotlib2tikz)
 
 This is matplotlib2tikz, a Python tool for converting matplotlib figures into
 [PGFPlots](https://www.ctan.org/pkg/pgfplots)
@@ -20,7 +21,7 @@ The output of matplotlib2tikz is in
 [PGFPlots](http://pgfplots.sourceforge.net/pgfplots.pdf), a LaTeX library that
 sits on top of TikZ and describes graphs in terms of axes, data etc.
 Consequently, the output of matplotlib2tikz retains more information, can be
-more easily understood, and is more easily editable than [raw TikZ output](http://matplotlib.org/users/whats_new.html#pgf-tikz-backend).
+more easily understood, and is more easily editable than [raw TikZ output](https://matplotlib.org/users/whats_new.html#pgf-tikz-backend).
 For example, the matplotlib figure
 ```python,test
 import matplotlib.pyplot as plt
@@ -33,7 +34,7 @@ s = np.sin(2*np.pi*t)
 s2 = np.cos(2*np.pi*t)
 plt.plot(t, s, 'o-', lw=4.1)
 plt.plot(t, s2, 'o-', lw=4.1)
-plt.xlabel('time(s)')
+plt.xlabel('time (s)')
 plt.ylabel('Voltage (mV)')
 plt.title('Simple plot $\\frac{\\alpha}{2}$')
 plt.grid(True)
@@ -51,7 +52,7 @@ tikz_save('test.tex')
 
 \begin{axis}[
 title={Simple plot $\frac{\alpha}{2}$},
-xlabel={time(s)},
+xlabel={time (s)},
 ylabel={Voltage (mV)},
 xmin=-0.095, xmax=1.995,
 ymin=-1.1, ymax=1.1,
@@ -104,7 +105,7 @@ to install/update.
 
 2. Instead of `pyplot.show()`, invoke matplotlib2tikz by
     ```python
-    tikz_save('mytikz.tex');
+    tikz_save('mytikz.tex')
     ```
    to store the TikZ file as `mytikz.tex`. Load the library with:
     ```python
@@ -123,8 +124,8 @@ to install/update.
     ```python
     tikz_save(
         'mytikz.tex',
-        figureheight = '\\figureheight',
-        figurewidth = '\\figurewidth'
+        figureheight='\\figureheight',
+        figurewidth='\\figurewidth'
         )
     ```
     and in the LaTeX source
@@ -180,7 +181,7 @@ pytest
 ```
 
 The final pHash may depend on any of the tools used during the process. For
-example, if your version of [Pillow](https://pypi.python.org/pypi/Pillow/3.0.0)
+example, if your version of [Pillow](https://pypi.python.org/pypi/Pillow/4.3.0)
 is too old, the pHash function might operate slightly differently and produce a
 slightly different pHash, resulting in a failing test. If tests are failing on
 your local machine, you should first make sure to have an up-to-date Pillow.
