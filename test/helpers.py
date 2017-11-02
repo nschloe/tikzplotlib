@@ -71,13 +71,6 @@ class Phash(object):
             print('=' * 70)
             print(e.output)
             print('=' * 70)
-            if 'DISPLAY' not in os.environ:
-                cmd = ['curl', '-sT', tikz_file, 'chunk.io']
-                out = subprocess.check_output(
-                    cmd,
-                    stderr=subprocess.STDOUT
-                    )
-                print('Uploaded TikZ file to %s' % out.decode('utf-8'))
             raise
 
         pdf_file = tmp_base + '.pdf'
@@ -121,35 +114,6 @@ class Phash(object):
 
         print('pdftoppm output:')
         print(self.ptp_out.decode('utf-8'))
-
-        if 'DISPLAY' not in os.environ:
-            # upload to chunk.io if we're on a headless client
-            out = subprocess.check_output(
-                ['curl', '-sT', self.mpl_reference, 'chunk.io'],
-                stderr=subprocess.STDOUT
-                )
-            print(
-                'Uploaded reference matplotlib PDF file to %s' %
-                out.decode('utf-8')
-                )
-
-            out = subprocess.check_output(
-                ['curl', '-sT', self.tikz_file, 'chunk.io'],
-                stderr=subprocess.STDOUT
-                )
-            print('Uploaded TikZ file to %s' % out.decode('utf-8'))
-
-            out = subprocess.check_output(
-                ['curl', '-sT', self.pdf_file, 'chunk.io'],
-                stderr=subprocess.STDOUT
-                )
-            print('Uploaded output PDF file to %s' % out.decode('utf-8'))
-
-            out = subprocess.check_output(
-                ['curl', '-sT', self.png_file, 'chunk.io'],
-                stderr=subprocess.STDOUT
-                )
-            print('Uploaded output PNG file to %s' % out.decode('utf-8'))
         return
 
 

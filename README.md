@@ -1,6 +1,6 @@
 # matplotlib2tikz
 
-[![Build Status](https://travis-ci.org/nschloe/matplotlib2tikz.svg?branch=master)](https://travis-ci.org/nschloe/matplotlib2tikz)
+[![CircleCI](https://circleci.com/gh/nschloe/matplotlib2tikz.svg?style=svg)](https://circleci.com/gh/nschloe/matplotlib2tikz)
 [![codecov](https://codecov.io/gh/nschloe/matplotlib2tikz/branch/master/graph/badge.svg)](https://codecov.io/gh/nschloe/matplotlib2tikz)
 [![Documentation Status](https://readthedocs.org/projects/matplotlib2tikz/badge/?version=latest)](https://readthedocs.org/projects/matplotlib2tikz/?badge=latest)
 [![PyPi Version](https://img.shields.io/pypi/v/matplotlib2tikz.svg)](https://pypi.python.org/pypi/matplotlib2tikz)

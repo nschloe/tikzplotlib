@@ -3,7 +3,8 @@ dist: trusty
 language: python
 
 python:
-    - '2.7'
+    # The images have different hashes on Python 2.7.
+    # - '2.7'
     - '3.6'
 
 addons:
@@ -31,14 +32,14 @@ addons:
       - python-tk
 
 before_install:
-  - pip install pytest pytest-cov code_extract pylint
+  - pip3 install pytest pytest-cov code_extract pylint
   # Make sure to put the readme test at the very end; otherwise it's messing
   # around with the other tests.
   - code_extract README.md test/zzz_readme_test.py --filter python,test
 
 install:
-  - pip install -r test_requirements.txt
-  - pip install .
+  - pip3 install -r test_requirements.txt
+  - pip3 install .
 
 cache: pip
 

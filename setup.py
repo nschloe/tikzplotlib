@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 #
-from setuptools import setup
-import os
 import codecs
+import os
+
+from setuptools import setup, find_packages
 
 # https://packaging.python.org/single_source_version/
 base_dir = os.path.abspath(os.path.dirname(__file__))
 about = {}
 with open(os.path.join(base_dir, 'matplotlib2tikz', '__about__.py'), 'rb') as f:
+    # pylint: disable=exec-used
     exec(f.read(), about)
 
 
@@ -17,7 +19,7 @@ def read(fname):
             os.path.join(os.path.dirname(__file__), fname),
             encoding='utf-8'
             ).read()
-    except Exception:
+    except IOError:
         content = ''
     return content
 
@@ -25,7 +27,7 @@ def read(fname):
 setup(
     name='matplotlib2tikz',
     version=about['__version__'],
-    packages=['matplotlib2tikz'],
+    packages=find_packages(),
     url='https://github.com/nschloe/matplotlib2tikz',
     download_url='https://pypi.python.org/pypi/matplotlib2tikz',
     author=about['__author__'],
