@@ -36,7 +36,7 @@ jobs:
       - TEXMFLOCAL: "/tmp/texmf/"
     steps:
       - run: apt-get update
-      - run: apt-get install -y texlive-latex-base texlive-latex-extra python3-pip python3-tk wget poppler-utils curl
+      - run: apt-get install -y texlive-latex-base texlive-latex-extra python3-pip python3-tk wget poppler-utils
       - run: pip3 install -U pytest pytest-cov code_extract pylint
       - checkout
       - run: cd ~/matplotlib2tikz
@@ -56,6 +56,7 @@ jobs:
       # The actual test
       - run: cd test/ && MPLBACKEND=Agg pytest --cov matplotlib2tikz
       # submit to codecov
+      - run: apt-get install -y curl
       - run: bash <(curl -s https://codecov.io/bash)
 
 # workflow builds don't support forked PRs yet, cf.
