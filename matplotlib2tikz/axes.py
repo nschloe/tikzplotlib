@@ -58,28 +58,39 @@ class Axes(object):
 
         # get plot title
         title = obj.get_title()
-        if title:
+        if title and 'title' not in data['discard axis options']:
             self.axis_options.append('title={' + title + '}')
 
         # get axes titles
         xlabel = obj.get_xlabel()
-        if xlabel:
+        if xlabel and 'xlabel' not in data['discard axis options']:
             self.axis_options.append('xlabel={' + xlabel + '}')
         ylabel = obj.get_ylabel()
-        if ylabel:
+        if ylabel and 'ylabel' not in data['discard axis options']:
             self.axis_options.append('ylabel={' + ylabel + '}')
 
         # Axes limits.
         # Sort the limits so make sure that the smaller of the two is actually
         # *min.
-        xlim = sorted(list(obj.get_xlim()))
-        self.axis_options.append(
-                'xmin=%.15g' % xlim[0] + ', xmax=%.15g' % xlim[1]
-                )
-        ylim = sorted(list(obj.get_ylim()))
-        self.axis_options.append(
-                'ymin=%.15g' % ylim[0] + ', ymax=%.15g' % ylim[1]
-                )
+        if 'xmin' not in data['discard axis options'] and 'xmax' not in data['discard axis options']:
+            xlim = sorted(list(obj.get_xlim()))
+            if 'xmin' not in data['discard axis options']:
+                app = 'xmin=%.15g' % xlim[0]
+            else:
+                app = ''
+            if 'xmax' not in data['discard axis options']:
+                app = app + ', xmax=%.15g' % xlim[1]
+            self.axis_options.append(app)
+
+        if 'ymin' not in data['discard axis options'] and 'ymax' not in data['discard axis options']:
+            ylim = sorted(list(obj.get_ylim()))
+            if 'ymin' not in data['discard axis options']:
+                app = 'ymin=%.15g' % ylim[0]
+            else:
+                app = ''
+            if 'ymax' not in data['discard axis options']:
+                app = app + ', ymax=%.15g' % ylim[1]
+            self.axis_options.append(app)
 
         # axes scaling
         if obj.get_xscale() == 'log':
@@ -151,12 +162,15 @@ class Axes(object):
             self.axis_options.append('axis y line=right')
 
         # get ticks
-        self.axis_options.extend(
-            _get_ticks(data, 'x', obj.get_xticks(), obj.get_xticklabels())
-            )
-        self.axis_options.extend(
-            _get_ticks(data, 'y', obj.get_yticks(), obj.get_yticklabels())
-            )
+        if 'x ticklabels' not in data['discard axis options']:
+            self.axis_options.extend(
+                _get_ticks(data, 'x', obj.get_xticks(), obj.get_xticklabels())
+                )
+
+        if 'y ticklabels' not in data['discard axis options']:
+            self.axis_options.extend(
+                _get_ticks(data, 'y', obj.get_yticks(), obj.get_yticklabels())
+                )
         self.axis_options.extend(
             _get_ticks(data, 'minor x', obj.get_xticks('minor'),
                        obj.get_xticklabels('minor'))
@@ -187,7 +201,7 @@ class Axes(object):
                 # y_tick_dirs must be present
                 direction = y_tick_dirs[0]
 
-            if direction:
+            if direction and 'tick align' not in data['discard axis options']:
                 if direction == 'in':
                     # 'tick align=inside' is the PGFPlots default
                     pass
@@ -223,29 +237,29 @@ class Axes(object):
         # Coordinate of the lines are entirely meaningless, but styles
         # (colors,...) are respected.
         # pylint: disable=protected-access
-        if obj.xaxis._gridOnMajor:
+        if obj.xaxis._gridOnMajor and 'xmajorgrids' not in data['discard axis options']:
             self.axis_options.append('xmajorgrids')
-        if obj.xaxis._gridOnMinor:
+        if obj.xaxis._gridOnMinor and 'xminorgrids' not in data['discard axis options']:
             self.axis_options.append('xminorgrids')
 
         xlines = obj.get_xgridlines()
         if xlines:
             xgridcolor = xlines[0].get_color()
             data, col, _ = color.mpl_color2xcolor(data, xgridcolor)
-            if col != 'black':
+            if col != 'black' and 'x grid style' not in data['discard axis options']:
                 self.axis_options.append('x grid style={%s}' % col)
 
         # pylint: disable=protected-access
-        if obj.yaxis._gridOnMajor:
+        if obj.yaxis._gridOnMajor and 'ymajorgrids' not in data['discard axis options']:
             self.axis_options.append('ymajorgrids')
-        if obj.yaxis._gridOnMinor:
+        if obj.yaxis._gridOnMinor and 'yminorgrids' not in data['discard axis options']:
             self.axis_options.append('yminorgrids')
 
         ylines = obj.get_ygridlines()
         if ylines:
             ygridcolor = ylines[0].get_color()
             data, col, _ = color.mpl_color2xcolor(data, ygridcolor)
-            if col != 'black':
+            if col != 'black' and 'y grid style' not in data['discard axis options']:
                 self.axis_options.append('y grid style={%s}' % col)
 
         # axis line styles

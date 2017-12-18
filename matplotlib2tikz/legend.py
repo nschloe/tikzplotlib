@@ -189,28 +189,29 @@ def draw_legend(data, obj):
             alignment = None
             break
 
-    if alignment:
+    if alignment and 'legend cell align' not in data['discard axis options']:
         data['extra axis options'].add(
             'legend cell align={{{}}}'.format(alignment)
             )
 
-    if obj._ncol != 1:
+    if obj._ncol != 1 and 'legend columns' not in data['discard axis options']:
         data['extra axis options'].add(
             'legend columns={}'.format(obj._ncol)
             )
 
     # Set color of lines in legend
-    for handle in obj.legendHandles:
-        try:
-            data, legend_color, _ = mycol.mpl_color2xcolor(data,
-                                                            handle.get_color())
-            data['legend colors'].append('\\addlegendimage{no markers, %s}\n'
-                                        % legend_color)
-        except AttributeError:
-            pass
+    if not data['addplot_inherit_global_parameters']:
+        for handle in obj.legendHandles:
+            try:
+                data, legend_color, _ = mycol.mpl_color2xcolor(data,
+                                                                handle.get_color())
+                data['legend colors'].append('\\addlegendimage{no markers, %s}\n'
+                                            % legend_color)
+            except AttributeError:
+                pass
 
     # Write styles to data
-    if legend_style:
+    if legend_style and 'legend style' not in data['discard axis options']:
         style = 'legend style={%s}' % ', '.join(legend_style)
         data['extra axis options'].add(style)
 

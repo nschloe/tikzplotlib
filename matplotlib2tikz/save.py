@@ -30,7 +30,9 @@ def get_tikz_code(
         wrap=True,
         axis_environment=True,
         extra_axis_parameters=None,
+        discard_axis_parameters=None,
         extra_tikzpicture_parameters=None,
+        addplot_inherit_global_parameters=False,
         dpi=None,
         show_info=True
         ):
@@ -95,11 +97,21 @@ def get_tikz_code(
                                     to pgfplots. Default is ``None``.
     :type extra_axis_parameters: a set of strings for the pfgplots axes.
 
+    :param discard_axis_parameters: Axis options to be skipped during save
+                                    (as a set) to pgfplots. Default is ``None``.
+    :type discard_axis_parameters: a set of strings in form of pgfplots options.
+
     :param extra_tikzpicture_parameters: Extra tikzpicture options to be passed
                                         (as a set) to pgfplots.
 
     :type extra_tikzpicture_parameters: a set of strings for the pfgplots
                                         tikzpicture.
+
+    :param addplot_inherit_global_parameters: Whether to use ``\\addplot + []``
+                                                and skipped the extra options in []
+                                                or ``\\addplot [extra options]``.
+                                                Default is ``False``.
+    :type addplot_inherit_global_parameters: bool
 
     :param dpi: The resolution in dots per inch of the rendered image in case
                 of QuadMesh plots. If ``None`` it will default to the value
@@ -135,6 +147,7 @@ def get_tikz_code(
     data['extra tikzpicture parameters'] = extra_tikzpicture_parameters
     data['axis environment'] = axis_environment
     data['show_info'] = show_info
+    data['addplot_inherit_global_parameters'] = addplot_inherit_global_parameters
     # rectangle_legends is used to keep track of which rectangles have already
     # had \addlegendimage added. There should be only one \addlegenimage per
     # bar chart data series.
@@ -143,6 +156,11 @@ def get_tikz_code(
         data['extra axis options [base]'] = extra_axis_parameters.copy()
     else:
         data['extra axis options [base]'] = set()
+
+    if discard_axis_parameters:
+        data['discard axis options'] = discard_axis_parameters.copy()
+    else:
+        data['discard axis options'] = set()
 
     if dpi:
         data['dpi'] = dpi
@@ -281,6 +299,7 @@ def _recurse(data, obj):
             if not ax.is_colorbar:
                 # Run through the child objects, gather the content.
                 data, children_content = _recurse(data, child)
+
                 # add extra axis options from children
                 if data['extra axis options']:
                     ax.axis_options.extend(data['extra axis options'])

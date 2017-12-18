@@ -114,10 +114,13 @@ def draw_line2d(data, obj):
         addplot_options.append("forget plot")
 
     # process options
-    content.append('\\addplot ')
-    if addplot_options:
-        options = ', '.join(addplot_options)
-        content.append('[' + options + ']\n')
+    if data['addplot_inherit_global_parameters']:
+        content.append('\\addplot +[]\n')
+    else:
+        content.append('\\addplot ')
+        if addplot_options:
+            options = ', '.join(addplot_options)
+            content.append('[' + options + ']\n')
 
     content.append('table {%\n')
 
