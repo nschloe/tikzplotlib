@@ -72,7 +72,8 @@ class Axes(object):
         # Axes limits.
         # Sort the limits so make sure that the smaller of the two is actually
         # *min.
-        if 'xmin' not in data['discard axis options'] and 'xmax' not in data['discard axis options']:
+        if 'xmin' not in data['discard axis options'] \
+            and 'xmax' not in data['discard axis options']:
             xlim = sorted(list(obj.get_xlim()))
             if 'xmin' not in data['discard axis options']:
                 app = 'xmin=%.15g' % xlim[0]
@@ -82,7 +83,8 @@ class Axes(object):
                 app = app + ', xmax=%.15g' % xlim[1]
             self.axis_options.append(app)
 
-        if 'ymin' not in data['discard axis options'] and 'ymax' not in data['discard axis options']:
+        if 'ymin' not in data['discard axis options'] \
+            and 'ymax' not in data['discard axis options']:
             ylim = sorted(list(obj.get_ylim()))
             if 'ymin' not in data['discard axis options']:
                 app = 'ymin=%.15g' % ylim[0]
