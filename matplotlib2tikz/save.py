@@ -233,10 +233,11 @@ def _get_color_definitions(data):
     '''Returns the list of custom color definitions for the TikZ file.
     '''
     definitions = []
-    for name, rgb in data['custom colors'].items():
-        definitions.append('\\definecolor{%s}{rgb}{%.15g,%.15g,%.15g}'
-                           % (name, rgb[0], rgb[1], rgb[2])
-                           )
+    if 'definecolor' not in data['discard axis options']:
+        for name, rgb in data['custom colors'].items():
+            definitions.append('\\definecolor{%s}{rgb}{%.15g,%.15g,%.15g}'
+                               % (name, rgb[0], rgb[1], rgb[2])
+                               )
     return definitions
 
 

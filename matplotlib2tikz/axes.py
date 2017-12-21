@@ -162,12 +162,12 @@ class Axes(object):
             self.axis_options.append('axis y line=right')
 
         # get ticks
-        if 'x ticklabels' not in data['discard axis options']:
+        if 'xticklabels' not in data['discard axis options']:
             self.axis_options.extend(
                 _get_ticks(data, 'x', obj.get_xticks(), obj.get_xticklabels())
                 )
 
-        if 'y ticklabels' not in data['discard axis options']:
+        if 'yticklabels' not in data['discard axis options']:
             self.axis_options.extend(
                 _get_ticks(data, 'y', obj.get_yticks(), obj.get_yticklabels())
                 )
@@ -237,9 +237,11 @@ class Axes(object):
         # Coordinate of the lines are entirely meaningless, but styles
         # (colors,...) are respected.
         # pylint: disable=protected-access
-        if obj.xaxis._gridOnMajor and 'xmajorgrids' not in data['discard axis options']:
+        if obj.xaxis._gridOnMajor \
+                and 'xmajorgrids' not in data['discard axis options']:
             self.axis_options.append('xmajorgrids')
-        if obj.xaxis._gridOnMinor and 'xminorgrids' not in data['discard axis options']:
+        if obj.xaxis._gridOnMinor \
+                and 'xminorgrids' not in data['discard axis options']:
             self.axis_options.append('xminorgrids')
 
         xlines = obj.get_xgridlines()
