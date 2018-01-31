@@ -144,6 +144,8 @@ def draw_line2d(data, obj):
             else:
                 content.append('%.15g %.15g\n' % (x, y))
     else:
+        # matplotlib allows plotting of data containing `astropy.units`, but they will
+        # break the formatted string here. Try to strip the units from the data.
         try:
             xdata = xdata.value
         except AttributeError:
