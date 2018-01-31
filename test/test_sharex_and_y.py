@@ -20,7 +20,7 @@ def plot():
 
 def test():
     phash = helpers.Phash(plot())
-    assert phash.phash == 'ffedac02bb942c02', phash.get_details()
+    assert phash.phash == 'ffed6c02bb944c02', phash.get_details()
     return
 
 
