@@ -144,6 +144,14 @@ def draw_line2d(data, obj):
             else:
                 content.append('%.15g %.15g\n' % (x, y))
     else:
+        try:
+            xdata = xdata.value
+        except AttributeError:
+            pass
+        try:
+            ydata = ydata.value
+        except AttributeError:
+            pass
         for (x, y) in zip(xdata, ydata):
             content.append('%.15g %.15g\n' % (x, y))
     content.append('};\n')
