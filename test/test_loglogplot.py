@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-import helpers
-
 from matplotlib import pyplot as plt
 import numpy as np
+
+import helpers
 
 
 def plot():

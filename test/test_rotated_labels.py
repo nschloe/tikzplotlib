@@ -3,10 +3,10 @@
 import os
 import tempfile
 
-import matplotlib2tikz
-
 import pytest
 from matplotlib import pyplot as plt
+
+import matplotlib2tikz
 
 
 def __plot():

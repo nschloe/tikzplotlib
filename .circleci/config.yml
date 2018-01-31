@@ -48,6 +48,9 @@ jobs:
       - run: texhash
       # install
       - run: pip3 install -r test_requirements.txt
+      # Install very specific versions of the dependencies; the build is too
+      # fragile otherwise.
+      - run: pip3 install matplotlib==2.1.0
       - run: pip3 install .
       # lint
       - run: pylint setup.py

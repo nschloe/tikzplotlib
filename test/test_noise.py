@@ -2,11 +2,11 @@
 #
 from __future__ import print_function
 
-import helpers
-
 import numpy as np
 import matplotlib.pyplot as plt
 import pytest
+
+import helpers
 
 
 def plot1():
