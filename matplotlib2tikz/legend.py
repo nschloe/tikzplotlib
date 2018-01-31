@@ -202,8 +202,16 @@ def draw_legend(data, obj):
     # Set color of lines in legend
     for handle in obj.legendHandles:
         try:
-            data, legend_color, _ = mycol.mpl_color2xcolor(data,
-                                                            handle.get_color())
+            # when using matplotlib colours like "darkred" or "darkorange",
+            # `handle.get_color` will create nested RGBA codes
+            # e.g. `[[ 0.54509804, 0., 0., 1.]]` which casuse mpl to throw an error.
+            # catch this error, `numpy.squeeze` the colour code and try again
+            try:
+                data, legend_color, _ = mycol.mpl_color2xcolor(
+                    data, handle.get_color())
+            except ValueError:
+                data, legend_color, _ = mycol.mpl_color2xcolor(
+                    data, numpy.squeeze(handle.get_color()))
             data['legend colors'].append('\\addlegendimage{no markers, %s}\n'
                                         % legend_color)
         except AttributeError:
