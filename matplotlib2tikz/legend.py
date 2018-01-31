@@ -211,7 +211,7 @@ def draw_legend(data, obj):
                     data, handle.get_color())
             except ValueError:
                 data, legend_color, _ = mycol.mpl_color2xcolor(
-                    data, numpy.squeeze(numpy.array(handle.get_color())))
+                    data, numpy.squeeze(handle.get_color()))
             data['legend colors'].append('\\addlegendimage{no markers, %s}\n'
                                         % legend_color)
         except AttributeError:
