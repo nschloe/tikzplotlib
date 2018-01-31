@@ -7,13 +7,13 @@ import shutil
 import subprocess
 import tempfile
 
-import matplotlib2tikz
-
 import imagehash
 import matplotlib
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 from PIL import Image
+
+import matplotlib2tikz
 
 
 class Phash(object):
