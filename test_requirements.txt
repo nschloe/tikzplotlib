@@ -1,1 +1,1 @@
-ImageHash
+ImageHash==3.7

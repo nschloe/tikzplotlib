@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-from helpers import Phash
-
 import matplotlib.pyplot as plt
 import numpy as np
+
+from helpers import Phash
 
 
 def plot():
