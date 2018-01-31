@@ -2,7 +2,9 @@
 #
 from __future__ import print_function
 
+import math
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -75,11 +77,35 @@ class Phash(object):
 
         pdf_file = tmp_base + '.pdf'
 
+        # PIL can only read images with up to 89478485 pixels (to prevent
+        # decompression bomb DOS attacks). Make sure the resulting image will
+        # be smaller.
+        pdfinfo_out = subprocess.check_output(
+            ['pdfinfo', pdf_file],
+            stderr=subprocess.STDOUT
+            ).decode('utf-8')
+        # Extract page size
+        dims = None
+        for line in pdfinfo_out.split('\n'):
+            # Page size:      195.106 x 156.239 pts
+            m = re.match(
+                'Page size: *([0-9]+\.[0-9]+) x ([0-9]+\.[0-9]+) pts',
+                line
+                )
+            if m:
+                # get dims in inches
+                dims = [float(m.group(1)) / 72, float(m.group(2)) / 72]
+                break
+        assert dims is not None
+        max_num_pixels = 89e6
+        max_dpi = math.sqrt(max_num_pixels / dims[0] / dims[1])
+        dpi = min(2400, max_dpi)
+
         # Convert PDF to PNG.
         # Use a high resolution here to cover small changes.
         ptp_out = subprocess.check_output(
             [
-                'pdftoppm', '-r', '2400', '-png',
+                'pdftoppm', '-r', str(dpi), '-png',
                 pdf_file, tmp_base
             ],
             stderr=subprocess.STDOUT
