@@ -128,6 +128,17 @@ def draw_line2d(data, obj):
     # xdata, ydata = _transform_to_data_coordinates(obj, *obj.get_data())
     xdata, ydata = obj.get_data()
 
+    # matplotlib allows plotting of data containing `astropy.units`, but they will
+    # break the formatted string here. Try to strip the units from the data.
+    try:
+        xdata = xdata.value
+    except AttributeError:
+        pass
+    try:
+        ydata = ydata.value
+    except AttributeError:
+        pass
+
     try:
         has_mask = ydata.mask.any()
     except AttributeError:
@@ -144,16 +155,6 @@ def draw_line2d(data, obj):
             else:
                 content.append('%.15g %.15g\n' % (x, y))
     else:
-        # matplotlib allows plotting of data containing `astropy.units`, but they will
-        # break the formatted string here. Try to strip the units from the data.
-        try:
-            xdata = xdata.value
-        except AttributeError:
-            pass
-        try:
-            ydata = ydata.value
-        except AttributeError:
-            pass
         for (x, y) in zip(xdata, ydata):
             content.append('%.15g %.15g\n' % (x, y))
     content.append('};\n')
