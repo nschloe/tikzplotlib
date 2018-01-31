@@ -52,7 +52,7 @@ class Phash(object):
     \\pgfplotsset{compat=newest}
     \\begin{document}
     \\input{%s}
-    \\end{document}''' % tikz_file
+    \\end{document}''' % tikz_file.replace('\\', '/')
         tex_file = tmp_base + '.tex'
         with open(tex_file, 'w') as f:
             f.write(wrapper)
