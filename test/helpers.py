@@ -87,7 +87,7 @@ class Phash(object):
         # Extract page size
         # Page size:      195.106 x 156.239 pts
         m = re.search(
-            'Page size: *([0-9]+\.[0-9]+) x ([0-9]+\.[0-9]+) pts',
+            'Page size: *([0-9]+\\.[0-9]+) x ([0-9]+\\.[0-9]+) pts',
             pdfinfo_out
             )
         # get dims in inches
