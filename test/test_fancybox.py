@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 #
 # Taken from http://matplotlib.org/examples/pylab_examples/fancybox_demo.html
-import helpers
-
 import matplotlib.pyplot as plt
 import matplotlib.transforms as mtransforms
 from matplotlib.patches import FancyBboxPatch
+
+import helpers
 
 
 # Bbox object around which the fancy box will be drawn.

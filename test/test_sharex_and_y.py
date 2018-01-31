@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-import helpers
-
 import matplotlib.pyplot as plt
 import numpy as np
+
+import helpers
 
 
 def plot():
@@ -20,7 +20,7 @@ def plot():
 
 def test():
     phash = helpers.Phash(plot())
-    assert phash.phash == 'ffedac02bb942c02', phash.get_details()
+    assert phash.phash == 'ffed6c02bb944c02', phash.get_details()
     return
 
 
