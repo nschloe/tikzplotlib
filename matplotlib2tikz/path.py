@@ -92,8 +92,7 @@ def draw_pathcollection(data, obj):
     labels = ['x' + 21*' ', 'y' + 21*' ']
     dd = obj.get_offsets()
 
-#    draw_options = ['only marks']
-    draw_options =['draw=none']
+    draw_options = ['only marks']
     table_options = []
 #    print (obj.get_paths())
     if obj.get_array() is not None:
@@ -106,8 +105,9 @@ def draw_pathcollection(data, obj):
         fc = None
     else:
         # gather the draw options
-        print(len(obj.get_paths()))
+        print("DEBUG: "+len(obj.get_paths()))
         dd = obj.get_paths()[0].vertices
+        draw_options =['draw=none']
         ec = obj.get_edgecolors()
         fc = obj.get_facecolors()
         try:
