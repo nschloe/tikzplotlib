@@ -92,8 +92,10 @@ def draw_pathcollection(data, obj):
     labels = ['x' + 21*' ', 'y' + 21*' ']
     dd = obj.get_offsets()
 
-    draw_options = ['only marks']
+#    draw_options = ['only marks']
+    draw_options =['draw=none']
     table_options = []
+#    print (obj.get_paths())
     if obj.get_array() is not None:
         draw_options.append('scatter')
         dd = numpy.column_stack([dd, obj.get_array()])
@@ -104,6 +106,8 @@ def draw_pathcollection(data, obj):
         fc = None
     else:
         # gather the draw options
+        print(len(obj.get_paths()))
+        dd = obj.get_paths()[0].vertices
         ec = obj.get_edgecolors()
         fc = obj.get_facecolors()
         try:
