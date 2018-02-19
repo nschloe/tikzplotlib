@@ -105,7 +105,7 @@ def draw_pathcollection(data, obj):
         fc = None
     else:
         # gather the draw options
-        print("DEBUG: "+len(obj.get_paths()))
+        print("DEBUG: "+str(len(obj.get_paths())))
         dd = obj.get_paths()[0].vertices
         draw_options =['draw=none']
         ec = obj.get_edgecolors()
