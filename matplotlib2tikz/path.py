@@ -86,7 +86,7 @@ def draw_pathcollection(data, obj):
     '''Returns PGFPlots code for a number of patch objects.
     '''
     content = []
-    paths=1
+    paths = 1
     # gather data
     assert obj.get_offsets() is not None
     labels = ['x' + 21*' ', 'y' + 21*' ']
@@ -105,11 +105,10 @@ def draw_pathcollection(data, obj):
         fc = None
     else:
         # gather the draw options
-        paths=len(obj.get_paths())
-        if(paths):
+        paths = len(obj.get_paths())
+        if paths:
             dd = obj.get_paths()[0].vertices
-            draw_options =['draw=none']
-        draw_options =['draw=none']
+        draw_options = ['draw=none']
         ec = obj.get_edgecolors()
         fc = obj.get_facecolors()
         try:
@@ -135,7 +134,7 @@ def draw_pathcollection(data, obj):
         else:
             draw_options.append('colormap/' + mycolormap)
 
-    for i in range(0,paths):
+    for i in range(0, paths):
         dd = obj.get_paths()[i].vertices
 
         if len(obj.get_sizes()) == len(dd):
