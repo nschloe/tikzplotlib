@@ -86,7 +86,7 @@ def draw_pathcollection(data, obj):
     '''Returns PGFPlots code for a number of patch objects.
     '''
     content = []
-
+    paths=1
     # gather data
     assert obj.get_offsets() is not None
     labels = ['x' + 21*' ', 'y' + 21*' ']
@@ -105,8 +105,10 @@ def draw_pathcollection(data, obj):
         fc = None
     else:
         # gather the draw options
-        print("DEBUG: "+str(len(obj.get_paths())))
-        dd = obj.get_paths()[0].vertices
+        paths=len(obj.get_paths())
+        if(paths):
+            dd = obj.get_paths()[0].vertices
+            draw_options =['draw=none']
         draw_options =['draw=none']
         ec = obj.get_edgecolors()
         fc = obj.get_facecolors()
@@ -133,30 +135,33 @@ def draw_pathcollection(data, obj):
         else:
             draw_options.append('colormap/' + mycolormap)
 
-    if len(obj.get_sizes()) == len(dd):
-        # See Pgfplots manual, chapter 4.25.
-        # In Pgfplots, \mark size specifies raddi, in matplotlib circle areas.
-        radii = numpy.sqrt(obj.get_sizes() / numpy.pi)
-        dd = numpy.column_stack([dd, radii])
-        labels.append('sizedata' + 14*' ')
-        draw_options.extend([
-            'visualization depends on='
-            '{\\thisrow{sizedata} \\as\\perpointmarksize}',
-            'scatter/@pre marker code/.append style='
-            '{/tikz/mark size=\\perpointmarksize}',
-            ])
+    for i in range(0,paths):
+        dd = obj.get_paths()[i].vertices
 
-    do = ' [{}]'.format(', '.join(draw_options)) if draw_options else ''
-    content.append('\\addplot{}\n'.format(do))
+        if len(obj.get_sizes()) == len(dd):
+            # See Pgfplots manual, chapter 4.25.
+            # In Pgfplots, \mark size specifies raddi, in matplotlib circle areas.
+            radii = numpy.sqrt(obj.get_sizes() / numpy.pi)
+            dd = numpy.column_stack([dd, radii])
+            labels.append('sizedata' + 14*' ')
+            draw_options.extend([
+                'visualization depends on='
+                '{\\thisrow{sizedata} \\as\\perpointmarksize}',
+                'scatter/@pre marker code/.append style='
+                '{/tikz/mark size=\\perpointmarksize}',
+                ])
 
-    to = ' [{}]'.format(', '.join(table_options)) if table_options else ''
-    content.append('table{}{{%\n'.format(to))
+        do = ' [{}]'.format(', '.join(draw_options)) if draw_options else ''
+        content.append('\\addplot{}\n'.format(do))
 
-    content.append((' '.join(labels)).strip() + '\n')
-    fmt = (' '.join(dd.shape[1] * ['%+.15e'])) + '\n'
-    for d in dd:
-        content.append(fmt % tuple(d))
-    content.append('};\n')
+        to = ' [{}]'.format(', '.join(table_options)) if table_options else ''
+        content.append('table{}{{%\n'.format(to))
+
+        content.append((' '.join(labels)).strip() + '\n')
+        fmt = (' '.join(dd.shape[1] * ['%+.15e'])) + '\n'
+        for d in dd:
+            content.append(fmt % tuple(d))
+        content.append('};\n')
 
     return data, content
 
