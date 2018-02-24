@@ -86,7 +86,7 @@ def draw_pathcollection(data, obj):
     '''Returns PGFPlots code for a number of patch objects.
     '''
     content = []
-    paths = 1
+    isContour = False
     # gather data
     assert obj.get_offsets() is not None
     labels = ['x' + 21*' ', 'y' + 21*' ']
@@ -94,7 +94,7 @@ def draw_pathcollection(data, obj):
 
     draw_options = ['only marks']
     table_options = []
-#    print (obj.get_paths())
+
     if obj.get_array() is not None:
         draw_options.append('scatter')
         dd = numpy.column_stack([dd, obj.get_array()])
@@ -105,10 +105,11 @@ def draw_pathcollection(data, obj):
         fc = None
     else:
         # gather the draw options
-        paths = len(obj.get_paths())
-        if paths:
-            dd = obj.get_paths()[0].vertices
-        draw_options = ['draw=none']
+        #paths = len(obj.get_paths())
+        #if paths and len(dd)==1:
+        if len(dd)==1:
+            isContour = True
+            draw_options=['draw=none']
         ec = obj.get_edgecolors()
         fc = obj.get_facecolors()
         try:
@@ -134,8 +135,14 @@ def draw_pathcollection(data, obj):
         else:
             draw_options.append('colormap/' + mycolormap)
 
+    if isContour:
+        paths = len(obj.get_paths())
+    else:
+        paths = 1
+
     for i in range(0, paths):
-        dd = obj.get_paths()[i].vertices
+        if isContour:
+            dd = obj.get_paths()[i].vertices
 
         if len(obj.get_sizes()) == len(dd):
             # See Pgfplots manual, chapter 4.25.

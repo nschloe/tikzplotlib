@@ -325,9 +325,6 @@ def _recurse(data, obj):
         elif isinstance(child, mpl.collections.LineCollection):
             data, cont = line2d.draw_linecollection(data, child)
             content.extend(cont, child.get_zorder())
-        elif isinstance(child, mpl.text.Text):
-            data, cont = mytext.draw_text(data, child)
-            content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.collections.QuadMesh):
             data, cont = qmsh.draw_quadmesh(data, child)
             content.extend(cont, child.get_zorder())
