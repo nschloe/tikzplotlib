@@ -17,7 +17,7 @@ def plot():
     levels = [-2,-1.5,-1.2,-0.9,-0.6,-0.3,0.0,0.3,0.6,0.9,1.2,1.5]
     fig = plt.figure()
     CS = plt.contourf(X, Y, Z, 10, levels=levels)
-    CS2 = plt.contour(CS, levels=levels, colors='r')
+    plt.contour(CS, levels=levels, colors='r')
     return fig
 
 

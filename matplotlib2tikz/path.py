@@ -105,9 +105,9 @@ def draw_pathcollection(data, obj):
         fc = None
     else:
         # gather the draw options
-        if len(dd)==1:
+        if len(dd) == 1:
             isContour = True
-            draw_options=['draw=none']
+            draw_options = ['draw=none']
         ec = obj.get_edgecolors()
         fc = obj.get_facecolors()
         try:
