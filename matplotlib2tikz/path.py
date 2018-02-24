@@ -105,8 +105,6 @@ def draw_pathcollection(data, obj):
         fc = None
     else:
         # gather the draw options
-        #paths = len(obj.get_paths())
-        #if paths and len(dd)==1:
         if len(dd)==1:
             isContour = True
             draw_options=['draw=none']
