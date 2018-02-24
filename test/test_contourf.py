@@ -14,7 +14,7 @@ def plot():
     Z1 = plt.mlab.bivariate_normal(X, Y, 1.0, 1.0, 0.0, 0.0)
     Z2 = plt.mlab.bivariate_normal(X, Y, 1.5, 0.5, 1, 1)
     Z = 10 * (Z1 - Z2)
-    levels = [-2,-1.5,-1.2,-0.9,-0.6,-0.3,0.0,0.3,0.6,0.9,1.2,1.5]
+    levels = [-2, -1.5, -1.2, -0.9, -0.6, -0.3, 0.0, 0.3, 0.6, 0.9, 1.2 ,1.5]
     fig = plt.figure()
     CS = plt.contourf(X, Y, Z, 10, levels=levels)
     plt.contour(CS, levels=levels, colors='r')
@@ -27,5 +27,4 @@ def test():
 
 
 if __name__ == '__main__':
-    test()
-    #helpers.compare_with_latex(plot())
+    helpers.compare_with_latex(plot())
