@@ -21,3 +21,7 @@ def test():
     phash = helpers.Phash(plot())
     assert phash.phash == '7f425b584d603f85', phash.get_details()
     return
+
+
+if __name__ == '__main__':
+    helpers.compare_with_latex(plot())
