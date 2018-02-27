@@ -86,7 +86,6 @@ def draw_pathcollection(data, obj):
     '''Returns PGFPlots code for a number of patch objects.
     '''
     content = []
-
     # gather data
     assert obj.get_offsets() is not None
     labels = ['x' + 21*' ', 'y' + 21*' ']
@@ -94,6 +93,7 @@ def draw_pathcollection(data, obj):
 
     draw_options = ['only marks']
     table_options = []
+
     if obj.get_array() is not None:
         draw_options.append('scatter')
         dd = numpy.column_stack([dd, obj.get_array()])
@@ -115,6 +115,10 @@ def draw_pathcollection(data, obj):
         except (TypeError, IndexError):
             fc = None
 
+    is_contour = len(dd) == 1
+    if is_contour:
+        draw_options = ['draw=none']
+
     # TODO Use linewidths
     # linewidths = obj.get_linewidths()
     data, extra_draw_options = get_draw_options(data, ec, fc)
@@ -129,30 +133,35 @@ def draw_pathcollection(data, obj):
         else:
             draw_options.append('colormap/' + mycolormap)
 
-    if len(obj.get_sizes()) == len(dd):
-        # See Pgfplots manual, chapter 4.25.
-        # In Pgfplots, \mark size specifies raddi, in matplotlib circle areas.
-        radii = numpy.sqrt(obj.get_sizes() / numpy.pi)
-        dd = numpy.column_stack([dd, radii])
-        labels.append('sizedata' + 14*' ')
-        draw_options.extend([
-            'visualization depends on='
-            '{\\thisrow{sizedata} \\as\\perpointmarksize}',
-            'scatter/@pre marker code/.append style='
-            '{/tikz/mark size=\\perpointmarksize}',
-            ])
 
-    do = ' [{}]'.format(', '.join(draw_options)) if draw_options else ''
-    content.append('\\addplot{}\n'.format(do))
+    for path in obj.get_paths():
+        if is_contour:
+            dd = path.vertices
 
-    to = ' [{}]'.format(', '.join(table_options)) if table_options else ''
-    content.append('table{}{{%\n'.format(to))
+        if len(obj.get_sizes()) == len(dd):
+            # See Pgfplots manual, chapter 4.25.
+            # In Pgfplots, \mark size specifies raddi, in matplotlib circle areas.
+            radii = numpy.sqrt(obj.get_sizes() / numpy.pi)
+            dd = numpy.column_stack([dd, radii])
+            labels.append('sizedata' + 14*' ')
+            draw_options.extend([
+                'visualization depends on='
+                '{\\thisrow{sizedata} \\as\\perpointmarksize}',
+                'scatter/@pre marker code/.append style='
+                '{/tikz/mark size=\\perpointmarksize}',
+                ])
 
-    content.append((' '.join(labels)).strip() + '\n')
-    fmt = (' '.join(dd.shape[1] * ['%+.15e'])) + '\n'
-    for d in dd:
-        content.append(fmt % tuple(d))
-    content.append('};\n')
+        do = ' [{}]'.format(', '.join(draw_options)) if draw_options else ''
+        content.append('\\addplot{}\n'.format(do))
+
+        to = ' [{}]'.format(', '.join(table_options)) if table_options else ''
+        content.append('table{}{{%\n'.format(to))
+
+        content.append((' '.join(labels)).strip() + '\n')
+        fmt = (' '.join(dd.shape[1] * ['%+.15e'])) + '\n'
+        for d in dd:
+            content.append(fmt % tuple(d))
+        content.append('};\n')
 
     return data, content
 
