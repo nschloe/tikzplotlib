@@ -14,14 +14,7 @@ with open(os.path.join(base_dir, 'matplotlib2tikz', '__about__.py'), 'rb') as f:
 
 
 def read(fname):
-    try:
-        content = codecs.open(
-            os.path.join(os.path.dirname(__file__), fname),
-            encoding='utf-8'
-            ).read()
-    except IOError:
-        content = ''
-    return content
+    return codecs.open(os.path.join(base_dir, fname), encoding='utf-8').read()
 
 
 setup(
@@ -39,10 +32,12 @@ setup(
         'six',
         ],
     extras_require={
+        'all': ['pipdate'],
         'update': ['pipdate'],
         },
     description='convert matplotlib figures into TikZ/PGFPlots',
-    long_description=read('README.rst'),
+    long_description=read('README.md'),
+    long_description_content_type='text/markdown',
     license=about['__license__'],
     classifiers=[
         about['__status__'],
