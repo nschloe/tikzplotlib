@@ -6,12 +6,12 @@ jobs:
   # build:
   #   working_directory: ~/matplotlib2tikz
   #   docker:
-  #     - image: ubuntu:17.10
+  #     - image: ubuntu:18.04
   #   steps:
   #     - run: apt-get update
   #     # don't install sympy with apt: it pulls in texlive which takes for ever
   #     # to download and install
-  #     - run: apt-get install -y git python-pip pandoc
+  #     - run: apt-get install -y git python-pip
   #     - run: pip2 install -U pytest pytest-cov pylint
   #     - checkout
   #     - run: pip2 install -r test_requirements.txt
@@ -19,11 +19,6 @@ jobs:
   #     # lint
   #     - run: pylint matplotlib2tikz/
   #     - run: pylint test/*.py
-  #     # make sure that rst converts correctly
-  #     - run: cat README.md | sed 's_<img src="\([^"]*\)" width="\([^"]*\)">_![](\1){width="\2"}_g' > /tmp/README.md
-  #     - run: pandoc /tmp/README.md -o README.rst
-  #     - run: pip2 install docutils pygments
-  #     - run: python setup.py check -r -s
   #     # The tests
   #     - run: cd test/ && MPLBACKEND=Agg pytest --cov matplotlib2tikz
 
@@ -31,7 +26,7 @@ jobs:
   build:
     working_directory: ~/matplotlib2tikz
     docker:
-      - image: ubuntu:17.10
+      - image: ubuntu:18.04
     environment:
       - TEXMFLOCAL: "/tmp/texmf/"
     steps:
@@ -53,9 +48,7 @@ jobs:
       - run: pip3 install matplotlib==2.1.0
       - run: pip3 install .
       # lint
-      - run: pylint setup.py
-      - run: pylint matplotlib2tikz/
-      - run: pylint test/*.py
+      - run: pylint setup.py matplotlib2tikz/ test/*.py
       # The actual test
       - run: cd test/ && MPLBACKEND=Agg pytest --cov matplotlib2tikz
       # submit to codecov
