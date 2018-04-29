@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-import os
-
 import matplotlib as mpl
 import numpy
 import PIL
+
+from . import files
 
 
 def draw_image(data, obj):
@@ -12,18 +12,7 @@ def draw_image(data, obj):
     '''
     content = []
 
-    if 'img number' not in data.keys():
-        data['img number'] = 0
-
-    # Make sure not to overwrite anything.
-    file_exists = True
-    while file_exists:
-        data['img number'] = data['img number'] + 1
-        filename = os.path.join(
-            data['output dir'],
-            data['base name'] + str(data['img number']) + '.png'
-        )
-        file_exists = os.path.isfile(filename)
+    filename, rel_filepath = files.new_filename(data, 'img', '.png')
 
     # store the image as in a file
     img_array = obj.get_array()
@@ -60,10 +49,6 @@ def draw_image(data, obj):
     # the format specification will only accept tuples
     if not isinstance(extent, tuple):
         extent = tuple(extent)
-
-    rel_filepath = os.path.basename(filename)
-    if data['rel data path']:
-        rel_filepath = os.path.join(data['rel data path'], rel_filepath)
 
     # Explicitly use \pgfimage as includegrapics command, as the default
     # \includegraphics fails unexpectedly in some cases

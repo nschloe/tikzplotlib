@@ -26,6 +26,7 @@ def get_tikz_code(
         figureheight=None,
         textsize=10.0,
         tex_relative_path_to_data=None,
+        externalize_tables=False,
         strict=False,
         wrap=True,
         axis_environment=True,
@@ -72,6 +73,10 @@ def get_tikz_code(
                                       relative path from the LaTeX file to the
                                       data.
     :type tex_relative_path_to_data: str
+
+    :param externalize_tables: Whether or not to externalize plot data tables
+                               into tsv files.
+    :type externalize_tables: bool
 
     :param strict: Whether or not to strictly stick to matplotlib's appearance.
                    This influences, for example, whether tick marks are set
@@ -124,6 +129,7 @@ def get_tikz_code(
     data['fwidth'] = figurewidth
     data['fheight'] = figureheight
     data['rel data path'] = tex_relative_path_to_data
+    data['externalize tables'] = externalize_tables
     data['output dir'] = os.path.dirname(filepath)
     data['base name'] = os.path.splitext(os.path.basename(filepath))[0]
     data['strict'] = strict

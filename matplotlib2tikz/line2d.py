@@ -6,6 +6,7 @@ import six
 
 from . import color as mycol
 from . import path as mypath
+from . import files
 
 def get_legend_label_(line):
     '''Check if line is in legend
@@ -144,6 +145,7 @@ def draw_line2d(data, obj):
     except AttributeError:
         has_mask = 0
 
+    plot_table = []
     if has_mask:
         # matplotlib jumps at masked images, while PGFPlots by default
         # interpolates. Hence, if we have a masked plot, make sure that
@@ -151,12 +153,21 @@ def draw_line2d(data, obj):
         data['extra axis options'].add('unbounded coords=jump')
         for (x, y, is_masked) in zip(xdata, ydata, ydata.mask):
             if is_masked:
-                content.append('%.15g nan\n' % x)
+                plot_table.append('%.15g\tnan\n' % x)
             else:
-                content.append('%.15g %.15g\n' % (x, y))
+                plot_table.append('%.15g\t%.15g\n' % (x, y))
     else:
         for (x, y) in zip(xdata, ydata):
-            content.append('%.15g %.15g\n' % (x, y))
+            plot_table.append('%.15g\t%.15g\n' % (x, y))
+    if data["externalize tables"]:
+        filename, rel_filepath = files.new_filename(data, 'table', '.tsv')
+        with open(filename, 'w') as f:
+            # No encoding handling required: plot_table is only ASCII
+            f.write(''.join(plot_table))
+        content.append(rel_filepath)
+    else:
+        content.extend(plot_table)
+
     content.append('};\n')
 
     return data, content
