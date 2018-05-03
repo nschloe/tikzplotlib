@@ -5,9 +5,9 @@
 [![Codacy grade](https://img.shields.io/codacy/grade/fbb81be6728d4513b2e031eaec7427aa.svg)](https://app.codacy.com/app/nschloe/matplotlib2tikz/dashboard)
 [![Documentation Status](https://readthedocs.org/projects/matplotlib2tikz/badge/?version=latest)](https://readthedocs.org/projects/matplotlib2tikz/?badge=latest)
 [![awesome](https://img.shields.io/badge/awesome-yes-brightgreen.svg)](https://github.com/nschloe/matplotlib2tikz)
-[![PyPi Version](https://img.shields.io/pypi/v/matplotlib2tikz.svg)](https://pypi.python.org/pypi/matplotlib2tikz)
+[![PyPi Version](https://img.shields.io/pypi/v/matplotlib2tikz.svg)](https://pypi.org/project/matplotlib2tikz)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1173089.svg)](https://doi.org/10.5281/zenodo.1173089)
-[![GitHub stars](https://img.shields.io/github/stars/nschloe/matplotlib2tikz.svg?style=social&label=Stars)](https://github.com/nschloe/matplotlib2tikz)
+[![GitHub stars](https://img.shields.io/github/stars/nschloe/matplotlib2tikz.svg?logo=github&label=Stars)](https://github.com/nschloe/matplotlib2tikz)
 
 This is matplotlib2tikz, a Python tool for converting matplotlib figures into
 [PGFPlots](https://www.ctan.org/pkg/pgfplots)
@@ -93,7 +93,7 @@ contains great examples of how to make your plot look even better.
 ### Installation
 
 matplotlib2tikz is [available from the Python Package
-Index](https://pypi.python.org/pypi/matplotlib2tikz/), so
+Index](https://pypi.org/project/matplotlib2tikz/), so
 simply type
 ```
 pip install -U matplotlib2tikz
@@ -183,7 +183,7 @@ pytest
 ```
 
 The final pHash may depend on any of the tools used during the process. For
-example, if your version of [Pillow](https://pypi.python.org/pypi/Pillow/4.3.0)
+example, if your version of [Pillow](https://pypi.org/project/Pillow/)
 is too old, the pHash function might operate slightly differently and produce a
 slightly different pHash, resulting in a failing test. If tests are failing on
 your local machine, you should first make sure to have an up-to-date Pillow.
