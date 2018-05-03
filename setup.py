@@ -32,8 +32,8 @@ setup(
         'six',
         ],
     extras_require={
-        'all': ['pipdate >= 0.3.0, <0.4.0'],
-        'update': ['pipdate >= 0.3.0, <0.4.0'],
+        'all': ['pipdate >= 0.2.0, <0.3.0'],
+        'update': ['pipdate >= 0.2.0, <0.3.0'],
         },
     description='convert matplotlib figures into TikZ/PGFPlots',
     long_description=read('README.md'),
