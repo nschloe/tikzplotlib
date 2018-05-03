@@ -26,14 +26,14 @@ setup(
     author=about['__author__'],
     author_email=about['__email__'],
     install_requires=[
-        'matplotlib >=1.4.0',
+        'matplotlib >= 1.4.0',
         'numpy',
         'Pillow >= 3.0.0',
         'six',
         ],
     extras_require={
-        'all': ['pipdate'],
-        'update': ['pipdate'],
+        'all': ['pipdate >= 0.3.0, <0.4.0'],
+        'update': ['pipdate >= 0.3.0, <0.4.0'],
         },
     description='convert matplotlib figures into TikZ/PGFPlots',
     long_description=read('README.md'),

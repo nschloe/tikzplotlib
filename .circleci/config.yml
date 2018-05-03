@@ -48,7 +48,7 @@ jobs:
       # Install very specific versions of the dependencies; the build is too
       # fragile otherwise.
       - run: pip3 install matplotlib==2.1.0
-      - run: pip3 install .
+      - run: pip3 install .[all]
       # lint
       - run: pylint setup.py matplotlib2tikz/ test/*.py
       # The actual test

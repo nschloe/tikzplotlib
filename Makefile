@@ -21,3 +21,6 @@ publish: tag upload
 
 clean:
 	@find . | grep -E "(__pycache__|\.pyc|\.pyo$\)" | xargs rm -rf
+
+lint:
+	pylint setup.py matplotlib2tikz/ test/*.py
