@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-import os
-
 from PIL import Image
+
+from . import files
 
 
 def draw_quadmesh(data, obj):
@@ -12,14 +12,7 @@ def draw_quadmesh(data, obj):
     content = []
 
     # Generate file name for current object
-    if 'img number' not in data.keys():
-        data['img number'] = 0
-
-    filename = os.path.join(
-            data['output dir'],
-            '%s_img%03d.png' % (data['base name'], data['img number'])
-            )
-    data['img number'] = data['img number'] + 1
+    filename, rel_filepath = files.new_filename(data, 'img', '.png')
 
     # Get the dpi for rendering and store the original dpi of the figure
     dpi = data['dpi']
@@ -60,10 +53,6 @@ def draw_quadmesh(data, obj):
 
     # write the corresponding information to the TikZ file
     extent = obj.axes.get_xlim() + obj.axes.get_ylim()
-
-    rel_filepath = os.path.basename(filename)
-    if data['rel data path']:
-        rel_filepath = os.path.join(data['rel data path'], rel_filepath)
 
     # Explicitly use \pgfimage as includegrapics command, as the default
     # \includegraphics fails unexpectedly in some cases

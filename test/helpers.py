@@ -19,13 +19,16 @@ import matplotlib2tikz
 
 
 class Phash(object):
-    def __init__(self, fig):
+    def __init__(self, fig, save_kwargs=None):
+        if save_kwargs is None:
+            save_kwargs = dict()
         # convert to tikz file
         _, tmp_base = tempfile.mkstemp()
         tikz_file = tmp_base + '_tikz.tex'
         matplotlib2tikz.save(
             tikz_file,
-            figurewidth='7.5cm'
+            figurewidth='7.5cm',
+            **save_kwargs
             )
 
         # test other height specs
@@ -34,6 +37,7 @@ class Phash(object):
             figureheight='7.5cm',
             show_info=True,
             strict=True,
+            **save_kwargs
             )
 
         # save reference figure
