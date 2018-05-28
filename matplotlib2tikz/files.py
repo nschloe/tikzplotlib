@@ -2,6 +2,10 @@
 #
 import os
 
+def _gen_filename(data, nb_key, ext):
+    name = data['base name'] + '-%03d%s' % (data[nb_key], ext)
+    return os.path.join(data['output dir'], name), name
+
 def new_filename(data, file_kind, ext):
     '''Returns an available filename.
 
@@ -19,15 +23,18 @@ def new_filename(data, file_kind, ext):
 
     nb_key = file_kind + 'number'
     if nb_key not in data.keys():
-        data[nb_key] = 0
+        data[nb_key] = -1
 
-    # Make sure not to overwrite anything.
-    file_exists = True
-    while file_exists:
+    if not data["override externals"]:
+        # Make sure not to overwrite anything.
+        file_exists = True
+        while file_exists:
+            data[nb_key] = data[nb_key] + 1
+            filename, name = _gen_filename(data, nb_key, ext)
+            file_exists = os.path.isfile(filename)
+    else:
         data[nb_key] = data[nb_key] + 1
-        name = data['base name'] + '-%03d%s' % (data[nb_key], ext)
-        filename = os.path.join(data['output dir'], name)
-        file_exists = os.path.isfile(filename)
+        filename, name = _gen_filename(data, nb_key, ext)
 
     if data['rel data path']:
         rel_filepath = os.path.join(data['rel data path'], name)

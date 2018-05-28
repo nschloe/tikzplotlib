@@ -32,6 +32,15 @@ def test():
             )
     assert phash.phash == '1f36e5ce21c1e5c1', phash.get_details()
 
+    phash = helpers.Phash(
+            plot(),
+            save_kwargs={
+                'externalize_tables': True,
+                'override_externals': True,
+                },
+            )
+    assert phash.phash == '1f36e5ce21c1e5c1', phash.get_details()
+
 
 if __name__ == '__main__':
     helpers.compare_with_latex(plot())
