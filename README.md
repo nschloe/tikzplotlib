@@ -86,6 +86,8 @@ table {%
 
 \end{tikzpicture}
 ```
+(Use `get_tikz_code()` instead of `save()` if you want the code as a string.)
+
 Tweaking the plot is straightforward and can be done as part of your LaTeX
 work flow.
 [The fantastic PGFPlots manual](http://pgfplots.sourceforge.net/pgfplots.pdf)
