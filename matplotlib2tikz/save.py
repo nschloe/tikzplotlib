@@ -6,6 +6,7 @@ import codecs
 import os
 import matplotlib as mpl
 import six
+import warnings
 
 from . import axes
 from . import legend
@@ -354,8 +355,8 @@ def _recurse(data, obj):
                 )):
             pass
         else:
-            print('matplotlib2tikz: Don''t know how to handle object ''%s''.' %
-                  type(child))
+            warnings.warn('matplotlib2tikz: Don''t know how to handle object ''%s''.' %
+                          type(child))
     # XXX: This is ugly
     if isinstance(obj, (mpl.axes.Subplot, mpl.figure.Figure)):
         for text in obj.texts:
