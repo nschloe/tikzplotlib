@@ -3,6 +3,7 @@
 [![CircleCI](https://img.shields.io/circleci/project/github/nschloe/matplotlib2tikz/master.svg)](https://circleci.com/gh/nschloe/matplotlib2tikz/tree/master)
 [![codecov](https://img.shields.io/codecov/c/github/nschloe/matplotlib2tikz.svg)](https://codecov.io/gh/nschloe/matplotlib2tikz)
 [![Codacy grade](https://img.shields.io/codacy/grade/fbb81be6728d4513b2e031eaec7427aa.svg)](https://app.codacy.com/app/nschloe/matplotlib2tikz/dashboard)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 [![Documentation Status](https://readthedocs.org/projects/matplotlib2tikz/badge/?version=latest)](https://readthedocs.org/projects/matplotlib2tikz/?badge=latest)
 [![awesome](https://img.shields.io/badge/awesome-yes-brightgreen.svg)](https://github.com/nschloe/matplotlib2tikz)
 [![PyPi Version](https://img.shields.io/pypi/v/matplotlib2tikz.svg)](https://pypi.org/project/matplotlib2tikz)

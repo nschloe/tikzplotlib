@@ -21,6 +21,8 @@ publish: tag upload
 
 clean:
 	@find . | grep -E "(__pycache__|\.pyc|\.pyo$\)" | xargs rm -rf
+	@rm -rf *.egg-info/ build/ dist/ MANIFEST
 
 lint:
-	pylint setup.py matplotlib2tikz/ test/*.py
+	black --check setup.py matplotlib2tikz/ test/*.py
+	flake8 setup.py matplotlib2tikz/ test/*.py
