@@ -19,12 +19,12 @@ def plot():
 
     for ax in axes:
         im = ax.imshow(data)
-        fig.colorbar(im, ax=ax, orientation='horizontal')
+        fig.colorbar(im, ax=ax, orientation="horizontal")
 
     return fig
 
 
 def test():
     phash = helpers.Phash(plot())
-    assert phash.phash == '6bc42bd46a95c03f', phash.get_details()
+    assert phash.phash == "6bc42bd46a95c03f", phash.get_details()
     return

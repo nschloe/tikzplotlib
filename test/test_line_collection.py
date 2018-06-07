@@ -37,16 +37,14 @@ def plot():
 
     # Make a sequence of x,y pairs
     line_segments = LineCollection(
-            [list(zip(x, y)) for y in ys],
-            linewidths=(0.5, 1, 1.5, 2),
-            linestyles='dashdot'
-            )
+        [list(zip(x, y)) for y in ys], linewidths=(0.5, 1, 1.5, 2), linestyles="dashdot"
+    )
     line_segments.set_array(x)
     ax.add_collection(line_segments)
     fig = plt.gcf()
     axcb = fig.colorbar(line_segments)
-    axcb.set_label('Line Number')
-    ax.set_title('Line Collection with mapped colors')
+    axcb.set_label("Line Number")
+    ax.set_title("Line Collection with mapped colors")
     plt.sci(line_segments)  # This allows interactive changing of the colormap.
 
     return fig
@@ -54,5 +52,5 @@ def plot():
 
 def test():
     phash = helpers.Phash(plot())
-    assert phash.phash == '5356a5adac9cac62', phash.get_details()
+    assert phash.phash == "5356a5adac9cac62", phash.get_details()
     return

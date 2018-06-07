@@ -8,7 +8,7 @@ def plot():
     import numpy as np
 
     def f(t):
-        s1 = np.cos(2*np.pi*t)
+        s1 = np.cos(2 * np.pi * t)
         e1 = np.exp(-t)
         return np.multiply(s1, e1)
 
@@ -19,23 +19,23 @@ def plot():
     t3 = np.arange(0.0, 2.0, 0.01)
 
     plt.subplot(211)
-    plt.plot(t1, f(t1), 'bo', t2, f(t2), 'k--', markerfacecolor='green')
+    plt.plot(t1, f(t1), "bo", t2, f(t2), "k--", markerfacecolor="green")
     plt.grid(True)
-    plt.title('A tale of 2 subplots')
-    plt.ylabel('Damped oscillation')
+    plt.title("A tale of 2 subplots")
+    plt.ylabel("Damped oscillation")
 
     plt.subplot(212)
-    plt.plot(t3, np.cos(2*np.pi*t3), 'r.')
+    plt.plot(t3, np.cos(2 * np.pi * t3), "r.")
     plt.grid(True)
-    plt.xlabel('time (s)')
-    plt.ylabel('Undamped')
+    plt.xlabel("time (s)")
+    plt.ylabel("Undamped")
 
-    fig.suptitle('PLOT TITLE', fontsize=18, fontweight='bold')
+    fig.suptitle("PLOT TITLE", fontsize=18, fontweight="bold")
 
     return fig
 
 
 def test():
     phash = helpers.Phash(plot())
-    assert phash.phash == '1f21c53639de26c6', phash.get_details()
+    assert phash.phash == "1f21c53639de26c6", phash.get_details()
     return

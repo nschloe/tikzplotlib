@@ -11,8 +11,8 @@ def plot():
     fig = plt.figure()
     x, y = np.ogrid[-10:10:100j, -10:10:100j]
     extent = (x.min(), x.max(), y.min(), y.max())
-    cmap = matplotlib.cm.get_cmap('gray')
-    plt.imshow(x*y, extent=extent, cmap=cmap)
+    cmap = matplotlib.cm.get_cmap("gray")
+    plt.imshow(x * y, extent=extent, cmap=cmap)
     plt.colorbar()
 
     return fig
@@ -20,4 +20,4 @@ def plot():
 
 def test():
     phash = helpers.Phash(plot())
-    assert phash.phash == 'fda6837883788378', phash.get_details()
+    assert phash.phash == "fda6837883788378", phash.get_details()

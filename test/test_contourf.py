@@ -17,15 +17,15 @@ def plot():
     levels = [-2, -1.5, -1.2, -0.9, -0.6, -0.3, 0.0, 0.3, 0.6, 0.9, 1.2, 1.5]
     fig = plt.figure()
     CS = plt.contourf(X, Y, Z, 10, levels=levels)
-    plt.contour(CS, levels=levels, colors='r')
+    plt.contour(CS, levels=levels, colors="r")
     return fig
 
 
 def test():
     phash = helpers.Phash(plot())
-    assert phash.phash == 'ff7e052c093e0716', phash.get_details()
+    assert phash.phash == "ff7e052c093e0716", phash.get_details()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()
     helpers.compare_with_latex(plot())

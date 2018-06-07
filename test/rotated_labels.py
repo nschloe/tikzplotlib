@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-desc = 'Rotated labels'
-phash = 'a91fa2a3713dcc0b'
+desc = "Rotated labels"
+phash = "a91fa2a3713dcc0b"
 
 
 def plot():
@@ -13,29 +13,29 @@ def plot():
     fig = plt.figure()
 
     plt.subplot(611)
-    plt.plot(x, y, 'ro')
-    plt.xticks(x, rotation='horizontal')
+    plt.plot(x, y, "ro")
+    plt.xticks(x, rotation="horizontal")
 
     plt.subplot(612)
-    plt.plot(x, y, 'ro')
-    plt.xticks(x, rotation='vertical')
+    plt.plot(x, y, "ro")
+    plt.xticks(x, rotation="vertical")
 
     ax = plt.subplot(613)
-    ax.plot(x, y, 'ro')
+    ax.plot(x, y, "ro")
     plt.xticks(y, rotation=-25)
 
     ax = plt.subplot(614)
-    ax.plot(x, y, 'ro')
+    ax.plot(x, y, "ro")
     plt.yticks(y, rotation=-25)
 
     ax = plt.subplot(615)
-    ax.plot(x, y, 'ro')
+    ax.plot(x, y, "ro")
 
     for idx, label in enumerate(ax.get_xticklabels()):
         label.set_rotation(45 if idx % 2 == 0 else 0)
 
     ax = plt.subplot(616)
-    ax.plot(x, y, 'ro')
+    ax.plot(x, y, "ro")
 
     for idx, label in enumerate(ax.get_yticklabels()):
         label.set_rotation(90 if idx % 2 == 0 else 0)
