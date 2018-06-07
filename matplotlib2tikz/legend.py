@@ -22,7 +22,6 @@ def draw_legend(data, obj):
     # Get the location.
     # http://matplotlib.org/api/legend_api.html
     pad = 0.03
-    # pylint: disable=protected-access
     loc = obj._loc
     if loc == 0:
         # best
@@ -34,7 +33,6 @@ def draw_legend(data, obj):
 
         # Rectangles of the legend and of the axes
         # Lower left and upper right points
-        # pylint: disable=protected-access
         x0_legend, x1_legend = \
             obj._legend_box.get_window_extent(renderer).get_points()
         x0_axes, x1_axes = obj.axes.get_window_extent(renderer).get_points()

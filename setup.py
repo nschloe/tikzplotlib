@@ -9,7 +9,6 @@ from setuptools import setup, find_packages
 base_dir = os.path.abspath(os.path.dirname(__file__))
 about = {}
 with open(os.path.join(base_dir, 'matplotlib2tikz', '__about__.py'), 'rb') as f:
-    # pylint: disable=exec-used
     exec(f.read(), about)
 
 
