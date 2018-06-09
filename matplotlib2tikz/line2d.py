@@ -59,47 +59,16 @@ def draw_line2d(data, obj):
         data, obj.get_marker(), marker_face_color
     )
     if marker:
-        addplot_options.append("mark=" + marker)
-
-        mark_size = obj.get_markersize()
-        if mark_size:
-            # setting half size because pgfplots counts the radius/half-width
-            pgf_size = int(0.5 * mark_size)
-            # make sure we didn't round off to zero by accident
-            if pgf_size == 0 and mark_size != 0:
-                pgf_size = 1
-            addplot_options.append("mark size=%d" % pgf_size)
-
-        mark_every = obj.get_markevery()
-        if mark_every:
-            addplot_options.append("mark repeat=%d" % mark_every)
-
-        mark_options = ["solid"]
-        if extra_mark_options:
-            mark_options.append(extra_mark_options)
-        if marker_face_color is None or (
-            isinstance(marker_face_color, six.string_types)
-            and marker_face_color == "none"
-        ):
-            mark_options.append("fill opacity=0")
-        else:
-            data, face_xcolor, _ = mycol.mpl_color2xcolor(data, marker_face_color)
-            if face_xcolor != line_xcolor:
-                mark_options.append("fill=" + face_xcolor)
-
-        face_and_edge_have_equal_color = marker_edge_color == marker_face_color
-        # Sometimes, the colors are given as arrays. Collapse them into a
-        # single boolean.
-        try:
-            face_and_edge_have_equal_color = all(face_and_edge_have_equal_color)
-        except TypeError:
-            pass
-
-        if not face_and_edge_have_equal_color:
-            data, draw_xcolor, _ = mycol.mpl_color2xcolor(data, marker_edge_color)
-            if draw_xcolor != line_xcolor:
-                mark_options.append("draw=" + draw_xcolor)
-        addplot_options.append("mark options={%s}" % ",".join(mark_options))
+        _marker(
+            obj,
+            data,
+            marker,
+            addplot_options,
+            extra_mark_options,
+            marker_face_color,
+            marker_edge_color,
+            line_xcolor,
+        )
 
     if marker and not show_line:
         addplot_options.append("only marks")
@@ -115,55 +84,7 @@ def draw_line2d(data, obj):
         options = ", ".join(addplot_options)
         content.append("[" + options + "]\n")
 
-    content.append("table {%\n")
-
-    # nschloe, Oct 2, 2015:
-    #   The transform call yields warnings and it is unclear why. Perhaps
-    #   the input data is not suitable? Anyhow, this should not happen.
-    #   Comment out for now.
-    # xdata, ydata = _transform_to_data_coordinates(obj, *obj.get_data())
-    xdata, ydata = obj.get_data()
-
-    # matplotlib allows plotting of data containing `astropy.units`, but they will
-    # break the formatted string here. Try to strip the units from the data.
-    try:
-        xdata = xdata.value
-    except AttributeError:
-        pass
-    try:
-        ydata = ydata.value
-    except AttributeError:
-        pass
-
-    try:
-        has_mask = ydata.mask.any()
-    except AttributeError:
-        has_mask = 0
-
-    plot_table = []
-    if has_mask:
-        # matplotlib jumps at masked images, while PGFPlots by default
-        # interpolates. Hence, if we have a masked plot, make sure that
-        # PGFPlots jumps as well.
-        data["extra axis options"].add("unbounded coords=jump")
-        for (x, y, is_masked) in zip(xdata, ydata, ydata.mask):
-            if is_masked:
-                plot_table.append("%.15g\tnan\n" % x)
-            else:
-                plot_table.append("%.15g\t%.15g\n" % (x, y))
-    else:
-        for (x, y) in zip(xdata, ydata):
-            plot_table.append("%.15g\t%.15g\n" % (x, y))
-    if data["externalize tables"]:
-        filename, rel_filepath = files.new_filename(data, "table", ".tsv")
-        with open(filename, "w") as f:
-            # No encoding handling required: plot_table is only ASCII
-            f.write("".join(plot_table))
-        content.append(rel_filepath)
-    else:
-        content.extend(plot_table)
-
-    content.append("};\n")
+    _table(obj, content, data)
 
     return data, content
 
@@ -398,3 +319,112 @@ def _mpl_linestyle2pgfp_linestyle(line_style):
 #               % e
 #               )
 #     return (xdata, ydata)
+
+
+def _marker(
+    obj,
+    data,
+    marker,
+    addplot_options,
+    extra_mark_options,
+    marker_face_color,
+    marker_edge_color,
+    line_xcolor,
+):
+    addplot_options.append("mark=" + marker)
+
+    mark_size = obj.get_markersize()
+    if mark_size:
+        # setting half size because pgfplots counts the radius/half-width
+        pgf_size = int(0.5 * mark_size)
+        # make sure we didn't round off to zero by accident
+        if pgf_size == 0 and mark_size != 0:
+            pgf_size = 1
+        addplot_options.append("mark size=%d" % pgf_size)
+
+    mark_every = obj.get_markevery()
+    if mark_every:
+        addplot_options.append("mark repeat=%d" % mark_every)
+
+    mark_options = ["solid"]
+    if extra_mark_options:
+        mark_options.append(extra_mark_options)
+    if marker_face_color is None or (
+        isinstance(marker_face_color, six.string_types) and marker_face_color == "none"
+    ):
+        mark_options.append("fill opacity=0")
+    else:
+        data, face_xcolor, _ = mycol.mpl_color2xcolor(data, marker_face_color)
+        if face_xcolor != line_xcolor:
+            mark_options.append("fill=" + face_xcolor)
+
+    face_and_edge_have_equal_color = marker_edge_color == marker_face_color
+    # Sometimes, the colors are given as arrays. Collapse them into a
+    # single boolean.
+    try:
+        face_and_edge_have_equal_color = all(face_and_edge_have_equal_color)
+    except TypeError:
+        pass
+
+    if not face_and_edge_have_equal_color:
+        data, draw_xcolor, _ = mycol.mpl_color2xcolor(data, marker_edge_color)
+        if draw_xcolor != line_xcolor:
+            mark_options.append("draw=" + draw_xcolor)
+    addplot_options.append("mark options={%s}" % ",".join(mark_options))
+
+    return
+
+
+def _table(obj, content, data):
+    content.append("table {%\n")
+
+    # nschloe, Oct 2, 2015:
+    #   The transform call yields warnings and it is unclear why. Perhaps
+    #   the input data is not suitable? Anyhow, this should not happen.
+    #   Comment out for now.
+    # xdata, ydata = _transform_to_data_coordinates(obj, *obj.get_data())
+    xdata, ydata = obj.get_data()
+
+    # matplotlib allows plotting of data containing `astropy.units`, but they will
+    # break the formatted string here. Try to strip the units from the data.
+    try:
+        xdata = xdata.value
+    except AttributeError:
+        pass
+    try:
+        ydata = ydata.value
+    except AttributeError:
+        pass
+
+    try:
+        has_mask = ydata.mask.any()
+    except AttributeError:
+        has_mask = 0
+
+    plot_table = []
+    if has_mask:
+        # matplotlib jumps at masked images, while PGFPlots by default
+        # interpolates. Hence, if we have a masked plot, make sure that
+        # PGFPlots jumps as well.
+        data["extra axis options"].add("unbounded coords=jump")
+        for (x, y, is_masked) in zip(xdata, ydata, ydata.mask):
+            if is_masked:
+                plot_table.append("%.15g\tnan\n" % x)
+            else:
+                plot_table.append("%.15g\t%.15g\n" % (x, y))
+    else:
+        for (x, y) in zip(xdata, ydata):
+            plot_table.append("%.15g\t%.15g\n" % (x, y))
+
+    if data["externalize tables"]:
+        filename, rel_filepath = files.new_filename(data, "table", ".tsv")
+        with open(filename, "w") as f:
+            # No encoding handling required: plot_table is only ASCII
+            f.write("".join(plot_table))
+        content.append(rel_filepath)
+    else:
+        content.extend(plot_table)
+
+    content.append("};\n")
+
+    return
