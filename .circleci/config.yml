@@ -29,7 +29,7 @@ jobs:
       - run: pip3 install .[all]
       - run: pip3 check
       # format and lint
-      - run: black --check setup.py matplotlib2tikz/ test/*.py
+      - run: LC_ALL=C.UTF-8 black --check setup.py matplotlib2tikz/ test/*.py
       - run: flake8 setup.py matplotlib2tikz/ test/*.py
       # The actual test
       - run: cd test/ && MPLBACKEND=Agg pytest --cov matplotlib2tikz
