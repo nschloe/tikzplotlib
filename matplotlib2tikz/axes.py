@@ -87,7 +87,7 @@ class Axes(object):
 
         self._ticks(data, obj)
 
-        self._grid(self, obj, data)
+        self._grid(obj, data)
 
         # axis line styles
         # Assume that the bottom edge color is the color of the entire box.
