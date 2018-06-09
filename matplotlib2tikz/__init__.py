@@ -8,14 +8,23 @@ from matplotlib2tikz.__about__ import (
     __author__,
     __email__,
     __copyright__,
-    __credits__,
     __license__,
     __version__,
-    __maintainer__,
     __status__,
 )
 
 from matplotlib2tikz.save import get_tikz_code, save
+
+__all__ = [
+    "__author__",
+    "__email__",
+    "__copyright__",
+    "__license__",
+    "__version__",
+    "__status__",
+    "get_tikz_code",
+    "save",
+]
 
 try:
     import pipdate

@@ -46,7 +46,7 @@ def plot():
     axes[7].legend((l,), ("UC",), loc=0)
 
     # Legend best location is "center"
-    l = axes[8].plot(
+    loc = axes[8].plot(
         t[:10],
         2 * np.cos(10 * t[:10]),
         t[-10:],
@@ -54,7 +54,7 @@ def plot():
         linewidth=0.5,
     )
     axes[8].plot(t, -2 * np.ones_like(t), t, 2 * np.ones_like(t))
-    axes[8].legend((l,), ("C",), loc=0)
+    axes[8].legend((loc,), ("C",), loc=0)
 
     return fig
 
