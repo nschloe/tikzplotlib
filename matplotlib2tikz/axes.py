@@ -71,9 +71,9 @@ class Axes(object):
         # Sort the limits so make sure that the smaller of the two is actually
         # *min.
         xlim = sorted(list(obj.get_xlim()))
-        self.axis_options.append("xmin=%.15g" % xlim[0] + ", xmax=%.15g" % xlim[1])
+        self.axis_options.append("xmin={:.15g}, xmax={:.15g}".format(*xlim))
         ylim = sorted(list(obj.get_ylim()))
-        self.axis_options.append("ymin=%.15g" % ylim[0] + ", ymax=%.15g" % ylim[1])
+        self.axis_options.append("ymin={:.15g}, ymax={:.15g}".format(*ylim))
 
         # axes scaling
         if obj.get_xscale() == "log":
@@ -93,6 +93,91 @@ class Axes(object):
         else:
             aspect_num = float(aspect)
 
+        self._width(data, aspect_num, xlim, ylim)
+
+        # axis positions
+        xaxis_pos = obj.get_xaxis().label_position
+        if xaxis_pos == "bottom":
+            # this is the default
+            pass
+        else:
+            assert xaxis_pos == "top"
+            self.axis_options.append("axis x line=top")
+
+        yaxis_pos = obj.get_yaxis().label_position
+        if yaxis_pos == "left":
+            # this is the default
+            pass
+        else:
+            assert yaxis_pos == "right"
+            self.axis_options.append("axis y line=right")
+
+        self._ticks(data, obj)
+
+        self._grid(self, obj, data)
+
+        # axis line styles
+        # Assume that the bottom edge color is the color of the entire box.
+        axcol = obj.spines["bottom"].get_edgecolor()
+        data, col, _ = color.mpl_color2xcolor(data, axcol)
+        if col != "black":
+            self.axis_options.append("axis line style={%s}" % col)
+
+        # background color
+        try:
+            # mpl 2.*
+            bgcolor = obj.get_facecolor()
+        except AttributeError:
+            # mpl 1.*
+            bgcolor = obj.get_axis_bgcolor()
+
+        data, col, _ = color.mpl_color2xcolor(data, bgcolor)
+        if col != "white":
+            self.axis_options.append("axis background/.style={fill=%s}" % col)
+
+        # find color bar
+        colorbar = _find_associated_colorbar(obj)
+        if colorbar:
+            self._colorbar(colorbar, data)
+
+        # actually print the thing
+        if self.is_subplot:
+            self.content.append("\\nextgroupplot")
+        else:
+            self.content.append("\\begin{axis}")
+
+        # # anchors
+        # if hasattr(obj, '_matplotlib2tikz_anchors'):
+        #     try:
+        #         for coord, anchor_name in obj._matplotlib2tikz_anchors:
+        #             self.content.append(
+        #                 '\\node (%s) at (axis cs:%e,%e) {};\n' %
+        #                 (anchor_name, coord[0], coord[1])
+        #                 )
+        #     except:
+        #         print('Axes attribute _matplotlib2tikz_anchors wrongly set:'
+        #               'Expected a list of ((x,y), anchor_name), got \'%s\''
+        #               % str(obj._matplotlib2tikz_anchors)
+        #               )
+
+        return
+
+    def get_begin_code(self):
+        content = self.content
+        if self.axis_options:
+            content.append("[\n" + ",\n".join(self.axis_options) + "\n]\n")
+        return content
+
+    def get_end_code(self, data):
+        if not self.is_subplot:
+            return "\\end{axis}\n\n"
+        elif self.is_subplot and self.nsubplots == self.subplot_index:
+            data["is_in_groupplot_env"] = False
+            return "\\end{groupplot}\n\n"
+
+        return ""
+
+    def _width(self, data, aspect_num, xlim, ylim):
         if data["fwidth"] and data["fheight"]:
             # width and height overwrite aspect ratio
             self.axis_options.append("width=" + data["fwidth"])
@@ -128,24 +213,9 @@ class Axes(object):
                     "but neither height nor width of the plot are given. "
                     "Discard aspect ratio."
                 )
+        return
 
-        # axis positions
-        xaxis_pos = obj.get_xaxis().label_position
-        if xaxis_pos == "bottom":
-            # this is the default
-            pass
-        else:
-            assert xaxis_pos == "top"
-            self.axis_options.append("axis x line=top")
-
-        yaxis_pos = obj.get_yaxis().label_position
-        if yaxis_pos == "left":
-            # this is the default
-            pass
-        else:
-            assert yaxis_pos == "right"
-            self.axis_options.append("axis y line=right")
-
+    def _ticks(self, data, obj):
         # get ticks
         self.axis_options.extend(
             _get_ticks(data, "x", obj.get_xticks(), obj.get_xticklabels())
@@ -215,6 +285,9 @@ class Axes(object):
             self.axis_options.append(x_tick_position_string)
             self.axis_options.append(y_tick_position_string)
 
+        return
+
+    def _grid(self, obj, data):
         # Don't use get_{x,y}gridlines for gridlines; see discussion on
         # <http://sourceforge.net/p/matplotlib/mailman/message/25169234/>
         # Coordinate of the lines are entirely meaningless, but styles
@@ -243,149 +316,93 @@ class Axes(object):
             if col != "black":
                 self.axis_options.append("y grid style={%s}" % col)
 
-        # axis line styles
-        # Assume that the bottom edge color is the color of the entire box.
-        axcol = obj.spines["bottom"].get_edgecolor()
-        data, col, _ = color.mpl_color2xcolor(data, axcol)
-        if col != "black":
-            self.axis_options.append("axis line style={%s}" % col)
-
-        # background color
-        try:
-            # mpl 2.*
-            bgcolor = obj.get_facecolor()
-        except AttributeError:
-            # mpl 1.*
-            bgcolor = obj.get_axis_bgcolor()
-
-        data, col, _ = color.mpl_color2xcolor(data, bgcolor)
-        if col != "white":
-            self.axis_options.append("axis background/.style={fill=%s}" % col)
-
-        # find color bar
-        colorbar = _find_associated_colorbar(obj)
-        if colorbar:
-            colorbar_styles = []
-
-            orientation = colorbar.orientation
-            limits = colorbar.get_clim()
-            if orientation == "horizontal":
-                self.axis_options.append("colorbar horizontal")
-
-                colorbar_ticks = colorbar.ax.get_xticks()
-                colorbar_ticks_minor = colorbar.ax.get_xticks("minor")
-                axis_limits = colorbar.ax.get_xlim()
-
-                # In matplotlib, the colorbar color limits are determined by
-                # get_clim(), and the tick positions are as usual with respect
-                # to {x,y}lim. In PGFPlots, however, they are mixed together.
-                # Hence, scale the tick positions just like {x,y}lim are scaled
-                # to clim.
-                colorbar_ticks = (colorbar_ticks - axis_limits[0]) / (
-                    axis_limits[1] - axis_limits[0]
-                ) * (limits[1] - limits[0]) + limits[0]
-                colorbar_ticks_minor = (colorbar_ticks_minor - axis_limits[0]) / (
-                    axis_limits[1] - axis_limits[0]
-                ) * (limits[1] - limits[0]) + limits[0]
-                # Getting the labels via get_* might not actually be suitable:
-                # they might not reflect the current state.
-                colorbar_ticklabels = colorbar.ax.get_xticklabels()
-                colorbar_ticklabels_minor = colorbar.ax.get_xticklabels("minor")
-
-                colorbar_styles.extend(
-                    _get_ticks(data, "x", colorbar_ticks, colorbar_ticklabels)
-                )
-                colorbar_styles.extend(
-                    _get_ticks(
-                        data, "minor x", colorbar_ticks_minor, colorbar_ticklabels_minor
-                    )
-                )
-
-            else:
-                assert orientation == "vertical"
-
-                self.axis_options.append("colorbar")
-                colorbar_ticks = colorbar.ax.get_yticks()
-                colorbar_ticks_minor = colorbar.ax.get_yticks("minor")
-                axis_limits = colorbar.ax.get_ylim()
-
-                # In matplotlib, the colorbar color limits are determined by
-                # get_clim(), and the tick positions are as usual with respect
-                # to {x,y}lim. In PGFPlots, however, they are mixed together.
-                # Hence, scale the tick positions just like {x,y}lim are scaled
-                # to clim.
-                colorbar_ticks = (colorbar_ticks - axis_limits[0]) / (
-                    axis_limits[1] - axis_limits[0]
-                ) * (limits[1] - limits[0]) + limits[0]
-                colorbar_ticks_minor = (colorbar_ticks_minor - axis_limits[0]) / (
-                    axis_limits[1] - axis_limits[0]
-                ) * (limits[1] - limits[0]) + limits[0]
-
-                # Getting the labels via get_* might not actually be suitable:
-                # they might not reflect the current state.
-                colorbar_ticklabels = colorbar.ax.get_yticklabels()
-                colorbar_ylabel = colorbar.ax.get_ylabel()
-                colorbar_ticklabels_minor = colorbar.ax.get_yticklabels("minor")
-                colorbar_styles.extend(
-                    _get_ticks(data, "y", colorbar_ticks, colorbar_ticklabels)
-                )
-                colorbar_styles.extend(
-                    _get_ticks(
-                        data, "minor y", colorbar_ticks_minor, colorbar_ticklabels_minor
-                    )
-                )
-                colorbar_styles.append("ylabel={" + colorbar_ylabel + "}")
-
-            mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(colorbar.get_cmap())
-            if is_custom_cmap:
-                self.axis_options.append("colormap=" + mycolormap)
-            else:
-                self.axis_options.append("colormap/" + mycolormap)
-
-            self.axis_options.append("point meta min=%.15g" % limits[0])
-            self.axis_options.append("point meta max=%.15g" % limits[1])
-
-            if colorbar_styles:
-                self.axis_options.append(
-                    "colorbar style={%s}" % ",".join(colorbar_styles)
-                )
-
-        # actually print the thing
-        if self.is_subplot:
-            self.content.append("\\nextgroupplot")
-        else:
-            self.content.append("\\begin{axis}")
-
-        # # anchors
-        # if hasattr(obj, '_matplotlib2tikz_anchors'):
-        #     try:
-        #         for coord, anchor_name in obj._matplotlib2tikz_anchors:
-        #             self.content.append(
-        #                 '\\node (%s) at (axis cs:%e,%e) {};\n' %
-        #                 (anchor_name, coord[0], coord[1])
-        #                 )
-        #     except:
-        #         print('Axes attribute _matplotlib2tikz_anchors wrongly set:'
-        #               'Expected a list of ((x,y), anchor_name), got \'%s\''
-        #               % str(obj._matplotlib2tikz_anchors)
-        #               )
-
         return
 
-    def get_begin_code(self):
-        content = self.content
-        if self.axis_options:
-            content.append("[\n" + ",\n".join(self.axis_options) + "\n]\n")
-        return content
+    def _colorbar(self, colorbar, data):
+        colorbar_styles = []
 
-    def get_end_code(self, data):
-        if not self.is_subplot:
-            return "\\end{axis}\n\n"
-        elif self.is_subplot and self.nsubplots == self.subplot_index:
-            data["is_in_groupplot_env"] = False
-            return "\\end{groupplot}\n\n"
+        orientation = colorbar.orientation
+        limits = colorbar.get_clim()
+        if orientation == "horizontal":
+            self.axis_options.append("colorbar horizontal")
 
-        return ""
+            colorbar_ticks = colorbar.ax.get_xticks()
+            colorbar_ticks_minor = colorbar.ax.get_xticks("minor")
+            axis_limits = colorbar.ax.get_xlim()
+
+            # In matplotlib, the colorbar color limits are determined by
+            # get_clim(), and the tick positions are as usual with respect
+            # to {x,y}lim. In PGFPlots, however, they are mixed together.
+            # Hence, scale the tick positions just like {x,y}lim are scaled
+            # to clim.
+            colorbar_ticks = (colorbar_ticks - axis_limits[0]) / (
+                axis_limits[1] - axis_limits[0]
+            ) * (limits[1] - limits[0]) + limits[0]
+            colorbar_ticks_minor = (colorbar_ticks_minor - axis_limits[0]) / (
+                axis_limits[1] - axis_limits[0]
+            ) * (limits[1] - limits[0]) + limits[0]
+            # Getting the labels via get_* might not actually be suitable:
+            # they might not reflect the current state.
+            colorbar_ticklabels = colorbar.ax.get_xticklabels()
+            colorbar_ticklabels_minor = colorbar.ax.get_xticklabels("minor")
+
+            colorbar_styles.extend(
+                _get_ticks(data, "x", colorbar_ticks, colorbar_ticklabels)
+            )
+            colorbar_styles.extend(
+                _get_ticks(
+                    data, "minor x", colorbar_ticks_minor, colorbar_ticklabels_minor
+                )
+            )
+
+        else:
+            assert orientation == "vertical"
+
+            self.axis_options.append("colorbar")
+            colorbar_ticks = colorbar.ax.get_yticks()
+            colorbar_ticks_minor = colorbar.ax.get_yticks("minor")
+            axis_limits = colorbar.ax.get_ylim()
+
+            # In matplotlib, the colorbar color limits are determined by
+            # get_clim(), and the tick positions are as usual with respect
+            # to {x,y}lim. In PGFPlots, however, they are mixed together.
+            # Hence, scale the tick positions just like {x,y}lim are scaled
+            # to clim.
+            colorbar_ticks = (colorbar_ticks - axis_limits[0]) / (
+                axis_limits[1] - axis_limits[0]
+            ) * (limits[1] - limits[0]) + limits[0]
+            colorbar_ticks_minor = (colorbar_ticks_minor - axis_limits[0]) / (
+                axis_limits[1] - axis_limits[0]
+            ) * (limits[1] - limits[0]) + limits[0]
+
+            # Getting the labels via get_* might not actually be suitable:
+            # they might not reflect the current state.
+            colorbar_ticklabels = colorbar.ax.get_yticklabels()
+            colorbar_ylabel = colorbar.ax.get_ylabel()
+            colorbar_ticklabels_minor = colorbar.ax.get_yticklabels("minor")
+            colorbar_styles.extend(
+                _get_ticks(data, "y", colorbar_ticks, colorbar_ticklabels)
+            )
+            colorbar_styles.extend(
+                _get_ticks(
+                    data, "minor y", colorbar_ticks_minor, colorbar_ticklabels_minor
+                )
+            )
+            colorbar_styles.append("ylabel={" + colorbar_ylabel + "}")
+
+        mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(colorbar.get_cmap())
+        if is_custom_cmap:
+            self.axis_options.append("colormap=" + mycolormap)
+        else:
+            self.axis_options.append("colormap/" + mycolormap)
+
+        self.axis_options.append("point meta min=%.15g" % limits[0])
+        self.axis_options.append("point meta max=%.15g" % limits[1])
+
+        if colorbar_styles:
+            self.axis_options.append("colorbar style={%s}" % ",".join(colorbar_styles))
+
+        return
 
 
 def _get_label_rotation_and_horizontal_alignment(obj, data, axes_obj):
