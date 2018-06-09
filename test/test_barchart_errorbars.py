@@ -25,21 +25,15 @@ def plot():
     y3err = [0.1, 0.2, 0.1]
     w = 0.25
 
-    errBarStyle = dict(ecolor='black', lw=5, capsize=8, capthick=5)
+    errBarStyle = dict(ecolor="black", lw=5, capsize=8, capthick=5)
 
-    ax.bar(
-        x-w, y1, w, color='b', yerr=y1err, align='center', error_kw=errBarStyle
-        )
-    ax.bar(
-        x, y2, w, color='g', yerr=y2err, align='center', error_kw=errBarStyle
-        )
-    ax.bar(
-        x+w, y3, w, color='r', yerr=y3err, align='center', error_kw=errBarStyle
-        )
+    ax.bar(x - w, y1, w, color="b", yerr=y1err, align="center", error_kw=errBarStyle)
+    ax.bar(x, y2, w, color="g", yerr=y2err, align="center", error_kw=errBarStyle)
+    ax.bar(x + w, y3, w, color="r", yerr=y3err, align="center", error_kw=errBarStyle)
 
     return fig
 
 
 def test():
     phash = Phash(plot())
-    assert phash.phash == '5f09a9e6b1728746', phash.get_details()
+    assert phash.phash == "5f09a9e6b1728746", phash.get_details()

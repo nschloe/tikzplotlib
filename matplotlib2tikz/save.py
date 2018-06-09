@@ -4,6 +4,8 @@ from __future__ import print_function
 
 import codecs
 import os
+import warnings
+
 import matplotlib as mpl
 import six
 
@@ -20,23 +22,23 @@ from .__about__ import __version__
 
 
 def get_tikz_code(
-        filepath,
-        figure='gcf',
-        figurewidth=None,
-        figureheight=None,
-        textsize=10.0,
-        tex_relative_path_to_data=None,
-        externalize_tables=False,
-        override_externals=False,
-        strict=False,
-        wrap=True,
-        axis_environment=True,
-        extra_axis_parameters=None,
-        extra_tikzpicture_parameters=None,
-        dpi=None,
-        show_info=True
-        ):
-    '''Main function. Here, the recursion into the image starts and the
+    filepath,
+    figure="gcf",
+    figurewidth=None,
+    figureheight=None,
+    textsize=10.0,
+    tex_relative_path_to_data=None,
+    externalize_tables=False,
+    override_externals=False,
+    strict=False,
+    wrap=True,
+    axis_environment=True,
+    extra_axis_parameters=None,
+    extra_tikzpicture_parameters=None,
+    dpi=None,
+    show_info=True,
+):
+    """Main function. Here, the recursion into the image starts and the
     contents are picked up. The actual file gets written in this routine.
 
     :param figure: either a Figure object or 'gcf' (default).
@@ -128,43 +130,43 @@ def get_tikz_code(
        This attribute can be set to a list of ((x,y), anchor_name) tuples.
        Invisible nodes at the respective location will be created which  can be
        referenced from outside the axis environment.
-    '''
+    """
     # not as default value because gcf() would be evaluated at import time
-    if figure == 'gcf':
+    if figure == "gcf":
         figure = mpl.pyplot.gcf()
     data = {}
-    data['fwidth'] = figurewidth
-    data['fheight'] = figureheight
-    data['rel data path'] = tex_relative_path_to_data
-    data['externalize tables'] = externalize_tables
-    data['override externals'] = override_externals
-    data['output dir'] = os.path.dirname(filepath)
-    data['base name'] = os.path.splitext(os.path.basename(filepath))[0]
-    data['strict'] = strict
-    data['tikz libs'] = set()
-    data['pgfplots libs'] = set()
-    data['font size'] = textsize
-    data['custom colors'] = {}
-    data['legend colors'] = []
-    data['extra tikzpicture parameters'] = extra_tikzpicture_parameters
-    data['axis environment'] = axis_environment
-    data['show_info'] = show_info
+    data["fwidth"] = figurewidth
+    data["fheight"] = figureheight
+    data["rel data path"] = tex_relative_path_to_data
+    data["externalize tables"] = externalize_tables
+    data["override externals"] = override_externals
+    data["output dir"] = os.path.dirname(filepath)
+    data["base name"] = os.path.splitext(os.path.basename(filepath))[0]
+    data["strict"] = strict
+    data["tikz libs"] = set()
+    data["pgfplots libs"] = set()
+    data["font size"] = textsize
+    data["custom colors"] = {}
+    data["legend colors"] = []
+    data["extra tikzpicture parameters"] = extra_tikzpicture_parameters
+    data["axis environment"] = axis_environment
+    data["show_info"] = show_info
     # rectangle_legends is used to keep track of which rectangles have already
     # had \addlegendimage added. There should be only one \addlegenimage per
     # bar chart data series.
-    data['rectangle_legends'] = set()
+    data["rectangle_legends"] = set()
     if extra_axis_parameters:
-        data['extra axis options [base]'] = extra_axis_parameters.copy()
+        data["extra axis options [base]"] = extra_axis_parameters.copy()
     else:
-        data['extra axis options [base]'] = set()
+        data["extra axis options [base]"] = set()
 
     if dpi:
-        data['dpi'] = dpi
+        data["dpi"] = dpi
     else:
-        savefig_dpi = mpl.rcParams['savefig.dpi']
-        data['dpi'] = \
-            savefig_dpi if isinstance(savefig_dpi, int) \
-            else mpl.rcParams['figure.dpi']
+        savefig_dpi = mpl.rcParams["savefig.dpi"]
+        data["dpi"] = (
+            savefig_dpi if isinstance(savefig_dpi, int) else mpl.rcParams["figure.dpi"]
+        )
 
     # print message about necessary pgfplot libs to command line
     if show_info:
@@ -175,84 +177,83 @@ def get_tikz_code(
 
     # Check if there is still an open groupplot environment. This occurs if not
     # all of the group plot slots are used.
-    if 'is_in_groupplot_env' in data and data['is_in_groupplot_env']:
-        content.extend('\\end{groupplot}\n\n')
+    if "is_in_groupplot_env" in data and data["is_in_groupplot_env"]:
+        content.extend("\\end{groupplot}\n\n")
 
-    disclaimer = 'This file was created by matplotlib2tikz v%s.' % __version__
+    disclaimer = "This file was created by matplotlib2tikz v%s." % __version__
 
     # write disclaimer to the file header
-    code = ''''''
+    code = """"""
     code += _tex_comment(disclaimer)
 
     # write the contents
     if wrap and axis_environment:
-        code += '\\begin{tikzpicture}\n\n'
+        code += "\\begin{tikzpicture}\n\n"
         if extra_tikzpicture_parameters:
-            code += ',\n'.join(data['extra tikzpicture parameters'])
-            code += '\n'
+            code += ",\n".join(data["extra tikzpicture parameters"])
+            code += "\n"
 
     coldefs = _get_color_definitions(data)
     if coldefs:
-        code += '\n'.join(coldefs)
-        code += '\n\n'
+        code += "\n".join(coldefs)
+        code += "\n\n"
 
-    code += ''.join(content)
+    code += "".join(content)
 
     if wrap and axis_environment:
-        code += '\\end{tikzpicture}'
+        code += "\\end{tikzpicture}"
 
     return code
 
 
 def save(*args, **kwargs):
-    '''Same as `get_tikz_code()`, but actually saves the code to a file.
-    '''
-    encoding = kwargs.pop('encoding', None)
+    """Same as `get_tikz_code()`, but actually saves the code to a file.
+    """
+    encoding = kwargs.pop("encoding", None)
     code = get_tikz_code(*args, **kwargs)
-    file_handle = codecs.open(args[0], 'w', encoding)
+    file_handle = codecs.open(args[0], "w", encoding)
     try:
         file_handle.write(code)
     except UnicodeEncodeError:
         # We're probably using Python 2, so treat unicode explicitly
-        file_handle.write(six.text_type(code).encode('utf-8'))
+        file_handle.write(six.text_type(code).encode("utf-8"))
     file_handle.close()
     return
 
 
 def _tex_comment(comment):
-    '''Prepends each line in string with the LaTeX comment key, '%'.
-    '''
-    return '% ' + str.replace(comment, '\n', '\n% ') + '\n'
+    """Prepends each line in string with the LaTeX comment key, '%'.
+    """
+    return "% " + str.replace(comment, "\n", "\n% ") + "\n"
 
 
 def _get_color_definitions(data):
-    '''Returns the list of custom color definitions for the TikZ file.
-    '''
+    """Returns the list of custom color definitions for the TikZ file.
+    """
     definitions = []
-    for name, rgb in data['custom colors'].items():
-        definitions.append('\\definecolor{%s}{rgb}{%.15g,%.15g,%.15g}'
-                           % (name, rgb[0], rgb[1], rgb[2])
-                           )
+    for name, rgb in data["custom colors"].items():
+        definitions.append(
+            "\\definecolor{%s}{rgb}{%.15g,%.15g,%.15g}" % (name, rgb[0], rgb[1], rgb[2])
+        )
     return definitions
 
 
 def _print_pgfplot_libs_message(data):
-    '''Prints message to screen indicating the use of PGFPlots and its
-    libraries.'''
-    pgfplotslibs = ','.join(list(data['pgfplots libs']))
-    tikzlibs = ','.join(list(data['tikz libs']))
+    """Prints message to screen indicating the use of PGFPlots and its
+    libraries."""
+    pgfplotslibs = ",".join(list(data["pgfplots libs"]))
+    tikzlibs = ",".join(list(data["tikz libs"]))
 
-    print('=========================================================')
-    print('Please add the following lines to your LaTeX preamble:\n')
-    print('\\usepackage[utf8]{inputenc}')
-    print('\\usepackage{fontspec}'
-          ' % This line only for XeLaTeX and LuaLaTeX')
-    print('\\usepackage{pgfplots}')
+    print("=========================================================")
+    print("Please add the following lines to your LaTeX preamble:\n")
+    print("\\usepackage[utf8]{inputenc}")
+    print("\\usepackage{fontspec}" " % This line only for XeLaTeX and LuaLaTeX")
+    print("\\usepackage{pgfplots}")
     if tikzlibs:
-        print('\\usetikzlibrary{' + tikzlibs + '}')
+        print("\\usetikzlibrary{" + tikzlibs + "}")
     if pgfplotslibs:
-        print('\\usepgfplotslibrary{' + pgfplotslibs + '}')
-    print('=========================================================')
+        print("\\usepgfplotslibrary{" + pgfplotslibs + "}")
+    print("=========================================================")
     return
 
 
@@ -262,6 +263,7 @@ class _ContentManager(object):
     This manager uses a dictionary to map z-order to an array of content
     to be drawn at the z-order.
     """
+
     def __init__(self):
         self._content = dict()
 
@@ -281,37 +283,44 @@ class _ContentManager(object):
 
 
 def _recurse(data, obj):
-    '''Iterates over all children of the current object, gathers the contents
+    """Iterates over all children of the current object, gathers the contents
     contributing to the resulting PGFPlots file, and returns those.
-    '''
+    """
     content = _ContentManager()
     for child in obj.get_children():
         if isinstance(child, mpl.axes.Axes):
             # Reset 'extra axis parameters' for every new Axes environment.
-            data['extra axis options'] = \
-                data['extra axis options [base]'].copy()
+            data["extra axis options"] = data["extra axis options [base]"].copy()
 
             ax = axes.Axes(data, child)
             if not ax.is_colorbar:
                 # Run through the child objects, gather the content.
                 data, children_content = _recurse(data, child)
                 # add extra axis options from children
-                if data['extra axis options']:
-                    ax.axis_options.extend(data['extra axis options'])
+                if data["extra axis options"]:
+                    ax.axis_options.extend(data["extra axis options"])
                 # populate content and add axis environment if wished
-                if data['axis environment']:
+                if data["axis environment"]:
                     content.extend(
-                            ax.get_begin_code() +
-                            children_content +
-                            [ax.get_end_code(data)], 0)
+                        ax.get_begin_code()
+                        + children_content
+                        + [ax.get_end_code(data)],
+                        0,
+                    )
                 else:
                     content.extend(children_content, 0)
                     # print axis environment options, if told to show infos
-                    if data['show_info']:
-                        print("=========================================================")
-                        print("These would have been the properties of the environment:")
-                        print(''.join(ax.get_begin_code()[1:]))
-                        print("=========================================================")
+                    if data["show_info"]:
+                        print(
+                            "========================================================="
+                        )
+                        print(
+                            "These would have been the properties of the environment:"
+                        )
+                        print("".join(ax.get_begin_code()[1:]))
+                        print(
+                            "========================================================="
+                        )
         elif isinstance(child, mpl.lines.Line2D):
             data, cont = line2d.draw_line2d(data, child)
             content.extend(cont, child.get_zorder())
@@ -325,12 +334,8 @@ def _recurse(data, obj):
             data, cont = patch.draw_patch(data, child)
             content.extend(cont, child.get_zorder())
         elif isinstance(
-                child,
-                (
-                    mpl.collections.PatchCollection,
-                    mpl.collections.PolyCollection
-                )
-                ):
+            child, (mpl.collections.PatchCollection, mpl.collections.PolyCollection)
+        ):
             data, cont = patch.draw_patchcollection(data, child)
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.collections.PathCollection):
@@ -344,18 +349,19 @@ def _recurse(data, obj):
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.legend.Legend):
             data = legend.draw_legend(data, child)
-            if data['legend colors']:
-                content.extend(data['legend colors'], 0)
+            if data["legend colors"]:
+                content.extend(data["legend colors"], 0)
         elif isinstance(
-                child,
-                (
-                    mpl.axis.XAxis, mpl.axis.YAxis,
-                    mpl.spines.Spine, mpl.text.Text
-                )):
+            child, (mpl.axis.XAxis, mpl.axis.YAxis, mpl.spines.Spine, mpl.text.Text)
+        ):
             pass
         else:
-            print('matplotlib2tikz: Don''t know how to handle object ''%s''.' %
-                  type(child))
+            warnings.warn(
+                "matplotlib2tikz: Don"
+                "t know how to handle object "
+                "%s"
+                "." % type(child)
+            )
     # XXX: This is ugly
     if isinstance(obj, (mpl.axes.Subplot, mpl.figure.Figure)):
         for text in obj.texts:

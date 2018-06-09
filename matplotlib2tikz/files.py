@@ -2,12 +2,14 @@
 #
 import os
 
+
 def _gen_filename(data, nb_key, ext):
-    name = data['base name'] + '-%03d%s' % (data[nb_key], ext)
-    return os.path.join(data['output dir'], name), name
+    name = data["base name"] + "-%03d%s" % (data[nb_key], ext)
+    return os.path.join(data["output dir"], name), name
+
 
 def new_filename(data, file_kind, ext):
-    '''Returns an available filename.
+    """Returns an available filename.
 
     :param file_kind: Name under which numbering is recorded, such as 'img' or
                       'table'.
@@ -19,9 +21,9 @@ def new_filename(data, file_kind, ext):
     :returns: (filename, rel_filepath) where filename is a path in the
               filesystem and rel_filepath is the path to be used in the tex
               code.
-    '''
+    """
 
-    nb_key = file_kind + 'number'
+    nb_key = file_kind + "number"
     if nb_key not in data.keys():
         data[nb_key] = -1
 
@@ -36,8 +38,8 @@ def new_filename(data, file_kind, ext):
         data[nb_key] = data[nb_key] + 1
         filename, name = _gen_filename(data, nb_key, ext)
 
-    if data['rel data path']:
-        rel_filepath = os.path.join(data['rel data path'], name)
+    if data["rel data path"]:
+        rel_filepath = os.path.join(data["rel data path"], name)
     else:
         rel_filepath = name
 

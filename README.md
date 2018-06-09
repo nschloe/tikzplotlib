@@ -3,6 +3,7 @@
 [![CircleCI](https://img.shields.io/circleci/project/github/nschloe/matplotlib2tikz/master.svg)](https://circleci.com/gh/nschloe/matplotlib2tikz/tree/master)
 [![codecov](https://img.shields.io/codecov/c/github/nschloe/matplotlib2tikz.svg)](https://codecov.io/gh/nschloe/matplotlib2tikz)
 [![Codacy grade](https://img.shields.io/codacy/grade/fbb81be6728d4513b2e031eaec7427aa.svg)](https://app.codacy.com/app/nschloe/matplotlib2tikz/dashboard)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 [![Documentation Status](https://readthedocs.org/projects/matplotlib2tikz/badge/?version=latest)](https://readthedocs.org/projects/matplotlib2tikz/?badge=latest)
 [![awesome](https://img.shields.io/badge/awesome-yes-brightgreen.svg)](https://github.com/nschloe/matplotlib2tikz)
 [![PyPi Version](https://img.shields.io/pypi/v/matplotlib2tikz.svg)](https://pypi.org/project/matplotlib2tikz)
@@ -29,20 +30,21 @@ For example, the matplotlib figure
 import matplotlib.pyplot as plt
 import numpy as np
 
-plt.style.use('ggplot')
+plt.style.use("ggplot")
 
 t = np.arange(0.0, 2.0, 0.1)
-s = np.sin(2*np.pi*t)
-s2 = np.cos(2*np.pi*t)
-plt.plot(t, s, 'o-', lw=4.1)
-plt.plot(t, s2, 'o-', lw=4.1)
-plt.xlabel('time (s)')
-plt.ylabel('Voltage (mV)')
-plt.title('Simple plot $\\frac{\\alpha}{2}$')
+s = np.sin(2 * np.pi * t)
+s2 = np.cos(2 * np.pi * t)
+plt.plot(t, s, "o-", lw=4.1)
+plt.plot(t, s2, "o-", lw=4.1)
+plt.xlabel("time (s)")
+plt.ylabel("Voltage (mV)")
+plt.title("Simple plot $\\frac{\\alpha}{2}$")
 plt.grid(True)
 
 from matplotlib2tikz import save as tikz_save
-tikz_save('test.tex')
+
+tikz_save("test.tex")
 ```
 (see above) gives
 ```latex
@@ -85,6 +87,8 @@ table {%
 
 \end{tikzpicture}
 ```
+(Use `get_tikz_code()` instead of `save()` if you want the code as a string.)
+
 Tweaking the plot is straightforward and can be done as part of your LaTeX
 work flow.
 [The fantastic PGFPlots manual](http://pgfplots.sourceforge.net/pgfplots.pdf)

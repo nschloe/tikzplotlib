@@ -13,7 +13,7 @@ def plot():
     fig = plt.figure()
     ax = plt.gca()
 
-    im = ax.imshow(da, cmap='viridis')
+    im = ax.imshow(da, cmap="viridis")
     plt.colorbar(im, aspect=5, shrink=0.5)
 
     return fig
@@ -21,4 +21,4 @@ def plot():
 
 def test():
     phash = helpers.Phash(plot())
-    assert phash.phash == 'b733c9fc03dc4942', phash.get_details()
+    assert phash.phash == "b733c9fc03dc4942", phash.get_details()
