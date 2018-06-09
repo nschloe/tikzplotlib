@@ -12,10 +12,10 @@ jobs:
       # <https://stackoverflow.com/a/44333806/353337>
       - run: DEBIAN_FRONTEND=noninteractive apt install tzdata
       - run: apt install -y texlive-latex-base texlive-latex-extra python3-pip python3-tk wget poppler-utils
-      - run: pip3 install -U pytest pytest-cov code_extract black flake8
+      - run: pip3 install -U pytest pytest-cov excode black flake8
       - checkout
       - run: cd ~/work
-      - run: code-extract README.md test/zzz_readme_test.py --filter python,test
+      - run: excode README.md test/zzz_readme_test.py --filter python,test
       # install latest pgfplots
       - run: mkdir -p $TEXMFLOCAL
       - run: wget http://mirrors.ctan.org/install/graphics/pgf/contrib/pgfplots.tds.zip -O /tmp/pgfplots.zip
