@@ -27,6 +27,7 @@ jobs:
       # fragile otherwise.
       - run: pip3 install matplotlib==2.1.0
       - run: pip3 install .[all]
+      - run: pip3 check
       # format and lint
       - run: black --check setup.py matplotlib2tikz/ test/*.py
       - run: flake8 setup.py matplotlib2tikz/ test/*.py
