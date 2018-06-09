@@ -4,8 +4,8 @@
 *.pdf
 doc/_build/
 MANIFEST
-README.rst
 dist/
 build/
 .cache/
 *.egg-info/
+.pytest_cache/
