@@ -12,36 +12,7 @@ def draw_text(data, obj):
     properties = []
     style = []
     if isinstance(obj, mpl.text.Annotation):
-        ann_xy = obj.xy
-        ann_xycoords = obj.xycoords
-        ann_xytext = obj.xyann
-        ann_textcoords = obj.anncoords
-        if ann_xycoords != "data" or ann_textcoords != "data":
-            print(
-                "Warning: Anything else except for explicit positioning "
-                "is not supported for annotations yet :("
-            )
-            return data, content
-        else:  # Create a basic tikz arrow
-            arrow_style = []
-            if obj.arrowprops is not None:
-                if obj.arrowprops["arrowstyle"] is not None:
-                    if obj.arrowprops["arrowstyle"] in ["-", "->", "<-", "<->"]:
-                        arrow_style.append(obj.arrowprops["arrowstyle"])
-                        data, col, _ = color.mpl_color2xcolor(
-                            data, obj.arrow_patch.get_ec()
-                        )
-                        arrow_style.append(col)
-
-            arrow_proto = "\\draw[%s] (axis cs:%.15g,%.15g) " "-- (axis cs:%.15g,%.15g);\n"
-            the_arrow = arrow_proto % (
-                ",".join(arrow_style),
-                ann_xytext[0],
-                ann_xytext[1],
-                ann_xy[0],
-                ann_xy[1],
-            )
-            content.append(the_arrow)
+        _annotation(obj, data, content)
 
     # 1: coordinates
     # 2: properties (shapes, rotation, etc)
@@ -57,60 +28,10 @@ def draw_text(data, obj):
     # TODO fix this
     scaling = 0.5 * size / data["font size"]
     if scaling != 1.0:
-        properties.append("scale=%.15g" % scaling)
+        properties.append("scale={:.15g}".format(scaling))
 
     if bbox is not None:
-        bbox_style = bbox.get_boxstyle()
-        if bbox.get_fill():
-            data, fc, _ = color.mpl_color2xcolor(data, bbox.get_facecolor())
-            if fc:
-                properties.append("fill=%s" % fc)
-        data, ec, _ = color.mpl_color2xcolor(data, bbox.get_edgecolor())
-        if ec:
-            properties.append("draw=%s" % ec)
-        # XXX: This is ugly, too
-        properties.append("line width=%.15gpt" % (bbox.get_lw() * 0.4))
-        properties.append("inner sep=%.15gpt" % (bbox_style.pad * data["font size"]))
-        # Rounded boxes
-        if isinstance(bbox_style, mpl.patches.BoxStyle.Round):
-            properties.append("rounded corners")
-        elif isinstance(bbox_style, mpl.patches.BoxStyle.RArrow):
-            data["tikz libs"].add("shapes.arrows")
-            properties.append("single arrow")
-        elif isinstance(bbox_style, mpl.patches.BoxStyle.LArrow):
-            data["tikz libs"].add("shapes.arrows")
-            properties.append("single arrow")
-            properties.append("shape border rotate=180")
-        elif isinstance(bbox_style, mpl.patches.BoxStyle.DArrow):
-            data["tikz libs"].add("shapes.arrows")
-            properties.append("double arrow")
-        elif isinstance(bbox_style, mpl.patches.BoxStyle.Circle):
-            properties.append("circle")
-        elif isinstance(bbox_style, mpl.patches.BoxStyle.Roundtooth):
-            properties.append("decorate")
-            properties.append("decoration={snake,amplitude=0.5,segment length=3}")
-        elif isinstance(bbox_style, mpl.patches.BoxStyle.Sawtooth):
-            properties.append("decorate")
-            properties.append("decoration={zigzag,amplitude=0.5,segment length=3}")
-        else:
-            # TODO Round4
-            assert isinstance(bbox_style, mpl.patches.BoxStyle.Square)
-
-        # Line style
-        if bbox.get_ls() == "dotted":
-            properties.append("dotted")
-        elif bbox.get_ls() == "dashed":
-            properties.append("dashed")
-        # TODO Check if there is there any way to extract the dashdot
-        # pattern from matplotlib instead of hardcoding
-        # an approximation?
-        elif bbox.get_ls() == "dashdot":
-            properties.append(
-                ("dash pattern=on %.3gpt off %.3gpt on " "%.3gpt off %.3gpt")
-                % (1.0 / scaling, 3.0 / scaling, 6.0 / scaling, 3.0 / scaling)
-            )
-        else:
-            assert bbox.get_ls() == "solid"
+        _bbox(bbox, data, properties, scaling)
 
     ha = obj.get_ha()
     va = obj.get_va()
@@ -207,3 +128,93 @@ def _transform_positioning(ha, va):
         "baseline": "base",
     }
     return ("anchor=%s %s" % (va_mpl_to_tikz[va], ha_mpl_to_tikz[ha])).strip()
+
+
+def _annotation(obj, data, content):
+    ann_xy = obj.xy
+    ann_xycoords = obj.xycoords
+    ann_xytext = obj.xyann
+    ann_textcoords = obj.anncoords
+    if ann_xycoords != "data" or ann_textcoords != "data":
+        print(
+            "Warning: Anything else except for explicit positioning "
+            "is not supported for annotations yet :("
+        )
+        return data, content
+    else:  # Create a basic tikz arrow
+        arrow_style = []
+        if obj.arrowprops is not None:
+            if obj.arrowprops["arrowstyle"] is not None:
+                if obj.arrowprops["arrowstyle"] in ["-", "->", "<-", "<->"]:
+                    arrow_style.append(obj.arrowprops["arrowstyle"])
+                    data, col, _ = color.mpl_color2xcolor(
+                        data, obj.arrow_patch.get_ec()
+                    )
+                    arrow_style.append(col)
+
+        arrow_proto = "\\draw[%s] (axis cs:%.15g,%.15g) " "-- (axis cs:%.15g,%.15g);\n"
+        the_arrow = arrow_proto % (
+            ",".join(arrow_style),
+            ann_xytext[0],
+            ann_xytext[1],
+            ann_xy[0],
+            ann_xy[1],
+        )
+        content.append(the_arrow)
+    return
+
+
+def _bbox(bbox, data, properties, scaling):
+    bbox_style = bbox.get_boxstyle()
+    if bbox.get_fill():
+        data, fc, _ = color.mpl_color2xcolor(data, bbox.get_facecolor())
+        if fc:
+            properties.append("fill=%s" % fc)
+    data, ec, _ = color.mpl_color2xcolor(data, bbox.get_edgecolor())
+    if ec:
+        properties.append("draw=%s" % ec)
+    # XXX: This is ugly, too
+    properties.append("line width={:.15g}pt".format(bbox.get_lw() * 0.4))
+    properties.append("inner sep={:.15g}pt".format(bbox_style.pad * data["font size"]))
+    # Rounded boxes
+    if isinstance(bbox_style, mpl.patches.BoxStyle.Round):
+        properties.append("rounded corners")
+    elif isinstance(bbox_style, mpl.patches.BoxStyle.RArrow):
+        data["tikz libs"].add("shapes.arrows")
+        properties.append("single arrow")
+    elif isinstance(bbox_style, mpl.patches.BoxStyle.LArrow):
+        data["tikz libs"].add("shapes.arrows")
+        properties.append("single arrow")
+        properties.append("shape border rotate=180")
+    elif isinstance(bbox_style, mpl.patches.BoxStyle.DArrow):
+        data["tikz libs"].add("shapes.arrows")
+        properties.append("double arrow")
+    elif isinstance(bbox_style, mpl.patches.BoxStyle.Circle):
+        properties.append("circle")
+    elif isinstance(bbox_style, mpl.patches.BoxStyle.Roundtooth):
+        properties.append("decorate")
+        properties.append("decoration={snake,amplitude=0.5,segment length=3}")
+    elif isinstance(bbox_style, mpl.patches.BoxStyle.Sawtooth):
+        properties.append("decorate")
+        properties.append("decoration={zigzag,amplitude=0.5,segment length=3}")
+    else:
+        # TODO Round4
+        assert isinstance(bbox_style, mpl.patches.BoxStyle.Square)
+
+    # Line style
+    if bbox.get_ls() == "dotted":
+        properties.append("dotted")
+    elif bbox.get_ls() == "dashed":
+        properties.append("dashed")
+    # TODO Check if there is there any way to extract the dashdot
+    # pattern from matplotlib instead of hardcoding
+    # an approximation?
+    elif bbox.get_ls() == "dashdot":
+        properties.append(
+            ("dash pattern=on %.3gpt off %.3gpt on " "%.3gpt off %.3gpt")
+            % (1.0 / scaling, 3.0 / scaling, 6.0 / scaling, 3.0 / scaling)
+        )
+    else:
+        assert bbox.get_ls() == "solid"
+
+    return
