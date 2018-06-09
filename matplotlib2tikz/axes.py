@@ -24,28 +24,7 @@ class Axes(object):
         self.is_subplot = False
 
         if isinstance(obj, mpl.axes.Subplot):
-            # https://github.com/matplotlib/matplotlib/issues/7225#issuecomment-252173667
-            geom = obj.get_subplotspec().get_topmost_subplotspec().get_geometry()
-
-            self.nsubplots = geom[0] * geom[1]
-            if self.nsubplots > 1:
-                # Is this an axis-colorbar pair? No need for groupplot then.
-                is_groupplot = self.nsubplots != 2 or not _find_associated_colorbar(obj)
-
-                if is_groupplot:
-                    self.is_subplot = True
-                    # subplotspec geometry positioning is 0-based
-                    self.subplot_index = geom[2] + 1
-                    if (
-                        "is_in_groupplot_env" not in data
-                        or not data["is_in_groupplot_env"]
-                    ):
-                        self.content.append(
-                            "\\begin{groupplot}[group style="
-                            "{group size=%.d by %.d}]\n" % (geom[1], geom[0])
-                        )
-                        data["is_in_groupplot_env"] = True
-                        data["pgfplots libs"].add("groupplots")
+            self._subplot(obj, data)
 
         self.axis_options = []
 
@@ -57,15 +36,15 @@ class Axes(object):
         # get plot title
         title = obj.get_title()
         if title:
-            self.axis_options.append("title={" + title + "}")
+            self.axis_options.append("title={{{}}}".format(title))
 
         # get axes titles
         xlabel = obj.get_xlabel()
         if xlabel:
-            self.axis_options.append("xlabel={" + xlabel + "}")
+            self.axis_options.append("xlabel={{{}}}".format(xlabel))
         ylabel = obj.get_ylabel()
         if ylabel:
-            self.axis_options.append("ylabel={" + ylabel + "}")
+            self.axis_options.append("ylabel={{{}}}".format(ylabel))
 
         # Axes limits.
         # Sort the limits so make sure that the smaller of the two is actually
@@ -97,19 +76,13 @@ class Axes(object):
 
         # axis positions
         xaxis_pos = obj.get_xaxis().label_position
-        if xaxis_pos == "bottom":
-            # this is the default
-            pass
-        else:
-            assert xaxis_pos == "top"
+        if xaxis_pos == "top":
+            # default: "bottom"
             self.axis_options.append("axis x line=top")
 
         yaxis_pos = obj.get_yaxis().label_position
-        if yaxis_pos == "left":
-            # this is the default
-            pass
-        else:
-            assert yaxis_pos == "right"
+        if yaxis_pos == "right":
+            # default: "left"
             self.axis_options.append("axis y line=right")
 
         self._ticks(data, obj)
@@ -121,7 +94,7 @@ class Axes(object):
         axcol = obj.spines["bottom"].get_edgecolor()
         data, col, _ = color.mpl_color2xcolor(data, axcol)
         if col != "black":
-            self.axis_options.append("axis line style={%s}" % col)
+            self.axis_options.append("axis line style={{{}}}".format(col))
 
         # background color
         try:
@@ -133,7 +106,7 @@ class Axes(object):
 
         data, col, _ = color.mpl_color2xcolor(data, bgcolor)
         if col != "white":
-            self.axis_options.append("axis background/.style={fill=%s}" % col)
+            self.axis_options.append("axis background/.style={{fill={}}}".format(col))
 
         # find color bar
         colorbar = _find_associated_colorbar(obj)
@@ -401,6 +374,29 @@ class Axes(object):
 
         if colorbar_styles:
             self.axis_options.append("colorbar style={%s}" % ",".join(colorbar_styles))
+
+        return
+
+    def _subplot(self, obj, data):
+        # https://github.com/matplotlib/matplotlib/issues/7225#issuecomment-252173667
+        geom = obj.get_subplotspec().get_topmost_subplotspec().get_geometry()
+
+        self.nsubplots = geom[0] * geom[1]
+        if self.nsubplots > 1:
+            # Is this an axis-colorbar pair? No need for groupplot then.
+            is_groupplot = self.nsubplots != 2 or not _find_associated_colorbar(obj)
+
+            if is_groupplot:
+                self.is_subplot = True
+                # subplotspec geometry positioning is 0-based
+                self.subplot_index = geom[2] + 1
+                if "is_in_groupplot_env" not in data or not data["is_in_groupplot_env"]:
+                    self.content.append(
+                        "\\begin{groupplot}[group style="
+                        "{group size=%.d by %.d}]\n" % (geom[1], geom[0])
+                    )
+                    data["is_in_groupplot_env"] = True
+                    data["pgfplots libs"].add("groupplots")
 
         return
 
