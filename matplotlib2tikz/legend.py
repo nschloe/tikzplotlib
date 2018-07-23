@@ -3,6 +3,7 @@
 import warnings
 
 import numpy
+import matplotlib as mpl
 
 from . import color as mycol
 
@@ -81,24 +82,33 @@ def draw_legend(data, obj):
     if obj._ncol != 1:
         data["extra axis options"].add("legend columns={}".format(obj._ncol))
 
-    # Set color of lines in legend
+    # Set color of lines and rectangles in legend
     for handle in obj.legendHandles:
+        if isinstance(handle, mpl.lines.Line2D):
+            handle_color = handle.get_color()
+        elif isinstance(handle, mpl.patches.Rectangle):
+            # mpl uses a rectangle as symbol for artists (circles, rectangles,
+            # etc.) in the plot
+            handle_color = handle.get_edgecolor()
+        else:
+            # user might have customized plot legend to an extent that is not
+            # supported; ignore this
+            continue
+
         try:
             # when using matplotlib colours like "darkred" or "darkorange",
-            # `handle.get_color` will create nested RGBA codes
-            # e.g. `[[ 0.54509804, 0., 0., 1.]]` which casuse mpl to throw an error.
+            # `handle.get_color/get_edgecolor` will create nested RGBA codes
+            # e.g. `[[ 0.54509804, 0., 0., 1.]]` which causes mpl to throw an error.
             # catch this error, `numpy.squeeze` the colour code and try again
-            try:
-                data, legend_color, _ = mycol.mpl_color2xcolor(data, handle.get_color())
-            except ValueError:
-                data, legend_color, _ = mycol.mpl_color2xcolor(
-                    data, numpy.squeeze(handle.get_color())
-                )
-            data["legend colors"].append(
-                "\\addlegendimage{no markers, %s}\n" % legend_color
+            data, legend_color, _ = mycol.mpl_color2xcolor(data, handle_color)
+        except ValueError:
+            data, legend_color, _ = mycol.mpl_color2xcolor(
+                data, numpy.squeeze(handle_color)
             )
-        except AttributeError:
-            pass
+
+        data["legend colors"].append(
+            "\\addlegendimage{no markers, %s}\n" % legend_color
+        )
 
     # Write styles to data
     if legend_style:
