@@ -7,6 +7,7 @@ import os
 import warnings
 
 import matplotlib as mpl
+import matplotlib.pyplot as plt
 import six
 
 from . import axes
@@ -133,7 +134,7 @@ def get_tikz_code(
     """
     # not as default value because gcf() would be evaluated at import time
     if figure == "gcf":
-        figure = mpl.pyplot.gcf()
+        figure = plt.gcf()
     data = {}
     data["fwidth"] = figurewidth
     data["fheight"] = figureheight
