@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 import os
+import posixpath
 
 
 def _gen_filename(data, nb_key, ext):
@@ -39,7 +40,7 @@ def new_filename(data, file_kind, ext):
         filename, name = _gen_filename(data, nb_key, ext)
 
     if data["rel data path"]:
-        rel_filepath = os.path.join(data["rel data path"], name)
+        rel_filepath = posixpath.join(data["rel data path"], name)
     else:
         rel_filepath = name
 
