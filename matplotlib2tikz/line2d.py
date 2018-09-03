@@ -378,10 +378,10 @@ def _marker(
 def _table(obj, content, data):
     if data["externalize tables"]:
         content.append("table {%\n")
-        row_sep = ''
+        row_sep = ""
     else:
         content.append("table [row sep=\\\\]{%\n")
-        row_sep = '\\\\'
+        row_sep = "\\\\"
 
     # nschloe, Oct 2, 2015:
     #   The transform call yields warnings and it is unclear why. Perhaps
