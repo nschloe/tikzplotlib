@@ -100,7 +100,7 @@ def draw_pathcollection(data, obj):
     dd = obj.get_offsets()
 
     draw_options = ["only marks"]
-    table_options = []
+    table_options = ["row sep=\\\\"]
 
     if obj.get_array() is not None:
         draw_options.append("scatter")
@@ -164,8 +164,8 @@ def draw_pathcollection(data, obj):
         to = " [{}]".format(", ".join(table_options)) if table_options else ""
         content.append("table{}{{%\n".format(to))
 
-        content.append((" ".join(labels)).strip() + "\n")
-        fmt = (" ".join(dd.shape[1] * ["%+.15e"])) + "\n"
+        content.append((" ".join(labels)).strip() + "\\\\ \n")
+        fmt = (" ".join(dd.shape[1] * ["%+.15e"])) + "\\\\ \n"
         for d in dd:
             content.append(fmt % tuple(d))
         content.append("};\n")

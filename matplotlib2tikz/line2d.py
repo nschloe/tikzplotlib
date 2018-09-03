@@ -376,7 +376,12 @@ def _marker(
 
 
 def _table(obj, content, data):
-    content.append("table {%\n")
+    if data["externalize tables"]:
+        content.append("table {%\n")
+        row_sep = ""
+    else:
+        content.append("table [row sep=\\\\]{%\n")
+        row_sep = "\\\\"
 
     # nschloe, Oct 2, 2015:
     #   The transform call yields warnings and it is unclear why. Perhaps
@@ -409,12 +414,12 @@ def _table(obj, content, data):
         data["extra axis options"].add("unbounded coords=jump")
         for (x, y, is_masked) in zip(xdata, ydata, ydata.mask):
             if is_masked:
-                plot_table.append("%.15g\tnan\n" % x)
+                plot_table.append("%.15g\tnan %s\n" % (x, row_sep))
             else:
-                plot_table.append("%.15g\t%.15g\n" % (x, y))
+                plot_table.append("%.15g\t%.15g %s\n" % (x, y, row_sep))
     else:
         for (x, y) in zip(xdata, ydata):
-            plot_table.append("%.15g\t%.15g\n" % (x, y))
+            plot_table.append("%.15g\t%.15g %s\n" % (x, y, row_sep))
 
     if data["externalize tables"]:
         filename, rel_filepath = files.new_filename(data, "table", ".tsv")
