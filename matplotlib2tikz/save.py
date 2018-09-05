@@ -32,10 +32,13 @@ def get_tikz_code(
     externalize_tables=False,
     override_externals=False,
     strict=False,
+    standalone_environment=False,
+    tex_compiler=None,
     wrap=True,
     axis_environment=True,
     extra_axis_parameters=None,
     extra_tikzpicture_parameters=None,
+    extra_standalone_preamble=None,
     dpi=None,
     show_info=True,
 ):
@@ -94,6 +97,18 @@ def get_tikz_code(
                    can decide where to put the ticks.
     :type strict: bool
 
+    :param standalone_environment: Whether to generate a standalone tex file
+                                   that can be compiled as it was generated.
+                                   In this case ``'\\documentclass{standalone}'``,
+                                   ``'\\begin{document}'`` and ``'\\end{document}'``
+                                   will be written, as well as the require packages.
+                                   Default is ``False``.
+    :type standalone_environment: bool
+
+    :param tex_compiler: Compiler that is considered when generating
+                         the standalone file.
+    :type tex_compiler: {None, XeLaTeX, LuaLaTeX, pdfLaTeX}
+
     :param wrap: Whether ``'\\begin{tikzpicture}'`` and
                  ``'\\end{tikzpicture}'`` will be written. One might need to
                  provide custom arguments to the environment (eg. scale= etc.).
@@ -103,7 +118,8 @@ def get_tikz_code(
     :param axis_environment: Whether ``'\\begin{axis}[...]'`` and
                              ``'\\end{axis}'`` will be written. One needs to
                              set the environment in the document. If ``False``
-                             additionally sets ``wrap=False``.
+                             additionally sets ``wrap=False`` and
+                             ``standalone_environment=False``.
     :type axis_environment: bool
 
     :param extra_axis_parameters: Extra axis options to be passed (as a set)
@@ -115,6 +131,10 @@ def get_tikz_code(
 
     :type extra_tikzpicture_parameters: a set of strings for the pfgplots
                                         tikzpicture.
+
+    :param extra_standalone_preamble: Extra commands to be included in the preamble.
+
+    :type extra_standalone_preamble: a set of strings to be included in the preamble.
 
     :param dpi: The resolution in dots per inch of the rendered image in case
                 of QuadMesh plots. If ``None`` it will default to the value
@@ -151,6 +171,9 @@ def get_tikz_code(
     data["legend colors"] = []
     data["extra tikzpicture parameters"] = extra_tikzpicture_parameters
     data["axis environment"] = axis_environment
+    data["standalone environment"] = standalone_environment
+    data["tex compiler"] = tex_compiler
+    data["extra standalone preamble"] = extra_standalone_preamble
     data["show_info"] = show_info
     # rectangle_legends is used to keep track of which rectangles have already
     # had \addlegendimage added. There should be only one \addlegenimage per
@@ -188,6 +211,14 @@ def get_tikz_code(
     code += _tex_comment(disclaimer)
 
     # write the contents
+    if standalone_environment and wrap and axis_environment:
+        code += "\\documentclass{standalone}\n\n"
+        if extra_standalone_preamble:
+            code += "\n".join(data["extra standalone preamble"])
+            code += "\n"
+        code += _latex_preamble(data)
+        code += "\n\\begin{document}\n\n"
+
     if wrap and axis_environment:
         code += "\\begin{tikzpicture}\n\n"
         if extra_tikzpicture_parameters:
@@ -203,6 +234,10 @@ def get_tikz_code(
 
     if wrap and axis_environment:
         code += "\\end{tikzpicture}"
+
+    if standalone_environment and wrap and axis_environment:
+        code += "\n"
+        code += "\\end{document}"
 
     return code
 
@@ -239,21 +274,31 @@ def _get_color_definitions(data):
     return definitions
 
 
-def _print_pgfplot_libs_message(data):
-    """Prints message to screen indicating the use of PGFPlots and its
-    libraries."""
+def _latex_preamble(data):
     pgfplotslibs = ",".join(list(data["pgfplots libs"]))
     tikzlibs = ",".join(list(data["tikz libs"]))
 
+    preamble = """"""
+    preamble += "\\usepackage[utf8]{inputenc}\n"
+    if data["tex compiler"] in ("XeLaTeX", "LuaLaTeX"):
+        preamble += "\\usepackage{fontspec}" " % This line only for XeLaTeX and LuaLaTeX\n"
+    elif data["tex compiler"] is None:
+        preamble += _tex_comment("\\usepackage{fontspec}" " % This line only for XeLaTeX and LuaLaTeX")
+    preamble += "\\usepackage{pgfplots}\n"
+    if tikzlibs:
+        preamble += "\\usetikzlibrary{" + tikzlibs + "}\n"
+    if pgfplotslibs:
+        preamble += "\\usepgfplotslibrary{" + pgfplotslibs + "}\n"
+    return preamble
+
+
+def _print_pgfplot_libs_message(data):
+    """Prints message to screen indicating the use of PGFPlots and its
+    libraries."""
+
     print("=========================================================")
     print("Please add the following lines to your LaTeX preamble:\n")
-    print("\\usepackage[utf8]{inputenc}")
-    print("\\usepackage{fontspec}" " % This line only for XeLaTeX and LuaLaTeX")
-    print("\\usepackage{pgfplots}")
-    if tikzlibs:
-        print("\\usetikzlibrary{" + tikzlibs + "}")
-    if pgfplotslibs:
-        print("\\usepgfplotslibrary{" + pgfplotslibs + "}")
+    print(_latex_preamble(data))
     print("=========================================================")
     return
 
