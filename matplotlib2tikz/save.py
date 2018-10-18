@@ -38,6 +38,7 @@ def get_tikz_code(
     extra_tikzpicture_parameters=None,
     dpi=None,
     show_info=True,
+    precision=15,
 ):
     """Main function. Here, the recursion into the image starts and the
     contents are picked up. The actual file gets written in this routine.
@@ -152,6 +153,7 @@ def get_tikz_code(
     data["extra tikzpicture parameters"] = extra_tikzpicture_parameters
     data["axis environment"] = axis_environment
     data["show_info"] = show_info
+    data["precision"] = precision
     # rectangle_legends is used to keep track of which rectangles have already
     # had \addlegendimage added. There should be only one \addlegenimage per
     # bar chart data series.
@@ -234,7 +236,7 @@ def _get_color_definitions(data):
     definitions = []
     for name, rgb in data["custom colors"].items():
         definitions.append(
-            "\\definecolor{%s}{rgb}{%.15g,%.15g,%.15g}" % (name, rgb[0], rgb[1], rgb[2])
+            ("\\definecolor{%s}{rgb}{%."+str(data['precision'])+"g,%."+str(data['precision'])+"g,%."+str(data['precision'])+"g}") % (name, rgb[0], rgb[1], rgb[2])
         )
     return definitions
 

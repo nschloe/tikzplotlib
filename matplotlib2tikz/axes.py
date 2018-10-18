@@ -50,9 +50,9 @@ class Axes(object):
         # Sort the limits so make sure that the smaller of the two is actually
         # *min.
         xlim = sorted(list(obj.get_xlim()))
-        self.axis_options.append("xmin={:.15g}, xmax={:.15g}".format(*xlim))
+        self.axis_options.append(("xmin={:."+str(data['precision'])+"g}, xmax={:."+str(data['precision'])+"g}").format(*xlim))
         ylim = sorted(list(obj.get_ylim()))
-        self.axis_options.append("ymin={:.15g}, ymax={:.15g}".format(*ylim))
+        self.axis_options.append(("ymin={:."+str(data['precision'])+"g}, ymax={:."+str(data['precision'])+"g}").format(*ylim))
 
         # axes scaling
         if obj.get_xscale() == "log":
@@ -371,8 +371,8 @@ class Axes(object):
         else:
             self.axis_options.append("colormap/" + mycolormap)
 
-        self.axis_options.append("point meta min=%.15g" % limits[0])
-        self.axis_options.append("point meta max=%.15g" % limits[1])
+        self.axis_options.append(("point meta min=%."+str(data['precision'])+"g") % limits[0])
+        self.axis_options.append(("point meta max=%."+str(data['precision'])+"g") % limits[1])
 
         if colorbar_styles:
             self.axis_options.append("colorbar style={%s}" % ",".join(colorbar_styles))
@@ -556,7 +556,7 @@ def _get_ticks(data, xy, ticks, ticklabels):
     if data["strict"] or is_label_required:
         if pgfplots_ticks:
             axis_options.append(
-                "%stick={%s}" % (xy, ",".join(["%.15g" % el for el in pgfplots_ticks]))
+                "%stick={%s}" % (xy, ",".join([("%."+str(data['precision'])+"g") % el for el in pgfplots_ticks]))
             )
         else:
             val = "{}" if "minor" in xy else "\\empty"
@@ -692,7 +692,7 @@ def _handle_linear_segmented_color_map(cmap):
 
     color_changes = []
     for (k, x) in enumerate(X):
-        color_changes.append("rgb(%d%s)=(%.15g,%.15g,%.15g)" % ((x, unit) + colors[k]))
+        color_changes.append(("rgb(%d%s)=(%."+str(data['precision'])+"g,%."+str(data['precision'])+"g,%."+str(data['precision'])+"g)") % ((x, unit) + colors[k]))
 
     colormap_string = "{mymap}{[1%s]\n  %s\n}" % (unit, ";\n  ".join(color_changes))
     is_custom_colormap = True
@@ -727,14 +727,14 @@ def _handle_listed_color_map(cmap):
     unit = "pt"
     if cmap.N is None or cmap.N == len(cmap.colors):
         colors = [
-            "rgb(%d%s)=(%.15g,%.15g,%.15g)" % (k, unit, rgb[0], rgb[1], rgb[2])
+            ("rgb(%d%s)=(%."+str(data['precision'])+"g,%."+str(data['precision'])+"g,%."+str(data['precision'])+"g)") % (k, unit, rgb[0], rgb[1], rgb[2])
             for (k, rgb) in enumerate(cmap.colors)
         ]
     else:
         reps = int(float(cmap.N) / len(cmap.colors) - 0.5) + 1
         repeated_cols = reps * cmap.colors
         colors = [
-            "rgb(%d%s)=(%.15g,%.15g,%.15g)" % (k, unit, rgb[0], rgb[1], rgb[2])
+            ("rgb(%d%s)=(%."+str(data['precision'])+"g,%."+str(data['precision'])+"g,%."+str(data['precision'])+"g)") % (k, unit, rgb[0], rgb[1], rgb[2])
             for (k, rgb) in enumerate(repeated_cols[: cmap.N])
         ]
 

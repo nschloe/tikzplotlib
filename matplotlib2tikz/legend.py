@@ -44,7 +44,7 @@ def draw_legend(data, obj):
 
     legend_style = []
     if position:
-        legend_style.append("at={(%.15g,%.15g)}" % (position[0], position[1]))
+        legend_style.append(("at={(%."+str(data['precision'])+"g,%."+str(data['precision'])+"g)}") % (position[0], position[1]))
     if anchor:
         legend_style.append("anchor=%s" % anchor)
 

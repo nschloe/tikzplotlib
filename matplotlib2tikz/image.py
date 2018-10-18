@@ -53,9 +53,9 @@ def draw_image(data, obj):
     # Explicitly use \pgfimage as includegrapics command, as the default
     # \includegraphics fails unexpectedly in some cases
     content.append(
-        "\\addplot graphics [includegraphics cmd=\\pgfimage,"
-        "xmin=%.15g, xmax=%.15g, "
-        "ymin=%.15g, ymax=%.15g] {%s};\n" % (extent + (rel_filepath,))
+        ("\\addplot graphics [includegraphics cmd=\\pgfimage,"
+        "xmin=%."+str(data['precision'])+"g, xmax=%."+str(data['precision'])+"g, "
+        "ymin=%."+str(data['precision'])+"g, ymax=%."+str(data['precision'])+"g] {%s};\n") % (extent + (rel_filepath,))
     )
 
     return data, content
