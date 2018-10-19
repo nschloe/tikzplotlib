@@ -122,6 +122,10 @@ def get_tikz_code(
                 ``savefig.dpi`` from matplotlib.rcParams. Default is ``None``.
     :type dpi: int
 
+    :param precision: The precision of numbers output. Default is 15.
+
+    :type precision: int
+
     :returns: None
 
 

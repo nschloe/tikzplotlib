@@ -365,7 +365,7 @@ class Axes(object):
             )
             colorbar_styles.append("ylabel={" + colorbar_ylabel + "}")
 
-        mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(colorbar.get_cmap())
+        mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(colorbar.get_cmap(),data)
         if is_custom_cmap:
             self.axis_options.append("colormap=" + mycolormap)
         else:
@@ -595,20 +595,20 @@ def _is_colorbar_heuristic(obj):
     )
 
 
-def _mpl_cmap2pgf_cmap(cmap):
+def _mpl_cmap2pgf_cmap(cmap,data):
     """Converts a color map as given in matplotlib to a color map as
     represented in PGFPlots.
     """
     if isinstance(cmap, mpl.colors.LinearSegmentedColormap):
-        return _handle_linear_segmented_color_map(cmap)
+        return _handle_linear_segmented_color_map(cmap,data)
 
     assert isinstance(
         cmap, mpl.colors.ListedColormap
     ), "Only LinearSegmentedColormap and ListedColormap are supported"
-    return _handle_listed_color_map(cmap)
+    return _handle_listed_color_map(cmap,data)
 
 
-def _handle_linear_segmented_color_map(cmap):
+def _handle_linear_segmented_color_map(cmap,data):
     assert isinstance(cmap, mpl.colors.LinearSegmentedColormap)
 
     if cmap.is_gray():
@@ -699,7 +699,7 @@ def _handle_linear_segmented_color_map(cmap):
     return (colormap_string, is_custom_colormap)
 
 
-def _handle_listed_color_map(cmap):
+def _handle_listed_color_map(cmap,data):
     assert isinstance(cmap, mpl.colors.ListedColormap)
 
     # check for predefined colormaps in both matplotlib and pgfplots
