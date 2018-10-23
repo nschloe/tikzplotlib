@@ -133,18 +133,18 @@ def _get_location_from_best(obj):
     lower_right_legend = numpy.array([x1_legend[0], x0_legend[1]], dtype=numpy.float_)
     upper_left_legend = numpy.array([x0_legend[0], x1_legend[1]], dtype=numpy.float_)
     upper_right_legend = x1_legend
-    center_legend = x0_legend + dimension_legend / 2.
+    center_legend = x0_legend + dimension_legend / 2.0
     center_left_legend = numpy.array(
-        [x0_legend[0], x0_legend[1] + dimension_legend[1] / 2.], dtype=numpy.float_
+        [x0_legend[0], x0_legend[1] + dimension_legend[1] / 2.0], dtype=numpy.float_
     )
     center_right_legend = numpy.array(
-        [x1_legend[0], x0_legend[1] + dimension_legend[1] / 2.], dtype=numpy.float_
+        [x1_legend[0], x0_legend[1] + dimension_legend[1] / 2.0], dtype=numpy.float_
     )
     lower_center_legend = numpy.array(
-        [x0_legend[0] + dimension_legend[0] / 2., x0_legend[1]], dtype=numpy.float_
+        [x0_legend[0] + dimension_legend[0] / 2.0, x0_legend[1]], dtype=numpy.float_
     )
     upper_center_legend = numpy.array(
-        [x0_legend[0] + dimension_legend[0] / 2., x1_legend[1]], dtype=numpy.float_
+        [x0_legend[0] + dimension_legend[0] / 2.0, x1_legend[1]], dtype=numpy.float_
     )
 
     # 2. Key points of the axes
@@ -152,18 +152,18 @@ def _get_location_from_best(obj):
     lower_right_axes = numpy.array([x1_axes[0], x0_axes[1]], dtype=numpy.float_)
     upper_left_axes = numpy.array([x0_axes[0], x1_axes[1]], dtype=numpy.float_)
     upper_right_axes = x1_axes
-    center_axes = x0_axes + dimension_axes / 2.
+    center_axes = x0_axes + dimension_axes / 2.0
     center_left_axes = numpy.array(
-        [x0_axes[0], x0_axes[1] + dimension_axes[1] / 2.], dtype=numpy.float_
+        [x0_axes[0], x0_axes[1] + dimension_axes[1] / 2.0], dtype=numpy.float_
     )
     center_right_axes = numpy.array(
-        [x1_axes[0], x0_axes[1] + dimension_axes[1] / 2.], dtype=numpy.float_
+        [x1_axes[0], x0_axes[1] + dimension_axes[1] / 2.0], dtype=numpy.float_
     )
     lower_center_axes = numpy.array(
-        [x0_axes[0] + dimension_axes[0] / 2., x0_axes[1]], dtype=numpy.float_
+        [x0_axes[0] + dimension_axes[0] / 2.0, x0_axes[1]], dtype=numpy.float_
     )
     upper_center_axes = numpy.array(
-        [x0_axes[0] + dimension_axes[0] / 2., x1_axes[1]], dtype=numpy.float_
+        [x0_axes[0] + dimension_axes[0] / 2.0, x1_axes[1]], dtype=numpy.float_
     )
 
     # 3. Compute the distances between comparable points.

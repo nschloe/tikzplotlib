@@ -14,7 +14,7 @@ def plot():
     ax.plot(t, s, color="blue")
     ax.annotate(
         "text",
-        xy=(4., 1.),
+        xy=(4.0, 1.0),
         xycoords="data",
         xytext=(4.5, 1.5),
         textcoords="data",

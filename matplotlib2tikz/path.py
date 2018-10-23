@@ -56,8 +56,8 @@ def draw_path(data, path, draw_options=None, simplify=None):
             #
             # Cannot draw quadratic Bezier curves as the beginning of of a path
             assert prev is not None
-            Q1 = 1. / 3. * prev + 2. / 3. * vert[0:2]
-            Q2 = 2. / 3. * vert[0:2] + 1. / 3. * vert[2:4]
+            Q1 = 1.0 / 3.0 * prev + 2.0 / 3.0 * vert[0:2]
+            Q2 = 2.0 / 3.0 * vert[0:2] + 1.0 / 3.0 * vert[2:4]
             Q3 = vert[2:4]
             nodes.append(
                 (
