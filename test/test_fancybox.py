@@ -21,7 +21,7 @@ def draw_bbox(ax, bb_obj):
         boxstyle="square,pad=0.",
         ec="k",
         fc="none",
-        zorder=10.,
+        zorder=10.0,
     )
     ax.add_patch(p_bbox)
     return
@@ -34,8 +34,8 @@ def box1(ax):
         abs(bb.width),
         abs(bb.height),
         boxstyle="round,pad=0.1",
-        fc=(1., .8, 1.),
-        ec=(1., 0.5, 1.),
+        fc=(1.0, 0.8, 1.0),
+        ec=(1.0, 0.5, 1.0),
     )
 
     ax.add_patch(p_fancy)
@@ -59,8 +59,8 @@ def box2(ax):
         abs(bb.width),
         abs(bb.height),
         boxstyle="round,pad=0.1",
-        fc=(1., .8, 1.),
-        ec=(1., 0.5, 1.),
+        fc=(1.0, 0.8, 1.0),
+        ec=(1.0, 0.5, 1.0),
     )
 
     ax.add_patch(p_fancy)
@@ -99,9 +99,9 @@ def box3(ax):
         abs(bb.width),
         abs(bb.height),
         boxstyle="round,pad=0.1",
-        mutation_scale=2.,
-        fc=(1., .8, 1.),
-        ec=(1., 0.5, 1.),
+        mutation_scale=2.0,
+        fc=(1.0, 0.8, 1.0),
+        ec=(1.0, 0.5, 1.0),
     )
 
     ax.add_patch(p_fancy)
@@ -133,7 +133,7 @@ def box4(ax):
         abs(bb.height),
         boxstyle="round,pad=0.2",
         fc="none",
-        ec=(0., .5, 0.),
+        ec=(0.0, 0.5, 0.0),
         zorder=4,
     )
 
@@ -145,9 +145,9 @@ def box4(ax):
         abs(bb.width),
         abs(bb.height),
         boxstyle="round,pad=0.3",
-        mutation_aspect=.5,
-        fc=(1., 0.8, 1.),
-        ec=(1., 0.5, 1.),
+        mutation_aspect=0.5,
+        fc=(1.0, 0.8, 1.0),
+        ec=(1.0, 0.5, 1.0),
     )
 
     ax.add_patch(p_fancy)
@@ -170,31 +170,31 @@ def plot():
 
     ax = plt.subplot(2, 2, 1)
     box1(ax)
-    ax.set_xlim(0., 1.)
-    ax.set_ylim(0., 1.)
+    ax.set_xlim(0.0, 1.0)
+    ax.set_ylim(0.0, 1.0)
     ax.set_title("box1")
-    ax.set_aspect(1.)
+    ax.set_aspect(1.0)
 
     ax = plt.subplot(2, 2, 2)
     ax.set_title("box2")
     box2(ax)
-    ax.set_xlim(0., 1.)
-    ax.set_ylim(0., 1.)
-    ax.set_aspect(1.)
+    ax.set_xlim(0.0, 1.0)
+    ax.set_ylim(0.0, 1.0)
+    ax.set_aspect(1.0)
 
     ax = plt.subplot(2, 2, 3)
     ax.set_title("box3")
     box3(ax)
-    ax.set_xlim(0., 1.)
-    ax.set_ylim(0., 1.)
+    ax.set_xlim(0.0, 1.0)
+    ax.set_ylim(0.0, 1.0)
     ax.set_aspect(1)
 
     ax = plt.subplot(2, 2, 4)
     ax.set_title("box4")
     box4(ax)
     ax.set_xlim(-0.5, 1.5)
-    ax.set_ylim(0., 1.)
-    ax.set_aspect(2.)
+    ax.set_ylim(0.0, 1.0)
+    ax.set_aspect(2.0)
 
     return fig
 

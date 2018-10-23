@@ -52,12 +52,12 @@ def plot():
     # The third example illustrates the use of custom length colorbar
     # extensions, used on a colorbar with discrete intervals.
     cmap = mpl.colors.ListedColormap(
-        [[0., .4, 1.], [0., .8, 1.], [1., .8, 0.], [1., .4, 0.]]
+        [[0.0, 0.4, 1.0], [0.0, 0.8, 1.0], [1.0, 0.8, 0.0], [1.0, 0.4, 0.0]]
     )
-    cmap.set_over((1., 0., 0.))
-    cmap.set_under((0., 0., 1.))
+    cmap.set_over((1.0, 0.0, 0.0))
+    cmap.set_under((0.0, 0.0, 1.0))
 
-    bounds = [-1., -.5, 0., .5, 1.]
+    bounds = [-1.0, -0.5, 0.0, 0.5, 1.0]
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
     cb3 = mpl.colorbar.ColorbarBase(
         ax[2],
