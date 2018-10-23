@@ -17,8 +17,6 @@ This is matplotlib2tikz, a Python tool for converting matplotlib figures into
 
 for native inclusion into LaTeX documents.
 
-matplotlib2tikz works with both Python 2 and Python 3.
-
 The output of matplotlib2tikz is in
 [PGFPlots](http://pgfplots.sourceforge.net/pgfplots.pdf), a LaTeX library that
 sits on top of TikZ and describes graphs in terms of axes, data etc.
@@ -92,6 +90,9 @@ Tweaking the plot is straightforward and can be done as part of your LaTeX
 work flow.
 [The fantastic PGFPlots manual](http://pgfplots.sourceforge.net/pgfplots.pdf)
 contains great examples of how to make your plot look even better.
+
+Of course, not all figures produced by matplotlib can be converted without error.
+Notably, [3D plot don't work](https://github.com/matplotlib/matplotlib/issues/7243).
 
 ### Installation
 
