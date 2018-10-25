@@ -54,8 +54,8 @@ def draw_image(data, obj):
     # \includegraphics fails unexpectedly in some cases
     content.append(
         ("\\addplot graphics [includegraphics cmd=\\pgfimage,"
-        "xmin=%."+str(data['precision'])+"g, xmax=%."+str(data['precision'])+"g, "
-        "ymin=%."+str(data['precision'])+"g, ymax=%."+str(data['precision'])+"g] {%s};\n") % (extent + (rel_filepath,))
+        "xmin="+data['float_format']+", xmax="+data['float_format']+", "
+        "ymin="+data['float_format']+", ymax="+data['float_format']+"] {%s};\n") % (extent + (rel_filepath,))
     )
 
     return data, content

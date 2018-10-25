@@ -34,9 +34,9 @@ def draw_path(data, path, draw_options=None, simplify=None):
         #
         # if code == mpl.path.Path.STOP: pass
         if code == mpl.path.Path.MOVETO:
-            nodes.append(("(axis cs:%."+str(data['precision'])+"g,%."+str(data['precision'])+"g)") % tuple(vert))
+            nodes.append(("(axis cs:"+data['float_format']+","+data['float_format']+")") % tuple(vert))
         elif code == mpl.path.Path.LINETO:
-            nodes.append(("--(axis cs:%."+str(data['precision'])+"g,%."+str(data['precision'])+"g)") % tuple(vert))
+            nodes.append(("--(axis cs:"+data['float_format']+","+data['float_format']+")") % tuple(vert))
         elif code == mpl.path.Path.CURVE3:
             # Quadratic Bezier curves aren't natively supported in TikZ, but
             # can be emulated as cubic Beziers.
@@ -61,9 +61,9 @@ def draw_path(data, path, draw_options=None, simplify=None):
             Q3 = vert[2:4]
             nodes.append(
                 (
-                    ".. controls (axis cs:%."+str(data['precision'])+"g,%."+str(data['precision'])+"g) "
-                    + "and (axis cs:%."+str(data['precision'])+"g,%."+str(data['precision'])+"g) "
-                    + ".. (axis cs:%."+str(data['precision'])+"g,%."+str(data['precision'])+"g)"
+                    ".. controls (axis cs:"+data['float_format']+","+data['float_format']+") "
+                    + "and (axis cs:"+data['float_format']+","+data['float_format']+") "
+                    + ".. (axis cs:"+data['float_format']+","+data['float_format']+")"
                 )
                 % (Q1[0], Q1[1], Q2[0], Q2[1], Q3[0], Q3[1])
             )
@@ -71,9 +71,9 @@ def draw_path(data, path, draw_options=None, simplify=None):
             # Cubic Bezier curves.
             nodes.append(
                 (
-                    ".. controls (axis cs:%."+str(data['precision'])+"g,%."+str(data['precision'])+"g) "
-                    + "and (axis cs:%."+str(data['precision'])+"g,%."+str(data['precision'])+"g) "
-                    + ".. (axis cs:%."+str(data['precision'])+"g,%."+str(data['precision'])+"g)"
+                    ".. controls (axis cs:"+data['float_format']+","+data['float_format']+") "
+                    + "and (axis cs:"+data['float_format']+","+data['float_format']+") "
+                    + ".. (axis cs:"+data['float_format']+","+data['float_format']+")"
                 )
                 % tuple(vert)
             )
@@ -197,12 +197,12 @@ def get_draw_options(data, ec, fc):
         and ec_rgba[3] != 1.0
         and ec_rgba[3] == fc_rgba[3]
     ):
-        draw_options.append(("opacity=%."+str(data['precision'])+"g") % ec[3])
+        draw_options.append(("opacity="+data['float_format']+"") % ec[3])
     else:
         if ec is not None and ec_rgba[3] != 1.0:
-            draw_options.append(("draw opacity=%."+str(data['precision'])+"g") % ec_rgba[3])
+            draw_options.append(("draw opacity="+data['float_format']+"") % ec_rgba[3])
         if fc is not None and fc_rgba[3] != 1.0:
-            draw_options.append(("fill opacity=%."+str(data['precision'])+"g") % fc_rgba[3])
+            draw_options.append(("fill opacity="+data['float_format']+"") % fc_rgba[3])
     # TODO Use those properties
     # linewidths = obj.get_linewidths()
 

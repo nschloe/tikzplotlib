@@ -28,7 +28,7 @@ def draw_text(data, obj):
     # TODO fix this
     scaling = 0.5 * size / data["font size"]
     if scaling != 1.0:
-        properties.append(("scale={:."+str(data['precision'])+"g}").format(scaling))
+        properties.append(("scale={:"+data['float_format'].strip('%')+"}").format(scaling))
 
     if bbox is not None:
         _bbox(bbox, data, properties, scaling)
@@ -85,16 +85,16 @@ def draw_text(data, obj):
 
     if obj.axes:
         # If the coordinates are relative to an axis, use `axis cs`.
-        tikz_pos = ("(axis cs:%."+str(data['precision'])+"g,%."+str(data['precision'])+"g)") % pos
+        tikz_pos = ("(axis cs:"+data['float_format']+","+data['float_format']+")") % pos
     else:
         # relative to the entire figure, it's a getting a littler harder. See
         # <http://tex.stackexchange.com/a/274902/13262> for a solution to the
         # problem:
         tikz_pos = (
-            "({$(current bounding box.south west)!%."+str(data['precision'])+"g!"
+            "({$(current bounding box.south west)!"+data['float_format']+"!"
             "(current bounding box.south east)$}"
             "|-"
-            "{$(current bounding box.south west)!%0."+str(data['precision'])+"g!"
+            "{$(current bounding box.south west)!%0"+data['float_format'].strip('%')+"!"
             "(current bounding box.north west)$})"
         ) % pos
 
@@ -152,7 +152,7 @@ def _annotation(obj, data, content):
                     )
                     arrow_style.append(col)
 
-        arrow_proto = "\\draw[%s] (axis cs:%."+str(data['precision'])+"g,%."+str(data['precision'])+"g) " "-- (axis cs:%."+str(data['precision'])+"g,%."+str(data['precision'])+"g);\n"
+        arrow_proto = "\\draw[%s] (axis cs:"+data['float_format']+","+data['float_format']+") " "-- (axis cs:"+data['float_format']+","+data['float_format']+");\n"
         the_arrow = arrow_proto % (
             ",".join(arrow_style),
             ann_xytext[0],
@@ -174,8 +174,8 @@ def _bbox(bbox, data, properties, scaling):
     if ec:
         properties.append("draw=%s" % ec)
     # XXX: This is ugly, too
-    properties.append(("line width={:."+str(data['precision'])+"g}pt").format(bbox.get_lw() * 0.4))
-    properties.append(("inner sep={:."+str(data['precision'])+"g}pt").format(bbox_style.pad * data["font size"]))
+    properties.append(("line width={:"+data['float_format'].strip('%')+"}pt").format(bbox.get_lw() * 0.4))
+    properties.append(("inner sep={:"+data['float_format'].strip('%')+"}pt").format(bbox_style.pad * data["font size"]))
     # Rounded boxes
     if isinstance(bbox_style, mpl.patches.BoxStyle.Round):
         properties.append("rounded corners")

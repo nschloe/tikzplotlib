@@ -78,7 +78,7 @@ def _draw_rectangle(data, obj, draw_options):
     left_lower_x = obj.get_x()
     left_lower_y = obj.get_y()
     cont = (
-        ("%s\\draw[%s] (axis cs:%."+str(data['precision'])+"g,%."+str(data['precision'])+"g) " "rectangle (axis cs:%."+str(data['precision'])+"g,%."+str(data['precision'])+"g);\n")
+        ("%s\\draw[%s] (axis cs:"+data['float_format']+","+data['float_format']+") " "rectangle (axis cs:"+data['float_format']+","+data['float_format']+");\n")
     ) % (
         legend,
         ",".join(draw_options),
@@ -97,7 +97,7 @@ def _draw_ellipse(data, obj, draw_options):
         # circle specialization
         return _draw_circle(data, obj, draw_options)
     x, y = obj.center
-    cont = ("\\draw[%s] (axis cs:%."+str(data['precision'])+"g,%."+str(data['precision'])+"g) ellipse (%."+str(data['precision'])+"g and %."+str(data['precision'])+"g);\n") % (
+    cont = ("\\draw[%s] (axis cs:"+data['float_format']+","+data['float_format']+") ellipse ("+data['float_format']+" and "+data['float_format']+");\n") % (
         ",".join(draw_options),
         x,
         y,
@@ -111,7 +111,7 @@ def _draw_circle(data, obj, draw_options):
     """Return the PGFPlots code for circles.
     """
     x, y = obj.center
-    cont = ("\\draw[%s] (axis cs:%."+str(data['precision'])+"g,%."+str(data['precision'])+"g) circle (%."+str(data['precision'])+"g);\n") % (
+    cont = ("\\draw[%s] (axis cs:"+data['float_format']+","+data['float_format']+") circle ("+data['float_format']+");\n") % (
         ",".join(draw_options),
         x,
         y,
