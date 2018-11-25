@@ -257,7 +257,7 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
                 not isinstance(marker_face_color, str)
                 or marker_face_color.lower() != "none"
             )
-            and pgfplots_marker not in ["|", "-"]
+            and pgfplots_marker not in ["|", "-", "asterisk", "star"]
         ):
             pgfplots_marker += "*"
         return (data, pgfplots_marker, marker_options)
