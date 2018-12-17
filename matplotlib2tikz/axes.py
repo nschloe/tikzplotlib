@@ -687,8 +687,11 @@ def _handle_linear_segmented_color_map(cmap):
     # of 1pt, e.g., does most often not work.
     unit = "pt"
 
-    # Scale to integer
-    X = _scale_to_int(numpy.array(X))
+    # Scale to integer (too high integers will firstly be slow and secondly may
+    # produce dimension errors or memory errors in latex)
+    # 0-1000 is the internal granularity of PGFplots.
+    # 16300 was the maximum value for pgfplots<=1.13
+    X = _scale_to_int(numpy.array(X), 1000)
 
     color_changes = []
     for (k, x) in enumerate(X):
@@ -743,11 +746,15 @@ def _handle_listed_color_map(cmap):
     return (colormap_string, is_custom_colormap)
 
 
-def _scale_to_int(X):
+def _scale_to_int(X, max_val=None):
     """
     Scales the array X such that it contains only integers.
     """
-    X = X / _gcd_array(X)
+
+    if max_val is None:
+        X = X / _gcd_array(X)
+    else:
+        X = X / max(1 / max_val, _gcd_array(X))
     return [int(entry) for entry in X]
 
 
