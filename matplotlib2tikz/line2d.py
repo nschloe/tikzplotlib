@@ -344,7 +344,14 @@ def _marker(
 
     mark_every = obj.get_markevery()
     if mark_every:
-        addplot_options.append("mark repeat=%d" % mark_every)
+        if type(mark_every) is int:
+            addplot_options.append("mark repeat=%d" % mark_every)
+        else:
+            # python starts at index 0, pgfplots at index 1
+            pgf_marker = [1 + m for m in mark_every]
+            addplot_options.append(
+                "mark indices = {" + ", ".join(map(str, pgf_marker)) + "}"
+            )
 
     mark_options = ["solid"]
     if extra_mark_options:
