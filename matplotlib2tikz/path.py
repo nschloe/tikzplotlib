@@ -4,6 +4,7 @@ import matplotlib as mpl
 import numpy
 
 from . import color
+from . import util
 from .axes import _mpl_cmap2pgf_cmap
 
 
@@ -138,6 +139,9 @@ def draw_pathcollection(data, obj):
             draw_options.append("colormap=" + mycolormap)
         else:
             draw_options.append("colormap/" + mycolormap)
+
+    if not util.is_in_legend(obj):
+        draw_options.append("forget plot")
 
     for path in obj.get_paths():
         if is_contour:

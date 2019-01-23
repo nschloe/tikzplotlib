@@ -5,21 +5,9 @@ from __future__ import print_function
 import six
 
 from . import color as mycol
-from . import path as mypath
 from . import files
-
-
-def get_legend_label_(line):
-    """Check if line is in legend
-    """
-
-    label = line.get_label()
-    try:
-        ax = line.axes
-        leg = ax.get_legend()
-        return label in [l.get_label() for l in leg.get_lines()]
-    except AttributeError:
-        return None
+from . import path as mypath
+from . import util
 
 
 def draw_line2d(data, obj):
@@ -75,7 +63,7 @@ def draw_line2d(data, obj):
 
     # Check if a line is not in a legend and forget it if so,
     # fixes bug #167:
-    if not get_legend_label_(obj):
+    if not util.is_in_legend(obj):
         addplot_options.append("forget plot")
 
     # process options
