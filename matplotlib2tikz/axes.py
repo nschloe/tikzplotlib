@@ -2,6 +2,7 @@
 #
 import matplotlib as mpl
 import numpy
+from matplotlib.backends import backend_pgf as mpl_backend_pgf
 
 from . import color
 
@@ -41,9 +42,11 @@ class Axes(object):
         # get axes titles
         xlabel = obj.get_xlabel()
         if xlabel:
+            xlabel = mpl_backend_pgf.common_texification(xlabel)
             self.axis_options.append("xlabel={{{}}}".format(xlabel))
         ylabel = obj.get_ylabel()
         if ylabel:
+            ylabel = mpl_backend_pgf.common_texification(ylabel)
             self.axis_options.append("ylabel={{{}}}".format(ylabel))
 
         # Axes limits.
@@ -539,6 +542,7 @@ def _get_ticks(data, xy, ticks, ticklabels):
         # store the label anyway
         label = ticklabel.get_text()
         if ticklabel.get_visible():
+            label = mpl_backend_pgf.common_texification(label)
             pgfplots_ticklabels.append(label)
         else:
             is_label_required = True
