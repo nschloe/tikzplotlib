@@ -57,8 +57,14 @@ class Axes(object):
         # axes scaling
         if obj.get_xscale() == "log":
             self.axis_options.append("xmode=log")
+            self.axis_options.append(
+                "log basis x={{{}}}".format(_try_f2i(obj.xaxis._scale.base))
+            )
         if obj.get_yscale() == "log":
             self.axis_options.append("ymode=log")
+            self.axis_options.append(
+                "log basis y={{{}}}".format(_try_f2i(obj.yaxis._scale.base))
+            )
 
         if not obj.get_axisbelow():
             self.axis_options.append("axis on top")
@@ -806,3 +812,11 @@ def _find_associated_colorbar(obj):
             #   reference to axis containing colorbar)
             return cbar
     return None
+
+
+def _try_f2i(x):
+    """Convert losslessly float to int if possible.
+    Used for log base: if not used, base for log scale can be "10.0" (and then
+    printed as such  by pgfplots).
+    """
+    return int(x) if int(x) == x else x
