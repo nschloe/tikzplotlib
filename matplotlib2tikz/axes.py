@@ -2,6 +2,7 @@
 #
 import matplotlib as mpl
 import numpy
+from matplotlib.backends import backend_pgf as mpl_backend_pgf
 
 from . import color
 
@@ -41,9 +42,11 @@ class Axes(object):
         # get axes titles
         xlabel = obj.get_xlabel()
         if xlabel:
+            xlabel = mpl_backend_pgf.common_texification(xlabel)
             self.axis_options.append("xlabel={{{}}}".format(xlabel))
         ylabel = obj.get_ylabel()
         if ylabel:
+            ylabel = mpl_backend_pgf.common_texification(ylabel)
             self.axis_options.append("ylabel={{{}}}".format(ylabel))
 
         # Axes limits.
@@ -57,8 +60,14 @@ class Axes(object):
         # axes scaling
         if obj.get_xscale() == "log":
             self.axis_options.append("xmode=log")
+            self.axis_options.append(
+                "log basis x={{{}}}".format(_try_f2i(obj.xaxis._scale.base))
+            )
         if obj.get_yscale() == "log":
             self.axis_options.append("ymode=log")
+            self.axis_options.append(
+                "log basis y={{{}}}".format(_try_f2i(obj.yaxis._scale.base))
+            )
 
         if not obj.get_axisbelow():
             self.axis_options.append("axis on top")
@@ -539,6 +548,7 @@ def _get_ticks(data, xy, ticks, ticklabels):
         # store the label anyway
         label = ticklabel.get_text()
         if ticklabel.get_visible():
+            label = mpl_backend_pgf.common_texification(label)
             pgfplots_ticklabels.append(label)
         else:
             is_label_required = True
@@ -687,8 +697,11 @@ def _handle_linear_segmented_color_map(cmap):
     # of 1pt, e.g., does most often not work.
     unit = "pt"
 
-    # Scale to integer
-    X = _scale_to_int(numpy.array(X))
+    # Scale to integer (too high integers will firstly be slow and secondly may
+    # produce dimension errors or memory errors in latex)
+    # 0-1000 is the internal granularity of PGFplots.
+    # 16300 was the maximum value for pgfplots<=1.13
+    X = _scale_to_int(numpy.array(X), 1000)
 
     color_changes = []
     for (k, x) in enumerate(X):
@@ -743,11 +756,15 @@ def _handle_listed_color_map(cmap):
     return (colormap_string, is_custom_colormap)
 
 
-def _scale_to_int(X):
+def _scale_to_int(X, max_val=None):
     """
     Scales the array X such that it contains only integers.
     """
-    X = X / _gcd_array(X)
+
+    if max_val is None:
+        X = X / _gcd_array(X)
+    else:
+        X = X / max(1 / max_val, _gcd_array(X))
     return [int(entry) for entry in X]
 
 
@@ -799,3 +816,11 @@ def _find_associated_colorbar(obj):
             #   reference to axis containing colorbar)
             return cbar
     return None
+
+
+def _try_f2i(x):
+    """Convert losslessly float to int if possible.
+    Used for log base: if not used, base for log scale can be "10.0" (and then
+    printed as such  by pgfplots).
+    """
+    return int(x) if int(x) == x else x
