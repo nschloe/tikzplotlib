@@ -211,7 +211,7 @@ def save(*args, encoding=None, **kwargs):
     """Same as `get_tikz_code()`, but actually saves the code to a file.
 
     :param encoding: Sets the text encoding of the output file, e.g. 'utf-8'.
-                     For supported values: see ``codes`` module.
+                     For supported values: see ``codecs`` module.
     :returns: None
     """
     code = get_tikz_code(*args, **kwargs)
