@@ -207,10 +207,13 @@ def get_tikz_code(
     return code
 
 
-def save(*args, **kwargs):
+def save(*args, encoding=None, **kwargs):
     """Same as `get_tikz_code()`, but actually saves the code to a file.
+
+    :param encoding: Sets the text encoding of the output file, e.g. 'utf-8'.
+                     For supported values: see ``codes`` module.
+    :returns: None
     """
-    encoding = kwargs.pop("encoding", None)
     code = get_tikz_code(*args, **kwargs)
     file_handle = codecs.open(args[0], "w", encoding)
     try:
