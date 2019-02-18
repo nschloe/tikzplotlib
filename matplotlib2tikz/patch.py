@@ -97,15 +97,18 @@ def _draw_ellipse(data, obj, draw_options):
         # circle specialization
         return _draw_circle(data, obj, draw_options)
     x, y = obj.center
-    cont = "\\draw[%s, rotate around={%.15g:(%.15g,%.15g)}] (axis cs:%.15g,%.15g) ellipse (%.15g and %.15g);\n" % (
-        ",".join(draw_options),
-        obj.angle,
-        x,
-        y,
-        x,
-        y,
-        0.5 * obj.width,
-        0.5 * obj.height,
+    cont = (
+        "\\draw[%s, rotate around={%.15g:(%.15g,%.15g)}] (axis cs:%.15g,%.15g) ellipse (%.15g and %.15g);\n"
+        % (
+            ",".join(draw_options),
+            obj.angle,
+            x,
+            y,
+            x,
+            y,
+            0.5 * obj.width,
+            0.5 * obj.height,
+        )
     )
     return data, cont
 
