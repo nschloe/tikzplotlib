@@ -1,23 +1,29 @@
 # -*- coding: utf-8 -*-
 #
-import helpers
+import os
+
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+
+import matplotlib2tikz as m2t
 
 
 def plot():
-    import matplotlib
-    from matplotlib import pyplot as plt
-    import numpy as np
-
     fig = plt.figure()
     x, y = np.ogrid[-10:10:100j, -10:10:100j]
     extent = (x.min(), x.max(), y.min(), y.max())
     cmap = matplotlib.cm.get_cmap("gray")
     plt.imshow(x * y, extent=extent, cmap=cmap)
     plt.colorbar()
-
     return fig
 
 
 def test():
-    phash = helpers.Phash(plot())
-    assert phash.phash == "fda6837883788378", phash.get_details()
+    plot()
+    code = m2t.get_tikz_code(include_disclaimer=False)
+    this_dir = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(this_dir, 'reference.tex'), 'r') as f:
+        reference = f.read()[:-1]
+    assert code == reference
+    return

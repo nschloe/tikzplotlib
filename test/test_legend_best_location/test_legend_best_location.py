@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 #
-import helpers
+import os
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+import matplotlib2tikz as m2t
 
 
 def plot():
-    from matplotlib import pyplot as plt
-    import numpy as np
-
     fig, ax = plt.subplots(3, 3, sharex="col", sharey="row")
     axes = [ax[i][j] for i in range(len(ax)) for j in range(len(ax[i]))]
     t = np.arange(0.0, 2.0 * np.pi, 0.1)
@@ -62,6 +64,10 @@ def plot():
 
 
 def test():
-    phash = helpers.Phash(plot())
-    assert phash.phash == "971d991d1c877c1c", phash.get_details()
+    plot()
+    code = m2t.get_tikz_code(include_disclaimer=False)
+    this_dir = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(this_dir, 'reference.tex'), 'r') as f:
+        reference = f.read()[:-1]
+    assert code == reference
     return

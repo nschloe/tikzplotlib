@@ -1,0 +1,30 @@
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.12156862745098,0.466666666666667,0.705882352941177}
+
+\begin{axis}[
+tick align=outside,
+tick pos=left,
+x grid style={white!69.01960784313725!black},
+xmin=-0.05, xmax=1.05,
+xtick={-0.2,0,0.2,0.4,0.6,0.8,1,1.2},
+xticklabels={,0.0,0.2,0.4,0.6,0.8,1.0,},
+y grid style={white!69.01960784313725!black},
+ymin=-0.45, ymax=9.45
+]
+\addplot [semithick, color0, mark=*, mark size=3, mark options={solid,fill opacity=0}, forget plot]
+table [row sep=\\]{%
+0	0 \\
+0.111111111111111	1 \\
+0.222222222222222	2 \\
+0.333333333333333	3 \\
+0.444444444444444	4 \\
+0.555555555555556	5 \\
+0.666666666666667	6 \\
+0.777777777777778	7 \\
+0.888888888888889	8 \\
+1	9 \\
+};
+\end{axis}
+
+\end{tikzpicture}
