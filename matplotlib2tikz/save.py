@@ -23,7 +23,6 @@ from .__about__ import __version__
 
 
 def get_tikz_code(
-    filepath,
     figure="gcf",
     figurewidth=None,
     figureheight=None,
@@ -38,14 +37,12 @@ def get_tikz_code(
     extra_tikzpicture_parameters=None,
     dpi=None,
     show_info=True,
+    include_disclaimer=True,
 ):
     """Main function. Here, the recursion into the image starts and the
     contents are picked up. The actual file gets written in this routine.
 
     :param figure: either a Figure object or 'gcf' (default).
-
-    :param filepath: The file to which the TikZ output will be written.
-    :type filepath: str
 
     :param figurewidth: If not ``None``, this will be used as figure width
                         within the TikZ/PGFPlots output. If ``figureheight``
@@ -141,8 +138,8 @@ def get_tikz_code(
     data["rel data path"] = tex_relative_path_to_data
     data["externalize tables"] = externalize_tables
     data["override externals"] = override_externals
-    data["output dir"] = os.path.dirname(filepath)
-    data["base name"] = os.path.splitext(os.path.basename(filepath))[0]
+    # data["output dir"] = os.path.dirname(filepath)
+    # data["base name"] = os.path.splitext(os.path.basename(filepath))[0]
     data["strict"] = strict
     data["tikz libs"] = set()
     data["pgfplots libs"] = set()
@@ -181,11 +178,12 @@ def get_tikz_code(
     if "is_in_groupplot_env" in data and data["is_in_groupplot_env"]:
         content.extend("\\end{groupplot}\n\n")
 
-    disclaimer = "This file was created by matplotlib2tikz v%s." % __version__
-
     # write disclaimer to the file header
     code = """"""
-    code += _tex_comment(disclaimer)
+
+    if include_disclaimer:
+        disclaimer = "This file was created by matplotlib2tikz v%s." % __version__
+        code += _tex_comment(disclaimer)
 
     # write the contents
     if wrap and axis_environment:
@@ -207,8 +205,11 @@ def get_tikz_code(
     return code
 
 
-def save(*args, encoding=None, **kwargs):
+def save(filepath, *args, encoding=None, **kwargs):
     """Same as `get_tikz_code()`, but actually saves the code to a file.
+
+    :param filepath: The file to which the TikZ output will be written.
+    :type filepath: str
 
     :param encoding: Sets the text encoding of the output file, e.g. 'utf-8'.
                      For supported values: see ``codecs`` module.
