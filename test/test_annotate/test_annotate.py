@@ -41,8 +41,3 @@ def test():
         reference = f.read()[:-1]
     assert code == reference
     return
-
-
-if __name__ == "__main__":
-    plot()
-    plt.show()

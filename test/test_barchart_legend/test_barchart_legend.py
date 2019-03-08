@@ -8,15 +8,16 @@ patches that should not be plotted in PGFPlots (e.g. axis, legend)
 This also tests legends on barcharts. Which are difficult because
 in PGFPlots, they have no \\addplot, and thus legend must be
 manually added.
-
 """
-from helpers import Phash
+import os
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+import matplotlib2tikz as m2t
 
 
 def plot():
-    import matplotlib.pyplot as plt
-    import numpy as np
-
     # plot data
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -36,5 +37,10 @@ def plot():
 
 
 def test():
-    phash = Phash(plot())
-    assert phash.phash == "5f19a966937285cc", phash.get_details()
+    plot()
+    code = m2t.get_tikz_code(include_disclaimer=False)
+    this_dir = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(this_dir, 'reference.tex'), 'r') as f:
+        reference = f.read()[:-1]
+    assert code == reference
+    return

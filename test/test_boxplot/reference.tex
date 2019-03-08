@@ -1,0 +1,122 @@
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{1,0.498039215686275,0.0549019607843137}
+
+\begin{axis}[
+tick align=outside,
+tick pos=left,
+x grid style={white!69.01960784313725!black},
+xmin=0.5, xmax=3.5,
+y grid style={white!69.01960784313725!black},
+ymin=0.874561785006674, ymax=0.899947924923841
+]
+\addplot [black, forget plot]
+table [row sep=\\]{%
+0.85	0.879496627112448 \\
+1.15	0.879496627112448 \\
+1.15	0.884126666796246 \\
+0.85	0.884126666796246 \\
+0.85	0.879496627112448 \\
+};
+\addplot [black, forget plot]
+table [row sep=\\]{%
+1	0.879496627112448 \\
+1	0.875715700457454 \\
+};
+\addplot [black, forget plot]
+table [row sep=\\]{%
+1	0.884126666796246 \\
+1	0.888867871101896 \\
+};
+\addplot [black, forget plot]
+table [row sep=\\]{%
+0.925	0.875715700457454 \\
+1.075	0.875715700457454 \\
+};
+\addplot [black, forget plot]
+table [row sep=\\]{%
+0.925	0.888867871101896 \\
+1.075	0.888867871101896 \\
+};
+\addplot [black, forget plot]
+table [row sep=\\]{%
+1.85	0.88877516922908 \\
+2.15	0.88877516922908 \\
+2.15	0.895051444894661 \\
+1.85	0.895051444894661 \\
+1.85	0.88877516922908 \\
+};
+\addplot [black, forget plot]
+table [row sep=\\]{%
+2	0.88877516922908 \\
+2	0.884905350828982 \\
+};
+\addplot [black, forget plot]
+table [row sep=\\]{%
+2	0.895051444894661 \\
+2	0.898794009473061 \\
+};
+\addplot [black, forget plot]
+table [row sep=\\]{%
+1.925	0.884905350828982 \\
+2.075	0.884905350828982 \\
+};
+\addplot [black, forget plot]
+table [row sep=\\]{%
+1.925	0.898794009473061 \\
+2.075	0.898794009473061 \\
+};
+\addplot [black, mark=*, mark size=3, mark options={solid,fill opacity=0}, only marks, forget plot]
+table [row sep=\\]{%
+2	0.877726738991693 \\
+};
+\addplot [black, forget plot]
+table [row sep=\\]{%
+2.85	0.888622590566905 \\
+3.15	0.888622590566905 \\
+3.15	0.892127720467477 \\
+2.85	0.892127720467477 \\
+2.85	0.888622590566905 \\
+};
+\addplot [black, forget plot]
+table [row sep=\\]{%
+3	0.888622590566905 \\
+3	0.884168322531585 \\
+};
+\addplot [black, forget plot]
+table [row sep=\\]{%
+3	0.892127720467477 \\
+3	0.894515611281891 \\
+};
+\addplot [black, forget plot]
+table [row sep=\\]{%
+2.925	0.884168322531585 \\
+3.075	0.884168322531585 \\
+};
+\addplot [black, forget plot]
+table [row sep=\\]{%
+2.925	0.894515611281891 \\
+3.075	0.894515611281891 \\
+};
+\addplot [black, mark=*, mark size=3, mark options={solid,fill opacity=0}, only marks, forget plot]
+table [row sep=\\]{%
+3	0.898104652708716 \\
+};
+\addplot [color0, forget plot]
+table [row sep=\\]{%
+0.85	0.883074649623178 \\
+1.15	0.883074649623178 \\
+};
+\addplot [color0, forget plot]
+table [row sep=\\]{%
+1.85	0.892160329903995 \\
+2.15	0.892160329903995 \\
+};
+\addplot [color0, forget plot]
+table [row sep=\\]{%
+2.85	0.891012819071749 \\
+3.15	0.891012819071749 \\
+};
+\end{axis}
+
+\end{tikzpicture}

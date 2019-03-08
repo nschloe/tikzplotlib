@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 #
-import helpers
+import os
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+import matplotlib2tikz as m2t
 
 
 def plot():
-    from matplotlib import pyplot as plt
-    import numpy as np
-
     fig = plt.figure()
     with plt.style.context(("ggplot")):
         t = np.arange(0.0, 2.0, 0.1)
@@ -24,9 +26,11 @@ def plot():
 
 
 def test():
-    phash = helpers.Phash(plot())
-    assert phash.phash == "1f36e5ce21c1e5c1", phash.get_details()
-
-
-if __name__ == "__main__":
-    helpers.compare_with_latex(plot())
+    plot()
+    code = m2t.get_tikz_code(include_disclaimer=False)
+    print(code)
+    this_dir = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(this_dir, 'reference.tex'), 'r') as f:
+        reference = f.read()[:-1]
+    assert code == reference
+    return
