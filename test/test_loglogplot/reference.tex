@@ -1,0 +1,27 @@
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.12156862745098,0.466666666666667,0.705882352941177}
+
+\begin{axis}[
+log basis x={10},
+log basis y={10},
+tick align=outside,
+tick pos=left,
+x grid style={white!69.01960784313725!black},
+xmin=0.501187233627272, xmax=1995262.31496887,
+xmode=log,
+y grid style={white!69.01960784313725!black},
+ymin=0.251188643150958, ymax=3981071705534.95,
+ymode=log
+]
+\addplot [line width=0.8400000000000001pt, color0, forget plot]
+table [row sep=\\]{%
+1	1 \\
+31.6227766016838	1000 \\
+1000	1000000 \\
+31622.7766016838	1000000000 \\
+1000000	1000000000000 \\
+};
+\end{axis}
+
+\end{tikzpicture}

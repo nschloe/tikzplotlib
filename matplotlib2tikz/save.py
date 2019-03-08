@@ -216,7 +216,7 @@ def save(filepath, *args, encoding=None, **kwargs):
     :returns: None
     """
     code = get_tikz_code(*args, **kwargs)
-    file_handle = codecs.open(args[0], "w", encoding)
+    file_handle = codecs.open(filepath, "w", encoding)
     try:
         file_handle.write(code)
     except UnicodeEncodeError:

@@ -1,11 +1,15 @@
 \begin{tikzpicture}
 
 \begin{axis}[
+axis background/.style={fill=white!89.80392156862746!black},
+axis line style={white},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white},
+xmajorgrids,
 xmin=-1, xmax=5,
-y grid style={white!69.01960784313725!black},
+y grid style={white},
+ymajorgrids,
 ymin=-4, ymax=3
 ]
 \addplot [semithick, blue, forget plot]

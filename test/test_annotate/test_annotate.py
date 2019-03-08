@@ -39,5 +39,10 @@ def test():
     this_dir = os.path.dirname(os.path.abspath(__file__))
     with open(os.path.join(this_dir, 'reference.tex'), 'r') as f:
         reference = f.read()[:-1]
-    assert code == reference
+    assert reference == code
     return
+
+
+if __name__ == "__main__":
+    plot()
+    plt.show()

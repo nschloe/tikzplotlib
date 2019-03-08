@@ -1,11 +1,15 @@
 \begin{tikzpicture}
 
 \begin{axis}[
+axis background/.style={fill=white!89.80392156862746!black},
+axis line style={white},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white},
+xmajorgrids,
 xmin=-0.5125, xmax=2.5125,
-y grid style={white!69.01960784313725!black},
+y grid style={white},
+ymajorgrids,
 ymin=0, ymax=5.25
 ]
 \draw[fill=blue,draw opacity=0] (axis cs:-0.375,0) rectangle (axis cs:-0.125,1);
