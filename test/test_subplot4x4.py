@@ -9,7 +9,7 @@ def plot():
 
     fig = pp.figure()
 
-    an = np.linspace(0, 2 * np.pi, 100)
+    an = np.linspace(0, 2 * np.pi, 10)
 
     pp.subplot(221)
     pp.plot(3 * np.cos(an), 3 * np.sin(an))

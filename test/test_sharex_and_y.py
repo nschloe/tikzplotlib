@@ -8,7 +8,7 @@ import helpers
 
 def plot():
     fig, axes = plt.subplots(2, 2, sharex=True, sharey=True, figsize=(8, 5))
-    t = np.arange(0.0, 5.0, 0.01)
+    t = np.arange(0.0, 5.0, 0.1)
     s = np.cos(2 * np.pi * t)
 
     axes[0][0].plot(t, s, color="blue")

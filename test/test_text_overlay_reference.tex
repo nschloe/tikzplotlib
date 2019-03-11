@@ -1,0 +1,154 @@
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.12156862745098,0.466666666666667,0.705882352941177}
+\definecolor{color1}{rgb}{1,0.8,0.8}
+\definecolor{color2}{rgb}{1,0.5,0.5}
+
+\begin{axis}[
+legend cell align={left},
+legend entries={{a graph}},
+legend style={at={(0.03,0.97)}, anchor=north west, draw=white!80.0!black},
+tick align=outside,
+tick pos=left,
+x grid style={white!69.01960784313725!black},
+xmin=-0.25, xmax=5.25,
+y grid style={white!69.01960784313725!black},
+ymin=-1.25, ymax=26.25
+]
+\addlegendimage{no markers, color0}
+\addplot [semithick, color0]
+table [row sep=\\]{%
+0	0 \\
+0.102040816326531	0.0104123281965848 \\
+0.204081632653061	0.041649312786339 \\
+0.306122448979592	0.0937109537692628 \\
+0.408163265306122	0.166597251145356 \\
+0.510204081632653	0.260308204914619 \\
+0.612244897959184	0.374843815077051 \\
+0.714285714285714	0.510204081632653 \\
+0.816326530612245	0.666389004581424 \\
+0.918367346938776	0.843398583923365 \\
+1.02040816326531	1.04123281965848 \\
+1.12244897959184	1.25989171178676 \\
+1.22448979591837	1.4993752603082 \\
+1.3265306122449	1.75968346522282 \\
+1.42857142857143	2.04081632653061 \\
+1.53061224489796	2.34277384423157 \\
+1.63265306122449	2.6655560183257 \\
+1.73469387755102	3.00916284881299 \\
+1.83673469387755	3.37359433569346 \\
+1.93877551020408	3.7588504789671 \\
+2.04081632653061	4.1649312786339 \\
+2.14285714285714	4.59183673469388 \\
+2.24489795918367	5.03956684714702 \\
+2.3469387755102	5.50812161599334 \\
+2.44897959183673	5.99750104123282 \\
+2.55102040816327	6.50770512286547 \\
+2.6530612244898	7.03873386089129 \\
+2.75510204081633	7.59058725531029 \\
+2.85714285714286	8.16326530612245 \\
+2.95918367346939	8.75676801332778 \\
+3.06122448979592	9.37109537692628 \\
+3.16326530612245	10.006247396918 \\
+3.26530612244898	10.6622240733028 \\
+3.36734693877551	11.3390254060808 \\
+3.46938775510204	12.036651395252 \\
+3.57142857142857	12.7551020408163 \\
+3.6734693877551	13.4943773427738 \\
+3.77551020408163	14.2544773011245 \\
+3.87755102040816	15.0354019158684 \\
+3.97959183673469	15.8371511870054 \\
+4.08163265306122	16.6597251145356 \\
+4.18367346938776	17.503123698459 \\
+4.28571428571429	18.3673469387755 \\
+4.38775510204082	19.2523948354852 \\
+4.48979591836735	20.1582673885881 \\
+4.59183673469388	21.0849645980841 \\
+4.69387755102041	22.0324864639733 \\
+4.79591836734694	23.0008329862557 \\
+4.89795918367347	23.9900041649313 \\
+5	25 \\
+};
+\node at (axis cs:1,5)[
+  scale=2.5,
+  fill=color1,
+  draw=color2,
+  line width=0.4pt,
+  inner sep=2pt,
+  rounded corners,
+  dash pattern=on 0.4pt off 1.2pt on 2.4pt off 1.2pt,
+  anchor=south,
+  text=red,
+  rotate=30.0
+]{\itshape test1};
+\node at (axis cs:3,6)[
+  scale=2.5,
+  fill=color1,
+  draw=color2,
+  line width=0.4pt,
+  inner sep=3pt,
+  text=blue,
+  rotate=330.0
+]{\bfseries test2};
+\node at (axis cs:4,8)[
+  fill=color1,
+  draw=color2,
+  line width=0.4pt,
+  inner sep=3pt,
+  single arrow,
+  dashed,
+  text=blue,
+  rotate=90.0
+]{\bfseries test3};
+\node at (axis cs:4,16)[
+  fill=color1,
+  draw=color2,
+  line width=0.4pt,
+  inner sep=3pt,
+  single arrow,
+  shape border rotate=180,
+  dotted,
+  text=blue,
+  rotate=90.0
+]{\bfseries test4};
+\node at (axis cs:2,18)[
+  fill=color1,
+  draw=color2,
+  line width=0.4pt,
+  inner sep=3pt,
+  double arrow,
+  text=blue,
+  rotate=0.0
+]{ test5};
+\node at (axis cs:1,20)[
+  fill=color1,
+  draw=color2,
+  line width=0.4pt,
+  inner sep=3pt,
+  circle,
+  text=blue,
+  rotate=0.0
+]{ test6};
+\node at (axis cs:3,23)[
+  fill=color1,
+  draw=color2,
+  line width=0.4pt,
+  inner sep=3pt,
+  decorate,
+  decoration={snake,amplitude=0.5,segment length=3},
+  text=blue,
+  rotate=0.0
+]{ test7};
+\node at (axis cs:3,20)[
+  fill=color1,
+  draw=color2,
+  line width=0.4pt,
+  inner sep=3pt,
+  decorate,
+  decoration={zigzag,amplitude=0.5,segment length=3},
+  text=blue,
+  rotate=0.0
+]{ test8};
+\end{axis}
+
+\end{tikzpicture}

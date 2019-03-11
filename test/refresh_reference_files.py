@@ -9,9 +9,17 @@ import matplotlib.pyplot as plt
 
 def _main():
     this_dir = os.path.dirname(os.path.abspath(__file__))
+    exclude_list = [
+        "test_rotated_labels.py",
+        "test_deterministic_output.py",
+    ]
     for filename in os.listdir(this_dir):
         if filename.startswith("test_") and filename.endswith(".py"):
             spec = importlib.util.spec_from_file_location("plot", filename)
+
+            if filename in exclude_list:
+                continue
+
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
             module.plot()

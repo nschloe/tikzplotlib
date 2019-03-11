@@ -4,6 +4,7 @@ from __future__ import print_function
 
 import codecs
 import os
+import tempfile
 import warnings
 
 import matplotlib as mpl
@@ -24,6 +25,7 @@ from .__about__ import __version__
 
 def get_tikz_code(
     figure="gcf",
+    filepath=None,
     figurewidth=None,
     figureheight=None,
     textsize=10.0,
@@ -138,8 +140,16 @@ def get_tikz_code(
     data["rel data path"] = tex_relative_path_to_data
     data["externalize tables"] = externalize_tables
     data["override externals"] = override_externals
-    # data["output dir"] = os.path.dirname(filepath)
-    # data["base name"] = os.path.splitext(os.path.basename(filepath))[0]
+
+    if filepath:
+        data["output dir"] = os.path.dirname(filepath)
+    else:
+        directory = tempfile.mkdtemp()
+        data["output dir"] = directory
+
+    data["base name"] = (
+        os.path.splitext(os.path.basename(filepath))[0] if filepath else "tmp"
+    )
     data["strict"] = strict
     data["tikz libs"] = set()
     data["pgfplots libs"] = set()

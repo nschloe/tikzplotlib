@@ -9,7 +9,7 @@ def plot():
 
     fig = plt.figure()
 
-    x = np.ma.arange(0, 2 * np.pi, 0.02)
+    x = np.ma.arange(0, 2 * np.pi, 0.4)
     y1 = np.sin(1 * x)
     y2 = np.sin(2 * x)
     y3 = np.sin(3 * x)

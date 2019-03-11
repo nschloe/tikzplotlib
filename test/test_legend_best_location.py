@@ -11,7 +11,7 @@ import matplotlib2tikz as m2t
 def plot():
     fig, ax = plt.subplots(3, 3, sharex="col", sharey="row")
     axes = [ax[i][j] for i in range(len(ax)) for j in range(len(ax[i]))]
-    t = np.arange(0.0, 2.0 * np.pi, 0.1)
+    t = np.arange(0.0, 2.0 * np.pi, 0.4)
 
     # Legend best location is "upper right"
     l, = axes[0].plot(t, np.cos(t) * np.exp(-t), linewidth=0.5)

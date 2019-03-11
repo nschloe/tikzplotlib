@@ -9,7 +9,7 @@ def plot():
 
     fig, ax = plt.subplots()
     with plt.style.context(("ggplot")):
-        t = np.linspace(0, 2 * np.pi, 101)
+        t = np.linspace(0, 2 * np.pi, 11)
         s = np.sin(t)
         c = np.cos(t)
         ax.plot(t, s, "ko-", mec="r", markevery=20)

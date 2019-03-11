@@ -16,7 +16,7 @@ def plot():
     # Matplotlib has the ability to add the lines all at once. Here is a
     # simple example showing how it is done.
 
-    N = 50
+    N = 10
     x = np.arange(N)
     # Here are many sets of y to plot vs x
     ys = [x + i for i in x]
