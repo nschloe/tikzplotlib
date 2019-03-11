@@ -171,3 +171,53 @@ def print_tree(obj, indent=""):
     for child in obj.get_children():
         print_tree(child, indent + "   ")
     return
+
+
+def does_compile(code):
+    _, tmp_base = tempfile.mkstemp()
+    matplotlib2tikz.get_tikz_code()
+
+    # create a latex wrapper for the tikz
+    wrapper = """\\documentclass{{standalone}}
+\\usepackage[utf8]{{inputenc}}
+\\usepackage{{pgfplots}}
+\\usepgfplotslibrary{{groupplots}}
+\\usetikzlibrary{{shapes.arrows}}
+\\pgfplotsset{{compat=newest}}
+\\begin{{document}}
+{}
+\\end{{document}}""".format(
+        code
+    )
+    tex_file = tmp_base + ".tex"
+    with open(tex_file, "w") as f:
+        f.write(wrapper)
+
+    print(wrapper)
+
+    # change into the directory of the TeX file
+    os.chdir(os.path.dirname(tex_file))
+
+    # compile the output to pdf
+    try:
+        subprocess.check_output(
+            ["lualatex", "--interaction=nonstopmode", tex_file],
+            stderr=subprocess.STDOUT,
+        )
+    except subprocess.CalledProcessError as e:
+        print("Command output:")
+        print("=" * 70)
+        print(e.output)
+        print("=" * 70)
+        does_compile = False
+    else:
+        does_compile = True
+
+    return does_compile
+
+
+def equals_reference_file(code, filename):
+    this_dir = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(this_dir, filename), "r") as f:
+        reference = f.read()[:-1]
+    return reference == code
