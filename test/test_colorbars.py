@@ -1,38 +1,36 @@
 # -*- coding: utf-8 -*-
 #
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+
+from helpers import assert_equality
 
 
 def plot():
-    import matplotlib as mpl
-    from matplotlib import pyplot as pp
-
     # Make a figure and axes with dimensions as desired.
-    fig, ax = pp.subplots(3)
+    fig, ax = plt.subplots(3)
 
-    # Set the colormap and norm to correspond to the data for which
-    # the colorbar will be used.
+    # Set the colormap and norm to correspond to the data for which the colorbar will be
+    # used.
     cmap = mpl.cm.cool
     norm = mpl.colors.Normalize(vmin=-5, vmax=10)
 
-    # ColorbarBase derives from ScalarMappable and puts a colorbar in a
-    # specified axes, so it has everything needed for a standalone colorbar.
-    # There are many more kwargs, but the following gives a basic continuous
-    # colorbar with ticks and labels.
+    # ColorbarBase derives from ScalarMappable and puts a colorbar in a specified axes,
+    # so it has everything needed for a standalone colorbar.  There are many more
+    # kwargs, but the following gives a basic continuous colorbar with ticks and labels.
     cb1 = mpl.colorbar.ColorbarBase(
         ax[0], cmap=cmap, norm=norm, orientation="horizontal"
     )
     cb1.set_label("Some Units")
 
-    # The second example illustrates the use of a ListedColormap, a
-    # BoundaryNorm, and extended ends to show the "over" and "under" value
-    # colors.
+    # The second example illustrates the use of a ListedColormap, a BoundaryNorm, and
+    # extended ends to show the "over" and "under" value colors.
     cmap = mpl.colors.ListedColormap(["r", "g", "b", "c"])
     cmap.set_over("0.25")
     cmap.set_under("0.75")
 
-    # If a ListedColormap is used, the length of the bounds array must be one
-    # greater than the length of the color list.  The bounds must be
-    # monotonically increasing.
+    # If a ListedColormap is used, the length of the bounds array must be one greater
+    # than the length of the color list.  The bounds must be monotonically increasing.
     bounds = [1, 2, 4, 7, 8]
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
     cb2 = mpl.colorbar.ColorbarBase(
@@ -49,8 +47,8 @@ def plot():
     )
     cb2.set_label("Discrete intervals, some other units")
 
-    # The third example illustrates the use of custom length colorbar
-    # extensions, used on a colorbar with discrete intervals.
+    # The third example illustrates the use of custom length colorbar extensions, used
+    # on a colorbar with discrete intervals.
     cmap = mpl.colors.ListedColormap(
         [[0.0, 0.4, 1.0], [0.0, 0.8, 1.0], [1.0, 0.8, 0.0], [1.0, 0.4, 0.0]]
     )
@@ -78,6 +76,6 @@ def plot():
     return fig
 
 
-# def test():
-#     phash = Phash(plot())
-#     assert phash.phash == '6be3e6b95e8000de', phash.get_details()
+def test():
+    assert_equality(plot, "test_colorbars_reference.tex")
+    return

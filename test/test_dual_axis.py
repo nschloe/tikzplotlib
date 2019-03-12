@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 #
-from helpers import Phash
+import matplotlib.pyplot as plt
+import numpy as np
+
+from helpers import assert_equality
 
 
 def plot():
-    from matplotlib import pyplot as plt
-    import numpy as np
-
     fig = plt.figure()
     ax = fig.add_subplot(111)
     dat = np.linspace(0, 10, 20)
@@ -18,5 +18,5 @@ def plot():
 
 
 def test():
-    phash = Phash(plot())
-    assert phash.phash == "5b82544c169dde75", phash.get_details()
+    assert_equality(plot, "test_dual_axis_reference.tex")
+    return

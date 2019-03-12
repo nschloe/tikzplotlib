@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
 import numpy as np
 
-import helpers
+from helpers import assert_equality
 
 
 def plot():
@@ -14,6 +14,5 @@ def plot():
 
 
 def test():
-    phash = helpers.Phash(plot())
-    assert phash.phash == "e9c37e896e21be80", phash.get_details()
+    assert_equality(plot, __file__[:-3] + "_reference.tex")
     return

@@ -1,0 +1,426 @@
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.12156862745098,0.466666666666667,0.705882352941177}
+\definecolor{color1}{rgb}{1,0.498039215686275,0.0549019607843137}
+\definecolor{color2}{rgb}{0.172549019607843,0.627450980392157,0.172549019607843}
+\definecolor{color3}{rgb}{0.83921568627451,0.152941176470588,0.156862745098039}
+
+\begin{groupplot}[group style={group size=3 by 3}]
+\nextgroupplot[
+legend cell align={left},
+legend entries={{UR}},
+legend style={draw=white!80.0!black},
+tick align=outside,
+tick pos=left,
+x grid style={white!69.01960784313725!black},
+xmin=-0.3, xmax=6.3,
+y grid style={white!69.01960784313725!black},
+ymin=-1.81206645586932, ymax=2.56038564715022
+]
+\addlegendimage{no markers, color0}
+\addplot [very thin, color0]
+table [row sep=\\]{%
+0	1 \\
+0.4	0.617405647901646 \\
+0.8	0.31305050400448 \\
+1.2	0.109140058289877 \\
+1.6	-0.0058952818797375 \\
+2	-0.0563193499921279 \\
+2.4	-0.066894848642377 \\
+2.8	-0.0572965995429406 \\
+3.2	-0.0406926952814831 \\
+3.6	-0.0245027780701879 \\
+4	-0.0119719005216626 \\
+4.4	-0.00377323010811059 \\
+4.8	0.000720094500753043 \\
+5.2	0.00258460239942893 \\
+5.6	0.00286793692188526 \\
+6	0.00238002418800496 \\
+};
+\nextgroupplot[
+legend cell align={left},
+legend entries={{UL}},
+legend style={at={(0.03,0.97)}, anchor=north west, draw=white!80.0!black},
+tick align=outside,
+tick pos=left,
+x grid style={white!69.01960784313725!black},
+xmin=-0.3, xmax=6.3,
+y grid style={white!69.01960784313725!black},
+ymin=-1.81206645586932, ymax=2.56038564715022
+]
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addplot [very thin, color0]
+table [row sep=\\]{%
+0	1 \\
+0.4	0.97801622502966 \\
+0.8	0.785534621263156 \\
+1.2	0.433820995321303 \\
+1.6	-0.0371198679153043 \\
+2	-0.561739472558052 \\
+2.4	-1.05692810259721 \\
+2.8	-1.4340261793427 \\
+3.2	-1.61331863300479 \\
+3.6	-1.53884359615142 \\
+4	-1.19101633033091 \\
+4.4	-0.594625280944022 \\
+4.8	0.17976081747558 \\
+5.2	1.02205612436531 \\
+5.6	1.79649518929936 \\
+6	2.3616378242857 \\
+};
+\nextgroupplot[
+legend cell align={left},
+legend entries={{LL}},
+legend style={at={(0.03,0.03)}, anchor=south west, draw=white!80.0!black},
+tick align=outside,
+tick pos=left,
+x grid style={white!69.01960784313725!black},
+xmin=-0.3, xmax=6.3,
+y grid style={white!69.01960784313725!black},
+ymin=-1.81206645586932, ymax=2.56038564715022
+]
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addplot [very thin, color0]
+table [row sep=\\]{%
+0	2 \\
+0.4	0.583853163452858 \\
+0.8	0.346356379136388 \\
+1.2	1.96017028665037 \\
+1.6	0.854499966191386 \\
+2	0.160928470923548 \\
+2.4	1.84385395873249 \\
+2.8	1.13673721820783 \\
+3.2	0.0423405196766153 \\
+3.6	1.66031670824408 \\
+4	1.40808206181339 \\
+4.4	3.91736053628744e-05 \\
+4.8	1.424179007337 \\
+5.2	1.64691932232864 \\
+5.6	0.0373941336864324 \\
+6	1.15425144988758 \\
+};
+\nextgroupplot[
+legend cell align={left},
+legend entries={{LR}},
+legend style={at={(0.03,0.03)}, anchor=south west, draw=white!80.0!black},
+tick align=outside,
+tick pos=left,
+x grid style={white!69.01960784313725!black},
+xmin=-0.3, xmax=6.3,
+y grid style={white!69.01960784313725!black},
+ymin=-2.12147231925849, ymax=2.19626058663136
+]
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addplot [very thin, color0]
+table [row sep=\\]{%
+0	2 \\
+0.4	-0.601424425754523 \\
+0.8	-0.716300844056397 \\
+1.2	1.29390525189092 \\
+1.6	0.18924524105951 \\
+2	-0.217354330439026 \\
+2.4	0.98832785613885 \\
+2.8	0.627437965735745 \\
+3.2	0.253303770996275 \\
+3.6	0.938299235493768 \\
+4	0.910455802838593 \\
+4.4	0.65840236439373 \\
+4.8	1.03696130274789 \\
+5.2	1.13609802577068 \\
+5.6	1.00292775397214 \\
+6	1.21535945496279 \\
+};
+\nextgroupplot[
+legend cell align={left},
+legend entries={{CL}},
+legend style={at={(0.91,0.5)}, anchor=east, draw=white!80.0!black},
+tick align=outside,
+tick pos=left,
+x grid style={white!69.01960784313725!black},
+xmin=-0.3, xmax=6.3,
+y grid style={white!69.01960784313725!black},
+ymin=-2.12147231925849, ymax=2.19626058663136
+]
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addplot [semithick, color1, forget plot]
+table [row sep=\\]{%
+0	-1.5 \\
+0.4	-1.5 \\
+0.8	-1.5 \\
+1.2	-1.5 \\
+1.6	-1.5 \\
+2	-1.5 \\
+2.4	-1.5 \\
+2.8	-1.5 \\
+3.2	-1.5 \\
+3.6	-1.5 \\
+4	-1.5 \\
+4.4	-1.5 \\
+4.8	-1.5 \\
+5.2	-1.5 \\
+5.6	-1.5 \\
+6	-1.5 \\
+};
+\addplot [semithick, color2, forget plot]
+table [row sep=\\]{%
+0	1.5 \\
+0.4	1.5 \\
+0.8	1.5 \\
+1.2	1.5 \\
+1.6	1.5 \\
+2	1.5 \\
+2.4	1.5 \\
+2.8	1.5 \\
+3.2	1.5 \\
+3.6	1.5 \\
+4	1.5 \\
+4.4	1.5 \\
+4.8	1.5 \\
+5.2	1.5 \\
+5.6	1.5 \\
+6	1.5 \\
+};
+\nextgroupplot[
+legend cell align={left},
+legend entries={{CR}},
+legend style={at={(0.09,0.5)}, anchor=west, draw=white!80.0!black},
+tick align=outside,
+tick pos=left,
+x grid style={white!69.01960784313725!black},
+xmin=-0.3, xmax=6.3,
+y grid style={white!69.01960784313725!black},
+ymin=-2.12147231925849, ymax=2.19626058663136
+]
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addplot [very thin, color0]
+table [row sep=\\]{%
+0	2 \\
+0.4	-1.30728724172722 \\
+0.8	-0.291000067617227 \\
+1.2	1.68770791746499 \\
+1.6	-1.91531896064677 \\
+2	0.816164123626784 \\
+2.4	0.848358014674 \\
+2.8	-1.92521173262714 \\
+3.2	1.66844672101302 \\
+3.6	-0.255927379254809 \\
+4	-1.33387612330452 \\
+4.4	1.99968661729538 \\
+4.8	-1.28028867893839 \\
+5.2	-0.325981561591411 \\
+5.6	1.70644021544518 \\
+6	-1.90482596083031 \\
+};
+\addplot [semithick, color1, forget plot]
+table [row sep=\\]{%
+0	-1.5 \\
+0.4	-1.5 \\
+0.8	-1.5 \\
+1.2	-1.5 \\
+1.6	-1.5 \\
+2	-1.5 \\
+2.4	-1.5 \\
+2.8	-1.5 \\
+3.2	-1.5 \\
+3.6	-1.5 \\
+4	-1.5 \\
+4.4	-1.5 \\
+4.8	-1.5 \\
+5.2	-1.5 \\
+5.6	-1.5 \\
+6	-1.5 \\
+};
+\addplot [semithick, color2, forget plot]
+table [row sep=\\]{%
+0	1.5 \\
+0.4	1.5 \\
+0.8	1.5 \\
+1.2	1.5 \\
+1.6	1.5 \\
+2	1.5 \\
+2.4	1.5 \\
+2.8	1.5 \\
+3.2	1.5 \\
+3.6	1.5 \\
+4	1.5 \\
+4.4	1.5 \\
+4.8	1.5 \\
+5.2	1.5 \\
+5.6	1.5 \\
+6	1.5 \\
+};
+\nextgroupplot[
+legend cell align={left},
+legend entries={{LC}},
+legend style={at={(0.5,0.09)}, anchor=south, draw=white!80.0!black},
+tick align=outside,
+tick pos=left,
+x grid style={white!69.01960784313725!black},
+xmin=-0.3, xmax=6.3,
+y grid style={white!69.01960784313725!black},
+ymin=-3.3, ymax=3.3
+]
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addplot [very thin, color0]
+table [row sep=\\]{%
+0	-3 \\
+0.4	-2.65483702755934 \\
+0.8	-1.92942405610683 \\
+1.2	-0.964147493544899 \\
+1.6	0.0746465747094709 \\
+2	1.02213663863179 \\
+2.4	1.74016332366039 \\
+2.8	2.13634897774119 \\
+3.2	2.17473237047717 \\
+3.6	1.87694135184385 \\
+4	1.3144512660846 \\
+4.4	0.593800684986335 \\
+4.8	-0.162428753256752 \\
+5.2	-0.835628364464015 \\
+5.6	-1.32903077825077 \\
+6	-1.58085787783637 \\
+};
+\nextgroupplot[
+legend cell align={left},
+legend entries={{UC}},
+legend style={at={(0.5,0.91)}, anchor=north, draw=white!80.0!black},
+tick align=outside,
+tick pos=left,
+x grid style={white!69.01960784313725!black},
+xmin=-0.3, xmax=6.3,
+y grid style={white!69.01960784313725!black},
+ymin=-3.3, ymax=3.3
+]
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addplot [very thin, color0]
+table [row sep=\\]{%
+0	3 \\
+0.4	2.65483702755934 \\
+0.8	1.92942405610683 \\
+1.2	0.964147493544899 \\
+1.6	-0.0746465747094709 \\
+2	-1.02213663863179 \\
+2.4	-1.74016332366039 \\
+2.8	-2.13634897774119 \\
+3.2	-2.17473237047717 \\
+3.6	-1.87694135184385 \\
+4	-1.3144512660846 \\
+4.4	-0.593800684986335 \\
+4.8	0.162428753256752 \\
+5.2	0.835628364464015 \\
+5.6	1.32903077825077 \\
+6	1.58085787783637 \\
+};
+\nextgroupplot[
+legend entries={{}},
+legend style={draw=white!80.0!black},
+tick align=outside,
+tick pos=left,
+x grid style={white!69.01960784313725!black},
+xmin=-0.3, xmax=6.3,
+y grid style={white!69.01960784313725!black},
+ymin=-3.3, ymax=3.3
+]
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addlegendimage{no markers, color0}
+\addplot [very thin, color0, forget plot]
+table [row sep=\\]{%
+0	2 \\
+0.4	-1.30728724172722 \\
+0.8	-0.291000067617227 \\
+1.2	1.68770791746499 \\
+1.6	-1.91531896064677 \\
+2	0.816164123626784 \\
+2.4	0.848358014674 \\
+2.8	-1.92521173262714 \\
+3.2	1.66844672101302 \\
+3.6	-0.255927379254809 \\
+};
+\addplot [very thin, color1, forget plot]
+table [row sep=\\]{%
+2.4	0.848358014674 \\
+2.8	-1.92521173262714 \\
+3.2	1.66844672101302 \\
+3.6	-0.255927379254809 \\
+4	-1.33387612330452 \\
+4.4	1.99968661729538 \\
+4.8	-1.28028867893839 \\
+5.2	-0.325981561591411 \\
+5.6	1.70644021544518 \\
+6	-1.90482596083031 \\
+};
+\addplot [semithick, color2, forget plot]
+table [row sep=\\]{%
+0	-2 \\
+0.4	-2 \\
+0.8	-2 \\
+1.2	-2 \\
+1.6	-2 \\
+2	-2 \\
+2.4	-2 \\
+2.8	-2 \\
+3.2	-2 \\
+3.6	-2 \\
+4	-2 \\
+4.4	-2 \\
+4.8	-2 \\
+5.2	-2 \\
+5.6	-2 \\
+6	-2 \\
+};
+\addplot [semithick, color3, forget plot]
+table [row sep=\\]{%
+0	2 \\
+0.4	2 \\
+0.8	2 \\
+1.2	2 \\
+1.6	2 \\
+2	2 \\
+2.4	2 \\
+2.8	2 \\
+3.2	2 \\
+3.6	2 \\
+4	2 \\
+4.4	2 \\
+4.8	2 \\
+5.2	2 \\
+5.6	2 \\
+6	2 \\
+};
+\end{groupplot}
+
+\end{tikzpicture}

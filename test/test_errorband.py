@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 #
-from helpers import Phash
+import matplotlib.pyplot as plt
+import numpy as np
+
+from helpers import assert_equality
 
 
 def plot():
-    from matplotlib import pyplot as plt
-    import numpy as np
-
     fig, ax = plt.subplots()
     with plt.style.context(("ggplot")):
-        t = np.linspace(0, 2 * np.pi, 101)
+        t = np.linspace(0, 2 * np.pi, 11)
         s = np.sin(t)
         ax.plot(t, s, "k-")
         ax.fill_between(t, s + 0.1, s - 0.1, facecolor="k", alpha=0.2)
@@ -22,5 +22,5 @@ def plot():
 
 
 def test():
-    phash = Phash(plot())
-    assert phash.phash == "af2cd59221727725", phash.get_details()
+    assert_equality(plot, "test_errorband_reference.tex")
+    return

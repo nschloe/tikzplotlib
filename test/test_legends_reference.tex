@@ -1,0 +1,78 @@
+\begin{tikzpicture}
+
+\begin{axis}[
+legend cell align={left},
+legend entries={{No mask},{Masked if > 0.5},{Masked if < -0.5}},
+legend style={draw=white!80.0!black},
+tick align=outside,
+tick pos=left,
+title={Masked line demo},
+unbounded coords=jump,
+x grid style={white!69.01960784313725!black},
+xmin=-0.3, xmax=6.3,
+y grid style={white!69.01960784313725!black},
+ymin=-1.09595151942971, ymax=1.09936051363537
+]
+\addlegendimage{no markers, red}
+\addlegendimage{no markers, green!50.0!black}
+\addlegendimage{no markers, blue}
+\addplot [ultra thick, red]
+table [row sep=\\]{%
+0	0 \\
+0.4	0.389418342308651 \\
+0.8	0.717356090899523 \\
+1.2	0.932039085967226 \\
+1.6	0.999573603041505 \\
+2	0.909297426825682 \\
+2.4	0.675463180551151 \\
+2.8	0.334988150155905 \\
+3.2	-0.0583741434275801 \\
+3.6	-0.442520443294852 \\
+4	-0.756802495307928 \\
+4.4	-0.951602073889516 \\
+4.8	-0.996164608835841 \\
+5.2	-0.883454655720153 \\
+5.6	-0.631266637872321 \\
+6	-0.279415498198926 \\
+};
+\addplot [thick, green!50.0!black]
+table [row sep=\\]{%
+0	0 \\
+0.4	nan \\
+0.8	nan \\
+1.2	nan \\
+1.6	-0.0583741434275801 \\
+2	-0.756802495307928 \\
+2.4	-0.996164608835841 \\
+2.8	-0.631266637872321 \\
+3.2	0.116549204850494 \\
+3.6	nan \\
+4	nan \\
+4.4	nan \\
+4.8	-0.174326781222981 \\
+5.2	-0.827826469085654 \\
+5.6	-0.979177729151317 \\
+6	-0.536572918000435 \\
+};
+\addplot [semithick, blue, mark=*, mark size=5, mark options={solid}, only marks]
+table [row sep=\\]{%
+0	0 \\
+0.4	0.932039085967226 \\
+0.8	0.675463180551151 \\
+1.2	-0.442520443294853 \\
+1.6	nan \\
+2	-0.279415498198926 \\
+2.4	0.793667863849154 \\
+2.8	0.85459890808828 \\
+3.2	-0.174326781222981 \\
+3.6	nan \\
+4	nan \\
+4.4	0.592073514707224 \\
+4.8	0.965657776549277 \\
+5.2	0.107753652299442 \\
+5.6	nan \\
+6	nan \\
+};
+\end{axis}
+
+\end{tikzpicture}

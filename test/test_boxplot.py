@@ -7,12 +7,12 @@ which crashes latex (due to it treating an empty table as a table with
 external data in the file '' or '.tex')
 See: https://github.com/nschloe/matplotlib2tikz/pull/134
 """
-from helpers import Phash
+import matplotlib.pyplot as plt
+
+from helpers import assert_equality
 
 
 def plot():
-    import matplotlib.pyplot as plt
-
     # plot data
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -92,5 +92,5 @@ def plot():
 
 
 def test():
-    phash = Phash(plot())
-    assert phash.phash == "69e2f6b97e8000de", phash.get_details()
+    assert_equality(plot, "test_boxplot_reference.tex")
+    return
