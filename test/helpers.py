@@ -176,10 +176,11 @@ def print_tree(obj, indent=""):
 # https://stackoverflow.com/a/845432/353337
 def _unidiff_output(expected, actual):
     import difflib
+
     expected = expected.splitlines(1)
     actual = actual.splitlines(1)
     diff = difflib.unified_diff(expected, actual)
-    return ''.join(diff)
+    return "".join(diff)
 
 
 def assert_equality(plot, filename):
