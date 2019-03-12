@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 #
-import helpers
+import matplotlib.pyplot as plt
+import numpy as np
+
+from helpers import assert_equality
 
 
 def plot():
-    from matplotlib import pyplot as plt
-    import numpy as np
-
     fig = plt.figure()
     with plt.style.context(("ggplot")):
         t = np.arange(0.0, 2.0, 0.1)
@@ -24,9 +24,5 @@ def plot():
 
 
 def test():
-    phash = helpers.Phash(plot())
-    assert phash.phash == "1f36e5ce21c1e5c1", phash.get_details()
-
-
-if __name__ == "__main__":
-    helpers.compare_with_latex(plot())
+    assert_equality(plot, "test_basic_sin_reference.tex")
+    return

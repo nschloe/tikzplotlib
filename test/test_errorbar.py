@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 #
-import helpers
+import matplotlib.pyplot as plt
+
+from helpers import assert_equality
 
 
 def plot():
-    import matplotlib.pyplot as plt
-
     # plot data
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -15,10 +15,9 @@ def plot():
     ystd = [0.1, 0.5, 0.8, 0.3]
 
     ax.errorbar(x, y, yerr=ystd)
-
     return fig
 
 
 def test():
-    phash = helpers.Phash(plot())
-    assert phash.phash == "ab435e25bea866b0", phash.get_details()
+    assert_equality(plot, "test_errorbar_reference.tex")
+    return

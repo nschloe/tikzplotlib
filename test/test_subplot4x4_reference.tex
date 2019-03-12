@@ -1,0 +1,102 @@
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.12156862745098,0.466666666666667,0.705882352941177}
+\definecolor{color1}{rgb}{1,0.498039215686275,0.0549019607843137}
+
+\begin{groupplot}[group style={group size=2 by 2}]
+\nextgroupplot[
+tick align=outside,
+tick pos=left,
+title={not equal, looks like ellipse},
+x grid style={white!69.01960784313725!black},
+xmin=-3.11003175547561, xmax=3.29095389311789,
+y grid style={white!69.01960784313725!black},
+ymin=-3.24986558494029, ymax=3.24986558494029
+]
+\addplot [semithick, color0, forget plot]
+table [row sep=\\]{%
+3	0 \\
+2.29813332935693	1.92836282905962 \\
+0.520944533000791	2.95442325903662 \\
+-1.5	2.59807621135332 \\
+-2.81907786235772	1.02606042997701 \\
+-2.81907786235773	-1.02606042997701 \\
+-1.5	-2.59807621135332 \\
+0.52094453300079	-2.95442325903662 \\
+2.29813332935693	-1.92836282905962 \\
+3	-7.34788079488412e-16 \\
+};
+\nextgroupplot[
+tick align=outside,
+tick pos=left,
+title={equal, looks like circle},
+x grid style={white!69.01960784313725!black},
+xmin=-3.11003175547561, xmax=3.29095389311789,
+y grid style={white!69.01960784313725!black},
+ymin=-3.24986558494029, ymax=3.24986558494029
+]
+\addplot [semithick, color0, forget plot]
+table [row sep=\\]{%
+3	0 \\
+2.29813332935693	1.92836282905962 \\
+0.520944533000791	2.95442325903662 \\
+-1.5	2.59807621135332 \\
+-2.81907786235772	1.02606042997701 \\
+-2.81907786235773	-1.02606042997701 \\
+-1.5	-2.59807621135332 \\
+0.52094453300079	-2.95442325903662 \\
+2.29813332935693	-1.92836282905962 \\
+3	-7.34788079488412e-16 \\
+};
+\nextgroupplot[
+tick align=outside,
+tick pos=left,
+title={looks like circle, even after changing limits},
+x grid style={white!69.01960784313725!black},
+xmin=-3, xmax=3,
+y grid style={white!69.01960784313725!black},
+ymin=-3, ymax=3
+]
+\addplot [semithick, color0, forget plot]
+table [row sep=\\]{%
+3	0 \\
+2.29813332935693	1.92836282905962 \\
+0.520944533000791	2.95442325903662 \\
+-1.5	2.59807621135332 \\
+-2.81907786235772	1.02606042997701 \\
+-2.81907786235773	-1.02606042997701 \\
+-1.5	-2.59807621135332 \\
+0.52094453300079	-2.95442325903662 \\
+2.29813332935693	-1.92836282905962 \\
+3	-7.34788079488412e-16 \\
+};
+\nextgroupplot[
+tick align=outside,
+tick pos=left,
+title={still equal after adding line},
+x grid style={white!69.01960784313725!black},
+xmin=-3, xmax=3,
+y grid style={white!69.01960784313725!black},
+ymin=-3, ymax=3
+]
+\addplot [semithick, color0, forget plot]
+table [row sep=\\]{%
+3	0 \\
+2.29813332935693	1.92836282905962 \\
+0.520944533000791	2.95442325903662 \\
+-1.5	2.59807621135332 \\
+-2.81907786235772	1.02606042997701 \\
+-2.81907786235773	-1.02606042997701 \\
+-1.5	-2.59807621135332 \\
+0.52094453300079	-2.95442325903662 \\
+2.29813332935693	-1.92836282905962 \\
+3	-7.34788079488412e-16 \\
+};
+\addplot [semithick, color1, forget plot]
+table [row sep=\\]{%
+0	0 \\
+4	4 \\
+};
+\end{groupplot}
+
+\end{tikzpicture}

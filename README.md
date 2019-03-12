@@ -2,13 +2,12 @@
 
 [![CircleCI](https://img.shields.io/circleci/project/github/nschloe/matplotlib2tikz/master.svg)](https://circleci.com/gh/nschloe/matplotlib2tikz/tree/master)
 [![codecov](https://img.shields.io/codecov/c/github/nschloe/matplotlib2tikz.svg)](https://codecov.io/gh/nschloe/matplotlib2tikz)
-[![Codacy grade](https://img.shields.io/codacy/grade/fbb81be6728d4513b2e031eaec7427aa.svg)](https://app.codacy.com/app/nschloe/matplotlib2tikz/dashboard)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 [![Documentation Status](https://readthedocs.org/projects/matplotlib2tikz/badge/?version=latest)](https://readthedocs.org/projects/matplotlib2tikz/?badge=latest)
 [![awesome](https://img.shields.io/badge/awesome-yes-brightgreen.svg)](https://github.com/nschloe/matplotlib2tikz)
 [![PyPi Version](https://img.shields.io/pypi/v/matplotlib2tikz.svg)](https://pypi.org/project/matplotlib2tikz)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1173089.svg)](https://doi.org/10.5281/zenodo.1173089)
-[![GitHub stars](https://img.shields.io/github/stars/nschloe/matplotlib2tikz.svg?logo=github&label=Stars)](https://github.com/nschloe/matplotlib2tikz)
+[![GitHub stars](https://img.shields.io/github/stars/nschloe/matplotlib2tikz.svg?logo=github&label=Stars&logoColor=white)](https://github.com/nschloe/matplotlib2tikz)
 
 This is matplotlib2tikz, a Python tool for converting matplotlib figures into
 [PGFPlots](https://www.ctan.org/pkg/pgfplots)
@@ -17,8 +16,6 @@ This is matplotlib2tikz, a Python tool for converting matplotlib figures into
 ![](https://nschloe.github.io/matplotlib2tikz/example.png)
 
 for native inclusion into LaTeX documents.
-
-matplotlib2tikz works with both Python 2 and Python 3.
 
 The output of matplotlib2tikz is in
 [PGFPlots](http://pgfplots.sourceforge.net/pgfplots.pdf), a LaTeX library that
@@ -93,6 +90,9 @@ Tweaking the plot is straightforward and can be done as part of your LaTeX
 work flow.
 [The fantastic PGFPlots manual](http://pgfplots.sourceforge.net/pgfplots.pdf)
 contains great examples of how to make your plot look even better.
+
+Of course, not all figures produced by matplotlib can be converted without error.
+Notably, [3D plot don't work](https://github.com/matplotlib/matplotlib/issues/7243).
 
 ### Installation
 
@@ -172,36 +172,14 @@ please visit
 ### Testing
 
 matplotlib2tikz has automatic unit testing to make sure that the software
-doesn't accidentally get worse over time. In `test/testfunctions/`, a number of
-test cases are specified. Those
-
- * run through matplotlib2tikz,
- * the resulting LaTeX file is compiled into a PDF (`pdflatex`),
- * the PDF is converted into a PNG (`pdftoppm`),
- * a perceptual hash is computed from the PNG and compared to a previously
-   stored version.
+doesn't accidentally get worse over time. In `test/`, a number of
+test cases are specified. Those run through matplotlib2tikz and compare the output with
+a previously stored reference TeX file.
 
 To run the tests, just check out this repository and type
 ```
 pytest
 ```
-
-The final pHash may depend on any of the tools used during the process. For
-example, if your version of [Pillow](https://pypi.org/project/Pillow/)
-is too old, the pHash function might operate slightly differently and produce a
-slightly different pHash, resulting in a failing test. If tests are failing on
-your local machine, you should first make sure to have an up-to-date Pillow.
-
-If you would like to contribute a test, just take a look at the examples in
-`test/testfunctions/`. Essentially a test consists of three things:
-
-  * a description,
-  * a pHash, and
-  * a function that creates the image in matplotlib.
-
-Just add your file, add it to `test/testfunction/__init__.py`, and run the
-tests. A failing test will always print out the pHash, so you can leave it
-empty in the first run and fill it in later to make the test pass.
 
 ### Distribution
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-import helpers
+from helpers import assert_equality
 
 
 def plot():
@@ -9,7 +9,7 @@ def plot():
 
     fig = plt.figure()
 
-    x = np.ma.arange(0, 2 * np.pi, 0.02)
+    x = np.ma.arange(0, 2 * np.pi, 0.4)
     y = np.ma.sin(x)
     y1 = np.sin(2 * x)
     y2 = np.sin(3 * x)
@@ -27,10 +27,5 @@ def plot():
 
 
 def test():
-    phash = helpers.Phash(plot())
-    assert phash.phash == "7f7ca18386d10e8b", phash.get_details()
+    assert_equality(plot, __file__[:-3] + "_reference.tex")
     return
-
-
-if __name__ == "__main__":
-    helpers.compare_with_latex(plot())

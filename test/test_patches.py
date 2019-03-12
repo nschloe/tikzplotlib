@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-import helpers
+from helpers import assert_equality
 
 
 def plot():
@@ -38,10 +38,10 @@ def plot():
 
     # Some limiting conditions on Wedge
     patches += [
-        Wedge((0.3, 0.7), .1, 0, 360),  # Full circle
-        Wedge((0.7, 0.8), .2, 0, 360, width=0.05),  # Full ring
-        Wedge((0.8, 0.3), .2, 0, 45),  # Full sector
-        Wedge((0.8, 0.3), .2, 45, 90, width=0.10),  # Ring sector
+        Wedge((0.3, 0.7), 0.1, 0, 360),  # Full circle
+        Wedge((0.7, 0.8), 0.2, 0, 360, width=0.05),  # Full ring
+        Wedge((0.8, 0.3), 0.2, 0, 45),  # Full sector
+        Wedge((0.8, 0.3), 0.2, 45, 90, width=0.10),  # Ring sector
     ]
 
     for _ in range(N):
@@ -65,6 +65,5 @@ def plot():
 
 
 def test():
-    phash = helpers.Phash(plot())
-    assert phash.phash == "7ff8494a87627116", phash.get_details()
+    assert_equality(plot, __file__[:-3] + "_reference.tex")
     return

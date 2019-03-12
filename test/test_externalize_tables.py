@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-import helpers
+from helpers import assert_equality
 
 
 def plot():
@@ -24,14 +24,5 @@ def plot():
 
 
 def test():
-    phash = helpers.Phash(plot(), save_kwargs={"externalize_tables": True})
-    assert phash.phash == "1f36e5ce21c1e5c1", phash.get_details()
-
-    phash = helpers.Phash(
-        plot(), save_kwargs={"externalize_tables": True, "override_externals": True}
-    )
-    assert phash.phash == "1f36e5ce21c1e5c1", phash.get_details()
-
-
-if __name__ == "__main__":
-    helpers.compare_with_latex(plot())
+    assert_equality(plot, "test_externalize_tables_reference.tex")
+    return

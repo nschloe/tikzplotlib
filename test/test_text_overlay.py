@@ -3,7 +3,7 @@
 import matplotlib.pyplot as plt
 import numpy
 
-import helpers
+from helpers import assert_equality
 
 
 def plot():
@@ -16,7 +16,7 @@ def plot():
         5,
         "test1",
         size=50,
-        rotation=30.,
+        rotation=30.0,
         ha="center",
         va="bottom",
         color="r",
@@ -24,8 +24,8 @@ def plot():
         weight="light",
         bbox=dict(
             boxstyle="round, pad=0.2",
-            ec=(1., 0.5, 0.5),
-            fc=(1., 0.8, 0.8),
+            ec=(1.0, 0.5, 0.5),
+            fc=(1.0, 0.8, 0.8),
             ls="dashdot",
         ),
     )
@@ -34,12 +34,12 @@ def plot():
         6,
         "test2",
         size=50,
-        rotation=-30.,
+        rotation=-30.0,
         ha="center",
         va="center",
         color="b",
         weight="bold",
-        bbox=dict(boxstyle="square", ec=(1., 0.5, 0.5), fc=(1., 0.8, 0.8)),
+        bbox=dict(boxstyle="square", ec=(1.0, 0.5, 0.5), fc=(1.0, 0.8, 0.8)),
     )
     plt.text(
         4,
@@ -51,7 +51,9 @@ def plot():
         va="center",
         color="b",
         weight="demi",
-        bbox=dict(boxstyle="rarrow", ls="dashed", ec=(1., 0.5, 0.5), fc=(1., 0.8, 0.8)),
+        bbox=dict(
+            boxstyle="rarrow", ls="dashed", ec=(1.0, 0.5, 0.5), fc=(1.0, 0.8, 0.8)
+        ),
     )
     plt.text(
         4,
@@ -63,7 +65,9 @@ def plot():
         va="center",
         color="b",
         weight="heavy",
-        bbox=dict(boxstyle="larrow", ls="dotted", ec=(1., 0.5, 0.5), fc=(1., 0.8, 0.8)),
+        bbox=dict(
+            boxstyle="larrow", ls="dotted", ec=(1.0, 0.5, 0.5), fc=(1.0, 0.8, 0.8)
+        ),
     )
     plt.text(
         2,
@@ -73,7 +77,7 @@ def plot():
         ha="center",
         va="center",
         color="b",
-        bbox=dict(boxstyle="darrow", ec=(1., 0.5, 0.5), fc=(1., 0.8, 0.8)),
+        bbox=dict(boxstyle="darrow", ec=(1.0, 0.5, 0.5), fc=(1.0, 0.8, 0.8)),
     )
     plt.text(
         1,
@@ -83,7 +87,7 @@ def plot():
         ha="center",
         va="center",
         color="b",
-        bbox=dict(boxstyle="circle", ec=(1., 0.5, 0.5), fc=(1., 0.8, 0.8)),
+        bbox=dict(boxstyle="circle", ec=(1.0, 0.5, 0.5), fc=(1.0, 0.8, 0.8)),
     )
     plt.text(
         3,
@@ -93,7 +97,7 @@ def plot():
         ha="center",
         va="center",
         color="b",
-        bbox=dict(boxstyle="roundtooth", ec=(1., 0.5, 0.5), fc=(1., 0.8, 0.8)),
+        bbox=dict(boxstyle="roundtooth", ec=(1.0, 0.5, 0.5), fc=(1.0, 0.8, 0.8)),
     )
     plt.text(
         3,
@@ -103,7 +107,7 @@ def plot():
         ha="center",
         va="center",
         color="b",
-        bbox=dict(boxstyle="sawtooth", ec=(1., 0.5, 0.5), fc=(1., 0.8, 0.8)),
+        bbox=dict(boxstyle="sawtooth", ec=(1.0, 0.5, 0.5), fc=(1.0, 0.8, 0.8)),
     )
     plt.plot(xxx, yyy, label="a graph")
     plt.legend()
@@ -112,13 +116,5 @@ def plot():
 
 
 def test():
-    phash = helpers.Phash(plot())
-    assert phash.phash == "370da93449d3f64c", phash.get_details()
+    assert_equality(plot, __file__[:-3] + "_reference.tex")
     return
-
-
-if __name__ == "__main__":
-    plot()
-    plt.show()
-    # phash, _, _, _, _, _, _ = helpers.compute_phash(plot2())
-    # print(phash)

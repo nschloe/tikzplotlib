@@ -257,7 +257,7 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
                 not isinstance(marker_face_color, str)
                 or marker_face_color.lower() != "none"
             )
-            and pgfplots_marker not in ["|", "-"]
+            and pgfplots_marker not in ["|", "-", "asterisk", "star"]
         ):
             pgfplots_marker += "*"
         return (data, pgfplots_marker, marker_options)
@@ -344,7 +344,14 @@ def _marker(
 
     mark_every = obj.get_markevery()
     if mark_every:
-        addplot_options.append("mark repeat=%d" % mark_every)
+        if type(mark_every) is int:
+            addplot_options.append("mark repeat=%d" % mark_every)
+        else:
+            # python starts at index 0, pgfplots at index 1
+            pgf_marker = [1 + m for m in mark_every]
+            addplot_options.append(
+                "mark indices = {" + ", ".join(map(str, pgf_marker)) + "}"
+            )
 
     mark_options = ["solid"]
     if extra_mark_options:
@@ -376,7 +383,12 @@ def _marker(
 
 
 def _table(obj, content, data):
-    content.append("table {%\n")
+    if data["externalize tables"]:
+        content.append("table {%\n")
+        row_sep = ""
+    else:
+        content.append("table [row sep=\\\\]{%\n")
+        row_sep = "\\\\"
 
     # nschloe, Oct 2, 2015:
     #   The transform call yields warnings and it is unclear why. Perhaps
@@ -409,12 +421,12 @@ def _table(obj, content, data):
         data["extra axis options"].add("unbounded coords=jump")
         for (x, y, is_masked) in zip(xdata, ydata, ydata.mask):
             if is_masked:
-                plot_table.append("%.15g\tnan\n" % x)
+                plot_table.append("%.15g\tnan %s\n" % (x, row_sep))
             else:
-                plot_table.append("%.15g\t%.15g\n" % (x, y))
+                plot_table.append("%.15g\t%.15g %s\n" % (x, y, row_sep))
     else:
         for (x, y) in zip(xdata, ydata):
-            plot_table.append("%.15g\t%.15g\n" % (x, y))
+            plot_table.append("%.15g\t%.15g %s\n" % (x, y, row_sep))
 
     if data["externalize tables"]:
         filename, rel_filepath = files.new_filename(data, "table", ".tsv")
