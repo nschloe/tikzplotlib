@@ -73,7 +73,7 @@ def _does_compile(code):
     # compile the output to pdf
     try:
         subprocess.check_output(
-            ["lualatex", "--interaction=nonstopmode", tex_file],
+            ["pdflatex", "--interaction=nonstopmode", tex_file],
             stderr=subprocess.STDOUT,
         )
     except subprocess.CalledProcessError as e:
