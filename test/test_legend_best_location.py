@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 #
-import helpers
+import matplotlib.pyplot as plt
+import numpy as np
+
+from helpers import assert_equality
 
 
 def plot():
-    from matplotlib import pyplot as plt
-    import numpy as np
-
     fig, ax = plt.subplots(3, 3, sharex="col", sharey="row")
     axes = [ax[i][j] for i in range(len(ax)) for j in range(len(ax[i]))]
-    t = np.arange(0.0, 2.0 * np.pi, 0.1)
+    t = np.arange(0.0, 2.0 * np.pi, 0.4)
 
     # Legend best location is "upper right"
     l, = axes[0].plot(t, np.cos(t) * np.exp(-t), linewidth=0.5)
@@ -62,6 +62,5 @@ def plot():
 
 
 def test():
-    phash = helpers.Phash(plot())
-    assert phash.phash == "971d991d1c877c1c", phash.get_details()
+    assert_equality(plot, "test_legend_best_location_reference.tex")
     return

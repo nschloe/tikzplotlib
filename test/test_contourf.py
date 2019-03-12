@@ -3,12 +3,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-import helpers
-
 
 def plot():
-
-    delta = 0.025
+    delta = 0.8
     x = y = np.arange(-3.0, 3.01, delta)
     X, Y = np.meshgrid(x, y)
     Z1 = plt.mlab.bivariate_normal(X, Y, 1.0, 1.0, 0.0, 0.0)
@@ -21,11 +18,8 @@ def plot():
     return fig
 
 
-def test():
-    phash = helpers.Phash(plot())
-    assert phash.phash == "ff7e052c093e0716", phash.get_details()
-
-
-if __name__ == "__main__":
-    test()
-    helpers.compare_with_latex(plot())
+# TODO reintroduce
+# from helpers import assert_equality
+# def test():
+#     assert_equality(plot, __file__[:-3] + "_reference.tex")
+#     return

@@ -2,6 +2,7 @@
 #
 import matplotlib as mpl
 import numpy
+from matplotlib.backends import backend_pgf as mpl_backend_pgf
 
 from . import color
 
@@ -41,9 +42,11 @@ class Axes(object):
         # get axes titles
         xlabel = obj.get_xlabel()
         if xlabel:
+            xlabel = mpl_backend_pgf.common_texification(xlabel)
             self.axis_options.append("xlabel={{{}}}".format(xlabel))
         ylabel = obj.get_ylabel()
         if ylabel:
+            ylabel = mpl_backend_pgf.common_texification(ylabel)
             self.axis_options.append("ylabel={{{}}}".format(ylabel))
 
         # Axes limits.
@@ -57,8 +60,14 @@ class Axes(object):
         # axes scaling
         if obj.get_xscale() == "log":
             self.axis_options.append("xmode=log")
+            self.axis_options.append(
+                "log basis x={{{}}}".format(_try_f2i(obj.xaxis._scale.base))
+            )
         if obj.get_yscale() == "log":
             self.axis_options.append("ymode=log")
+            self.axis_options.append(
+                "log basis y={{{}}}".format(_try_f2i(obj.yaxis._scale.base))
+            )
 
         if not obj.get_axisbelow():
             self.axis_options.append("axis on top")
@@ -539,6 +548,7 @@ def _get_ticks(data, xy, ticks, ticklabels):
         # store the label anyway
         label = ticklabel.get_text()
         if ticklabel.get_visible():
+            label = mpl_backend_pgf.common_texification(label)
             pgfplots_ticklabels.append(label)
         else:
             is_label_required = True
@@ -806,3 +816,11 @@ def _find_associated_colorbar(obj):
             #   reference to axis containing colorbar)
             return cbar
     return None
+
+
+def _try_f2i(x):
+    """Convert losslessly float to int if possible.
+    Used for log base: if not used, base for log scale can be "10.0" (and then
+    printed as such  by pgfplots).
+    """
+    return int(x) if int(x) == x else x

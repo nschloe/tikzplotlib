@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 #
-import helpers
+import matplotlib.pyplot as plt
+import numpy as np
+
+from helpers import assert_equality
 
 
 def plot():
-    from matplotlib import pyplot as plt
-    import numpy as np
-
     fig = plt.figure()
 
     N = 10
@@ -18,5 +18,5 @@ def plot():
 
 
 def test():
-    phash = helpers.Phash(plot())
-    assert phash.phash == "a103fa59ee613e86", phash.get_details()
+    assert_equality(plot, "test_fillstyle_reference.tex")
+    return

@@ -5,8 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.transforms as mtransforms
 from matplotlib.patches import FancyBboxPatch
 
-import helpers
-
+from helpers import assert_equality
 
 # Bbox object around which the fancy box will be drawn.
 bb = mtransforms.Bbox([[0.3, 0.4], [0.7, 0.6]])
@@ -200,12 +199,5 @@ def plot():
 
 
 def test():
-    phash = helpers.Phash(plot())
-    assert phash.phash == "dd2325dc23cdd81a", phash.get_details()
-
-
-if __name__ == "__main__":
-    plot()
-    plt.show()
-    # phash, _, _, _, _, _, _ = helpers.compute_phash(plot2())
-    # print(phash)
+    assert_equality(plot, "test_fancybox_reference.tex")
+    return
