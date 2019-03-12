@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-import os
-
 import matplotlib.pyplot as plt
 
-import matplotlib2tikz as m2t
+from helpers import assert_equality
 
 
 def plot():
@@ -17,15 +15,9 @@ def plot():
     ystd = [0.1, 0.5, 0.8, 0.3]
 
     ax.errorbar(x, y, yerr=ystd)
-
     return fig
 
 
 def test():
-    plot()
-    code = m2t.get_tikz_code(include_disclaimer=False)
-    this_dir = os.path.dirname(os.path.abspath(__file__))
-    with open(os.path.join(this_dir, "reference.tex"), "r") as f:
-        reference = f.read()[:-1]
-    assert reference == code
+    assert_equality(plot, "test_errorbar_reference.tex")
     return

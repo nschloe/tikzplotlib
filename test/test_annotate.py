@@ -3,8 +3,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-import matplotlib2tikz as m2t
-from helpers import does_compile, equals_reference_file
+from helpers import assert_equality
 
 
 def plot():
@@ -33,14 +32,5 @@ def plot():
 
 
 def test():
-    plot()
-    code = m2t.get_tikz_code(include_disclaimer=False)
-    plt.close()
-    assert equals_reference_file(code, "test_annotate_reference.tex")
-    assert does_compile(code)
+    assert_equality(plot, "test_annotate_reference.tex")
     return
-
-
-if __name__ == "__main__":
-    plot()
-    plt.show()

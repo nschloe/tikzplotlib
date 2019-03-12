@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-from __future__ import print_function
-
 import numpy as np
 import matplotlib.pyplot as plt
+
+from helpers import assert_equality
 
 
 def plot():
@@ -21,3 +21,8 @@ def plot():
     # horizontal colorbar
     cbar.ax.set_xticklabels(["Low", "Medium", "High"])
     return fig
+
+
+def test():
+    assert_equality(plot, __file__[:-3] + "_reference.tex")
+    return

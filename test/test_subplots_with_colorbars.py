@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 #
-import helpers
 
 
 def plot():
@@ -24,7 +23,8 @@ def plot():
     return fig
 
 
-def test():
-    phash = helpers.Phash(plot())
-    assert phash.phash == "6bc42bd46a95c03f", phash.get_details()
-    return
+# TODO reintroduce
+# from helpers import assert_equality
+# def test():
+#     assert_equality(plot, __file__[:-3] + "_reference.tex")
+#     return

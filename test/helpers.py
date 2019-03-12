@@ -173,7 +173,30 @@ def print_tree(obj, indent=""):
     return
 
 
-def does_compile(code):
+# https://stackoverflow.com/a/845432/353337
+def _unidiff_output(expected, actual):
+    import difflib
+    expected = expected.splitlines(1)
+    actual = actual.splitlines(1)
+    diff = difflib.unified_diff(expected, actual)
+    return ''.join(diff)
+
+
+def assert_equality(plot, filename):
+    plot()
+    code = matplotlib2tikz.get_tikz_code(include_disclaimer=False)
+    plt.close()
+
+    this_dir = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(this_dir, filename), "r") as f:
+        reference = f.read()
+    assert reference == code, _unidiff_output(reference, code)
+
+    assert _does_compile(code)
+    return
+
+
+def _does_compile(code):
     _, tmp_base = tempfile.mkstemp()
     matplotlib2tikz.get_tikz_code()
 
@@ -192,8 +215,6 @@ def does_compile(code):
     tex_file = tmp_base + ".tex"
     with open(tex_file, "w") as f:
         f.write(wrapper)
-
-    print(wrapper)
 
     # change into the directory of the TeX file
     os.chdir(os.path.dirname(tex_file))
@@ -214,10 +235,3 @@ def does_compile(code):
         does_compile = True
 
     return does_compile
-
-
-def equals_reference_file(code, filename):
-    this_dir = os.path.dirname(os.path.abspath(__file__))
-    with open(os.path.join(this_dir, filename), "r") as f:
-        reference = f.read()[:-1]
-    return reference == code

@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 #
 # Taken from http://matplotlib.org/examples/pylab_examples/fancybox_demo.html
-import os
-
 import matplotlib.pyplot as plt
 import matplotlib.transforms as mtransforms
 from matplotlib.patches import FancyBboxPatch
 
-import matplotlib2tikz as m2t
-
+from helpers import assert_equality
 
 # Bbox object around which the fancy box will be drawn.
 bb = mtransforms.Bbox([[0.3, 0.4], [0.7, 0.6]])
@@ -202,11 +199,5 @@ def plot():
 
 
 def test():
-    plot()
-    code = m2t.get_tikz_code(include_disclaimer=False)
-    print(code)
-    this_dir = os.path.dirname(os.path.abspath(__file__))
-    with open(os.path.join(this_dir, "reference.tex"), "r") as f:
-        reference = f.read()[:-1]
-    assert reference == code
+    assert_equality(plot, "test_fancybox_reference.tex")
     return

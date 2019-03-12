@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-import helpers
+from helpers import assert_equality
 
 
 def plot():
@@ -24,13 +24,3 @@ def plot():
     plt.legend(("No mask", "Masked if > 0.5", "Masked if < -0.5"), loc="upper right")
     plt.title("Masked line demo")
     return fig
-
-
-def test():
-    phash = helpers.Phash(plot())
-    assert phash.phash == "7f7ca18386d10e8b", phash.get_details()
-    return
-
-
-if __name__ == "__main__":
-    helpers.compare_with_latex(plot())
