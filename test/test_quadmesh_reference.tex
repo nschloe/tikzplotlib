@@ -1,0 +1,29 @@
+\begin{tikzpicture}
+
+\begin{groupplot}[group style={group size=1 by 2}]
+\nextgroupplot[
+tick align=outside,
+tick pos=left,
+title={Taylor--Green Vortex},
+x grid style={white!69.01960784313725!black},
+xlabel={x},
+xmin=0, xmax=6.28318530717959,
+y grid style={white!69.01960784313725!black},
+ylabel={y},
+ymin=0, ymax=6.28318530717959
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=0, xmax=6.28318530717959, ymin=0, ymax=6.28318530717959] {tmp-000.png};
+\nextgroupplot[
+tick align=outside,
+tick pos=left,
+x grid style={white!69.01960784313725!black},
+xlabel={x},
+xmin=0, xmax=6.28318530717959,
+y grid style={white!69.01960784313725!black},
+ylabel={y},
+ymin=0, ymax=6.28318530717959
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=0, xmax=6.28318530717959, ymin=0, ymax=6.28318530717959] {tmp-001.png};
+\end{groupplot}
+
+\end{tikzpicture}

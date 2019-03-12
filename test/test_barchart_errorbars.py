@@ -5,13 +5,13 @@ This tests plots a bar chart with error bars.  The errorbars need to be drawn
 at the correct z-order to be sucessful.
 
 """
-from helpers import Phash
+import matplotlib.pyplot as plt
+import numpy as np
+
+from helpers import assert_equality
 
 
 def plot():
-    import matplotlib.pyplot as plt
-    import numpy as np
-
     # plot data
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -35,5 +35,5 @@ def plot():
 
 
 def test():
-    phash = Phash(plot())
-    assert phash.phash == "5f09a9e6b1728746", phash.get_details()
+    assert_equality(plot, "test_barchart_errorbars_reference.tex")
+    return

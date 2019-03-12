@@ -3,7 +3,7 @@
 import matplotlib.pyplot as plt
 import numpy
 
-import helpers
+from helpers import assert_equality
 
 
 def plot():
@@ -116,13 +116,5 @@ def plot():
 
 
 def test():
-    phash = helpers.Phash(plot())
-    assert phash.phash == "370da93449d3f64c", phash.get_details()
+    assert_equality(plot, __file__[:-3] + "_reference.tex")
     return
-
-
-if __name__ == "__main__":
-    plot()
-    plt.show()
-    # phash, _, _, _, _, _, _ = helpers.compute_phash(plot2())
-    # print(phash)

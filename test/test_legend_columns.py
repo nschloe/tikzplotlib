@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-import helpers
+from helpers import assert_equality
 
 
 def plot():
@@ -15,10 +15,5 @@ def plot():
 
 
 def test():
-    phash = helpers.Phash(plot())
-    assert phash.phash == "8387de99666938a9", phash.get_details()
+    assert_equality(plot, "test_legend_columns_reference.tex")
     return
-
-
-if __name__ == "__main__":
-    helpers.compare_with_latex(plot())

@@ -8,15 +8,14 @@ patches that should not be plotted in PGFPlots (e.g. axis, legend)
 This also tests legends on barcharts. Which are difficult because
 in PGFPlots, they have no \\addplot, and thus legend must be
 manually added.
-
 """
-from helpers import Phash
+import matplotlib.pyplot as plt
+import numpy as np
+
+from helpers import assert_equality
 
 
 def plot():
-    import matplotlib.pyplot as plt
-    import numpy as np
-
     # plot data
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -36,5 +35,5 @@ def plot():
 
 
 def test():
-    phash = Phash(plot())
-    assert phash.phash == "5f19a966937285cc", phash.get_details()
+    assert_equality(plot, "test_barchart_legend_reference.tex")
+    return

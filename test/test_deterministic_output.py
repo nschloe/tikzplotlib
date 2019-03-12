@@ -36,7 +36,7 @@ def test():
                 stderr=subprocess.STDOUT,
             )
             sp = subprocess.Popen(
-                ["python", "-", tikz_file],
+                ["python3", "-", tikz_file],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
@@ -52,7 +52,3 @@ def test():
             tikzs.append(f.read())
     for t in tikzs[1:]:
         assert t == tikzs[0]
-
-
-if __name__ == "__main__":
-    test()

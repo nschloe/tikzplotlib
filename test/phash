@@ -14,20 +14,17 @@ def _main():
 
 
 def _parse_options():
-    '''Parse input options.
-    '''
+    """Parse input options.
+    """
     parser = argparse.ArgumentParser(
-            description='Compute perceptual hash (pHash) of image.'
-            )
+        description="Compute perceptual hash (pHash) of image."
+    )
     parser.add_argument(
-            'file',
-            metavar='FILE',
-            type=str,
-            help='file to compute the phash of'
-            )
+        "file", metavar="FILE", type=str, help="file to compute the phash of"
+    )
     args = parser.parse_args()
     return args.file
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     _main()

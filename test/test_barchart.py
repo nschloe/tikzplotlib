@@ -5,13 +5,13 @@ This tests plots a simple bar chart.  Bar charts are plotted as
 rectangle patches witch are difficult to tell from other rectangle
 patches that should not be plotted in PGFPlots (e.g. axis, legend)
 """
-from helpers import Phash
+import matplotlib.pyplot as plt
+import numpy as np
+
+from helpers import assert_equality
 
 
 def plot():
-    import matplotlib.pyplot as plt
-    import numpy as np
-
     # plot data
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -30,5 +30,5 @@ def plot():
 
 
 def test():
-    phash = Phash(plot())
-    assert phash.phash == "5f09a9e6b172874a", phash.get_details()
+    assert_equality(plot, "test_barchart_reference.tex")
+    return

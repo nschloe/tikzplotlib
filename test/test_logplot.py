@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 #
-import helpers
+import matplotlib.pyplot as plt
+
+from helpers import assert_equality
 
 
 def plot():
-    from matplotlib import pyplot as plt
-
     a = [pow(10, i) for i in range(10)]
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
@@ -17,6 +17,5 @@ def plot():
 
 
 def test():
-    phash = helpers.Phash(plot())
-    assert phash.phash == "a9eb5eaa7eea1400", phash.get_details()
+    assert_equality(plot, __file__[:-3] + "_reference.tex")
     return
