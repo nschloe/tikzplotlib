@@ -22,7 +22,7 @@ def __plot():
 
 
 @pytest.mark.parametrize(
-    "x_alignment, y_alignment, x_tick_label_width," "y_tick_label_width, rotation",
+    "x_alignment, y_alignment, x_tick_label_width, y_tick_label_width, rotation",
     [
         (None, None, "1rem", "3rem", 90),
         (None, "center", "1rem", "3rem", 90),

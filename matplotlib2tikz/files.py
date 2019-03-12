@@ -5,7 +5,7 @@ import posixpath
 
 
 def _gen_filename(data, nb_key, ext):
-    name = data["base name"] + "-%03d%s" % (data[nb_key], ext)
+    name = data["base name"] + "-{:03d}{}".format(data[nb_key], ext)
     return os.path.join(data["output dir"], name), name
 
 

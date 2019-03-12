@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-import helpers
+from helpers import assert_equality
 
 
 def plot():
@@ -9,7 +9,7 @@ def plot():
 
     fig = pp.figure()
 
-    an = np.linspace(0, 2 * np.pi, 100)
+    an = np.linspace(0, 2 * np.pi, 10)
 
     pp.subplot(221)
     pp.plot(3 * np.cos(an), 3 * np.sin(an))
@@ -37,6 +37,5 @@ def plot():
 
 
 def test():
-    phash = helpers.Phash(plot())
-    assert phash.phash == "ab9c3f52dadc0303", phash.get_details()
+    assert_equality(plot, __file__[:-3] + "_reference.tex")
     return
