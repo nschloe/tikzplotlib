@@ -383,22 +383,17 @@ def _marker(
 
 
 def _table(obj, content, data):
-    if data["externalize tables"]:
-        content.append("table {%\n")
-        row_sep = ""
-    else:
-        content.append("table [row sep=\\\\]{%\n")
-        row_sep = "\\\\"
+    content.append("table {%\n")
 
-    # nschloe, Oct 2, 2015:
+    # TODO nschloe, Oct 2, 2015:
     #   The transform call yields warnings and it is unclear why. Perhaps
     #   the input data is not suitable? Anyhow, this should not happen.
     #   Comment out for now.
     # xdata, ydata = _transform_to_data_coordinates(obj, *obj.get_data())
     xdata, ydata = obj.get_data()
 
-    # matplotlib allows plotting of data containing `astropy.units`, but they will
-    # break the formatted string here. Try to strip the units from the data.
+    # matplotlib allows plotting of data containing `astropy.units`, but they will break
+    # the formatted string here. Try to strip the units from the data.
     try:
         xdata = xdata.value
     except AttributeError:
@@ -415,18 +410,17 @@ def _table(obj, content, data):
 
     plot_table = []
     if has_mask:
-        # matplotlib jumps at masked images, while PGFPlots by default
-        # interpolates. Hence, if we have a masked plot, make sure that
-        # PGFPlots jumps as well.
+        # matplotlib jumps at masked images, while PGFPlots by default interpolates.
+        # Hence, if we have a masked plot, make sure that PGFPlots jumps as well.
         data["extra axis options"].add("unbounded coords=jump")
         for (x, y, is_masked) in zip(xdata, ydata, ydata.mask):
             if is_masked:
-                plot_table.append("%.15g\tnan %s\n" % (x, row_sep))
+                plot_table.append("{:.15g} nan\n".format(x))
             else:
-                plot_table.append("%.15g\t%.15g %s\n" % (x, y, row_sep))
+                plot_table.append("{:.15g} {:.15g}\n".format(x, y))
     else:
         for (x, y) in zip(xdata, ydata):
-            plot_table.append("%.15g\t%.15g %s\n" % (x, y, row_sep))
+            plot_table.append("{:.15g} {:.15g}\n".format(x, y))
 
     if data["externalize tables"]:
         filename, rel_filepath = files.new_filename(data, "table", ".tsv")

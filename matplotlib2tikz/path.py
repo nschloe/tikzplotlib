@@ -100,7 +100,7 @@ def draw_pathcollection(data, obj):
     dd = obj.get_offsets()
 
     draw_options = ["only marks"]
-    table_options = ["row sep=\\\\"]
+    table_options = []
 
     if obj.get_array() is not None:
         draw_options.append("scatter")
@@ -164,10 +164,10 @@ def draw_pathcollection(data, obj):
         to = " [{}]".format(", ".join(table_options)) if table_options else ""
         content.append("table{}{{%\n".format(to))
 
-        content.append((" ".join(labels)).strip() + "\\\\ \n")
-        fmt = (" ".join(dd.shape[1] * ["%+.15e"])) + "\\\\ \n"
+        content.append((" ".join(labels)).strip() + "\n")
+        fmt = (" ".join(dd.shape[1] * ["{:+.15e}"])) + "\n"
         for d in dd:
-            content.append(fmt % tuple(d))
+            content.append(fmt.format(*tuple(d)))
         content.append("};\n")
 
     return data, content
@@ -182,13 +182,13 @@ def get_draw_options(data, ec, fc):
         data, col, ec_rgba = color.mpl_color2xcolor(data, ec)
         if ec_rgba[3] != 0.0:
             # Don't draw if it's invisible anyways.
-            draw_options.append("draw=%s" % col)
+            draw_options.append("draw={}".format(col))
 
     if fc is not None:
         data, col, fc_rgba = color.mpl_color2xcolor(data, fc)
         if fc_rgba[3] != 0.0:
             # Don't draw if it's invisible anyways.
-            draw_options.append("fill=%s" % col)
+            draw_options.append("fill={}".format(col))
 
     # handle transparency
     if (
@@ -200,9 +200,9 @@ def get_draw_options(data, ec, fc):
         draw_options.append("opacity=%.15g" % ec[3])
     else:
         if ec is not None and ec_rgba[3] != 1.0:
-            draw_options.append("draw opacity=%.15g" % ec_rgba[3])
+            draw_options.append("draw opacity={:.15g}".format(ec_rgba[3]))
         if fc is not None and fc_rgba[3] != 1.0:
-            draw_options.append("fill opacity=%.15g" % fc_rgba[3])
+            draw_options.append("fill opacity={:.15g}".format(fc_rgba[3]))
     # TODO Use those properties
     # linewidths = obj.get_linewidths()
 
