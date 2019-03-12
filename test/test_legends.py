@@ -24,3 +24,8 @@ def plot():
     plt.legend(("No mask", "Masked if > 0.5", "Masked if < -0.5"), loc="upper right")
     plt.title("Masked line demo")
     return fig
+
+
+def test():
+    assert_equality(plot, __file__[:-3] + "_reference.tex")
+    return
