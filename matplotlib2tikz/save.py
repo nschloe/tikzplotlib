@@ -192,7 +192,7 @@ def get_tikz_code(
     code = """"""
 
     if include_disclaimer:
-        disclaimer = "This file was created by matplotlib2tikz v%s." % __version__
+        disclaimer = "This file was created by matplotlib2tikz v{}.".format(__version__)
         code += _tex_comment(disclaimer)
 
     # write the contents
@@ -248,7 +248,9 @@ def _get_color_definitions(data):
     definitions = []
     for name, rgb in data["custom colors"].items():
         definitions.append(
-            "\\definecolor{%s}{rgb}{%.15g,%.15g,%.15g}" % (name, rgb[0], rgb[1], rgb[2])
+            "\\definecolor{{{}}}{{rgb}}{{{:.15g},{:.15g},{:.15g}}}".format(
+                name, rgb[0], rgb[1], rgb[2]
+            )
         )
     return definitions
 
@@ -262,7 +264,7 @@ def _print_pgfplot_libs_message(data):
     print("=========================================================")
     print("Please add the following lines to your LaTeX preamble:\n")
     print("\\usepackage[utf8]{inputenc}")
-    print("\\usepackage{fontspec}" " % This line only for XeLaTeX and LuaLaTeX")
+    print("\\usepackage{fontspec}  % This line only for XeLaTeX and LuaLaTeX")
     print("\\usepackage{pgfplots}")
     if tikzlibs:
         print("\\usetikzlibrary{" + tikzlibs + "}")
@@ -273,7 +275,7 @@ def _print_pgfplot_libs_message(data):
 
 
 class _ContentManager(object):
-    """ Basic Content Manager for matplotlib2tikz
+    """Basic Content Manager for matplotlib2tikz
 
     This manager uses a dictionary to map z-order to an array of content
     to be drawn at the z-order.
@@ -372,10 +374,9 @@ def _recurse(data, obj):
             pass
         else:
             warnings.warn(
-                "matplotlib2tikz: Don"
-                "t know how to handle object "
-                "%s"
-                "." % type(child)
+                "matplotlib2tikz: Don't know how to handle object {}.".format(
+                    type(child)
+                )
             )
     # XXX: This is ugly
     if isinstance(obj, (mpl.axes.Subplot, mpl.figure.Figure)):

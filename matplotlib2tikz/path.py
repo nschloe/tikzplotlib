@@ -34,9 +34,9 @@ def draw_path(data, path, draw_options=None, simplify=None):
         #
         # if code == mpl.path.Path.STOP: pass
         if code == mpl.path.Path.MOVETO:
-            nodes.append("(axis cs:%.15g,%.15g)" % tuple(vert))
+            nodes.append("(axis cs:{:.15g},{:.15g})".format(*vert))
         elif code == mpl.path.Path.LINETO:
-            nodes.append("--(axis cs:%.15g,%.15g)" % tuple(vert))
+            nodes.append("--(axis cs:{:.15g},{:.15g})".format(*vert))
         elif code == mpl.path.Path.CURVE3:
             # Quadratic Bezier curves aren't natively supported in TikZ, but
             # can be emulated as cubic Beziers.
@@ -61,21 +61,19 @@ def draw_path(data, path, draw_options=None, simplify=None):
             Q3 = vert[2:4]
             nodes.append(
                 (
-                    ".. controls (axis cs:%.15g,%.15g) "
-                    + "and (axis cs:%.15g,%.15g) "
-                    + ".. (axis cs:%.15g,%.15g)"
-                )
-                % (Q1[0], Q1[1], Q2[0], Q2[1], Q3[0], Q3[1])
+                    ".. controls (axis cs:{:.15g},{:.15g}) "
+                    + "and (axis cs:{:.15g},{:.15g}) "
+                    + ".. (axis cs:{:.15g},{:.15g})"
+                ).format(Q1[0], Q1[1], Q2[0], Q2[1], Q3[0], Q3[1])
             )
         elif code == mpl.path.Path.CURVE4:
             # Cubic Bezier curves.
             nodes.append(
                 (
-                    ".. controls (axis cs:%.15g,%.15g) "
-                    + "and (axis cs:%.15g,%.15g) "
-                    + ".. (axis cs:%.15g,%.15g)"
-                )
-                % tuple(vert)
+                    ".. controls (axis cs:{:.15g},{:.15g}) "
+                    + "and (axis cs:{:.15g},{:.15g}) "
+                    + ".. (axis cs:{:.15g},{:.15g})"
+                ).format(*vert)
             )
         else:
             assert code == mpl.path.Path.CLOSEPOLY
@@ -197,7 +195,7 @@ def get_draw_options(data, ec, fc):
         and ec_rgba[3] != 1.0
         and ec_rgba[3] == fc_rgba[3]
     ):
-        draw_options.append("opacity=%.15g" % ec[3])
+        draw_options.append("opacity={:.15g}".format(ec[3]))
     else:
         if ec is not None and ec_rgba[3] != 1.0:
             draw_options.append("draw opacity={:.15g}".format(ec_rgba[3]))
