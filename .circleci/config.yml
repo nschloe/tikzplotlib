@@ -5,8 +5,6 @@ jobs:
     working_directory: ~/work
     docker:
       - image: ubuntu:18.04
-    environment:
-      - TEXMFLOCAL: "/tmp/texmf/"
     steps:
       - run: apt update
       # <https://stackoverflow.com/a/44333806/353337>
@@ -16,8 +14,6 @@ jobs:
       - checkout
       - run: cd ~/work
       - run: excode README.md test/zzz_readme_test.py --filter python,test
-      # Install very specific versions of the dependencies; the build is too
-      # fragile otherwise.
       - run: pip3 install .[all]
       - run: pip3 check
       # format and lint
