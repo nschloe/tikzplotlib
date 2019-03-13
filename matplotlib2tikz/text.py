@@ -156,7 +156,15 @@ def _annotation(obj, data, content):
 
         ff = data["float format"]
         arrow_fmt = (
-            "\\draw[{}] (axis cs:" + ff + "," + ff + ") -- (axis cs:" + ff + "," + ff + ");\n"
+            "\\draw[{}] (axis cs:"
+            + ff
+            + ","
+            + ff
+            + ") -- (axis cs:"
+            + ff
+            + ","
+            + ff
+            + ");\n"
         )
         the_arrow = arrow_fmt.format(
             ",".join(arrow_style), ann_xytext[0], ann_xytext[1], ann_xy[0], ann_xy[1]
@@ -177,7 +185,9 @@ def _bbox(bbox, data, properties, scaling):
     # XXX: This is ugly, too
     ff = data["float format"]
     properties.append("line width=" + ff + "pt".format(bbox.get_lw() * 0.4))
-    properties.append("inner sep=" + ff + " pt".format(bbox_style.pad * data["font size"]))
+    properties.append(
+        "inner sep=" + ff + " pt".format(bbox_style.pad * data["font size"])
+    )
     # Rounded boxes
     if isinstance(bbox_style, mpl.patches.BoxStyle.Round):
         properties.append("rounded corners")

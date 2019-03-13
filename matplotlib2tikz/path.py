@@ -62,18 +62,38 @@ def draw_path(data, path, draw_options=None, simplify=None):
             Q3 = vert[2:4]
             nodes.append(
                 (
-                    ".. controls (axis cs:" + ff + "," + ") "
-                    + "and (axis cs:" + ff + "," + ff + ") "
-                    + ".. (axis cs:" + ff + "," + ")"
+                    ".. controls (axis cs:"
+                    + ff
+                    + ","
+                    + ") "
+                    + "and (axis cs:"
+                    + ff
+                    + ","
+                    + ff
+                    + ") "
+                    + ".. (axis cs:"
+                    + ff
+                    + ","
+                    + ")"
                 ).format(Q1[0], Q1[1], Q2[0], Q2[1], Q3[0], Q3[1])
             )
         elif code == mpl.path.Path.CURVE4:
             # Cubic Bezier curves.
             nodes.append(
                 (
-                    ".. controls (axis cs:" + ff + "," + ff + ") "
-                    + "and (axis cs:" + ff + "," + ") "
-                    + ".. (axis cs:" + ff + "," + ")"
+                    ".. controls (axis cs:"
+                    + ff
+                    + ","
+                    + ff
+                    + ") "
+                    + "and (axis cs:"
+                    + ff
+                    + ","
+                    + ") "
+                    + ".. (axis cs:"
+                    + ff
+                    + ","
+                    + ")"
                 ).format(*vert)
             )
         else:

@@ -227,7 +227,9 @@ def get_tikz_code(
 \\pgfplotsset{{compat=newest}}
 \\begin{{document}}
 {}
-\\end{{document}}""".format(code)
+\\end{{document}}""".format(
+            code
+        )
 
     return code
 
