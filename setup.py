@@ -23,7 +23,7 @@ setup(
     url="https://github.com/nschloe/matplotlib2tikz",
     author=about["__author__"],
     author_email=about["__email__"],
-    install_requires=["matplotlib >= 1.4.0", "numpy", "six"],
+    install_requires=["matplotlib >= 1.4.0", "numpy", "Pillow", "six"],
     extras_require={
         "all": ["pipdate >= 0.3.0, <0.4.0"],
         "update": ["pipdate >= 0.3.0, <0.4.0"],
