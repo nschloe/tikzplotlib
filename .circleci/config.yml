@@ -24,3 +24,9 @@ jobs:
       # submit to codecov
       - run: apt install -y curl
       - run: bash <(curl -s https://codecov.io/bash)
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
