@@ -40,6 +40,7 @@ def get_tikz_code(
     dpi=None,
     show_info=True,
     include_disclaimer=True,
+    standalone=False,
 ):
     """Main function. Here, the recursion into the image starts and the
     contents are picked up. The actual file gets written in this routine.
@@ -211,6 +212,19 @@ def get_tikz_code(
 
     if wrap and axis_environment:
         code += "\\end{tikzpicture}"
+
+    if standalone:
+        # create a latex wrapper for the tikz
+        # <https://tex.stackexchange.com/a/361070/13262>
+        code = """\\documentclass{{standalone}}
+\\usepackage[utf8]{{inputenc}}
+\\usepackage{{pgfplots}}
+\\usepgfplotslibrary{{groupplots}}
+\\usetikzlibrary{{shapes.arrows}}
+\\pgfplotsset{{compat=newest}}
+\\begin{{document}}
+{}
+\\end{{document}}""".format(code)
 
     return code
 

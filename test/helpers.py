@@ -43,31 +43,17 @@ def assert_equality(plot, filename):
         reference = f.read()
     assert reference == code, _unidiff_output(reference, code)
 
+    code = matplotlib2tikz.get_tikz_code(include_disclaimer=False, standalone=True)
     assert _does_compile(code)
     return
 
 
 def _does_compile(code):
     _, tmp_base = tempfile.mkstemp()
-    matplotlib2tikz.get_tikz_code()
 
-    # create a latex wrapper for the tikz
-    # <https://tex.stackexchange.com/a/361070/13262>
-    wrapper = """\\documentclass{{standalone}}
-\\usepackage[utf8]{{inputenc}}
-\\usepackage{{pgfplots}}
-\\usepgfplotslibrary{{groupplots}}
-\\usetikzlibrary{{shapes.arrows}}
-\\pgfplotsset{{compat=newest}}
-\\DeclareUnicodeCharacter{{2212}}{{-}}
-\\begin{{document}}
-{}
-\\end{{document}}""".format(
-        code
-    )
     tex_file = tmp_base + ".tex"
     with open(tex_file, "w", encoding="utf-8") as f:
-        f.write(wrapper)
+        f.write(code)
 
     # change into the directory of the TeX file
     os.chdir(os.path.dirname(tex_file))
