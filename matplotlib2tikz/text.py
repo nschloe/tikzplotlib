@@ -27,8 +27,9 @@ def draw_text(data, obj):
     # without the factor 0.5, the fonts are too big most of the time.
     # TODO fix this
     scaling = 0.5 * size / data["font size"]
+    ff = data["float format"]
     if scaling != 1.0:
-        properties.append("scale={:.15g}".format(scaling))
+        properties.append(("scale=" + ff).format(scaling))
 
     if bbox is not None:
         _bbox(bbox, data, properties, scaling)
@@ -85,16 +86,16 @@ def draw_text(data, obj):
 
     if obj.axes:
         # If the coordinates are relative to an axis, use `axis cs`.
-        tikz_pos = "(axis cs:{:.15g},{:.15g})".format(*pos)
+        tikz_pos = ("(axis cs:" + ff + "," + ff + ")").format(*pos)
     else:
         # relative to the entire figure, it's a getting a littler harder. See
         # <http://tex.stackexchange.com/a/274902/13262> for a solution to the
         # problem:
         tikz_pos = (
-            "({{$(current bounding box.south west)!{:.15g}!"
+            "({{$(current bounding box.south west)!" + ff + "!"
             "(current bounding box.south east)$}}"
             "|-"
-            "{{$(current bounding box.south west)!{:.15g}!"
+            "{{$(current bounding box.south west)!" + ff + "!"
             "(current bounding box.north west)$}})"
         ).format(*pos)
 
@@ -153,8 +154,9 @@ def _annotation(obj, data, content):
                     )
                     arrow_style.append(col)
 
+        ff = data["float format"]
         arrow_fmt = (
-            "\\draw[{}] (axis cs:{:.15g},{:.15g}) " "-- (axis cs:{:.15g},{:.15g});\n"
+            "\\draw[{}] (axis cs:" + ff + "," + ff + ") -- (axis cs:" + ff + "," + ff + ");\n"
         )
         the_arrow = arrow_fmt.format(
             ",".join(arrow_style), ann_xytext[0], ann_xytext[1], ann_xy[0], ann_xy[1]
@@ -173,8 +175,9 @@ def _bbox(bbox, data, properties, scaling):
     if ec:
         properties.append("draw={}".format(ec))
     # XXX: This is ugly, too
-    properties.append("line width={:.15g}pt".format(bbox.get_lw() * 0.4))
-    properties.append("inner sep={:.15g}pt".format(bbox_style.pad * data["font size"]))
+    ff = data["float format"]
+    properties.append("line width=" + ff + "pt".format(bbox.get_lw() * 0.4))
+    properties.append("inner sep=" + ff + " pt".format(bbox_style.pad * data["font size"]))
     # Rounded boxes
     if isinstance(bbox_style, mpl.patches.BoxStyle.Round):
         properties.append("rounded corners")

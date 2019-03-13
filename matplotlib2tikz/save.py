@@ -41,6 +41,7 @@ def get_tikz_code(
     show_info=True,
     include_disclaimer=True,
     standalone=False,
+    float_format="{:.15g}",
 ):
     """Main function. Here, the recursion into the image starts and the
     contents are picked up. The actual file gets written in this routine.
@@ -177,6 +178,8 @@ def get_tikz_code(
             savefig_dpi if isinstance(savefig_dpi, int) else mpl.rcParams["figure.dpi"]
         )
 
+    data["float format"] = float_format
+
     # print message about necessary pgfplot libs to command line
     if show_info:
         _print_pgfplot_libs_message(data)
@@ -260,12 +263,9 @@ def _get_color_definitions(data):
     """Returns the list of custom color definitions for the TikZ file.
     """
     definitions = []
+    fmt = "\\definecolor{{{}}}{{rgb}}{{" + ",".join(3 * [data["float format"]]) + "}}"
     for name, rgb in data["custom colors"].items():
-        definitions.append(
-            "\\definecolor{{{}}}{{rgb}}{{{:.15g},{:.15g},{:.15g}}}".format(
-                name, rgb[0], rgb[1], rgb[2]
-            )
-        )
+        definitions.append(fmt.format(name, rgb[0], rgb[1], rgb[2]))
     return definitions
 
 
