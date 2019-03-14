@@ -186,7 +186,7 @@ def _bbox(bbox, data, properties, scaling):
     ff = data["float format"]
     properties.append(("line width=" + ff + "pt").format(bbox.get_lw() * 0.4))
     properties.append(
-        "inner sep=" + ff + " pt".format(bbox_style.pad * data["font size"])
+        ("inner sep=" + ff + "pt").format(bbox_style.pad * data["font size"])
     )
     # Rounded boxes
     if isinstance(bbox_style, mpl.patches.BoxStyle.Round):
