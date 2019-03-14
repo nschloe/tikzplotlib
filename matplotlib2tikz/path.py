@@ -188,7 +188,8 @@ def draw_pathcollection(data, obj):
         content.append("table{}{{%\n".format(to))
 
         content.append((" ".join(labels)).strip() + "\n")
-        fmt = (" ".join(dd.shape[1] * ["{:+.15e}"])) + "\n"
+        ff = data["float format"]
+        fmt = (" ".join(dd.shape[1] * [ff])) + "\n"
         for d in dd:
             content.append(fmt.format(*tuple(d)))
         content.append("};\n")
