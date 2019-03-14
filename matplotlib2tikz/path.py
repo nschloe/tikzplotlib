@@ -75,6 +75,7 @@ def draw_path(data, path, draw_options=None, simplify=None):
                     + ".. (axis cs:"
                     + ff
                     + ","
+                    + ff
                     + ")"
                 ).format(Q1[0], Q1[1], Q2[0], Q2[1], Q3[0], Q3[1])
             )
@@ -94,6 +95,7 @@ def draw_path(data, path, draw_options=None, simplify=None):
                     + ".. (axis cs:"
                     + ff
                     + ","
+                    + ff
                     + ")"
                 ).format(*vert)
             )
