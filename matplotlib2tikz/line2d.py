@@ -47,7 +47,7 @@ def draw_line2d(data, obj):
 
     alpha = obj.get_alpha()
     if alpha is not None:
-        addplot_options.append("opacity=%r" % alpha)
+        addplot_options.append("opacity={}".format(alpha))
 
     show_line, linestyle = _mpl_linestyle2pgfp_linestyle(obj.get_linestyle())
     if show_line and linestyle:
@@ -132,13 +132,12 @@ def draw_linecollection(data, obj):
         if style[0] is not None:
             assert isinstance(style, tuple)
             if len(style[1]) == 2:
-                linestyle = "dash pattern=on %dpt off %dpt" % (
-                    int(style[1][0]),
-                    int(style[1][1]),
+                linestyle = "dash pattern=on {:d}pt off {:d}pt".format(
+                    int(style[1][0]), int(style[1][1])
                 )
             else:
                 assert len(style[1]) == 4
-                linestyle = "dash pattern=on %dpt off %dpt on %dpt off %dpt" % (
+                linestyle = "dash pattern=on {:d}pt off {:d}pt on {:d}pt off {:d}pt".format(
                     int(style[1][0]),
                     int(style[1][1]),
                     int(style[1][2]),
@@ -174,7 +173,7 @@ def _mpl_linewidth2pgfp_linewidth(data, line_width):
             return TIKZ_LINEWIDTHS[line_width]
         except KeyError:
             # explicit line width
-            return "line width=%spt" % line_width
+            return "line width={}pt".format(line_width)
     else:
         # The following is an alternative approach to line widths.
         # The default line width in matplotlib is 1.0pt, in PGFPlots 0.4pt
@@ -195,7 +194,7 @@ def _mpl_linewidth2pgfp_linewidth(data, line_width):
             out = literals[scaled_line_width]
         except KeyError:
             # explicit line width
-            out = "line width=%rpt" % (0.4 * line_width)
+            out = "line width={}pt".format(0.4 * line_width)
 
         return out
 
@@ -340,12 +339,12 @@ def _marker(
         # make sure we didn't round off to zero by accident
         if pgf_size == 0 and mark_size != 0:
             pgf_size = 1
-        addplot_options.append("mark size=%d" % pgf_size)
+        addplot_options.append("mark size={:d}".format(pgf_size))
 
     mark_every = obj.get_markevery()
     if mark_every:
         if type(mark_every) is int:
-            addplot_options.append("mark repeat=%d" % mark_every)
+            addplot_options.append("mark repeat={:d}".format(mark_every))
         else:
             # python starts at index 0, pgfplots at index 1
             pgf_marker = [1 + m for m in mark_every]
@@ -377,28 +376,23 @@ def _marker(
         data, draw_xcolor, _ = mycol.mpl_color2xcolor(data, marker_edge_color)
         if draw_xcolor != line_xcolor:
             mark_options.append("draw=" + draw_xcolor)
-    addplot_options.append("mark options={%s}" % ",".join(mark_options))
+    addplot_options.append("mark options={{{}}}".format(",".join(mark_options)))
 
     return
 
 
 def _table(obj, content, data):
-    if data["externalize tables"]:
-        content.append("table {%\n")
-        row_sep = ""
-    else:
-        content.append("table [row sep=\\\\]{%\n")
-        row_sep = "\\\\"
+    content.append("table {%\n")
 
-    # nschloe, Oct 2, 2015:
+    # TODO nschloe, Oct 2, 2015:
     #   The transform call yields warnings and it is unclear why. Perhaps
     #   the input data is not suitable? Anyhow, this should not happen.
     #   Comment out for now.
     # xdata, ydata = _transform_to_data_coordinates(obj, *obj.get_data())
     xdata, ydata = obj.get_data()
 
-    # matplotlib allows plotting of data containing `astropy.units`, but they will
-    # break the formatted string here. Try to strip the units from the data.
+    # matplotlib allows plotting of data containing `astropy.units`, but they will break
+    # the formatted string here. Try to strip the units from the data.
     try:
         xdata = xdata.value
     except AttributeError:
@@ -413,20 +407,20 @@ def _table(obj, content, data):
     except AttributeError:
         has_mask = 0
 
+    ff = data["float format"]
     plot_table = []
     if has_mask:
-        # matplotlib jumps at masked images, while PGFPlots by default
-        # interpolates. Hence, if we have a masked plot, make sure that
-        # PGFPlots jumps as well.
+        # matplotlib jumps at masked images, while PGFPlots by default interpolates.
+        # Hence, if we have a masked plot, make sure that PGFPlots jumps as well.
         data["extra axis options"].add("unbounded coords=jump")
         for (x, y, is_masked) in zip(xdata, ydata, ydata.mask):
             if is_masked:
-                plot_table.append("%.15g\tnan %s\n" % (x, row_sep))
+                plot_table.append((ff + " nan\n").format(x))
             else:
-                plot_table.append("%.15g\t%.15g %s\n" % (x, y, row_sep))
+                plot_table.append((ff + " " + ff + "\n").format(x, y))
     else:
         for (x, y) in zip(xdata, ydata):
-            plot_table.append("%.15g\t%.15g %s\n" % (x, y, row_sep))
+            plot_table.append((ff + " " + ff + "\n").format(x, y))
 
     if data["externalize tables"]:
         filename, rel_filepath = files.new_filename(data, "table", ".tsv")

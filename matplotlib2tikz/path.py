@@ -21,6 +21,7 @@ def draw_path(data, path, draw_options=None, simplify=None):
         return data, ""
 
     nodes = []
+    ff = data["float format"]
     prev = None
     for vert, code in path.iter_segments(simplify=simplify):
         # nschloe, Oct 2, 2015:
@@ -34,9 +35,9 @@ def draw_path(data, path, draw_options=None, simplify=None):
         #
         # if code == mpl.path.Path.STOP: pass
         if code == mpl.path.Path.MOVETO:
-            nodes.append("(axis cs:%.15g,%.15g)" % tuple(vert))
+            nodes.append(("(axis cs:" + ff + "," + ff + ")").format(*vert))
         elif code == mpl.path.Path.LINETO:
-            nodes.append("--(axis cs:%.15g,%.15g)" % tuple(vert))
+            nodes.append(("--(axis cs:" + ff + "," + ff + ")").format(*vert))
         elif code == mpl.path.Path.CURVE3:
             # Quadratic Bezier curves aren't natively supported in TikZ, but
             # can be emulated as cubic Beziers.
@@ -61,21 +62,43 @@ def draw_path(data, path, draw_options=None, simplify=None):
             Q3 = vert[2:4]
             nodes.append(
                 (
-                    ".. controls (axis cs:%.15g,%.15g) "
-                    + "and (axis cs:%.15g,%.15g) "
-                    + ".. (axis cs:%.15g,%.15g)"
-                )
-                % (Q1[0], Q1[1], Q2[0], Q2[1], Q3[0], Q3[1])
+                    ".. controls (axis cs:"
+                    + ff
+                    + ","
+                    + ff
+                    + ") "
+                    + "and (axis cs:"
+                    + ff
+                    + ","
+                    + ff
+                    + ") "
+                    + ".. (axis cs:"
+                    + ff
+                    + ","
+                    + ff
+                    + ")"
+                ).format(Q1[0], Q1[1], Q2[0], Q2[1], Q3[0], Q3[1])
             )
         elif code == mpl.path.Path.CURVE4:
             # Cubic Bezier curves.
             nodes.append(
                 (
-                    ".. controls (axis cs:%.15g,%.15g) "
-                    + "and (axis cs:%.15g,%.15g) "
-                    + ".. (axis cs:%.15g,%.15g)"
-                )
-                % tuple(vert)
+                    ".. controls (axis cs:"
+                    + ff
+                    + ","
+                    + ff
+                    + ") "
+                    + "and (axis cs:"
+                    + ff
+                    + ","
+                    + ff
+                    + ") "
+                    + ".. (axis cs:"
+                    + ff
+                    + ","
+                    + ff
+                    + ")"
+                ).format(*vert)
             )
         else:
             assert code == mpl.path.Path.CLOSEPOLY
@@ -100,7 +123,7 @@ def draw_pathcollection(data, obj):
     dd = obj.get_offsets()
 
     draw_options = ["only marks"]
-    table_options = ["row sep=\\\\"]
+    table_options = []
 
     if obj.get_array() is not None:
         draw_options.append("scatter")
@@ -133,7 +156,7 @@ def draw_pathcollection(data, obj):
     draw_options.extend(extra_draw_options)
 
     if obj.get_cmap():
-        mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(obj.get_cmap())
+        mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(obj.get_cmap(), data)
         if is_custom_cmap:
             draw_options.append("colormap=" + mycolormap)
         else:
@@ -164,10 +187,11 @@ def draw_pathcollection(data, obj):
         to = " [{}]".format(", ".join(table_options)) if table_options else ""
         content.append("table{}{{%\n".format(to))
 
-        content.append((" ".join(labels)).strip() + "\\\\ \n")
-        fmt = (" ".join(dd.shape[1] * ["%+.15e"])) + "\\\\ \n"
+        content.append((" ".join(labels)).strip() + "\n")
+        ff = data["float format"]
+        fmt = (" ".join(dd.shape[1] * [ff])) + "\n"
         for d in dd:
-            content.append(fmt % tuple(d))
+            content.append(fmt.format(*tuple(d)))
         content.append("};\n")
 
     return data, content
@@ -182,27 +206,28 @@ def get_draw_options(data, ec, fc):
         data, col, ec_rgba = color.mpl_color2xcolor(data, ec)
         if ec_rgba[3] != 0.0:
             # Don't draw if it's invisible anyways.
-            draw_options.append("draw=%s" % col)
+            draw_options.append("draw={}".format(col))
 
     if fc is not None:
         data, col, fc_rgba = color.mpl_color2xcolor(data, fc)
         if fc_rgba[3] != 0.0:
             # Don't draw if it's invisible anyways.
-            draw_options.append("fill=%s" % col)
+            draw_options.append("fill={}".format(col))
 
     # handle transparency
+    ff = data["float format"]
     if (
         ec is not None
         and fc is not None
         and ec_rgba[3] != 1.0
         and ec_rgba[3] == fc_rgba[3]
     ):
-        draw_options.append("opacity=%.15g" % ec[3])
+        draw_options.append(("opacity=" + ff).format(ec[3]))
     else:
         if ec is not None and ec_rgba[3] != 1.0:
-            draw_options.append("draw opacity=%.15g" % ec_rgba[3])
+            draw_options.append(("draw opacity=" + ff).format(ec_rgba[3]))
         if fc is not None and fc_rgba[3] != 1.0:
-            draw_options.append("fill opacity=%.15g" % fc_rgba[3])
+            draw_options.append(("fill opacity=" + ff).format(fc_rgba[3]))
     # TODO Use those properties
     # linewidths = obj.get_linewidths()
 

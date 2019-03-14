@@ -40,6 +40,8 @@ def get_tikz_code(
     dpi=None,
     show_info=True,
     include_disclaimer=True,
+    standalone=False,
+    float_format="{:.15g}",
 ):
     """Main function. Here, the recursion into the image starts and the
     contents are picked up. The actual file gets written in this routine.
@@ -176,6 +178,8 @@ def get_tikz_code(
             savefig_dpi if isinstance(savefig_dpi, int) else mpl.rcParams["figure.dpi"]
         )
 
+    data["float format"] = float_format
+
     # print message about necessary pgfplot libs to command line
     if show_info:
         _print_pgfplot_libs_message(data)
@@ -192,7 +196,7 @@ def get_tikz_code(
     code = """"""
 
     if include_disclaimer:
-        disclaimer = "This file was created by matplotlib2tikz v%s." % __version__
+        disclaimer = "This file was created by matplotlib2tikz v{}.".format(__version__)
         code += _tex_comment(disclaimer)
 
     # write the contents
@@ -211,6 +215,21 @@ def get_tikz_code(
 
     if wrap and axis_environment:
         code += "\\end{tikzpicture}"
+
+    if standalone:
+        # create a latex wrapper for the tikz
+        # <https://tex.stackexchange.com/a/361070/13262>
+        code = """\\documentclass{{standalone}}
+\\usepackage[utf8]{{inputenc}}
+\\usepackage{{pgfplots}}
+\\usepgfplotslibrary{{groupplots}}
+\\usetikzlibrary{{shapes.arrows}}
+\\pgfplotsset{{compat=newest}}
+\\begin{{document}}
+{}
+\\end{{document}}""".format(
+            code
+        )
 
     return code
 
@@ -246,10 +265,9 @@ def _get_color_definitions(data):
     """Returns the list of custom color definitions for the TikZ file.
     """
     definitions = []
+    fmt = "\\definecolor{{{}}}{{rgb}}{{" + ",".join(3 * [data["float format"]]) + "}}"
     for name, rgb in data["custom colors"].items():
-        definitions.append(
-            "\\definecolor{%s}{rgb}{%.15g,%.15g,%.15g}" % (name, rgb[0], rgb[1], rgb[2])
-        )
+        definitions.append(fmt.format(name, rgb[0], rgb[1], rgb[2]))
     return definitions
 
 
@@ -262,7 +280,7 @@ def _print_pgfplot_libs_message(data):
     print("=========================================================")
     print("Please add the following lines to your LaTeX preamble:\n")
     print("\\usepackage[utf8]{inputenc}")
-    print("\\usepackage{fontspec}" " % This line only for XeLaTeX and LuaLaTeX")
+    print("\\usepackage{fontspec}  % This line only for XeLaTeX and LuaLaTeX")
     print("\\usepackage{pgfplots}")
     if tikzlibs:
         print("\\usetikzlibrary{" + tikzlibs + "}")
@@ -273,7 +291,7 @@ def _print_pgfplot_libs_message(data):
 
 
 class _ContentManager(object):
-    """ Basic Content Manager for matplotlib2tikz
+    """Basic Content Manager for matplotlib2tikz
 
     This manager uses a dictionary to map z-order to an array of content
     to be drawn at the z-order.
@@ -372,10 +390,9 @@ def _recurse(data, obj):
             pass
         else:
             warnings.warn(
-                "matplotlib2tikz: Don"
-                "t know how to handle object "
-                "%s"
-                "." % type(child)
+                "matplotlib2tikz: Don't know how to handle object {}.".format(
+                    type(child)
+                )
             )
     # XXX: This is ugly
     if isinstance(obj, (mpl.axes.Subplot, mpl.figure.Figure)):

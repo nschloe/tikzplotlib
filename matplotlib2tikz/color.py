@@ -71,7 +71,7 @@ def mpl_color2xcolor(data, matplotlib_color):
         # The cases 0.0 (my_col == black) and 1.0 (my_col == rgb) are
         # already accounted for by checking in available_colors above.
         if all(my_col[:3] == alpha * rgb) and 0.0 < alpha < 1.0:
-            xcol = name + ("!%r!black" % (alpha * 100))
+            xcol = name + ("!{}!black".format(alpha * 100))
             return data, xcol, my_col
 
     # Lookup failed, add it to the custom list.

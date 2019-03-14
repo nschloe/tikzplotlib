@@ -1,30 +1,40 @@
 version: 2
 
 jobs:
+  lint:
+    docker:
+      - image: ubuntu:18.04
+    steps:
+      - checkout
+      - run: apt update
+      - run: apt install -y python3-pip
+      - run: pip3 install -U black flake8
+      - run: LC_ALL=C.UTF-8 black --check setup.py matplotlib2tikz/ test/*.py
+      - run: flake8 setup.py matplotlib2tikz/ test/*.py
   build:
     working_directory: ~/work
     docker:
       - image: ubuntu:18.04
-    environment:
-      - TEXMFLOCAL: "/tmp/texmf/"
     steps:
       - run: apt update
       # <https://stackoverflow.com/a/44333806/353337>
       - run: DEBIAN_FRONTEND=noninteractive apt install tzdata
       - run: apt install -y texlive-latex-base texlive-latex-extra python3-pip python3-tk
-      - run: pip3 install -U pytest pytest-cov excode black flake8
+      - run: pip3 install -U pytest pytest-cov excode
       - checkout
       - run: cd ~/work
       - run: excode README.md test/zzz_readme_test.py --filter python,test
-      # Install very specific versions of the dependencies; the build is too
-      # fragile otherwise.
       - run: pip3 install .[all]
       - run: pip3 check
-      # format and lint
-      - run: LC_ALL=C.UTF-8 black --check setup.py matplotlib2tikz/ test/*.py
-      - run: flake8 setup.py matplotlib2tikz/ test/*.py
       # The actual test
       - run: cd test/ && MPLBACKEND=Agg pytest --cov matplotlib2tikz
       # submit to codecov
       - run: apt install -y curl
       - run: bash <(curl -s https://codecov.io/bash)
+
+workflows:
+  version: 2
+  lint_and_build:
+    jobs:
+      - lint
+      - build

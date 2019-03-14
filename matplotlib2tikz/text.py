@@ -27,8 +27,9 @@ def draw_text(data, obj):
     # without the factor 0.5, the fonts are too big most of the time.
     # TODO fix this
     scaling = 0.5 * size / data["font size"]
+    ff = data["float format"]
     if scaling != 1.0:
-        properties.append("scale={:.15g}".format(scaling))
+        properties.append(("scale=" + ff).format(scaling))
 
     if bbox is not None:
         _bbox(bbox, data, properties, scaling)
@@ -39,8 +40,8 @@ def draw_text(data, obj):
     if anchor is not None:
         properties.append(anchor)
     data, col, _ = color.mpl_color2xcolor(data, converter.to_rgb(obj.get_color()))
-    properties.append("text=%s" % col)
-    properties.append("rotate=%.1f" % obj.get_rotation())
+    properties.append("text={}".format(col))
+    properties.append("rotate={:.1f}".format(obj.get_rotation()))
 
     if obj.get_style() == "italic":
         style.append("\\itshape")
@@ -85,22 +86,22 @@ def draw_text(data, obj):
 
     if obj.axes:
         # If the coordinates are relative to an axis, use `axis cs`.
-        tikz_pos = "(axis cs:%.15g,%.15g)" % pos
+        tikz_pos = ("(axis cs:" + ff + "," + ff + ")").format(*pos)
     else:
         # relative to the entire figure, it's a getting a littler harder. See
         # <http://tex.stackexchange.com/a/274902/13262> for a solution to the
         # problem:
         tikz_pos = (
-            "({$(current bounding box.south west)!%.15g!"
-            "(current bounding box.south east)$}"
+            "({{$(current bounding box.south west)!" + ff + "!"
+            "(current bounding box.south east)$}}"
             "|-"
-            "{$(current bounding box.south west)!%0.15g!"
-            "(current bounding box.north west)$})"
-        ) % pos
+            "{{$(current bounding box.south west)!" + ff + "!"
+            "(current bounding box.north west)$}})"
+        ).format(*pos)
 
     if "\n" in text:
         # http://tex.stackexchange.com/a/124114/13262
-        properties.append("align=%s" % ha)
+        properties.append("align={}".format(ha))
         # Manipulating the text here is actually against mpl2tikz's policy not
         # to do that. On the other hand, newlines should translate into
         # newlines.
@@ -108,8 +109,9 @@ def draw_text(data, obj):
         text = text.replace("\n ", "\\\\")
 
     content.append(
-        "\\node at %s[\n  %s\n]{%s %s};\n"
-        % (tikz_pos, ",\n  ".join(properties), " ".join(style), text)
+        "\\node at {}[\n  {}\n]{{{} {}}};\n".format(
+            tikz_pos, ",\n  ".join(properties), " ".join(style), text
+        )
     )
     return data, content
 
@@ -127,7 +129,7 @@ def _transform_positioning(ha, va):
         "center": "",
         "baseline": "base",
     }
-    return ("anchor=%s %s" % (va_mpl_to_tikz[va], ha_mpl_to_tikz[ha])).strip()
+    return "anchor={} {}".format(va_mpl_to_tikz[va], ha_mpl_to_tikz[ha]).strip()
 
 
 def _annotation(obj, data, content):
@@ -152,13 +154,20 @@ def _annotation(obj, data, content):
                     )
                     arrow_style.append(col)
 
-        arrow_proto = "\\draw[%s] (axis cs:%.15g,%.15g) " "-- (axis cs:%.15g,%.15g);\n"
-        the_arrow = arrow_proto % (
-            ",".join(arrow_style),
-            ann_xytext[0],
-            ann_xytext[1],
-            ann_xy[0],
-            ann_xy[1],
+        ff = data["float format"]
+        arrow_fmt = (
+            "\\draw[{}] (axis cs:"
+            + ff
+            + ","
+            + ff
+            + ") -- (axis cs:"
+            + ff
+            + ","
+            + ff
+            + ");\n"
+        )
+        the_arrow = arrow_fmt.format(
+            ",".join(arrow_style), ann_xytext[0], ann_xytext[1], ann_xy[0], ann_xy[1]
         )
         content.append(the_arrow)
     return
@@ -169,13 +178,16 @@ def _bbox(bbox, data, properties, scaling):
     if bbox.get_fill():
         data, fc, _ = color.mpl_color2xcolor(data, bbox.get_facecolor())
         if fc:
-            properties.append("fill=%s" % fc)
+            properties.append("fill={}".format(fc))
     data, ec, _ = color.mpl_color2xcolor(data, bbox.get_edgecolor())
     if ec:
-        properties.append("draw=%s" % ec)
+        properties.append("draw={}".format(ec))
     # XXX: This is ugly, too
-    properties.append("line width={:.15g}pt".format(bbox.get_lw() * 0.4))
-    properties.append("inner sep={:.15g}pt".format(bbox_style.pad * data["font size"]))
+    ff = data["float format"]
+    properties.append(("line width=" + ff + "pt").format(bbox.get_lw() * 0.4))
+    properties.append(
+        ("inner sep=" + ff + "pt").format(bbox_style.pad * data["font size"])
+    )
     # Rounded boxes
     if isinstance(bbox_style, mpl.patches.BoxStyle.Round):
         properties.append("rounded corners")
@@ -211,8 +223,9 @@ def _bbox(bbox, data, properties, scaling):
     # an approximation?
     elif bbox.get_ls() == "dashdot":
         properties.append(
-            ("dash pattern=on %.3gpt off %.3gpt on " "%.3gpt off %.3gpt")
-            % (1.0 / scaling, 3.0 / scaling, 6.0 / scaling, 3.0 / scaling)
+            "dash pattern=on {:.3g}pt off {:.3g}pt on {:.3g}pt off {:.3g}pt".format(
+                1.0 / scaling, 3.0 / scaling, 6.0 / scaling, 3.0 / scaling
+            )
         )
     else:
         assert bbox.get_ls() == "solid"

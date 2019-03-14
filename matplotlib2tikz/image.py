@@ -52,10 +52,13 @@ def draw_image(data, obj):
 
     # Explicitly use \pgfimage as includegrapics command, as the default
     # \includegraphics fails unexpectedly in some cases
+    ff = data["float format"]
     content.append(
-        "\\addplot graphics [includegraphics cmd=\\pgfimage,"
-        "xmin=%.15g, xmax=%.15g, "
-        "ymin=%.15g, ymax=%.15g] {%s};\n" % (extent + (rel_filepath,))
+        (
+            "\\addplot graphics [includegraphics cmd=\\pgfimage,"
+            "xmin=" + ff + ", xmax=" + ff + ", "
+            "ymin=" + ff + ", ymax=" + ff + "] {{{}}};\n"
+        ).format(*(extent + (rel_filepath,)))
     )
 
     return data, content
