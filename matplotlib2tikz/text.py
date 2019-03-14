@@ -184,7 +184,7 @@ def _bbox(bbox, data, properties, scaling):
         properties.append("draw={}".format(ec))
     # XXX: This is ugly, too
     ff = data["float format"]
-    properties.append("line width=" + ff + "pt".format(bbox.get_lw() * 0.4))
+    properties.append(("line width=" + ff + "pt").format(bbox.get_lw() * 0.4))
     properties.append(
         "inner sep=" + ff + " pt".format(bbox_style.pad * data["font size"])
     )
