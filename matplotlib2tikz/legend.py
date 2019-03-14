@@ -46,7 +46,7 @@ def draw_legend(data, obj):
     if position:
         ff = data["float format"]
         legend_style.append(
-            "at={{(" + ff + "," + ff + ")}}".format(position[0], position[1])
+            ("at={{(" + ff + "," + ff + ")}}").format(position[0], position[1])
         )
     if anchor:
         legend_style.append("anchor={}".format(anchor))

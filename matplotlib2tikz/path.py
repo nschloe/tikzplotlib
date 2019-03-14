@@ -91,6 +91,7 @@ def draw_path(data, path, draw_options=None, simplify=None):
                     + "and (axis cs:"
                     + ff
                     + ","
+                    + ff
                     + ") "
                     + ".. (axis cs:"
                     + ff
