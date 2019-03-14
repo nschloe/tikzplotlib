@@ -156,7 +156,7 @@ def draw_pathcollection(data, obj):
     draw_options.extend(extra_draw_options)
 
     if obj.get_cmap():
-        mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(obj.get_cmap())
+        mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(obj.get_cmap(), data)
         if is_custom_cmap:
             draw_options.append("colormap=" + mycolormap)
         else:

@@ -52,10 +52,11 @@ class Axes(object):
         # Axes limits.
         # Sort the limits so make sure that the smaller of the two is actually
         # *min.
+        ff = data["float format"]
         xlim = sorted(list(obj.get_xlim()))
-        self.axis_options.append("xmin={:.15g}, xmax={:.15g}".format(*xlim))
+        self.axis_options.append(("xmin=" + ff + ", xmax=" + ff).format(*xlim))
         ylim = sorted(list(obj.get_ylim()))
-        self.axis_options.append("ymin={:.15g}, ymax={:.15g}".format(*ylim))
+        self.axis_options.append(("ymin=" + ff + ", ymax=" + ff).format(*ylim))
 
         # axes scaling
         if obj.get_xscale() == "log":
@@ -374,14 +375,15 @@ class Axes(object):
             )
             colorbar_styles.append("ylabel={" + colorbar_ylabel + "}")
 
-        mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(colorbar.get_cmap())
+        mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(colorbar.get_cmap(), data)
         if is_custom_cmap:
             self.axis_options.append("colormap=" + mycolormap)
         else:
             self.axis_options.append("colormap/" + mycolormap)
 
-        self.axis_options.append("point meta min={:.15g}".format(limits[0]))
-        self.axis_options.append("point meta max={:.15g}".format(limits[1]))
+        ff = data["float format"]
+        self.axis_options.append(("point meta min=" + ff).format(limits[0]))
+        self.axis_options.append(("point meta max=" + ff).format(limits[1]))
 
         if colorbar_styles:
             self.axis_options.append(
@@ -573,9 +575,10 @@ def _get_ticks(data, xy, ticks, ticklabels):
     # explicit labels.
     if data["strict"] or is_label_required:
         if pgfplots_ticks:
+            ff = data["float format"]
             axis_options.append(
                 "{}tick={{{}}}".format(
-                    xy, ",".join(["{:.15g}".format(el) for el in pgfplots_ticks])
+                    xy, ",".join([ff.format(el) for el in pgfplots_ticks])
                 )
             )
         else:
@@ -615,20 +618,20 @@ def _is_colorbar_heuristic(obj):
     )
 
 
-def _mpl_cmap2pgf_cmap(cmap):
+def _mpl_cmap2pgf_cmap(cmap, data):
     """Converts a color map as given in matplotlib to a color map as
     represented in PGFPlots.
     """
     if isinstance(cmap, mpl.colors.LinearSegmentedColormap):
-        return _handle_linear_segmented_color_map(cmap)
+        return _handle_linear_segmented_color_map(cmap, data)
 
     assert isinstance(
         cmap, mpl.colors.ListedColormap
     ), "Only LinearSegmentedColormap and ListedColormap are supported"
-    return _handle_listed_color_map(cmap)
+    return _handle_listed_color_map(cmap, data)
 
 
-def _handle_linear_segmented_color_map(cmap):
+def _handle_linear_segmented_color_map(cmap, data):
     assert isinstance(cmap, mpl.colors.LinearSegmentedColormap)
 
     if cmap.is_gray():
@@ -714,9 +717,12 @@ def _handle_linear_segmented_color_map(cmap):
     X = _scale_to_int(numpy.array(X), 1000)
 
     color_changes = []
+    ff = data["float format"]
     for (k, x) in enumerate(X):
         color_changes.append(
-            "rgb({}{})=({:.15g},{:.15g},{:.15g})".format(*((x, unit) + colors[k]))
+            ("rgb({}{})=(" + ff + "," + ff + "," + ff + ")").format(
+                *((x, unit) + colors[k])
+            )
         )
 
     colormap_string = "{{mymap}}{{[1{}]\n  {}\n}}".format(
@@ -726,7 +732,7 @@ def _handle_linear_segmented_color_map(cmap):
     return (colormap_string, is_custom_colormap)
 
 
-def _handle_listed_color_map(cmap):
+def _handle_listed_color_map(cmap, data):
     assert isinstance(cmap, mpl.colors.ListedColormap)
 
     # check for predefined colormaps in both matplotlib and pgfplots
@@ -752,9 +758,10 @@ def _handle_listed_color_map(cmap):
             return (pgf_cm, is_custom_colormap)
 
     unit = "pt"
+    ff = data["float format"]
     if cmap.N is None or cmap.N == len(cmap.colors):
         colors = [
-            "rgb({}{})=({:.15g},{:.15g},{:.15g})".format(
+            ("rgb({}{})=(" + ff + "," + ff + "," + ff + ")").format(
                 k, unit, rgb[0], rgb[1], rgb[2]
             )
             for (k, rgb) in enumerate(cmap.colors)
@@ -763,7 +770,7 @@ def _handle_listed_color_map(cmap):
         reps = int(float(cmap.N) / len(cmap.colors) - 0.5) + 1
         repeated_cols = reps * cmap.colors
         colors = [
-            "rgb({}{})=({:.15g},{:.15g},{:.15g})".format(
+            ("rgb({}{})=(" + ff + "," + ff + "," + ff + ")").format(
                 k, unit, rgb[0], rgb[1], rgb[2]
             )
             for (k, rgb) in enumerate(repeated_cols[: cmap.N])

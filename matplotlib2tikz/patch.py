@@ -79,9 +79,10 @@ def _draw_rectangle(data, obj, draw_options):
 
     left_lower_x = obj.get_x()
     left_lower_y = obj.get_y()
+    ff = data["float format"]
     cont = (
-        "{}\\draw[{}] (axis cs:{:.15g},{:.15g}) "
-        "rectangle (axis cs:{:.15g},{:.15g});\n"
+        "{}\\draw[{}] (axis cs:" + ff + "," + ff + ") "
+        "rectangle (axis cs:" + ff + "," + ff + ");\n"
     ).format(
         legend,
         ",".join(draw_options),
@@ -100,9 +101,18 @@ def _draw_ellipse(data, obj, draw_options):
         # circle specialization
         return _draw_circle(data, obj, draw_options)
     x, y = obj.center
-    cont = "\\draw[{}] (axis cs:{:.15g},{:.15g}) ellipse ({:.15g} and {:.15g});\n".format(
-        ",".join(draw_options), x, y, 0.5 * obj.width, 0.5 * obj.height
-    )
+    ff = data["float format"]
+    cont = (
+        "\\draw[{}] (axis cs:"
+        + ff
+        + ","
+        + ff
+        + ") ellipse ("
+        + ff
+        + " and "
+        + ff
+        + ");\n"
+    ).format(",".join(draw_options), x, y, 0.5 * obj.width, 0.5 * obj.height)
     return data, cont
 
 
@@ -110,7 +120,8 @@ def _draw_circle(data, obj, draw_options):
     """Return the PGFPlots code for circles.
     """
     x, y = obj.center
-    cont = "\\draw[{}] (axis cs:{:.15g},{:.15g}) circle ({:.15g});\n".format(
+    ff = data["float format"]
+    cont = ("\\draw[{}] (axis cs:" + ff + "," + ff + ") circle (" + ff + ");\n").format(
         ",".join(draw_options), x, y, obj.get_radius()
     )
     return data, cont
