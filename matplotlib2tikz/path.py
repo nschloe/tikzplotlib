@@ -65,6 +65,7 @@ def draw_path(data, path, draw_options=None, simplify=None):
                     ".. controls (axis cs:"
                     + ff
                     + ","
+                    + ff
                     + ") "
                     + "and (axis cs:"
                     + ff
