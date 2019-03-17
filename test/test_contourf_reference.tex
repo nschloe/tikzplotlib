@@ -1,16 +1,16 @@
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{1,0.416912181618064,0}
-\definecolor{color1}{rgb}{0.9113959702195,1,0}
-\definecolor{color2}{rgb}{0.401836637130755,1,0}
-\definecolor{color3}{rgb}{0,1,0.107722411056515}
-\definecolor{color4}{rgb}{0,1,0.617278533938476}
-\definecolor{color5}{rgb}{0,0.873164544120426,1}
-\definecolor{color6}{rgb}{0,0.363605211031682,1}
-\definecolor{color7}{rgb}{0.145954122057063,0,1}
-\definecolor{color8}{rgb}{0.655513455145808,0,1}
-\definecolor{color9}{rgb}{1,0,0.834927211765447}
-\definecolor{color10}{rgb}{1,0,0.325367878676702}
+\definecolor{color0}{rgb}{0.28291,0.105393,0.426902}
+\definecolor{color1}{rgb}{0.260571,0.246922,0.522828}
+\definecolor{color2}{rgb}{0.220057,0.343307,0.549413}
+\definecolor{color3}{rgb}{0.180629,0.429975,0.557282}
+\definecolor{color4}{rgb}{0.147607,0.511733,0.557049}
+\definecolor{color5}{rgb}{0.121148,0.592739,0.544641}
+\definecolor{color6}{rgb}{0.146616,0.67305,0.508936}
+\definecolor{color7}{rgb}{0.266941,0.748751,0.440573}
+\definecolor{color8}{rgb}{0.449368,0.813768,0.335384}
+\definecolor{color9}{rgb}{0.668054,0.861999,0.196293}
+\definecolor{color10}{rgb}{0.89632,0.893616,0.096335}
 
 \begin{axis}[
 tick align=outside,
@@ -20,19 +20,7 @@ xmin=-3, xmax=2.6,
 y grid style={white!69.01960784313725!black},
 ymin=-3, ymax=2.6
 ]
-\addplot [draw=none, fill=color0, colormap={mymap}{[1pt]
-  rgb(0pt)=(1,0,0);
-  rgb(10pt)=(1,0.9375,0);
-  rgb(11pt)=(0.96875,1,0);
-  rgb(21pt)=(0.03125,1,0);
-  rgb(22pt)=(0,1,0.0625);
-  rgb(32pt)=(0,1,1);
-  rgb(42pt)=(0,0.0625,1);
-  rgb(43pt)=(0.03125,0,1);
-  rgb(53pt)=(0.96875,0,1);
-  rgb(54pt)=(1,0,0.9375);
-  rgb(63pt)=(1,0,0.09375)
-}]
+\addplot [draw=none, fill=color0, colormap/viridis]
 table{%
 x                      y
 0.999999999999999 0.984544248382579
@@ -43,19 +31,7 @@ x                      y
 0.954435464355629 0.999999999999999
 0.999999999999999 0.984544248382579
 };
-\addplot [draw=none, fill=color1, colormap={mymap}{[1pt]
-  rgb(0pt)=(1,0,0);
-  rgb(10pt)=(1,0.9375,0);
-  rgb(11pt)=(0.96875,1,0);
-  rgb(21pt)=(0.03125,1,0);
-  rgb(22pt)=(0,1,0.0625);
-  rgb(32pt)=(0,1,1);
-  rgb(42pt)=(0,0.0625,1);
-  rgb(43pt)=(0.03125,0,1);
-  rgb(53pt)=(0.96875,0,1);
-  rgb(54pt)=(1,0,0.9375);
-  rgb(63pt)=(1,0,0.09375)
-}]
+\addplot [draw=none, fill=color1, colormap/viridis]
 table{%
 x                      y
 0.999999999999999 0.857745486162581
@@ -73,19 +49,7 @@ x                      y
 0.999999999999999 0.984544248382579
 0.954435464355629 0.999999999999999
 };
-\addplot [draw=none, fill=color2, colormap={mymap}{[1pt]
-  rgb(0pt)=(1,0,0);
-  rgb(10pt)=(1,0.9375,0);
-  rgb(11pt)=(0.96875,1,0);
-  rgb(21pt)=(0.03125,1,0);
-  rgb(22pt)=(0,1,0.0625);
-  rgb(32pt)=(0,1,1);
-  rgb(42pt)=(0,0.0625,1);
-  rgb(43pt)=(0.03125,0,1);
-  rgb(53pt)=(0.96875,0,1);
-  rgb(54pt)=(1,0,0.9375);
-  rgb(63pt)=(1,0,0.09375)
-}]
+\addplot [draw=none, fill=color2, colormap/viridis]
 table{%
 x                      y
 0.999999999999999 0.730946723942583
@@ -105,19 +69,7 @@ x                      y
 0.999999999999999 0.857745486162581
 0.580624674440804 0.999999999999999
 };
-\addplot [draw=none, fill=color3, colormap={mymap}{[1pt]
-  rgb(0pt)=(1,0,0);
-  rgb(10pt)=(1,0.9375,0);
-  rgb(11pt)=(0.96875,1,0);
-  rgb(21pt)=(0.03125,1,0);
-  rgb(22pt)=(0,1,0.0625);
-  rgb(32pt)=(0,1,1);
-  rgb(42pt)=(0,0.0625,1);
-  rgb(43pt)=(0.03125,0,1);
-  rgb(53pt)=(0.96875,0,1);
-  rgb(54pt)=(1,0,0.9375);
-  rgb(63pt)=(1,0,0.09375)
-}]
+\addplot [draw=none, fill=color3, colormap/viridis]
 table{%
 x                      y
 0.199999999999999 0.876757367689047
@@ -138,19 +90,7 @@ x                      y
 -0.271796711026647 0.999999999999999
 0.199999999999999 0.876757367689047
 };
-\addplot [draw=none, fill=color4, colormap={mymap}{[1pt]
-  rgb(0pt)=(1,0,0);
-  rgb(10pt)=(1,0.9375,0);
-  rgb(11pt)=(0.96875,1,0);
-  rgb(21pt)=(0.03125,1,0);
-  rgb(22pt)=(0,1,0.0625);
-  rgb(32pt)=(0,1,1);
-  rgb(42pt)=(0,0.0625,1);
-  rgb(43pt)=(0.03125,0,1);
-  rgb(53pt)=(0.96875,0,1);
-  rgb(54pt)=(1,0,0.9375);
-  rgb(63pt)=(1,0,0.09375)
-}]
+\addplot [draw=none, fill=color4, colormap/viridis]
 table{%
 x                      y
 -0.600000000000001 0.944221756631701
@@ -177,19 +117,7 @@ x                      y
 -1.05454755194753 0.999999999999999
 -0.600000000000001 0.944221756631701
 };
-\addplot [draw=none, fill=color5, colormap={mymap}{[1pt]
-  rgb(0pt)=(1,0,0);
-  rgb(10pt)=(1,0.9375,0);
-  rgb(11pt)=(0.96875,1,0);
-  rgb(21pt)=(0.03125,1,0);
-  rgb(22pt)=(0,1,0.0625);
-  rgb(32pt)=(0,1,1);
-  rgb(42pt)=(0,0.0625,1);
-  rgb(43pt)=(0.03125,0,1);
-  rgb(53pt)=(0.96875,0,1);
-  rgb(54pt)=(1,0,0.9375);
-  rgb(63pt)=(1,0,0.09375)
-}]
+\addplot [draw=none, fill=color5, colormap/viridis]
 table{%
 x                      y
 1.8 -0.156923443951313
@@ -227,19 +155,7 @@ x                      y
 1.50952288326628 0.199999999999999
 1.8 -0.156923443951313
 };
-\addplot [draw=none, fill=color6, colormap={mymap}{[1pt]
-  rgb(0pt)=(1,0,0);
-  rgb(10pt)=(1,0.9375,0);
-  rgb(11pt)=(0.96875,1,0);
-  rgb(21pt)=(0.03125,1,0);
-  rgb(22pt)=(0,1,0.0625);
-  rgb(32pt)=(0,1,1);
-  rgb(42pt)=(0,0.0625,1);
-  rgb(43pt)=(0.03125,0,1);
-  rgb(53pt)=(0.96875,0,1);
-  rgb(54pt)=(1,0,0.9375);
-  rgb(63pt)=(1,0,0.09375)
-}]
+\addplot [draw=none, fill=color6, colormap/viridis]
 table{%
 x                      y
 -2.2 -3
@@ -283,19 +199,7 @@ x                      y
 -0.600000000000001 -1.81799484012866
 -1.17921570873327 -1.4
 };
-\addplot [draw=none, fill=color6, colormap={mymap}{[1pt]
-  rgb(0pt)=(1,0,0);
-  rgb(10pt)=(1,0.9375,0);
-  rgb(11pt)=(0.96875,1,0);
-  rgb(21pt)=(0.03125,1,0);
-  rgb(22pt)=(0,1,0.0625);
-  rgb(32pt)=(0,1,1);
-  rgb(42pt)=(0,0.0625,1);
-  rgb(43pt)=(0.03125,0,1);
-  rgb(53pt)=(0.96875,0,1);
-  rgb(54pt)=(1,0,0.9375);
-  rgb(63pt)=(1,0,0.09375)
-}]
+\addplot [draw=none, fill=color6, colormap/viridis]
 table{%
 x                      y
 -2.2 2.52214839745633
@@ -313,19 +217,7 @@ x                      y
 -3 2.58589326730128
 -2.2 2.52214839745633
 };
-\addplot [draw=none, fill=color7, colormap={mymap}{[1pt]
-  rgb(0pt)=(1,0,0);
-  rgb(10pt)=(1,0.9375,0);
-  rgb(11pt)=(0.96875,1,0);
-  rgb(21pt)=(0.03125,1,0);
-  rgb(22pt)=(0,1,0.0625);
-  rgb(32pt)=(0,1,1);
-  rgb(42pt)=(0,0.0625,1);
-  rgb(43pt)=(0.03125,0,1);
-  rgb(53pt)=(0.96875,0,1);
-  rgb(54pt)=(1,0,0.9375);
-  rgb(63pt)=(1,0,0.09375)
-}]
+\addplot [draw=none, fill=color7, colormap/viridis]
 table{%
 x                      y
 -0.600000000000001 -1.81799484012866
@@ -355,19 +247,7 @@ x                      y
 -0.600000000000001 -1.26617921499118
 -1.26232771452348 -0.600000000000001
 };
-\addplot [draw=none, fill=color8, colormap={mymap}{[1pt]
-  rgb(0pt)=(1,0,0);
-  rgb(10pt)=(1,0.9375,0);
-  rgb(11pt)=(0.96875,1,0);
-  rgb(21pt)=(0.03125,1,0);
-  rgb(22pt)=(0,1,0.0625);
-  rgb(32pt)=(0,1,1);
-  rgb(42pt)=(0,0.0625,1);
-  rgb(43pt)=(0.03125,0,1);
-  rgb(53pt)=(0.96875,0,1);
-  rgb(54pt)=(1,0,0.9375);
-  rgb(63pt)=(1,0,0.09375)
-}]
+\addplot [draw=none, fill=color8, colormap/viridis]
 table{%
 x                      y
 -0.600000000000001 -1.26617921499118
@@ -391,19 +271,7 @@ x                      y
 -0.600000000000001 -0.869018808885087
 -0.867463482563093 -0.600000000000001
 };
-\addplot [draw=none, fill=color9, colormap={mymap}{[1pt]
-  rgb(0pt)=(1,0,0);
-  rgb(10pt)=(1,0.9375,0);
-  rgb(11pt)=(0.96875,1,0);
-  rgb(21pt)=(0.03125,1,0);
-  rgb(22pt)=(0,1,0.0625);
-  rgb(32pt)=(0,1,1);
-  rgb(42pt)=(0,0.0625,1);
-  rgb(43pt)=(0.03125,0,1);
-  rgb(53pt)=(0.96875,0,1);
-  rgb(54pt)=(1,0,0.9375);
-  rgb(63pt)=(1,0,0.09375)
-}]
+\addplot [draw=none, fill=color9, colormap/viridis]
 table{%
 x                      y
 -0.600000000000001 -0.869018808885087
@@ -421,19 +289,7 @@ x                      y
 0.199999999999999 -0.704221964488152
 -0.189953214926739 -0.600000000000001
 };
-\addplot [draw=none, fill=color10, colormap={mymap}{[1pt]
-  rgb(0pt)=(1,0,0);
-  rgb(10pt)=(1,0.9375,0);
-  rgb(11pt)=(0.96875,1,0);
-  rgb(21pt)=(0.03125,1,0);
-  rgb(22pt)=(0,1,0.0625);
-  rgb(32pt)=(0,1,1);
-  rgb(42pt)=(0,0.0625,1);
-  rgb(43pt)=(0.03125,0,1);
-  rgb(53pt)=(0.96875,0,1);
-  rgb(54pt)=(1,0,0.9375);
-  rgb(63pt)=(1,0,0.09375)
-}]
+\addplot [draw=none, fill=color10, colormap/viridis]
 table{%
 x                      y
 0.199999999999999 -0.704221964488152

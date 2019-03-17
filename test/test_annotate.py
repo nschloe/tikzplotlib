@@ -32,7 +32,7 @@ def plot():
 
 
 def test():
-    assert_equality(plot, "test_annotate_reference.tex")
+    assert_equality(plot, __file__[:-3] + "_reference.tex")
     return
 
 

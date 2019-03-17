@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 
 
 def _main():
-    parser = argparse.ArgumentParser(description='Refresh the reference TeX files.')
-    parser.add_argument('files', nargs="+", help='Files to refresh')
+    parser = argparse.ArgumentParser(description="Refresh the reference TeX files.")
+    parser.add_argument("files", nargs="+", help="Files to refresh")
     args = parser.parse_args()
 
     this_dir = os.path.dirname(os.path.abspath(__file__))

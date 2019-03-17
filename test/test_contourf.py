@@ -3,6 +3,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+from helpers import assert_equality
+
 
 def plot():
     delta = 0.8
@@ -18,8 +20,13 @@ def plot():
     return fig
 
 
-# TODO reintroduce
-# from helpers import assert_equality
-# def test():
-#     assert_equality(plot, __file__[:-3] + "_reference.tex")
-#     return
+def test():
+    assert_equality(plot, __file__[:-3] + "_reference.tex")
+    return
+
+
+if __name__ == "__main__":
+    import helpers
+
+    helpers.compare_mpl_latex(plot)
+    # helpers.print_tree(plot())
