@@ -453,17 +453,11 @@ def _get_label_rotation_and_horizontal_alignment(obj, data, axes_obj):
         if any(tick_labels_rotation) != 0:
             values.append("rotate={}".format(tick_labels_rotation[0]))
 
+        # Horizontal alignment will be ignored if no 'x/y tick label text width' has
+        # been passed in the 'extra' parameter
         if tick_label_text_width:
             values.append("align={}".format(tick_labels_horizontal_alignment[0]))
             values.append("text width={}".format(tick_label_text_width))
-        else:
-            print(
-                (
-                    "Horizontal alignment will be ignored as no '{} tick "
-                    "label text width' has been passed in the 'extra' "
-                    "parameter"
-                ).format(axes_obj)
-            )
 
         if values:
             label_style = "{}ticklabel style = {{{}}}".format(
