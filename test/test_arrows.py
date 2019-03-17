@@ -71,5 +71,6 @@ def plot():
 
 if __name__ == "__main__":
     import helpers
+
     helpers.compare_mpl_latex(plot)
     # helpers.print_tree(plot())
