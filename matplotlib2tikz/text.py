@@ -144,11 +144,27 @@ def _annotation(obj, data, content):
         )
         return data, content
     else:  # Create a basic tikz arrow
+        arrow_translate = {
+            "-": ["-"],
+            "->": ["->"],
+            "<-": ["<-"],
+            "<->": ["<->"],
+            "|-|": ["|-|"],
+            "-|>": ["-latex"],
+            "<|-": ["latex-"],
+            "<|-|>": ["latex-latex"],
+            "]-[": ["|-|"],
+            "-[": ["-|"],
+            "]-": ["|-"],
+            "fancy": ["-latex", "very thick"],
+            "simple": ["-latex", "very thick"],
+            "wedge": ["-latex", "very thick"],
+        }
         arrow_style = []
         if obj.arrowprops is not None:
             if obj.arrowprops["arrowstyle"] is not None:
-                if obj.arrowprops["arrowstyle"] in ["-", "->", "<-", "<->"]:
-                    arrow_style.append(obj.arrowprops["arrowstyle"])
+                if obj.arrowprops["arrowstyle"] in arrow_translate:
+                    arrow_style += arrow_translate[obj.arrowprops["arrowstyle"]]
                     data, col, _ = color.mpl_color2xcolor(
                         data, obj.arrow_patch.get_ec()
                     )
