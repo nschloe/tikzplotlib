@@ -36,18 +36,19 @@ class Axes(object):
 
         # get plot title
         title = obj.get_title()
+        data["current axis title"] = title
         if title:
-            self.axis_options.append("title={{{}}}".format(title))
+            self.axis_options.append(u"title={{{}}}".format(title))
 
         # get axes titles
         xlabel = obj.get_xlabel()
         if xlabel:
             xlabel = mpl_backend_pgf.common_texification(xlabel)
-            self.axis_options.append("xlabel={{{}}}".format(xlabel))
+            self.axis_options.append(u"xlabel={{{}}}".format(xlabel))
         ylabel = obj.get_ylabel()
         if ylabel:
             ylabel = mpl_backend_pgf.common_texification(ylabel)
-            self.axis_options.append("ylabel={{{}}}".format(ylabel))
+            self.axis_options.append(u"ylabel={{{}}}".format(ylabel))
 
         # Axes limits.
         # Sort the limits so make sure that the smaller of the two is actually
