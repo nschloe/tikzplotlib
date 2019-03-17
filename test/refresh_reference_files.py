@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 #
+import argparse
 import os
 import importlib.util
 
@@ -8,15 +9,18 @@ import matplotlib.pyplot as plt
 
 
 def _main():
+    parser = argparse.ArgumentParser(description='Refresh the reference TeX files.')
+    parser.add_argument('files', nargs="+", help='Files to refresh')
+    args = parser.parse_args()
+
     this_dir = os.path.dirname(os.path.abspath(__file__))
     exclude_list = ["test_rotated_labels.py", "test_deterministic_output.py"]
-    for filename in os.listdir(this_dir):
+
+    for filename in args.files:
+        if filename in exclude_list:
+            continue
         if filename.startswith("test_") and filename.endswith(".py"):
             spec = importlib.util.spec_from_file_location("plot", filename)
-
-            if filename in exclude_list:
-                continue
-
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
             module.plot()
