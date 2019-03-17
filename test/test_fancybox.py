@@ -201,3 +201,8 @@ def plot():
 def test():
     assert_equality(plot, "test_fancybox_reference.tex")
     return
+
+
+if __name__ == "__main__":
+    from helpers import compare_mpl_latex
+    compare_mpl_latex(plot)

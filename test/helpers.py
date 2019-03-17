@@ -44,11 +44,11 @@ def assert_equality(plot, filename):
     assert reference == code, _unidiff_output(reference, code)
 
     code = matplotlib2tikz.get_tikz_code(include_disclaimer=False, standalone=True)
-    assert _does_compile(code)
+    assert _compile(code) is not None
     return
 
 
-def _does_compile(code):
+def _compile(code):
     _, tmp_base = tempfile.mkstemp()
 
     tex_file = tmp_base + ".tex"
@@ -65,12 +65,33 @@ def _does_compile(code):
             stderr=subprocess.STDOUT,
         )
     except subprocess.CalledProcessError as e:
-        print("Command output:")
+        print("pdflatex output:")
         print("=" * 70)
-        print(e.output)
+        print(e.output.decode("utf-8"))
         print("=" * 70)
-        does_compile = False
+        output_pdf = None
     else:
-        does_compile = True
+        output_pdf = tmp_base + ".pdf"
 
-    return does_compile
+    return output_pdf
+
+
+def compare_mpl_latex(plot):
+    plot()
+    code = matplotlib2tikz.get_tikz_code(standalone=True)
+    directory = os.getcwd()
+    filename = "test-0.png"
+    plt.savefig(filename)
+    plt.close()
+
+    pdf_file = _compile(code)
+    pdf_dirname = os.path.dirname(pdf_file)
+
+    # Convert PDF to PNG.
+    subprocess.check_output(
+        ["pdftoppm", "-png", pdf_file, "test"], stderr=subprocess.STDOUT
+    )
+    png_path = os.path.join(pdf_dirname, "test-1.png")
+
+    os.rename(png_path, os.path.join(directory, "test-1.png"))
+    return
