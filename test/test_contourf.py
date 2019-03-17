@@ -20,7 +20,7 @@ def plot():
     y_max = 2
     y_min = 0
 
-    xi, yi = np.mgrid[x_min:x_max:nbins * 1j, y_min:y_max:nbins * 1j]
+    xi, yi = np.mgrid[x_min : x_max : nbins * 1j, y_min : y_max : nbins * 1j]
     pos = np.empty(xi.shape + (2,))
     pos[:, :, 0] = xi
     pos[:, :, 1] = yi
