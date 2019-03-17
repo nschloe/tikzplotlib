@@ -18,7 +18,7 @@ from . import image as img
 from . import quadmesh as qmsh
 from . import path
 from . import patch
-from . import text as mytext
+from . import text
 
 from .__about__ import __version__
 
@@ -223,7 +223,6 @@ def get_tikz_code(
 \\usepackage[utf8]{{inputenc}}
 \\usepackage{{pgfplots}}
 \\usepgfplotslibrary{{groupplots}}
-\\usetikzlibrary{{shapes.arrows}}
 \\pgfplotsset{{compat=newest}}
 \\begin{{document}}
 {}
@@ -277,7 +276,7 @@ def _print_pgfplot_libs_message(data):
     pgfplotslibs = ",".join(list(data["pgfplots libs"]))
     tikzlibs = ",".join(list(data["tikz libs"]))
 
-    print("=========================================================")
+    print(70 * "=")
     print("Please add the following lines to your LaTeX preamble:\n")
     print("\\usepackage[utf8]{inputenc}")
     print("\\usepackage{fontspec}  % This line only for XeLaTeX and LuaLaTeX")
@@ -286,7 +285,7 @@ def _print_pgfplot_libs_message(data):
         print("\\usetikzlibrary{" + tikzlibs + "}")
     if pgfplotslibs:
         print("\\usepgfplotslibrary{" + pgfplotslibs + "}")
-    print("=========================================================")
+    print(70 * "=")
     return
 
 
@@ -360,9 +359,6 @@ def _recurse(data, obj):
         elif isinstance(child, mpl.image.AxesImage):
             data, cont = img.draw_image(data, child)
             content.extend(cont, child.get_zorder())
-            # # Really necessary?
-            # data, children_content = _recurse(data, child)
-            # content.extend(children_content)
         elif isinstance(child, mpl.patches.Patch):
             data, cont = patch.draw_patch(data, child)
             content.extend(cont, child.get_zorder())
@@ -384,9 +380,10 @@ def _recurse(data, obj):
             data = legend.draw_legend(data, child)
             if data["legend colors"]:
                 content.extend(data["legend colors"], 0)
-        elif isinstance(
-            child, (mpl.axis.XAxis, mpl.axis.YAxis, mpl.spines.Spine, mpl.text.Text)
-        ):
+        elif isinstance(child, (mpl.text.Text, mpl.text.Annotation)):
+            data, cont = text.draw_text(data, child)
+            content.extend(cont, child.get_zorder())
+        elif isinstance(child, (mpl.axis.XAxis, mpl.axis.YAxis, mpl.spines.Spine)):
             pass
         else:
             warnings.warn(
@@ -394,9 +391,4 @@ def _recurse(data, obj):
                     type(child)
                 )
             )
-    # XXX: This is ugly
-    if isinstance(obj, (mpl.axes.Subplot, mpl.figure.Figure)):
-        for text in obj.texts:
-            data, cont = mytext.draw_text(data, text)
-            content.extend(cont, text.get_zorder())
     return data, content.flatten()

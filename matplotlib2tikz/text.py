@@ -21,6 +21,12 @@ def draw_text(data, obj):
     #                   -------1--------2---3--4--
     pos = obj.get_position()
     text = obj.get_text()
+
+    if text in ["", data["current axis title"]]:
+        # Text nodes which are direct children of Axes are typically titles.  They are
+        # already captured by the `title` property of pgfplots axes, so skip them here.
+        return data, content
+
     size = obj.get_size()
     bbox = obj.get_bbox_patch()
     converter = mpl.colors.ColorConverter()
@@ -109,8 +115,8 @@ def draw_text(data, obj):
         text = text.replace("\n ", "\\\\")
 
     content.append(
-        "\\node at {}[\n  {}\n]{{{} {}}};\n".format(
-            tikz_pos, ",\n  ".join(properties), " ".join(style), text
+        "\\node at {}[\n  {}\n]{{{}}};\n".format(
+            tikz_pos, ",\n  ".join(properties), " ".join(style + [text])
         )
     )
     return data, content

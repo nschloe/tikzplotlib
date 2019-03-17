@@ -26,3 +26,9 @@ def plot():
 def test():
     assert_equality(plot, "test_basic_sin_reference.tex")
     return
+
+
+if __name__ == "__main__":
+    import helpers
+    # helpers.compare_mpl_latex(plot)
+    helpers.print_tree(plot())

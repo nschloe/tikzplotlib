@@ -89,7 +89,7 @@ def compare_mpl_latex(plot):
 
     # Convert PDF to PNG.
     subprocess.check_output(
-        ["pdftoppm", "-png", pdf_file, "test"], stderr=subprocess.STDOUT
+        ["pdftoppm", "-r", "1000", "-png", pdf_file, "test"], stderr=subprocess.STDOUT
     )
     png_path = os.path.join(pdf_dirname, "test-1.png")
 

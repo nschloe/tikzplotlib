@@ -36,6 +36,7 @@ class Axes(object):
 
         # get plot title
         title = obj.get_title()
+        data["current axis title"] = title
         if title:
             self.axis_options.append("title={{{}}}".format(title))
 

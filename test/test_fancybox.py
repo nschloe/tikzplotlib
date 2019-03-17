@@ -39,7 +39,7 @@ def box1(ax):
 
     ax.add_patch(p_fancy)
 
-    ax.text(0.1, 0.8, " boxstyle='round, pad=0.1'", size=10, transform=ax.transAxes)
+    ax.text(0.1, 0.8, "boxstyle='round, pad=0.1'", size=10, transform=ax.transAxes)
 
     # # draws control points for the fancy box.
     # l = p_fancy.get_path().vertices
@@ -204,5 +204,6 @@ def test():
 
 
 if __name__ == "__main__":
-    from helpers import compare_mpl_latex
-    compare_mpl_latex(plot)
+    import helpers
+    # helpers.compare_mpl_latex(plot)
+    helpers.print_tree(plot())
