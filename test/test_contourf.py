@@ -2,21 +2,33 @@
 #
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.stats import multivariate_normal
 
 from helpers import assert_equality
 
 
 def plot():
-    delta = 0.8
-    x = y = np.arange(-3.0, 3.01, delta)
-    X, Y = np.meshgrid(x, y)
-    Z1 = plt.mlab.bivariate_normal(X, Y, 1.0, 1.0, 0.0, 0.0)
-    Z2 = plt.mlab.bivariate_normal(X, Y, 1.5, 0.5, 1, 1)
-    Z = 10 * (Z1 - Z2)
-    levels = [-2, -1.5, -1.2, -0.9, -0.6, -0.3, 0.0, 0.3, 0.6, 0.9, 1.2, 1.5]
+    mean = np.array([1, 1])
+    cov = np.eye(2)
+    nbins = 5
+
     fig = plt.figure()
-    CS = plt.contourf(X, Y, Z, 10, levels=levels)
-    plt.contour(CS, levels=levels, colors="r")
+    ax = plt.gca()
+
+    x_max = 2
+    x_min = 0
+    y_max = 2
+    y_min = 0
+
+    xi, yi = np.mgrid[x_min:x_max:nbins * 1j, y_min:y_max:nbins * 1j]
+    pos = np.empty(xi.shape + (2,))
+    pos[:, :, 0] = xi
+    pos[:, :, 1] = yi
+    zi = multivariate_normal(mean, cov, allow_singular=True, seed=0).pdf(pos)
+    ax.contourf(xi, yi, zi, 250)
+
+    ax.set_xlim(x_min, x_max)
+    ax.set_ylim(y_min, y_max)
     return fig
 
 
