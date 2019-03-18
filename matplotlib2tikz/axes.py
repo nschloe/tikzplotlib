@@ -76,14 +76,14 @@ class Axes(object):
 
         # aspect ratio, plot width/height
         aspect = obj.get_aspect()
-        if aspect == "auto" or aspect == "normal":
+        if aspect in ["auto", "normal"]:
             aspect_num = None  # just take the given width/height values
         elif aspect == "equal":
             aspect_num = 1.0
         else:
             aspect_num = float(aspect)
 
-        self._width(data, aspect_num, xlim, ylim)
+        self._set_axis_dimensions(data, aspect_num, xlim, ylim)
 
         # axis positions
         xaxis_pos = obj.get_xaxis().label_position
@@ -163,7 +163,7 @@ class Axes(object):
 
         return ""
 
-    def _width(self, data, aspect_num, xlim, ylim):
+    def _set_axis_dimensions(self, data, aspect_num, xlim, ylim):
         if data["fwidth"] and data["fheight"]:
             # width and height overwrite aspect ratio
             self.axis_options.append("width=" + data["fwidth"])
@@ -193,12 +193,8 @@ class Axes(object):
                     data["fwidth"] = str(1.0 / alpha) + "*" + data["fheight"]
                 self.axis_options.append("width=" + data["fwidth"])
         else:
-            if aspect_num:
-                print(
-                    "Non-automatic aspect ratio demanded, "
-                    "but neither height nor width of the plot are given. "
-                    "Discard aspect ratio."
-                )
+            # TODO keep an eye on https://tex.stackexchange.com/q/480058/13262
+            pass
         return
 
     def _ticks(self, data, obj):
