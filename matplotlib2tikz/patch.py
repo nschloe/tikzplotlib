@@ -21,7 +21,10 @@ def draw_patch(data, obj):
         return _draw_ellipse(data, obj, draw_options)
 
     # regular patch
-    return mypath.draw_path(data, obj.get_path(), draw_options=draw_options)
+    data, path_command, _, _ = mypath.draw_path(
+        data, obj.get_path(), draw_options=draw_options
+    )
+    return data, path_command
 
 
 def draw_patchcollection(data, obj):
@@ -40,10 +43,32 @@ def draw_patchcollection(data, obj):
         face_color = None
 
     data, draw_options = mypath.get_draw_options(data, edge_color, face_color)
-    for path in obj.get_paths():
-        data, cont = mypath.draw_path(data, path, draw_options=draw_options)
+
+    paths = obj.get_paths()
+    for path in paths:
+        data, cont, draw_options, is_area = mypath.draw_path(
+            data, path, draw_options=draw_options
+        )
         content.append(cont)
+
+    if _is_in_legend(obj):
+        # Unfortunately, patch legend entries need \addlegendimage in Pgfplots.
+        tpe = "area legend" if is_area else "line legend"
+        do = ", ".join([tpe] + draw_options) if draw_options else ""
+        content += [
+            "\\addlegendimage{{{}}}\n".format(do),
+            "\\addlegendentry{{{}}}\n\n".format(obj.get_label()),
+        ]
+    else:
+        content.append("\n")
+
     return data, content
+
+
+def _is_in_legend(obj):
+    label = obj.get_label()
+    leg = obj.axes.get_legend()
+    return label in [txt.get_text() for txt in leg.get_texts()]
 
 
 def _draw_rectangle(data, obj, draw_options):

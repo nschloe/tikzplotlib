@@ -18,7 +18,7 @@ def draw_path(data, path, draw_options=None, simplify=None):
         and all(path.vertices[0] == path.vertices[1])
         and "fill opacity=0" in draw_options
     ):
-        return data, ""
+        return data, "", None, False
 
     nodes = []
     ff = data["float format"]
@@ -34,6 +34,7 @@ def draw_path(data, path, draw_options=None, simplify=None):
         # For path codes see: http://matplotlib.org/api/path_api.html
         #
         # if code == mpl.path.Path.STOP: pass
+        is_area = False
         if code == mpl.path.Path.MOVETO:
             nodes.append(("(axis cs:" + ff + "," + ff + ")").format(*vert))
         elif code == mpl.path.Path.LINETO:
@@ -103,14 +104,15 @@ def draw_path(data, path, draw_options=None, simplify=None):
         else:
             assert code == mpl.path.Path.CLOSEPOLY
             nodes.append("--cycle")
+            is_area = True
 
         # Store the previous point for quadratic Beziers.
         prev = vert[0:2]
 
     do = "[{}]".format(", ".join(draw_options)) if draw_options else ""
-    path_command = "\\path {} {};\n\n".format(do, "\n".join(nodes))
+    path_command = "\\path {} {};\n".format(do, "\n".join(nodes))
 
-    return data, path_command
+    return data, path_command, draw_options, is_area
 
 
 def draw_pathcollection(data, obj):

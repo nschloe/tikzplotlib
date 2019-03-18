@@ -9,17 +9,15 @@ from . import path as mypath
 from . import files
 
 
-def get_legend_label_(line):
-    """Check if line is in legend
+def _is_in_legend(line):
+    """Check if line is in legend.
     """
-
     label = line.get_label()
     try:
-        ax = line.axes
-        leg = ax.get_legend()
+        leg = line.axes.get_legend()
         return label in [l.get_label() for l in leg.get_lines()]
     except AttributeError:
-        return None
+        return False
 
 
 def draw_line2d(data, obj):
@@ -73,9 +71,10 @@ def draw_line2d(data, obj):
     if marker and not show_line:
         addplot_options.append("only marks")
 
-    # Check if a line is not in a legend and forget it if so,
-    # fixes bug #167:
-    if not get_legend_label_(obj):
+    # Check if a line is in a legend and forget it if not.
+    # Fixes <https://github.com/nschloe/matplotlib2tikz/issues/167>.
+    is_in_legend = _is_in_legend(obj)
+    if not is_in_legend:
         addplot_options.append("forget plot")
 
     # process options
@@ -85,6 +84,10 @@ def draw_line2d(data, obj):
         content.append("[" + options + "]\n")
 
     _table(obj, content, data)
+
+    if is_in_legend:
+        label = obj.get_label()
+        content.append("\\addlegendentry{{{}}}\n".format(label))
 
     return data, content
 

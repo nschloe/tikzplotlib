@@ -34,7 +34,7 @@ def get_tikz_code(
     override_externals=False,
     strict=False,
     wrap=True,
-    axis_environment=True,
+    add_axis_environment=True,
     extra_axis_parameters=None,
     extra_tikzpicture_parameters=None,
     dpi=None,
@@ -101,11 +101,11 @@ def get_tikz_code(
                  Default is ``True``.
     :type wrap: bool
 
-    :param axis_environment: Whether ``'\\begin{axis}[...]'`` and
-                             ``'\\end{axis}'`` will be written. One needs to
-                             set the environment in the document. If ``False``
-                             additionally sets ``wrap=False``.
-    :type axis_environment: bool
+    :param add_axis_environment: Whether ``'\\begin{axis}[...]'`` and
+                                 ``'\\end{axis}'`` will be written. One needs to
+                                 set the environment in the document. If ``False``
+                                 additionally sets ``wrap=False``. Default is ``True``.
+    :type add_axis_environment: bool
 
     :param extra_axis_parameters: Extra axis options to be passed (as a set)
                                     to pgfplots. Default is ``None``.
@@ -159,7 +159,7 @@ def get_tikz_code(
     data["custom colors"] = {}
     data["legend colors"] = []
     data["extra tikzpicture parameters"] = extra_tikzpicture_parameters
-    data["axis environment"] = axis_environment
+    data["add axis environment"] = add_axis_environment
     data["show_info"] = show_info
     # rectangle_legends is used to keep track of which rectangles have already
     # had \addlegendimage added. There should be only one \addlegenimage per
@@ -200,7 +200,7 @@ def get_tikz_code(
         code += _tex_comment(disclaimer)
 
     # write the contents
-    if wrap and axis_environment:
+    if wrap and add_axis_environment:
         code += "\\begin{tikzpicture}\n\n"
         if extra_tikzpicture_parameters:
             code += ",\n".join(data["extra tikzpicture parameters"])
@@ -213,7 +213,7 @@ def get_tikz_code(
 
     code += "".join(content)
 
-    if wrap and axis_environment:
+    if wrap and add_axis_environment:
         code += "\\end{tikzpicture}"
 
     if standalone:
@@ -331,8 +331,8 @@ def _recurse(data, obj):
                 # add extra axis options from children
                 if data["extra axis options"]:
                     ax.axis_options.extend(data["extra axis options"])
-                # populate content and add axis environment if wished
-                if data["axis environment"]:
+                # populate content and add axis environment if desired
+                if data["add axis environment"]:
                     content.extend(
                         ax.get_begin_code()
                         + children_content

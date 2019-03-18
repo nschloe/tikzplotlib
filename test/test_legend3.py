@@ -12,7 +12,7 @@ def plot():
     ax.plot([1, 2], [2, 5], "k", label="ref")
     ax.grid()
     plt.legend()
-    return
+    return fig
 
 
 if __name__ == "__main__":
