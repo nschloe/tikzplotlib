@@ -38,7 +38,7 @@ def get_tikz_code(
     extra_axis_parameters=None,
     extra_tikzpicture_parameters=None,
     dpi=None,
-    show_info=True,
+    show_info=False,
     include_disclaimer=True,
     standalone=False,
     float_format="{:.15g}",

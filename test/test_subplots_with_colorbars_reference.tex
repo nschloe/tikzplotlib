@@ -3,7 +3,19 @@
 \begin{groupplot}[group style={group size=3 by 1}]
 \nextgroupplot[
 colorbar horizontal,
-colormap/viridis,
+colormap={mymap}{[1pt]
+  rgb(0pt)=(1,0,0);
+  rgb(10pt)=(1,0.9375,0);
+  rgb(11pt)=(0.96875,1,0);
+  rgb(21pt)=(0.03125,1,0);
+  rgb(22pt)=(0,1,0.0625);
+  rgb(32pt)=(0,1,1);
+  rgb(42pt)=(0,0.0625,1);
+  rgb(43pt)=(0.03125,0,1);
+  rgb(53pt)=(0.96875,0,1);
+  rgb(54pt)=(1,0,0.9375);
+  rgb(63pt)=(1,0,0.09375)
+},
 point meta max=1,
 point meta min=0,
 tick align=outside,
@@ -16,7 +28,19 @@ ymin=-0.5, ymax=2.5
 \addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=2.5, ymin=2.5, ymax=-0.5] {tmp-000.png};
 \nextgroupplot[
 colorbar horizontal,
-colormap/viridis,
+colormap={mymap}{[1pt]
+  rgb(0pt)=(1,0,0);
+  rgb(10pt)=(1,0.9375,0);
+  rgb(11pt)=(0.96875,1,0);
+  rgb(21pt)=(0.03125,1,0);
+  rgb(22pt)=(0,1,0.0625);
+  rgb(32pt)=(0,1,1);
+  rgb(42pt)=(0,0.0625,1);
+  rgb(43pt)=(0.03125,0,1);
+  rgb(53pt)=(0.96875,0,1);
+  rgb(54pt)=(1,0,0.9375);
+  rgb(63pt)=(1,0,0.09375)
+},
 point meta max=1,
 point meta min=0,
 tick align=outside,
@@ -29,7 +53,19 @@ ymin=-0.5, ymax=2.5
 \addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=2.5, ymin=2.5, ymax=-0.5] {tmp-001.png};
 \nextgroupplot[
 colorbar horizontal,
-colormap/viridis,
+colormap={mymap}{[1pt]
+  rgb(0pt)=(1,0,0);
+  rgb(10pt)=(1,0.9375,0);
+  rgb(11pt)=(0.96875,1,0);
+  rgb(21pt)=(0.03125,1,0);
+  rgb(22pt)=(0,1,0.0625);
+  rgb(32pt)=(0,1,1);
+  rgb(42pt)=(0,0.0625,1);
+  rgb(43pt)=(0.03125,0,1);
+  rgb(53pt)=(0.96875,0,1);
+  rgb(54pt)=(1,0,0.9375);
+  rgb(63pt)=(1,0,0.09375)
+},
 point meta max=1,
 point meta min=0,
 tick align=outside,

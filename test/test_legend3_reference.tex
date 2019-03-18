@@ -1,0 +1,40 @@
+\begin{tikzpicture}
+
+\begin{axis}[
+legend cell align={left},
+legend entries={{ref},{roh},{kal}},
+legend style={at={(0.03,0.97)}, anchor=north west, draw=white!80.0!black},
+tick align=outside,
+tick pos=left,
+x grid style={white!69.01960784313725!black},
+xmajorgrids,
+xmin=0.95, xmax=2.05,
+y grid style={white!69.01960784313725!black},
+ymajorgrids,
+ymin=1.85, ymax=5.15
+]
+\addlegendimage{no markers, black}
+\path [draw=red, fill=red, opacity=0.2] (axis cs:1,3)
+--(axis cs:1,2)
+--(axis cs:2,2)
+--(axis cs:2,3)
+--(axis cs:2,3)
+--(axis cs:1,3)
+--cycle;
+
+\path [draw=blue, fill=blue, opacity=0.2] (axis cs:1,5)
+--(axis cs:1,4)
+--(axis cs:2,4)
+--(axis cs:2,5)
+--(axis cs:2,5)
+--(axis cs:1,5)
+--cycle;
+
+\addplot [semithick, black]
+table {%
+1 2
+2 5
+};
+\end{axis}
+
+\end{tikzpicture}
