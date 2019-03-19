@@ -107,9 +107,9 @@ def get_tikz_code(
                                  additionally sets ``wrap=False``. Default is ``True``.
     :type add_axis_environment: bool
 
-    :param extra_axis_parameters: Extra axis options to be passed (as a set)
-                                    to pgfplots. Default is ``None``.
-    :type extra_axis_parameters: a set of strings for the pfgplots axes.
+    :param extra_axis_parameters: Extra axis options to be passed (as a list or set)
+                                  to pgfplots. Default is ``None``.
+    :type extra_axis_parameters: a list or set of strings for the pfgplots axes.
 
     :param extra_tikzpicture_parameters: Extra tikzpicture options to be passed
                                         (as a set) to pgfplots.
@@ -166,7 +166,7 @@ def get_tikz_code(
     # bar chart data series.
     data["rectangle_legends"] = set()
     if extra_axis_parameters:
-        data["extra axis options [base]"] = extra_axis_parameters.copy()
+        data["extra axis options [base]"] = set(extra_axis_parameters).copy()
     else:
         data["extra axis options [base]"] = set()
 
