@@ -9,15 +9,26 @@ from . import path as mypath
 from . import files
 
 
-def _is_in_legend(line):
+def _has_legend(axes):
+    return axes.get_legend() is not None
+
+
+def _get_legend_text(line):
     """Check if line is in legend.
     """
+    leg = line.axes.get_legend()
+    if leg is None:
+        return None
+
+    keys = [l.get_label() for l in leg.get_lines()]
+    values = [l.get_text() for l in leg.texts]
+
     label = line.get_label()
-    try:
-        leg = line.axes.get_legend()
-        return label in [l.get_label() for l in leg.get_lines()]
-    except AttributeError:
-        return False
+    d = dict(zip(keys, values))
+    if label in d:
+        return d[label]
+
+    return None
 
 
 def draw_line2d(data, obj):
@@ -73,21 +84,19 @@ def draw_line2d(data, obj):
 
     # Check if a line is in a legend and forget it if not.
     # Fixes <https://github.com/nschloe/matplotlib2tikz/issues/167>.
-    is_in_legend = _is_in_legend(obj)
-    if not is_in_legend:
+    legend_text = _get_legend_text(obj)
+    if legend_text is None and _has_legend(obj.axes):
         addplot_options.append("forget plot")
 
     # process options
     content.append("\\addplot ")
     if addplot_options:
-        options = ", ".join(addplot_options)
-        content.append("[" + options + "]\n")
+        content.append("[{}]\n".format(", ".join(addplot_options)))
 
     _table(obj, content, data)
 
-    if is_in_legend:
-        label = obj.get_label()
-        content.append("\\addlegendentry{{{}}}\n".format(label))
+    if legend_text is not None:
+        content.append("\\addlegendentry{{{}}}\n".format(legend_text))
 
     return data, content
 
@@ -153,7 +162,6 @@ def draw_linecollection(data, obj):
         data, cont, _, _ = mypath.draw_path(
             data, path, draw_options=options, simplify=False
         )
-
         content.append(cont + "\n")
 
     return data, content

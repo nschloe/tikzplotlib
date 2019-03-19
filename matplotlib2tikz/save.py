@@ -224,6 +224,7 @@ def get_tikz_code(
 \\usepackage{{pgfplots}}
 \\usepgfplotslibrary{{groupplots}}
 \\pgfplotsset{{compat=newest}}
+\\DeclareUnicodeCharacter{{2212}}{{-}}
 \\begin{{document}}
 {}
 \\end{{document}}""".format(

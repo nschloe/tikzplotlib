@@ -6,7 +6,6 @@
 \begin{axis}[
 legend cell align={left},
 legend columns=2,
-legend entries={{Test 1},{Test 2}},
 legend style={at={(0.5,0.91)}, anchor=north, draw=white!80.0!black},
 tick align=outside,
 tick pos=left,
@@ -20,11 +19,13 @@ table {%
 0 1
 1 5
 };
+\addlegendentry{Test 1}
 \addplot [semithick, color1]
 table {%
 0 5
 1 1
 };
+\addlegendentry{Test 2}
 \end{axis}
 
 \end{tikzpicture}

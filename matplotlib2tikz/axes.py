@@ -126,7 +126,7 @@ class Axes(object):
 
         # actually print the thing
         if self.is_subplot:
-            self.content.append("\\nextgroupplot")
+            self.content.append("\n\\nextgroupplot")
         else:
             self.content.append("\\begin{axis}")
 
@@ -405,7 +405,7 @@ class Axes(object):
                 if "is_in_groupplot_env" not in data or not data["is_in_groupplot_env"]:
                     self.content.append(
                         "\\begin{{groupplot}}[group style="
-                        "{{group size={} by {}}}]\n".format(geom[1], geom[0])
+                        "{{group size={} by {}}}]".format(geom[1], geom[0])
                     )
                     data["is_in_groupplot_env"] = True
                     data["pgfplots libs"].add("groupplots")

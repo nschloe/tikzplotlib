@@ -13,7 +13,7 @@ ylabel={Damped oscillation},
 ymajorgrids,
 ymin=-0.686857192698265, ymax=1.08032653298563
 ]
-\addplot [semithick, blue, mark=*, mark size=3, mark options={solid,fill=green!50.19607843137255!black}, only marks, forget plot]
+\addplot [semithick, blue, mark=*, mark size=3, mark options={solid,fill=green!50.19607843137255!black}, only marks]
 table {%
 0 1
 0.4 -0.542300308913029
@@ -29,7 +29,7 @@ table {%
 4.4 -0.00993257662730005
 4.8 0.00254313169755428
 };
-\addplot [semithick, black, dashed, forget plot]
+\addplot [semithick, black, dashed]
 table {%
 0 1
 0.1 0.73202884833744
@@ -82,6 +82,7 @@ table {%
 4.8 0.00254313169755428
 4.9 0.00602441225440258
 };
+
 \nextgroupplot[
 tick align=outside,
 tick pos=left,
@@ -94,7 +95,7 @@ ylabel={Undamped},
 ymajorgrids,
 ymin=-1.1, ymax=1.1
 ]
-\addplot [semithick, red, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
+\addplot [semithick, red, mark=*, mark size=3, mark options={solid}, only marks]
 table {%
 0 1
 0.1 0.809016994374947

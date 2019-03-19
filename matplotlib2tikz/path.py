@@ -110,7 +110,7 @@ def draw_path(data, path, draw_options=None, simplify=None):
         prev = vert[0:2]
 
     do = "[{}]".format(", ".join(draw_options)) if draw_options else ""
-    path_command = "\\path {} {};\n".format(do, "\n".join(nodes))
+    path_command = "\\path {}\n{};\n".format(do, "\n".join(nodes))
 
     return data, path_command, draw_options, is_area
 

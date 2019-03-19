@@ -8,7 +8,6 @@
 \begin{groupplot}[group style={group size=3 by 3}]
 \nextgroupplot[
 legend cell align={left},
-legend entries={{UR}},
 legend style={draw=white!80.0!black},
 tick align=outside,
 tick pos=left,
@@ -36,9 +35,10 @@ table {%
 5.6 0.00286793692188526
 6 0.00238002418800496
 };
+\addlegendentry{UR}
+
 \nextgroupplot[
 legend cell align={left},
-legend entries={{UL}},
 legend style={at={(0.03,0.97)}, anchor=north west, draw=white!80.0!black},
 tick align=outside,
 tick pos=left,
@@ -66,9 +66,10 @@ table {%
 5.6 1.79649518929936
 6 2.3616378242857
 };
+\addlegendentry{UL}
+
 \nextgroupplot[
 legend cell align={left},
-legend entries={{LL}},
 legend style={at={(0.03,0.03)}, anchor=south west, draw=white!80.0!black},
 tick align=outside,
 tick pos=left,
@@ -96,9 +97,10 @@ table {%
 5.6 0.0373941336864324
 6 1.15425144988758
 };
+\addlegendentry{LL}
+
 \nextgroupplot[
 legend cell align={left},
-legend entries={{LR}},
 legend style={at={(0.03,0.03)}, anchor=south west, draw=white!80.0!black},
 tick align=outside,
 tick pos=left,
@@ -126,9 +128,10 @@ table {%
 5.6 1.00292775397214
 6 1.21535945496279
 };
+\addlegendentry{LR}
+
 \nextgroupplot[
 legend cell align={left},
-legend entries={{CL}},
 legend style={at={(0.91,0.5)}, anchor=east, draw=white!80.0!black},
 tick align=outside,
 tick pos=left,
@@ -175,9 +178,9 @@ table {%
 5.6 1.5
 6 1.5
 };
+
 \nextgroupplot[
 legend cell align={left},
-legend entries={{CR}},
 legend style={at={(0.09,0.5)}, anchor=west, draw=white!80.0!black},
 tick align=outside,
 tick pos=left,
@@ -205,6 +208,7 @@ table {%
 5.6 1.70644021544518
 6 -1.90482596083031
 };
+\addlegendentry{CR}
 \addplot [semithick, color1, forget plot]
 table {%
 0 -1.5
@@ -243,9 +247,9 @@ table {%
 5.6 1.5
 6 1.5
 };
+
 \nextgroupplot[
 legend cell align={left},
-legend entries={{LC}},
 legend style={at={(0.5,0.09)}, anchor=south, draw=white!80.0!black},
 tick align=outside,
 tick pos=left,
@@ -273,9 +277,10 @@ table {%
 5.6 -1.32903077825077
 6 -1.58085787783637
 };
+\addlegendentry{LC}
+
 \nextgroupplot[
 legend cell align={left},
-legend entries={{UC}},
 legend style={at={(0.5,0.91)}, anchor=north, draw=white!80.0!black},
 tick align=outside,
 tick pos=left,
@@ -303,8 +308,9 @@ table {%
 5.6 1.32903077825077
 6 1.58085787783637
 };
+\addlegendentry{UC}
+
 \nextgroupplot[
-legend entries={{}},
 legend style={draw=white!80.0!black},
 tick align=outside,
 tick pos=left,

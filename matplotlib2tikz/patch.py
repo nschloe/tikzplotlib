@@ -68,6 +68,8 @@ def draw_patchcollection(data, obj):
 def _is_in_legend(obj):
     label = obj.get_label()
     leg = obj.axes.get_legend()
+    if leg is None:
+        return False
     return label in [txt.get_text() for txt in leg.get_texts()]
 
 

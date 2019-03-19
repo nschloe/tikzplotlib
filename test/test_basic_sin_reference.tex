@@ -7,7 +7,6 @@
 axis background/.style={fill=white!89.80392156862746!black},
 axis line style={white},
 legend cell align={left},
-legend entries={{sin},{cos}},
 legend style={at={(0.03,0.03)}, anchor=south west, draw=white!80.0!black, fill=white!89.80392156862746!black},
 tick align=outside,
 tick pos=left,
@@ -44,6 +43,7 @@ table {%
 1.8 -0.951056516295154
 1.9 -0.587785252292473
 };
+\addlegendentry{sin}
 \addplot [very thick, color1, opacity=0.3, mark=*, mark size=3, mark options={solid}]
 table {%
 0 1
@@ -67,6 +67,7 @@ table {%
 1.8 0.309016994374947
 1.9 0.809016994374947
 };
+\addlegendentry{cos}
 \end{axis}
 
 \end{tikzpicture}
