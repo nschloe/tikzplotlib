@@ -413,20 +413,17 @@ class Axes(object):
         return
 
 
-def _get_label_rotation_and_horizontal_alignment(obj, data, axes_obj):
+def _get_label_rotation_and_horizontal_alignment(obj, data, x_or_y):
     tick_label_text_width = None
-    tick_label_text_width_identifier = "{} tick label text width".format(axes_obj)
+    tick_label_text_width_identifier = "{} tick label text width".format(x_or_y)
     if tick_label_text_width_identifier in data["extra axis options"]:
-        tick_label_text_width = data["extra axis options [base]"][
-            tick_label_text_width_identifier
-        ]
-        del data["extra axis options"][tick_label_text_width_identifier]
+        data["extra axis options"].remove(tick_label_text_width_identifier)
 
     label_style = ""
 
     major_tick_labels = (
         obj.xaxis.get_majorticklabels()
-        if axes_obj == "x"
+        if x_or_y == "x"
         else obj.yaxis.get_majorticklabels()
     )
 
@@ -457,7 +454,7 @@ def _get_label_rotation_and_horizontal_alignment(obj, data, axes_obj):
 
         if values:
             label_style = "{}ticklabel style = {{{}}}".format(
-                axes_obj, ",".join(values)
+                x_or_y, ",".join(values)
             )
     else:
         values = []
@@ -478,12 +475,12 @@ def _get_label_rotation_and_horizontal_alignment(obj, data, axes_obj):
             else:
                 for idx, x in enumerate(tick_labels_horizontal_alignment):
                     label_style += "{}_tick_label_ha_{}/.initial = {}".format(
-                        axes_obj, idx, x
+                        x_or_y, idx, x
                     )
 
                 values.append(
                     "align=\\pgfkeysvalueof{{/pgfplots/{}_tick_label_ha_\\ticknum}}".format(
-                        axes_obj
+                        x_or_y
                     )
                 )
                 values.append("text width={}".format(tick_label_text_width))
@@ -493,13 +490,13 @@ def _get_label_rotation_and_horizontal_alignment(obj, data, axes_obj):
                     "Horizontal alignment will be ignored as no '{} tick "
                     "label text width' has been passed in the 'extra' "
                     "parameter"
-                ).format(axes_obj)
+                ).format(x_or_y)
             )
 
         label_style = (
             "every {} tick label/.style = {{\n"
             "{}\n"
-            "}}".format(axes_obj, ",\n".join(values))
+            "}}".format(x_or_y, ",\n".join(values))
         )
 
     return label_style
