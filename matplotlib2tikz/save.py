@@ -321,6 +321,11 @@ def _recurse(data, obj):
     """
     content = _ContentManager()
     for child in obj.get_children():
+        # Some patches are Spines, too; skip those entirely.
+        # See <https://github.com/nschloe/matplotlib2tikz/issues/277>.
+        if isinstance(child, mpl.spines.Spine):
+            continue
+
         if isinstance(child, mpl.axes.Axes):
             # Reset 'extra axis parameters' for every new Axes environment.
             data["extra axis options"] = data["extra axis options [base]"].copy()
@@ -384,7 +389,7 @@ def _recurse(data, obj):
         elif isinstance(child, (mpl.text.Text, mpl.text.Annotation)):
             data, cont = text.draw_text(data, child)
             content.extend(cont, child.get_zorder())
-        elif isinstance(child, (mpl.axis.XAxis, mpl.axis.YAxis, mpl.spines.Spine)):
+        elif isinstance(child, (mpl.axis.XAxis, mpl.axis.YAxis)):
             pass
         else:
             warnings.warn(
