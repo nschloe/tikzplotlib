@@ -17,64 +17,73 @@ ymin=0, ymax=5.355
 \draw[fill=red,draw opacity=0] (axis cs:0.125,0) rectangle (axis cs:0.375,5);
 \draw[fill=red,draw opacity=0] (axis cs:1.125,0) rectangle (axis cs:1.375,3);
 \draw[fill=red,draw opacity=0] (axis cs:2.125,0) rectangle (axis cs:2.375,1);
-\path [draw=black, line width=2.0pt] (axis cs:-0.25,0.9)
+\path [draw=black, line width=2.0pt]
+(axis cs:-0.25,0.9)
 --(axis cs:-0.25,1.1);
 
-\path [draw=black, line width=2.0pt] (axis cs:0.75,1.8)
+\path [draw=black, line width=2.0pt]
+(axis cs:0.75,1.8)
 --(axis cs:0.75,2.2);
 
-\path [draw=black, line width=2.0pt] (axis cs:1.75,2.5)
+\path [draw=black, line width=2.0pt]
+(axis cs:1.75,2.5)
 --(axis cs:1.75,3.5);
 
-\path [draw=black, line width=2.0pt] (axis cs:0,2.6)
+\path [draw=black, line width=2.0pt]
+(axis cs:0,2.6)
 --(axis cs:0,3.4);
 
-\path [draw=black, line width=2.0pt] (axis cs:1,1.8)
+\path [draw=black, line width=2.0pt]
+(axis cs:1,1.8)
 --(axis cs:1,2.2);
 
-\path [draw=black, line width=2.0pt] (axis cs:2,3.5)
+\path [draw=black, line width=2.0pt]
+(axis cs:2,3.5)
 --(axis cs:2,4.5);
 
-\path [draw=black, line width=2.0pt] (axis cs:0.25,4.9)
+\path [draw=black, line width=2.0pt]
+(axis cs:0.25,4.9)
 --(axis cs:0.25,5.1);
 
-\path [draw=black, line width=2.0pt] (axis cs:1.25,2.8)
+\path [draw=black, line width=2.0pt]
+(axis cs:1.25,2.8)
 --(axis cs:1.25,3.2);
 
-\path [draw=black, line width=2.0pt] (axis cs:2.25,0.9)
+\path [draw=black, line width=2.0pt]
+(axis cs:2.25,0.9)
 --(axis cs:2.25,1.1);
 
-\addplot [semithick, black, mark=-, mark size=8, mark options={solid}, only marks, forget plot]
+\addplot [semithick, black, mark=-, mark size=8, mark options={solid}, only marks]
 table {%
 -0.25 0.9
 0.75 1.8
 1.75 2.5
 };
-\addplot [semithick, black, mark=-, mark size=8, mark options={solid}, only marks, forget plot]
+\addplot [semithick, black, mark=-, mark size=8, mark options={solid}, only marks]
 table {%
 -0.25 1.1
 0.75 2.2
 1.75 3.5
 };
-\addplot [semithick, black, mark=-, mark size=8, mark options={solid}, only marks, forget plot]
+\addplot [semithick, black, mark=-, mark size=8, mark options={solid}, only marks]
 table {%
 0 2.6
 1 1.8
 2 3.5
 };
-\addplot [semithick, black, mark=-, mark size=8, mark options={solid}, only marks, forget plot]
+\addplot [semithick, black, mark=-, mark size=8, mark options={solid}, only marks]
 table {%
 0 3.4
 1 2.2
 2 4.5
 };
-\addplot [semithick, black, mark=-, mark size=8, mark options={solid}, only marks, forget plot]
+\addplot [semithick, black, mark=-, mark size=8, mark options={solid}, only marks]
 table {%
 0.25 4.9
 1.25 2.8
 2.25 0.9
 };
-\addplot [semithick, black, mark=-, mark size=8, mark options={solid}, only marks, forget plot]
+\addplot [semithick, black, mark=-, mark size=8, mark options={solid}, only marks]
 table {%
 0.25 5.1
 1.25 3.2

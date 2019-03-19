@@ -14,7 +14,7 @@ def print_tree(obj, indent=""):
     """Recursively prints the tree structure of the matplotlib object.
     """
     if isinstance(obj, matplotlib.text.Text):
-        print(indent, type(obj).__name__, '("%s")' % obj.get_text())
+        print(indent, type(obj).__name__, '("{}")'.format(obj.get_text()))
     else:
         print(indent, type(obj).__name__)
 

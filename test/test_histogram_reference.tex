@@ -5,7 +5,6 @@
 
 \begin{axis}[
 legend cell align={left},
-legend entries={{men},{women}},
 legend style={draw=white!80.0!black},
 tick align=outside,
 tick pos=left,
@@ -14,8 +13,10 @@ xmin=-0.401947480679761, xmax=21.5499361014496,
 y grid style={white!69.01960784313725!black},
 ymin=0, ymax=300.3
 ]
-\addlegendimage{ybar,ybar legend,fill=color0,draw opacity=0};
 \draw[fill=color0,draw opacity=0] (axis cs:3.53788998416138,0) rectangle (axis cs:4.8984168293505,7);
+\addlegendimage{ybar,ybar legend,fill=color0,draw opacity=0};
+\addlegendentry{men}
+
 \draw[fill=color0,draw opacity=0] (axis cs:4.8984168293505,0) rectangle (axis cs:6.25894367453962,27);
 \draw[fill=color0,draw opacity=0] (axis cs:6.25894367453962,0) rectangle (axis cs:7.61947051972875,95);
 \draw[fill=color0,draw opacity=0] (axis cs:7.61947051972875,0) rectangle (axis cs:8.97999736491787,183);
@@ -25,8 +26,10 @@ ymin=0, ymax=300.3
 \draw[fill=color0,draw opacity=0] (axis cs:13.0615779004853,0) rectangle (axis cs:14.4221047456744,49);
 \draw[fill=color0,draw opacity=0] (axis cs:14.4221047456744,0) rectangle (axis cs:15.7826315908635,7);
 \draw[fill=color0,draw opacity=0] (axis cs:15.7826315908635,0) rectangle (axis cs:17.1431584360526,2);
-\addlegendimage{ybar,ybar legend,fill=color1,draw opacity=0,fill opacity=0.5};
 \draw[fill=color1,draw opacity=0,fill opacity=0.5] (axis cs:0.595865409417026,0) rectangle (axis cs:2.5914911896106,2);
+\addlegendimage{ybar,ybar legend,fill=color1,draw opacity=0,fill opacity=0.5};
+\addlegendentry{women}
+
 \draw[fill=color1,draw opacity=0,fill opacity=0.5] (axis cs:2.5914911896106,0) rectangle (axis cs:4.58711696980417,6);
 \draw[fill=color1,draw opacity=0,fill opacity=0.5] (axis cs:4.58711696980417,0) rectangle (axis cs:6.58274274999775,20);
 \draw[fill=color1,draw opacity=0,fill opacity=0.5] (axis cs:6.58274274999775,0) rectangle (axis cs:8.57836853019132,81);

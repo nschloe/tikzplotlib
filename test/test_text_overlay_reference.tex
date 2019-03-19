@@ -6,7 +6,6 @@
 
 \begin{axis}[
 legend cell align={left},
-legend entries={{a graph}},
 legend style={at={(0.03,0.97)}, anchor=north west, draw=white!80.0!black},
 tick align=outside,
 tick pos=left,
@@ -15,7 +14,6 @@ xmin=-0.25, xmax=5.25,
 y grid style={white!69.01960784313725!black},
 ymin=-1.25, ymax=26.25
 ]
-\addlegendimage{no markers, color0}
 \addplot [semithick, color0]
 table {%
 0 0
@@ -69,6 +67,7 @@ table {%
 4.89795918367347 23.9900041649313
 5 25
 };
+\addlegendentry{a graph}
 \node at (axis cs:1,5)[
   scale=2.5,
   fill=color1,

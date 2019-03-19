@@ -2,7 +2,6 @@
 
 \begin{axis}[
 legend cell align={left},
-legend entries={{No mask},{Masked if > 0.5},{Masked if < -0.5}},
 legend style={draw=white!80.0!black},
 tick align=outside,
 tick pos=left,
@@ -13,9 +12,6 @@ xmin=-0.3, xmax=6.3,
 y grid style={white!69.01960784313725!black},
 ymin=-1.09595151942971, ymax=1.09936051363537
 ]
-\addlegendimage{no markers, red}
-\addlegendimage{no markers, green!50.0!black}
-\addlegendimage{no markers, blue}
 \addplot [ultra thick, red]
 table {%
 0 0
@@ -35,6 +31,7 @@ table {%
 5.6 -0.631266637872321
 6 -0.279415498198926
 };
+\addlegendentry{No mask}
 \addplot [thick, green!50.0!black]
 table {%
 0 0
@@ -54,6 +51,7 @@ table {%
 5.6 -0.979177729151317
 6 -0.536572918000435
 };
+\addlegendentry{Masked if > 0.5}
 \addplot [semithick, blue, mark=*, mark size=5, mark options={solid}, only marks]
 table {%
 0 0
@@ -73,6 +71,7 @@ table {%
 5.6 nan
 6 nan
 };
+\addlegendentry{Masked if < -0.5}
 \end{axis}
 
 \end{tikzpicture}

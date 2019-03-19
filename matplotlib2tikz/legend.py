@@ -16,9 +16,6 @@ def draw_legend(data, obj):
         texts.append("{}".format(text.get_text()))
         children_alignment.append("{}".format(text.get_horizontalalignment()))
 
-    cont = "legend entries={{{{{}}}}}".format("},{".join(texts))
-    data["extra axis options"].add(cont)
-
     # Get the location.
     # http://matplotlib.org/api/legend_api.html
     loc = obj._loc if obj._loc != 0 else _get_location_from_best(obj)
@@ -83,25 +80,6 @@ def draw_legend(data, obj):
 
     if obj._ncol != 1:
         data["extra axis options"].add("legend columns={}".format(obj._ncol))
-
-    # Set color of lines in legend
-    for handle in obj.legendHandles:
-        try:
-            # when using matplotlib colours like "darkred" or "darkorange",
-            # `handle.get_color` will create nested RGBA codes
-            # e.g. `[[ 0.54509804, 0., 0., 1.]]` which casuse mpl to throw an error.
-            # catch this error, `numpy.squeeze` the colour code and try again
-            try:
-                data, legend_color, _ = mycol.mpl_color2xcolor(data, handle.get_color())
-            except ValueError:
-                data, legend_color, _ = mycol.mpl_color2xcolor(
-                    data, numpy.squeeze(handle.get_color())
-                )
-            data["legend colors"].append(
-                "\\addlegendimage{{no markers, {}}}\n".format(legend_color)
-            )
-        except AttributeError:
-            pass
 
     # Write styles to data
     if legend_style:
