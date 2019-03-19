@@ -453,9 +453,7 @@ def _get_label_rotation_and_horizontal_alignment(obj, data, x_or_y):
             values.append("text width={}".format(tick_label_text_width))
 
         if values:
-            label_style = "{}ticklabel style = {{{}}}".format(
-                x_or_y, ",".join(values)
-            )
+            label_style = "{}ticklabel style = {{{}}}".format(x_or_y, ",".join(values))
     else:
         values = []
 
