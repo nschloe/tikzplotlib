@@ -236,6 +236,7 @@ def get_draw_options(data, ec, fc):
             draw_options.append(("draw opacity=" + ff).format(ec_rgba[3]))
         if fc is not None and fc_rgba[3] != 1.0:
             draw_options.append(("fill opacity=" + ff).format(fc_rgba[3]))
+
     # TODO Use those properties
     # linewidths = obj.get_linewidths()
 
