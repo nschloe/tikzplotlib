@@ -10,7 +10,7 @@ def plot():
     fig = plt.figure()
     t = np.arange(5)
     np.random.seed(123)
-    x = np.random.rand(5)
+    x = t
     plt.plot(t, x, label="line")
     plt.scatter(t, x, label="scatter")
     plt.legend()
