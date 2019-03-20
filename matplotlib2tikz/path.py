@@ -199,6 +199,9 @@ def draw_pathcollection(data, obj):
             content.append(fmt.format(*tuple(d)))
         content.append("};\n")
 
+    if legend_text is not None:
+        content.append("\\addlegendentry{{{}}}\n".format(legend_text))
+
     return data, content
 
 

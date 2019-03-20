@@ -1,0 +1,36 @@
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.12156862745098,0.466666666666667,0.705882352941177}
+
+\begin{axis}[
+legend cell align={left},
+legend style={at={(0.03,0.03)}, anchor=south west, draw=white!80.0!black},
+tick align=outside,
+tick pos=left,
+x grid style={white!69.01960784313725!black},
+xmin=-0.229274193548387, xmax=4.22927419354839,
+y grid style={white!69.01960784313725!black},
+ymin=0.197382370004533, ymax=0.748938053345234
+]
+\addplot [only marks, draw=color0, fill=color0, colormap/viridis]
+table{%
+x                      y
+0 0.696469185597862
+1 0.286139334950379
+2 0.226851453564203
+3 0.551314769082891
+4 0.719468969785563
+};
+\addlegendentry{scatter}
+\addplot [semithick, color0]
+table {%
+0 0.696469185597862
+1 0.286139334950379
+2 0.226851453564203
+3 0.551314769082891
+4 0.719468969785563
+};
+\addlegendentry{line}
+\end{axis}
+
+\end{tikzpicture}
