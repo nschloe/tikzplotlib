@@ -124,6 +124,11 @@ def _draw_ellipse(data, obj, draw_options):
         return _draw_circle(data, obj, draw_options)
     x, y = obj.center
     ff = data["float format"]
+
+    if obj.angle != 0:
+        fmt = "rotate around={{" + ff + ":(axis cs:" + ff + "," + ff + ")}}"
+        draw_options.append(fmt.format(obj.angle, x, y))
+
     cont = (
         "\\draw[{}] (axis cs:"
         + ff
