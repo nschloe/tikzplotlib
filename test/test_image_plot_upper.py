@@ -22,8 +22,8 @@ def plot():
 
     plt.imshow(img, cmap="viridis", origin="upper")
 
-    # Set the current color map to HSV.
-    plt.hsv()
+    # Setting the current color map to HSV messes up other plots
+    # plt.hsv()
     plt.colorbar()
     return fig
 
@@ -31,5 +31,5 @@ def plot():
 # TODO reintroduce
 # from helpers import assert_equality
 # def test():
-#     assert_equality(plot, "test_image_plot_lower_reference.tex")
+#     assert_equality(plot, __file__[:-3] + "_reference.tex")
 #     return
