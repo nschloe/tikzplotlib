@@ -6,6 +6,8 @@ import numpy
 from . import color
 from .axes import _mpl_cmap2pgf_cmap
 
+from .util import has_legend, get_legend_text
+
 
 def draw_path(data, path, draw_options=None, simplify=None):
     """Adds code for drawing an ordinary path in PGFPlots (TikZ).
@@ -159,10 +161,11 @@ def draw_pathcollection(data, obj):
 
     if obj.get_cmap():
         mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(obj.get_cmap(), data)
-        if is_custom_cmap:
-            draw_options.append("colormap=" + mycolormap)
-        else:
-            draw_options.append("colormap/" + mycolormap)
+        draw_options.append("colormap" + ("=" if is_custom_cmap else "/") + mycolormap)
+
+    legend_text = get_legend_text(obj)
+    if legend_text is None and has_legend(obj.axes):
+        draw_options.append("forget plot")
 
     for path in obj.get_paths():
         if is_contour:

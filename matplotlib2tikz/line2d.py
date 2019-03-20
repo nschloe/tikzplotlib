@@ -8,27 +8,7 @@ from . import color as mycol
 from . import path as mypath
 from . import files
 
-
-def _has_legend(axes):
-    return axes.get_legend() is not None
-
-
-def _get_legend_text(line):
-    """Check if line is in legend.
-    """
-    leg = line.axes.get_legend()
-    if leg is None:
-        return None
-
-    keys = [l.get_label() for l in leg.get_lines()]
-    values = [l.get_text() for l in leg.texts]
-
-    label = line.get_label()
-    d = dict(zip(keys, values))
-    if label in d:
-        return d[label]
-
-    return None
+from .util import get_legend_text, has_legend
 
 
 def draw_line2d(data, obj):
@@ -84,8 +64,8 @@ def draw_line2d(data, obj):
 
     # Check if a line is in a legend and forget it if not.
     # Fixes <https://github.com/nschloe/matplotlib2tikz/issues/167>.
-    legend_text = _get_legend_text(obj)
-    if legend_text is None and _has_legend(obj.axes):
+    legend_text = get_legend_text(obj)
+    if legend_text is None and has_legend(obj.axes):
         addplot_options.append("forget plot")
 
     # process options
