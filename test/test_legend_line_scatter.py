@@ -11,8 +11,8 @@ def plot():
     t = np.arange(5)
     np.random.seed(123)
     x = np.random.rand(5)
-    plt.plot(t, x, label='line')
-    plt.scatter(t, x, label='scatter')
+    plt.plot(t, x, label="line")
+    plt.scatter(t, x, label="scatter")
     plt.legend()
     return fig
 
