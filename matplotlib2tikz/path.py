@@ -313,9 +313,7 @@ def mpl_linestyle2pgfplots_linestyle(line_style):
             return "dash pattern=on {}pt off {}pt".format(*line_style[1])
 
         assert len(line_style[1]) == 4
-        return "dash pattern=on {}pt off {}pt on {}pt off {}pt".format(
-            *line_style[1]
-        )
+        return "dash pattern=on {}pt off {}pt on {}pt off {}pt".format(*line_style[1])
 
     return {
         "": None,
