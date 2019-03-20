@@ -23,8 +23,8 @@ def plot():
     ax = plt.axes([0, 0, 1, 1], frameon=False)
     ax.set_axis_off()
     plt.imshow(img, cmap="viridis", origin="lower")
-    # Set the current color map to HSV.
-    plt.hsv()
+    # Setting the current color map to HSV messes up other plots
+    # plt.hsv()
     plt.colorbar()
     return fig
 
