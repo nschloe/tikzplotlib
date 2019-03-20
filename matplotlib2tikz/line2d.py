@@ -24,8 +24,7 @@ def draw_line2d(data, obj):
         return data, []
 
     # get the linewidth (in pt)
-    line_width = _mpl_linewidth2pgfp_linewidth(data, obj.get_linewidth())
-
+    line_width = mypath.mpl_linewidth2pgfp_linewidth(data, obj.get_linewidth())
     if line_width:
         addplot_options.append(line_width)
 
@@ -38,8 +37,8 @@ def draw_line2d(data, obj):
     if alpha is not None:
         addplot_options.append("opacity={}".format(alpha))
 
-    show_line, linestyle = _mpl_linestyle2pgfp_linestyle(obj.get_linestyle())
-    if show_line and linestyle:
+    linestyle = mypath.mpl_linestyle2pgfplots_linestyle(obj.get_linestyle())
+    if linestyle is not None and linestyle != "solid":
         addplot_options.append(linestyle)
 
     marker_face_color = obj.get_markerfacecolor()
@@ -59,7 +58,7 @@ def draw_line2d(data, obj):
             line_xcolor,
         )
 
-    if marker and not show_line:
+    if marker and linestyle is None:
         addplot_options.append("only marks")
 
     # Check if a line is in a legend and forget it if not.
@@ -92,45 +91,11 @@ def draw_linecollection(data, obj):
     paths = obj.get_paths()
 
     for i, path in enumerate(paths):
-        if i < len(edgecolors):
-            color = edgecolors[i]
-        else:
-            color = edgecolors[0]
+        color = edgecolors[i] if i < len(edgecolors) else edgecolors[0]
+        style = linestyles[i] if i < len(linestyles) else linestyles[0]
+        width = linewidths[i] if i < len(linewidths) else linewidths[0]
 
-        if i < len(linestyles):
-            style = linestyles[i]
-        else:
-            style = linestyles[0]
-
-        if i < len(linewidths):
-            width = linewidths[i]
-        else:
-            width = linewidths[0]
-
-        data, options = mypath.get_draw_options(data, color, None)
-
-        width = _mpl_linewidth2pgfp_linewidth(data, width)
-        if width:
-            options.append(width)
-
-        # linestyle is a string or dash tuple. Legal string values are
-        # solid|dashed|dashdot|dotted.  The dash tuple is (offset, onoffseq) where
-        # onoffseq is an even length tuple of on and off ink in points.
-        #
-        # solid: [(None, None), (None, None), ..., (None, None)]
-        # dashed: (0, (6.0, 6.0))
-        # dotted: (0, (1.0, 3.0))
-        # dashdot: (0, (3.0, 5.0, 1.0, 5.0))
-        if style[0] is not None:
-            assert isinstance(style, tuple)
-            if len(style[1]) == 2:
-                linestyle = "dash pattern=on {}pt off {}pt".format(*style[1])
-            else:
-                assert len(style[1]) == 4
-                linestyle = "dash pattern=on {}pt off {}pt on {}pt off {}pt".format(
-                    *style[1]
-                )
-            options.append(linestyle)
+        data, options = mypath.get_draw_options(data, obj, color, None, style, width)
 
         # TODO what about masks?
         data, cont, _, _ = mypath.draw_path(
@@ -139,47 +104,6 @@ def draw_linecollection(data, obj):
         content.append(cont + "\n")
 
     return data, content
-
-
-def _mpl_linewidth2pgfp_linewidth(data, line_width):
-    if data["strict"]:
-        # Takes the matplotlib linewidths, and just translate them into PGFPlots.
-        try:
-            return {
-                0.1: "ultra thin",
-                0.2: "very thin",
-                0.4: "thin",
-                0.6: "semithick",
-                0.8: "thick",
-                1.2: "very thick",
-                1.6: "ultra thick",
-            }[line_width]
-        except KeyError:
-            # explicit line width
-            return "line width={}pt".format(line_width)
-
-    # The following is an alternative approach to line widths.
-    # The default line width in matplotlib is 1.0pt, in PGFPlots 0.4pt
-    # ('thin').
-    # Match the two defaults, and scale for the rest.
-    scaled_line_width = line_width / 1.0  # scale by default line width
-    literals = {
-        0.25: "ultra thin",
-        0.5: "very thin",
-        1.0: None,  # default, 'thin'
-        1.5: "semithick",
-        2: "thick",
-        3: "very thick",
-        4: "ultra thick",
-    }
-
-    try:
-        out = literals[scaled_line_width]
-    except KeyError:
-        # explicit line width
-        out = "line width={}pt".format(0.4 * line_width)
-
-    return out
 
 
 # for matplotlib markers, see: http://matplotlib.org/api/markers_api.html
@@ -251,25 +175,6 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
         return (data, pgfplots_marker, marker_options)
 
     return data, None, None
-
-
-def _mpl_linestyle2pgfp_linestyle(line_style):
-    """Translates a line style of matplotlib to the corresponding style
-    in PGFPlots.
-    """
-    mpl_linestyle2pgfplots_linestyle = {
-        "": None,
-        "None": None,
-        "none": None,  # happens when using plt.boxplot()
-        "-": None,
-        ":": "dotted",
-        "--": "dashed",
-        "-.": "dash pattern=on 1pt off 3pt on 3pt off 3pt",
-    }
-
-    show_line = line_style != "None"
-    style = mpl_linestyle2pgfplots_linestyle[line_style]
-    return show_line, style
 
 
 # def _transform_to_data_coordinates(obj, xdata, ydata):

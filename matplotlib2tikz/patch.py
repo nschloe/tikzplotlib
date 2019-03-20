@@ -10,7 +10,12 @@ def draw_patch(data, obj):
     """
     # Gather the draw options.
     data, draw_options = mypath.get_draw_options(
-        data, obj.get_edgecolor(), obj.get_facecolor()
+        data,
+        obj,
+        obj.get_edgecolor(),
+        obj.get_facecolor(),
+        obj.get_linestyle(),
+        obj.get_linewidth(),
     )
 
     if isinstance(obj, mpl.patches.Rectangle):
@@ -33,16 +38,26 @@ def draw_patchcollection(data, obj):
     content = []
     # Gather the draw options.
     try:
-        edge_color = obj.get_edgecolor()[0]
+        ec = obj.get_edgecolor()[0]
     except IndexError:
-        edge_color = None
+        ec = None
 
     try:
-        face_color = obj.get_facecolor()[0]
+        fc = obj.get_facecolor()[0]
     except IndexError:
-        face_color = None
+        fc = None
 
-    data, draw_options = mypath.get_draw_options(data, edge_color, face_color)
+    try:
+        ls = obj.get_linestyle()[0]
+    except IndexError:
+        ls = None
+
+    try:
+        w = obj.get_linewidth()[0]
+    except IndexError:
+        w = None
+
+    data, draw_options = mypath.get_draw_options(data, obj, ec, fc, ls, w)
 
     paths = obj.get_paths()
     for path in paths:

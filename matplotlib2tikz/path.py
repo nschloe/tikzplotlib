@@ -137,26 +137,30 @@ def draw_pathcollection(data, obj):
         table_options.extend(["x=x", "y=y", "meta=colordata"])
         ec = None
         fc = None
+        ls = None
     else:
         # gather the draw options
-        ec = obj.get_edgecolors()
-        fc = obj.get_facecolors()
         try:
-            ec = ec[0]
+            ec = obj.get_edgecolors()[0]
         except (TypeError, IndexError):
             ec = None
+
         try:
-            fc = fc[0]
+            fc = obj.get_facecolors()[0]
         except (TypeError, IndexError):
             fc = None
+
+        try:
+            ls = obj.get_linestyle()[0]
+        except (TypeError, IndexError):
+            ls = None
 
     is_contour = len(dd) == 1
     if is_contour:
         draw_options = ["draw=none"]
 
-    # TODO Use linewidths
-    # linewidths = obj.get_linewidths()
-    data, extra_draw_options = get_draw_options(data, ec, fc)
+    # `only mark` plots don't need linewidth
+    data, extra_draw_options = get_draw_options(data, obj, ec, fc, ls, None)
     draw_options.extend(extra_draw_options)
 
     if obj.get_cmap():
@@ -205,7 +209,7 @@ def draw_pathcollection(data, obj):
     return data, content
 
 
-def get_draw_options(data, ec, fc):
+def get_draw_options(data, obj, ec, fc, style, width):
     """Get the draw options for a given (patch) object.
     """
     draw_options = []
@@ -237,7 +241,89 @@ def get_draw_options(data, ec, fc):
         if fc is not None and fc_rgba[3] != 1.0:
             draw_options.append(("fill opacity=" + ff).format(fc_rgba[3]))
 
-    # TODO Use those properties
-    # linewidths = obj.get_linewidths()
+    if width is not None:
+        w = mpl_linewidth2pgfp_linewidth(data, width)
+        if w:
+            draw_options.append(w)
+
+    if style is not None:
+        ls = mpl_linestyle2pgfplots_linestyle(style)
+        if ls is not None and ls != "solid":
+            draw_options.append(ls)
 
     return data, draw_options
+
+
+def mpl_linewidth2pgfp_linewidth(data, line_width):
+    if data["strict"]:
+        # Takes the matplotlib linewidths, and just translate them into PGFPlots.
+        try:
+            return {
+                0.1: "ultra thin",
+                0.2: "very thin",
+                0.4: "thin",
+                0.6: "semithick",
+                0.8: "thick",
+                1.2: "very thick",
+                1.6: "ultra thick",
+            }[line_width]
+        except KeyError:
+            # explicit line width
+            return "line width={}pt".format(line_width)
+
+    # The following is an alternative approach to line widths.
+    # The default line width in matplotlib is 1.0pt, in PGFPlots 0.4pt
+    # ('thin').
+    # Match the two defaults, and scale for the rest.
+    scaled_line_width = line_width / 1.0  # scale by default line width
+    try:
+        out = {
+            0.25: "ultra thin",
+            0.5: "very thin",
+            1.0: None,  # default, 'thin'
+            1.5: "semithick",
+            2: "thick",
+            3: "very thick",
+            4: "ultra thick",
+        }[scaled_line_width]
+    except KeyError:
+        # explicit line width
+        out = "line width={}pt".format(0.4 * line_width)
+
+    return out
+
+
+def mpl_linestyle2pgfplots_linestyle(line_style):
+    """Translates a line style of matplotlib to the corresponding style
+    in PGFPlots.
+    """
+    # linestyle is a string or dash tuple. Legal string values are
+    # solid|dashed|dashdot|dotted.  The dash tuple is (offset, onoffseq) where onoffseq
+    # is an even length tuple of on and off ink in points.
+    #
+    # solid: [(None, None), (None, None), ..., (None, None)]
+    # dashed: (0, (6.0, 6.0))
+    # dotted: (0, (1.0, 3.0))
+    # dashdot: (0, (3.0, 5.0, 1.0, 5.0))
+    if isinstance(line_style, tuple):
+        if line_style[0] is None:
+            return None
+
+        if len(line_style[1]) == 2:
+            return "dash pattern=on {}pt off {}pt".format(*line_style[1])
+
+        assert len(line_style[1]) == 4
+        return "dash pattern=on {}pt off {}pt on {}pt off {}pt".format(
+            *line_style[1]
+        )
+
+    return {
+        "": None,
+        "None": None,
+        "none": None,  # happens when using plt.boxplot()
+        "-": "solid",
+        "solid": "solid",
+        ":": "dotted",
+        "--": "dashed",
+        "-.": "dash pattern=on 1pt off 3pt on 3pt off 3pt",
+    }[line_style]
