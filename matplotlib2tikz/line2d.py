@@ -252,17 +252,23 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
     # try default list
     try:
         pgfplots_marker = _MP_MARKER2PGF_MARKER[mpl_marker]
+    except KeyError:
+        pass
+    else:
         if (marker_face_color is not None) and pgfplots_marker == "o":
             pgfplots_marker = "*"
             data["tikz libs"].add("plotmarks")
         marker_options = None
         return (data, pgfplots_marker, marker_options)
-    except KeyError:
-        pass
+
     # try plotmarks list
     try:
         data["tikz libs"].add("plotmarks")
         pgfplots_marker, marker_options = _MP_MARKER2PLOTMARKS[mpl_marker]
+    except KeyError:
+        # There's no equivalent for the pixel marker (,) in Pgfplots.
+        pass
+    else:
         if (
             marker_face_color is not None
             and (
@@ -273,12 +279,6 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
         ):
             pgfplots_marker += "*"
         return (data, pgfplots_marker, marker_options)
-    except KeyError:
-        pass
-
-    # There's no equivalent for the pixel marker in Pgfplots.
-    if mpl_marker == ",":
-        print("Unsupported marker " "," " (pixel).")
 
     return data, None, None
 
