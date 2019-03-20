@@ -124,25 +124,10 @@ class Axes(object):
         if colorbar:
             self._colorbar(colorbar, data)
 
-        # actually print the thing
         if self.is_subplot:
             self.content.append("\n\\nextgroupplot")
         else:
             self.content.append("\\begin{axis}")
-
-        # # anchors
-        # if hasattr(obj, '_matplotlib2tikz_anchors'):
-        #     try:
-        #         for coord, anchor_name in obj._matplotlib2tikz_anchors:
-        #             self.content.append(
-        #                 '\\node (%s) at (axis cs:%e,%e) {};\n' %
-        #                 (anchor_name, coord[0], coord[1])
-        #                 )
-        #     except:
-        #         print('Axes attribute _matplotlib2tikz_anchors wrongly set:'
-        #               'Expected a list of ((x,y), anchor_name), got \'%s\''
-        #               % str(obj._matplotlib2tikz_anchors)
-        #               )
 
         return
 
@@ -466,6 +451,8 @@ def _get_label_rotation_and_horizontal_alignment(obj, data, x_or_y):
                 )
             )
 
+        # Ignore horizontal alignment if no '{x,y} tick label text width' has
+        # been passed in the 'extra' parameter
         if tick_label_text_width:
             if tick_labels_horizontal_alignment_same_value:
                 values.append("align={}".format(tick_labels_horizontal_alignment[0]))
@@ -482,14 +469,6 @@ def _get_label_rotation_and_horizontal_alignment(obj, data, x_or_y):
                     )
                 )
                 values.append("text width={}".format(tick_label_text_width))
-        else:
-            print(
-                (
-                    "Horizontal alignment will be ignored as no '{} tick "
-                    "label text width' has been passed in the 'extra' "
-                    "parameter"
-                ).format(x_or_y)
-            )
 
         label_style = (
             "every {} tick label/.style = {{\n"

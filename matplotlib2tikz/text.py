@@ -144,10 +144,7 @@ def _annotation(obj, data, content):
     ann_xytext = obj.xyann
     ann_textcoords = obj.anncoords
     if ann_xycoords != "data" or ann_textcoords != "data":
-        print(
-            "Warning: Anything else except for explicit positioning "
-            "is not supported for annotations yet :("
-        )
+        # Anything else except for explicit positioning is not supported yet
         return data, content
     else:  # Create a basic tikz arrow
         arrow_translate = {
