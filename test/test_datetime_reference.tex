@@ -1,0 +1,20 @@
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.12156862745098,0.466666666666667,0.705882352941177}
+
+\begin{axis}[
+date coordinates in=x,
+tick align=outside,
+tick pos=left,
+x grid style={white!69.01960784313725!black},
+y grid style={white!69.01960784313725!black},
+ymin=49.999, ymax=50.021
+]
+\addplot [semithick, color0]
+table [col sep=comma] {%
+2016-10-10 18:00,50
+2016-10-10 18:15,50.02
+};
+\end{axis}
+
+\end{tikzpicture}

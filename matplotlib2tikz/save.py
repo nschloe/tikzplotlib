@@ -223,6 +223,7 @@ def get_tikz_code(
 \\usepackage[utf8]{{inputenc}}
 \\usepackage{{pgfplots}}
 \\usepgfplotslibrary{{groupplots}}
+\\usepgfplotslibrary{{dateplot}}
 \\pgfplotsset{{compat=newest}}
 \\DeclareUnicodeCharacter{{2212}}{{−}}
 \\begin{{document}}
@@ -327,38 +328,33 @@ def _recurse(data, obj):
             continue
 
         if isinstance(child, mpl.axes.Axes):
-            # Reset 'extra axis parameters' for every new Axes environment.
-            data["extra axis options"] = data["extra axis options [base]"].copy()
-
             ax = axes.Axes(data, child)
-            if not ax.is_colorbar:
-                # Run through the child objects, gather the content.
-                data, children_content = _recurse(data, child)
-                # add extra axis options from children
-                if data["extra axis options"]:
-                    ax.axis_options.extend(data["extra axis options"])
-                # populate content and add axis environment if desired
-                if data["add axis environment"]:
-                    content.extend(
-                        ax.get_begin_code()
-                        + children_content
-                        + [ax.get_end_code(data)],
-                        0,
-                    )
-                else:
-                    content.extend(children_content, 0)
-                    # print axis environment options, if told to show infos
-                    if data["show_info"]:
-                        print(
-                            "========================================================="
-                        )
-                        print(
-                            "These would have been the properties of the environment:"
-                        )
-                        print("".join(ax.get_begin_code()[1:]))
-                        print(
-                            "========================================================="
-                        )
+
+            if ax.is_colorbar:
+                continue
+
+            # add extra axis options
+            if data["extra axis options [base]"]:
+                ax.axis_options.extend(data["extra axis options [base]"])
+
+            data["current axes"] = ax
+
+            # Run through the child objects, gather the content.
+            data, children_content = _recurse(data, child)
+
+            # populate content and add axis environment if desired
+            if data["add axis environment"]:
+                content.extend(
+                    ax.get_begin_code() + children_content + [ax.get_end_code(data)], 0
+                )
+            else:
+                content.extend(children_content, 0)
+                # print axis environment options, if told to show infos
+                if data["show_info"]:
+                    print("=========================================================")
+                    print("These would have been the properties of the environment:")
+                    print("".join(ax.get_begin_code()[1:]))
+                    print("=========================================================")
         elif isinstance(child, mpl.lines.Line2D):
             data, cont = line2d.draw_line2d(data, child)
             content.extend(cont, child.get_zorder())

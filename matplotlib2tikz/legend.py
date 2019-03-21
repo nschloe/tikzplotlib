@@ -76,15 +76,17 @@ def draw_legend(data, obj):
             break
 
     if alignment:
-        data["extra axis options"].add("legend cell align={{{}}}".format(alignment))
+        data["current axes"].axis_options.append(
+            "legend cell align={{{}}}".format(alignment)
+        )
 
     if obj._ncol != 1:
-        data["extra axis options"].add("legend columns={}".format(obj._ncol))
+        data["current axes"].axis_options.append("legend columns={}".format(obj._ncol))
 
     # Write styles to data
     if legend_style:
         style = "legend style={{{}}}".format(", ".join(legend_style))
-        data["extra axis options"].add(style)
+        data["current axes"].axis_options.append(style)
 
     return data
 
