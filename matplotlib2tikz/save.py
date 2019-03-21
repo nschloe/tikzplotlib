@@ -337,6 +337,7 @@ def _recurse(data, obj):
             if data["extra axis options [base]"]:
                 ax.axis_options.extend(data["extra axis options [base]"])
 
+            data["current mpl axes obj"] = child
             data["current axes"] = ax
 
             # Run through the child objects, gather the content.

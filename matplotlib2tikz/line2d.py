@@ -2,6 +2,7 @@
 #
 from __future__ import print_function
 
+from matplotlib.dates import num2date
 import datetime
 import six
 
@@ -302,15 +303,22 @@ def _table(obj, data):
         xdata = [date.strftime("%Y-%m-%d %H:%M") for date in xdata]
         xformat = "{}"
         col_sep = ","
-        content.append("table [col sep=comma] {%\n")
+        content.append("table [header=false,col sep=comma] {%\n")
         data["current axes"].axis_options.append("date coordinates in=x")
-        # Remove xmin/xmax until <https://github.com/matplotlib/matplotlib/issues/13727>
-        # is resolved.
+        # Replace float xmin/xmax by datetime
+        # <https://github.com/matplotlib/matplotlib/issues/13727>.
         data["current axes"].axis_options = [
             option
             for option in data["current axes"].axis_options
             if not option.startswith("xmin")
         ]
+        xmin, xmax = data["current mpl axes obj"].get_xlim()
+        data["current axes"].axis_options.append(
+            "xmin={}, xmax={}".format(
+                num2date(xmin).strftime("%Y-%m-%d %H:%M"),
+                num2date(xmax).strftime("%Y-%m-%d %H:%M"),
+            )
+        )
     else:
         xformat = ff
         col_sep = " "
