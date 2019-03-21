@@ -10,8 +10,8 @@
 [![GitHub stars](https://img.shields.io/github/stars/nschloe/matplotlib2tikz.svg?logo=github&label=Stars&logoColor=white)](https://github.com/nschloe/matplotlib2tikz)
 
 This is matplotlib2tikz, a Python tool for converting matplotlib figures into
-[PGFPlots](https://www.ctan.org/pkg/pgfplots)
-([TikZ](https://www.ctan.org/pkg/pgf)) figures like
+[PGFPlots](https://www.ctan.org/pkg/pgfplots) ([PGF/TikZ](https://www.ctan.org/pkg/pgf))
+figures like
 
 ![](https://nschloe.github.io/matplotlib2tikz/example.png)
 
@@ -21,9 +21,11 @@ The output of matplotlib2tikz is in
 [PGFPlots](http://pgfplots.sourceforge.net/pgfplots.pdf), a LaTeX library that sits on
 top of [PGF/TikZ](https://en.wikipedia.org/wiki/PGF/TikZ) and describes graphs in terms
 of axes, data etc. Consequently, the output of matplotlib2tikz
+
   * retains more information,
   * can be more easily understood, and
   * is more easily editable
+
 than [raw TikZ output](https://matplotlib.org/users/whats_new.html#pgf-tikz-backend).
 For example, the matplotlib figure
 ```python,test
@@ -42,9 +44,9 @@ plt.ylabel("Voltage (mV)")
 plt.title("Simple plot $\\frac{\\alpha}{2}$")
 plt.grid(True)
 
-from matplotlib2tikz import save as tikz_save
+import matplotlib2tikz
 
-tikz_save("test.tex")
+matplotlib2tikz.save("test.tex")
 ```
 (see above) gives
 ```latex
@@ -88,10 +90,9 @@ table {%
 ```
 (Use `get_tikz_code()` instead of `save()` if you want the code as a string.)
 
-Tweaking the plot is straightforward and can be done as part of your LaTeX
-work flow.
-[The fantastic PGFPlots manual](http://pgfplots.sourceforge.net/pgfplots.pdf)
-contains great examples of how to make your plot look even better.
+Tweaking the plot is straightforward and can be done as part of your LaTeX work flow.
+[The fantastic PGFPlots manual](http://pgfplots.sourceforge.net/pgfplots.pdf) contains
+great examples of how to make your plot look even better.
 
 Of course, not all figures produced by matplotlib can be converted without error.
 Notably, [3D plots don't work](https://github.com/matplotlib/matplotlib/issues/7243).
@@ -99,10 +100,9 @@ Notably, [3D plots don't work](https://github.com/matplotlib/matplotlib/issues/7
 ### Installation
 
 matplotlib2tikz is [available from the Python Package
-Index](https://pypi.org/project/matplotlib2tikz/), so
-simply type
+Index](https://pypi.org/project/matplotlib2tikz/), so simply type
 ```
-pip install -U matplotlib2tikz
+pip3 install matplotlib2tikz --user
 ```
 to install/update.
 
@@ -137,17 +137,16 @@ to install/update.
 ### Contributing
 
 If you experience bugs, would like to contribute, have nice examples of what
-matplotlib2tikz can do, or if you are just looking for more information, then
-please visit
-[matplotlib2tikz's GitHub page](https://github.com/nschloe/matplotlib2tikz).
+matplotlib2tikz can do, or if you are just looking for more information, then please
+visit [matplotlib2tikz's GitHub page](https://github.com/nschloe/matplotlib2tikz).
 
 
 ### Testing
 
-matplotlib2tikz has automatic unit testing to make sure that the software
-doesn't accidentally get worse over time. In `test/`, a number of
-test cases are specified. Those run through matplotlib2tikz and compare the output with
-a previously stored reference TeX file.
+matplotlib2tikz has automatic unit testing to make sure that the software doesn't
+accidentally get worse over time. In `test/`, a number of test cases are specified.
+Those run through matplotlib2tikz and compare the output with a previously stored
+reference TeX file.
 
 To run the tests, just check out this repository and type
 ```
