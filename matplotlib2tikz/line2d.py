@@ -2,6 +2,7 @@
 #
 from __future__ import print_function
 
+import datetime
 import six
 
 from . import color as mycol
@@ -72,7 +73,8 @@ def draw_line2d(data, obj):
     if addplot_options:
         content.append("[{}]\n".format(", ".join(addplot_options)))
 
-    _table(obj, content, data)
+    c, axis_options = _table(obj, data)
+    content += c
 
     if legend_text is not None:
         content.append("\\addlegendentry{{{}}}\n".format(legend_text))
@@ -268,13 +270,10 @@ def _marker(
     return
 
 
-def _table(obj, content, data):
-    content.append("table {%\n")
-
+def _table(obj, data):
     # TODO nschloe, Oct 2, 2015:
-    #   The transform call yields warnings and it is unclear why. Perhaps
-    #   the input data is not suitable? Anyhow, this should not happen.
-    #   Comment out for now.
+    #   The transform call yields warnings and it is unclear why. Perhaps the input data
+    #   is not suitable? Anyhow, this should not happen. Comment out for now.
     # xdata, ydata = _transform_to_data_coordinates(obj, *obj.get_data())
     xdata, ydata = obj.get_data()
 
@@ -292,22 +291,46 @@ def _table(obj, content, data):
     try:
         has_mask = ydata.mask.any()
     except AttributeError:
-        has_mask = 0
+        has_mask = False
+
+    axis_options = []
+
+    content = []
 
     ff = data["float format"]
+    if isinstance(xdata[0], datetime.datetime):
+        xdata = [date.strftime("%Y-%m-%d %H:%M") for date in xdata]
+        xformat = "{}"
+        col_sep = ","
+        content.append("table [col sep=comma] {%\n")
+        data["current axes"].axis_options.append("date coordinates in=x")
+        # Remove xmin/xmax until <https://github.com/matplotlib/matplotlib/issues/13727>
+        # is resolved.
+        data["current axes"].axis_options = [
+            option
+            for option in data["current axes"].axis_options
+            if not option.startswith("xmin")
+        ]
+    else:
+        xformat = ff
+        col_sep = " "
+        content.append("table {%\n")
+
     plot_table = []
     if has_mask:
         # matplotlib jumps at masked images, while PGFPlots by default interpolates.
         # Hence, if we have a masked plot, make sure that PGFPlots jumps as well.
-        data["extra axis options"].add("unbounded coords=jump")
+        if "unbounded coords=jump" not in data["current axes"].axis_options:
+            data["current axes"].axis_options.append("unbounded coords=jump")
+
         for (x, y, is_masked) in zip(xdata, ydata, ydata.mask):
             if is_masked:
-                plot_table.append((ff + " nan\n").format(x))
+                plot_table.append((xformat + col_sep + "nan\n").format(x))
             else:
-                plot_table.append((ff + " " + ff + "\n").format(x, y))
+                plot_table.append((xformat + col_sep + ff + "\n").format(x, y))
     else:
         for (x, y) in zip(xdata, ydata):
-            plot_table.append((ff + " " + ff + "\n").format(x, y))
+            plot_table.append((xformat + col_sep + ff + "\n").format(x, y))
 
     if data["externalize tables"]:
         filename, rel_filepath = files.new_filename(data, "table", ".tsv")
@@ -319,4 +342,4 @@ def _table(obj, content, data):
         content.extend(plot_table)
 
     content.append("};\n")
-    return
+    return content, axis_options

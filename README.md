@@ -18,10 +18,13 @@ This is matplotlib2tikz, a Python tool for converting matplotlib figures into
 for native inclusion into LaTeX documents.
 
 The output of matplotlib2tikz is in
-[PGFPlots](http://pgfplots.sourceforge.net/pgfplots.pdf), a LaTeX library that
-sits on top of TikZ and describes graphs in terms of axes, data etc.
-Consequently, the output of matplotlib2tikz retains more information, can be
-more easily understood, and is more easily editable than [raw TikZ output](https://matplotlib.org/users/whats_new.html#pgf-tikz-backend).
+[PGFPlots](http://pgfplots.sourceforge.net/pgfplots.pdf), a LaTeX library that sits on
+top of [PGF/TikZ](https://en.wikipedia.org/wiki/PGF/TikZ) and describes graphs in terms
+of axes, data etc. Consequently, the output of matplotlib2tikz
+  * retains more information,
+  * can be more easily understood, and
+  * is more easily editable
+than [raw TikZ output](https://matplotlib.org/users/whats_new.html#pgf-tikz-backend).
 For example, the matplotlib figure
 ```python,test
 import matplotlib.pyplot as plt
@@ -45,26 +48,25 @@ tikz_save("test.tex")
 ```
 (see above) gives
 ```latex
-% This file was created by matplotlib2tikz vx.y.z.
 \begin{tikzpicture}
 
-\definecolor{color1}{rgb}{0.203921568627451,0.541176470588235,0.741176470588235}
 \definecolor{color0}{rgb}{0.886274509803922,0.290196078431373,0.2}
+\definecolor{color1}{rgb}{0.203921568627451,0.541176470588235,0.741176470588235}
 
 \begin{axis}[
-title={Simple plot $\frac{\alpha}{2}$},
-xlabel={time (s)},
-ylabel={Voltage (mV)},
-xmin=-0.095, xmax=1.995,
-ymin=-1.1, ymax=1.1,
+axis background/.style={fill=white!89.80392156862746!black},
+axis line style={white},
 tick align=outside,
 tick pos=left,
-xmajorgrids,
+title={Simple plot $\frac{\alpha}{2}$},
 x grid style={white},
-ymajorgrids,
+xlabel={time (s)},
+xmajorgrids,
+xmin=-0.095, xmax=1.995,
 y grid style={white},
-axis line style={white},
-axis background/.style={fill=white!89.803921568627459!black}
+ylabel={Voltage (mV)},
+ymajorgrids,
+ymin=-1.1, ymax=1.1
 ]
 \addplot [line width=1.64pt, color0, mark=*, mark size=3, mark options={solid}]
 table {%
@@ -92,7 +94,7 @@ work flow.
 contains great examples of how to make your plot look even better.
 
 Of course, not all figures produced by matplotlib can be converted without error.
-Notably, [3D plot don't work](https://github.com/matplotlib/matplotlib/issues/7243).
+Notably, [3D plots don't work](https://github.com/matplotlib/matplotlib/issues/7243).
 
 ### Installation
 
@@ -111,54 +113,25 @@ to install/update.
 
 2. Instead of `pyplot.show()`, invoke matplotlib2tikz by
     ```python
-    tikz_save('mytikz.tex')
+    import matplotlib2tikz
+    matplotlib2tikz.save("mytikz.tex")
     ```
-   to store the TikZ file as `mytikz.tex`. Load the library with:
-    ```python
-    from matplotlib2tikz import save as tikz_save
-    ```
-   _Optional:_
-   The scripts accepts several options, for example `height`, `width`,
-   `encoding`, and some others. Invoke by
-    ```python
-    tikz_save('mytikz.tex', figureheight='4cm', figurewidth='6cm')
-    ```
-   Note that height and width must be set large enough; setting it too low may
-   result in a LaTeX compilation failure along the lines of `Dimension Too Large` or `Arithmetic Overflow`;
-   see information about these errors in [the PGFPlots manual](http://pgfplots.sourceforge.net/pgfplots.pdf).
-   To specify the dimension of the plot from within the LaTeX document, try
-    ```python
-    tikz_save(
-        'mytikz.tex',
-        figureheight='\\figureheight',
-        figurewidth='\\figurewidth'
-        )
-    ```
-    and in the LaTeX source
-    ```latex
-    \newlength\figureheight
-    \newlength\figurewidth
-    \setlength\figureheight{4cm}
-    \setlength\figurewidth{6cm}
-    \input{mytikz.tex}
-    ```
+   to store the TikZ file as `mytikz.tex`.
 
-3. Add the contents of `mytikz.tex` into your LaTeX source code; a convenient
-   way of doing so is via `\input{/path/to/mytikz.tex}`. Also make sure that
-   in the header of your document the packages for PGFPlots and proper Unicode
-   support and are included:
+3. Add the contents of `mytikz.tex` into your LaTeX source code. A convenient way of
+   doing so is via
+    ```latex
+    \input{/path/to/mytikz.tex}
+    ```
+   Also make sure that the packages for PGFPlots and proper Unicode support and are
+   included in the header of your document:
     ```latex
     \usepackage[utf8]{inputenc}
+    \usepackage{fontspec}  % optional
     \usepackage{pgfplots}
-    ```
-   Additionally, with LuaLaTeX
-    ```latex
-    \usepackage{fontspec}
-    ```
-   is needed to typeset Unicode characters.
-   Optionally, to use the latest PGFPlots features, insert
-    ```latex
     \pgfplotsset{compat=newest}
+    \usepgfplotslibrary{groupplots}
+    \usepgfplotslibrary{dateplot}
     ```
 
 ### Contributing
