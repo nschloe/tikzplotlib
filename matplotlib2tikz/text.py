@@ -20,6 +20,10 @@ def draw_text(data, obj):
     # 4: the text
     #                   -------1--------2---3--4--
     pos = obj.get_position()
+
+    # from .util import transform_to_data_coordinates
+    # pos = transform_to_data_coordinates(obj, *pos)
+
     text = obj.get_text()
 
     if text in ["", data["current axis title"]]:

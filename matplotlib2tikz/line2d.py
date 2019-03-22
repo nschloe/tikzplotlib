@@ -2,9 +2,7 @@
 #
 from __future__ import print_function
 
-import matplotlib.transforms
 from matplotlib.dates import num2date
-import numpy
 import datetime
 import six
 
@@ -12,7 +10,7 @@ from . import color as mycol
 from . import path as mypath
 from . import files
 
-from .util import get_legend_text, has_legend
+from .util import get_legend_text, has_legend, transform_to_data_coordinates
 
 
 def draw_line2d(data, obj):
@@ -182,24 +180,6 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
     return data, None, None
 
 
-def _transform_to_data_coordinates(obj, xdata, ydata):
-    """The coordinates might not be in data coordinates, but could be sometimes in axes
-    coordinates. For example, the matplotlib command
-      axes.axvline(2)
-    will have the y coordinates set to 0 and 1, not to the limits. Therefore, a
-    two-stage transform has to be applied:
-      1. first transforming to display coordinates, then
-      2. from display to data.
-    """
-    if obj.get_transform() != obj.axes.transData:
-        points = numpy.array([xdata, ydata]).T
-        transform = matplotlib.transforms.composite_transform_factory(
-            obj.get_transform(), obj.axes.transData.inverted()
-        )
-        return transform.transform(points).T
-    return xdata, ydata
-
-
 def _marker(
     obj,
     data,
@@ -262,12 +242,9 @@ def _marker(
 
 
 def _table(obj, data):
-    # TODO nschloe, Oct 2, 2015:
-    #   The transform call yields warnings and it is unclear why. Perhaps the input data
-    #   is not suitable? Anyhow, this should not happen. Comment out for now.
     xdata, ydata = obj.get_data()
     if not isinstance(xdata[0], datetime.datetime):
-        xdata, ydata = _transform_to_data_coordinates(obj, xdata, ydata)
+        xdata, ydata = transform_to_data_coordinates(obj, xdata, ydata)
 
     # matplotlib allows plotting of data containing `astropy.units`, but they will break
     # the formatted string here. Try to strip the units from the data.

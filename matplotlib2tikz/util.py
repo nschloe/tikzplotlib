@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #
+import matplotlib.transforms
+import numpy
 
 
 def has_legend(axes):
@@ -22,3 +24,21 @@ def get_legend_text(obj):
         return d[label]
 
     return None
+
+
+def transform_to_data_coordinates(obj, xdata, ydata):
+    """The coordinates might not be in data coordinates, but could be sometimes in axes
+    coordinates. For example, the matplotlib command
+      axes.axvline(2)
+    will have the y coordinates set to 0 and 1, not to the limits. Therefore, a
+    two-stage transform has to be applied:
+      1. first transforming to display coordinates, then
+      2. from display to data.
+    """
+    if obj.axes is not None and obj.get_transform() != obj.axes.transData:
+        points = numpy.array([xdata, ydata]).T
+        transform = matplotlib.transforms.composite_transform_factory(
+            obj.get_transform(), obj.axes.transData.inverted()
+        )
+        return transform.transform(points).T
+    return xdata, ydata
