@@ -8,6 +8,7 @@
 [![PyPi Version](https://img.shields.io/pypi/v/matplotlib2tikz.svg)](https://pypi.org/project/matplotlib2tikz)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1173089.svg)](https://doi.org/10.5281/zenodo.1173089)
 [![GitHub stars](https://img.shields.io/github/stars/nschloe/matplotlib2tikz.svg?logo=github&label=Stars&logoColor=white)](https://github.com/nschloe/matplotlib2tikz)
+[![PyPi downloads](https://img.shields.io/pypi/dd/matplotlib2tikz.svg)](https://pypistats.org/packages/matplotlib2tikz)
 
 This is matplotlib2tikz, a Python tool for converting matplotlib figures into
 [PGFPlots](https://www.ctan.org/pkg/pgfplots) ([PGF/TikZ](https://www.ctan.org/pkg/pgf))
