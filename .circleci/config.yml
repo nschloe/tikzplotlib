@@ -20,6 +20,7 @@ jobs:
       # <https://stackoverflow.com/a/44333806/353337>
       - run: DEBIAN_FRONTEND=noninteractive apt install tzdata
       - run: apt install -y texlive-latex-base texlive-latex-extra python3-pip python3-tk python3-scipy
+      - run: pip3 install -r test_requirements.txt
       - run: pip3 install -U pytest pytest-cov excode
       - checkout
       - run: cd ~/work

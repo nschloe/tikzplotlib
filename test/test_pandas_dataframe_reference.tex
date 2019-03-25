@@ -1,0 +1,23 @@
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.12156862745098,0.466666666666667,0.705882352941177}
+
+\begin{axis}[
+tick align=outside,
+tick pos=left,
+x grid style={white!69.01960784313725!black},
+xmin=-0.1, xmax=2.1,
+xtick={0,1,2},
+xticklabels={one,two,three},
+y grid style={white!69.01960784313725!black},
+ymin=0.9, ymax=3.1
+]
+\addplot [semithick, color0, mark=*, mark size=3, mark options={solid}, only marks]
+table {%
+0 1
+1 2
+2 3
+};
+\end{axis}
+
+\end{tikzpicture}
