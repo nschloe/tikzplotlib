@@ -2,9 +2,11 @@
 #
 from __future__ import print_function
 
-from matplotlib.dates import num2date
 import datetime
 import six
+
+from matplotlib.dates import num2date
+import numpy
 
 from . import color as mycol
 from . import path as mypath
@@ -242,8 +244,23 @@ def _marker(
 
 
 def _table(obj, data):
-    xdata, ydata = obj.get_data()
-    if not isinstance(xdata[0], datetime.datetime):
+    # get_xydata() always gives float data, no matter what
+    xdata, ydata = obj.get_xydata().T
+
+    # get_{x,y}data gives datetime or string objects if so specified in the plotter
+    xdata_alt = obj.get_xdata()
+
+    ff = data["float format"]
+
+    if isinstance(xdata_alt[0], datetime.datetime):
+        xdata = xdata_alt
+    elif isinstance(xdata_alt[0], str):
+        data["current axes"].axis_options += [
+            "xtick={{{}}}".format(",".join([ff.format(x) for x in xdata])),
+            "xticklabels={{{}}}".format(",".join(xdata_alt)),
+        ]
+        xdata, ydata = transform_to_data_coordinates(obj, xdata, ydata)
+    else:
         xdata, ydata = transform_to_data_coordinates(obj, xdata, ydata)
 
     # matplotlib allows plotting of data containing `astropy.units`, but they will break
@@ -258,15 +275,18 @@ def _table(obj, data):
         pass
 
     try:
-        has_mask = ydata.mask.any()
+        _, ydata_alt = obj.get_data()
+        ydata_mask = ydata_alt.mask
     except AttributeError:
-        has_mask = False
+        ydata_mask = []
+    else:
+        if isinstance(ydata_mask, numpy.bool_) and not ydata_mask:
+            ydata_mask = []
 
     axis_options = []
 
     content = []
 
-    ff = data["float format"]
     if isinstance(xdata[0], datetime.datetime):
         xdata = [date.strftime("%Y-%m-%d %H:%M") for date in xdata]
         xformat = "{}"
@@ -293,13 +313,13 @@ def _table(obj, data):
         content.append("table {%\n")
 
     plot_table = []
-    if has_mask:
+    if any(ydata_mask):
         # matplotlib jumps at masked images, while PGFPlots by default interpolates.
         # Hence, if we have a masked plot, make sure that PGFPlots jumps as well.
         if "unbounded coords=jump" not in data["current axes"].axis_options:
             data["current axes"].axis_options.append("unbounded coords=jump")
 
-        for (x, y, is_masked) in zip(xdata, ydata, ydata.mask):
+        for (x, y, is_masked) in zip(xdata, ydata, ydata_mask):
             if is_masked:
                 plot_table.append((xformat + col_sep + "nan\n").format(x))
             else:

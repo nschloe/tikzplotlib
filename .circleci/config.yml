@@ -24,6 +24,7 @@ jobs:
       - checkout
       - run: cd ~/work
       - run: excode README.md test/zzz_readme_test.py --filter python,test
+      - run: pip3 install -r test_requirements.txt
       - run: pip3 install .[all]
       - run: pip3 check
       # The actual test
