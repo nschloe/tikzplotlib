@@ -8,8 +8,8 @@ from helpers import assert_equality
 
 def plot():
     fig = plt.figure(1, figsize=(8, 5))
-    df = pd.DataFrame(index=['one', 'two', 'three'], data={'data': [1, 2, 3]})
-    plt.plot(df, 'o')
+    df = pd.DataFrame(index=["one", "two", "three"], data={"data": [1, 2, 3]})
+    plt.plot(df, "o")
     return fig
 
 
