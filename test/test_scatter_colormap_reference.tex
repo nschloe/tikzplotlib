@@ -5,8 +5,10 @@ tick align=outside,
 tick pos=left,
 x grid style={white!69.01960784313725!black},
 xmin=-2.63725258881175, xmax=1.86149632855493,
+xtick style={color=black},
 y grid style={white!69.01960784313725!black},
-ymin=-0.835853216474104, ymax=2.35933144192702
+ymin=-0.835853216474104, ymax=2.35933144192702,
+ytick style={color=black}
 ]
 \addplot [only marks, scatter, scatter src=explicit, colormap/viridis, visualization depends on={\thisrow{sizedata} \as\perpointmarksize}, scatter/@pre marker code/.append style={/tikz/mark size=\perpointmarksize}]
 table [x=x, y=y, meta=colordata]{%

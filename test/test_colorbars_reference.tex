@@ -7,7 +7,9 @@ tick pos=left,
 x grid style={white!69.01960784313725!black},
 xlabel={Some Units},
 xmin=-5, xmax=10,
-ymin=-5, ymax=10
+xtick style={color=black},
+ymin=-5, ymax=10,
+ytick style={color=black}
 ]
 \path [draw=white, fill=white, line width=0.004pt]
 (axis cs:-5,-5)
@@ -37,9 +39,11 @@ tick pos=left,
 x grid style={white!69.01960784313725!black},
 xlabel={Discrete intervals, some other units},
 xmin=-0.05, xmax=1.05,
+xtick style={color=black},
 xtick={0,0.142857142857143,0.428571428571429,0.857142857142857,1},
 xticklabels={1,2,4,7,8},
-ymin=0, ymax=1
+ymin=0, ymax=1,
+ytick style={color=black}
 ]
 \path [draw=white, fill=white, line width=0.004pt]
 (axis cs:-0.05,0.5)
@@ -69,9 +73,11 @@ tick pos=left,
 x grid style={white!69.01960784313725!black},
 xlabel={Custom extension lengths, some other units},
 xmin=-0.25, xmax=1.25,
+xtick style={color=black},
 xtick={0,0.25,0.5,0.75,1},
 xticklabels={−1.0,−0.5,0.0,0.5,1.0},
-ymin=0, ymax=1
+ymin=0, ymax=1,
+ytick style={color=black}
 ]
 \path [draw=white, fill=white, line width=0.004pt]
 (axis cs:-0.25,0.5)
