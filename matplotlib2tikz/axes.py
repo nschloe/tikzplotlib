@@ -70,6 +70,12 @@ class Axes(object):
                 "log basis y={{{}}}".format(_try_f2i(obj.yaxis._scale.base))
             )
 
+        # Possible values for get_axisbelow():
+        #   True (zorder = 0.5):   Ticks and gridlines are below all Artists.
+        #   'line' (zorder = 1.5): Ticks and gridlines are above patches (e.g.
+        #                          rectangles) but still below lines / markers.
+        #   False (zorder = 2.5):  Ticks and gridlines are above patches and lines /
+        #                          markers.
         if not obj.get_axisbelow():
             self.axis_options.append("axis on top")
 
@@ -195,9 +201,13 @@ class Axes(object):
             )
         )
 
-        data, xtickcolor, _ = color.mpl_color2xcolor(data, obj.get_xticklines()[0].get_color())
+        data, xtickcolor, _ = color.mpl_color2xcolor(
+            data, obj.get_xticklines()[0].get_color()
+        )
         self.axis_options.append("xtick style={{color={}}}".format(xtickcolor))
-        data, ytickcolor, _ = color.mpl_color2xcolor(data, obj.get_xticklines()[0].get_color())
+        data, ytickcolor, _ = color.mpl_color2xcolor(
+            data, obj.get_xticklines()[0].get_color()
+        )
         self.axis_options.append("ytick style={{color={}}}".format(ytickcolor))
 
         # Find tick direction
