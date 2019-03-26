@@ -201,14 +201,23 @@ class Axes(object):
             )
         )
 
-        data, xtickcolor, _ = color.mpl_color2xcolor(
-            data, obj.get_xticklines()[0].get_color()
-        )
-        self.axis_options.append("xtick style={{color={}}}".format(xtickcolor))
-        data, ytickcolor, _ = color.mpl_color2xcolor(
-            data, obj.get_xticklines()[0].get_color()
-        )
-        self.axis_options.append("ytick style={{color={}}}".format(ytickcolor))
+        try:
+            l0 = obj.get_xticklines()[0]
+        except IndexError:
+            pass
+        else:
+            c0 = l0.get_color()
+            data, xtickcolor, _ = color.mpl_color2xcolor(data, c0)
+            self.axis_options.append("xtick style={{color={}}}".format(xtickcolor))
+
+        try:
+            l0 = obj.get_yticklines()[0]
+        except IndexError:
+            pass
+        else:
+            c0 = l0.get_color()
+            data, ytickcolor, _ = color.mpl_color2xcolor(data, c0)
+            self.axis_options.append("ytick style={{color={}}}".format(ytickcolor))
 
         # Find tick direction
         # For new matplotlib versions, we could replace the direction getter by
