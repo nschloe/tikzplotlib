@@ -13,8 +13,8 @@ class Axes(object):
         """
         self.content = []
 
-        # Are we dealing with an axis that hosts a colorbar? Skip then, those
-        # are treated implicitily by the associated axis.
+        # Are we dealing with an axis that hosts a colorbar? Skip then, those are
+        # treated implicitily by the associated axis.
         self.is_colorbar = _is_colorbar_heuristic(obj)
         if self.is_colorbar:
             return
@@ -51,8 +51,7 @@ class Axes(object):
             self.axis_options.append(u"ylabel={{{}}}".format(ylabel))
 
         # Axes limits.
-        # Sort the limits so make sure that the smaller of the two is actually
-        # *min.
+        # Sort the limits so make sure that the smaller of the two is actually *min.
         ff = data["float format"]
         xlim = sorted(list(obj.get_xlim()))
         self.axis_options.append(("xmin=" + ff + ", xmax=" + ff).format(*xlim))
@@ -71,6 +70,12 @@ class Axes(object):
                 "log basis y={{{}}}".format(_try_f2i(obj.yaxis._scale.base))
             )
 
+        # Possible values for get_axisbelow():
+        #   True (zorder = 0.5):   Ticks and gridlines are below all Artists.
+        #   'line' (zorder = 1.5): Ticks and gridlines are above patches (e.g.
+        #                          rectangles) but still below lines / markers.
+        #   False (zorder = 2.5):  Ticks and gridlines are above patches and lines /
+        #                          markers.
         if not obj.get_axisbelow():
             self.axis_options.append("axis on top")
 
@@ -108,12 +113,7 @@ class Axes(object):
             self.axis_options.append("axis line style={{{}}}".format(col))
 
         # background color
-        try:
-            # mpl 2.*
-            bgcolor = obj.get_facecolor()
-        except AttributeError:
-            # mpl 1.*
-            bgcolor = obj.get_axis_bgcolor()
+        bgcolor = obj.get_facecolor()
 
         data, col, _ = color.mpl_color2xcolor(data, bgcolor)
         if col != "white":
@@ -201,13 +201,31 @@ class Axes(object):
             )
         )
 
+        try:
+            l0 = obj.get_xticklines()[0]
+        except IndexError:
+            pass
+        else:
+            c0 = l0.get_color()
+            data, xtickcolor, _ = color.mpl_color2xcolor(data, c0)
+            self.axis_options.append("xtick style={{color={}}}".format(xtickcolor))
+
+        try:
+            l0 = obj.get_yticklines()[0]
+        except IndexError:
+            pass
+        else:
+            c0 = l0.get_color()
+            data, ytickcolor, _ = color.mpl_color2xcolor(data, c0)
+            self.axis_options.append("ytick style={{color={}}}".format(ytickcolor))
+
         # Find tick direction
         # For new matplotlib versions, we could replace the direction getter by
         # `get_ticks_direction()`, see
-        # <https://github.com/matplotlib/matplotlib/pull/5290>.
-        # Unfortunately, _tickdir doesn't seem to be quite accurate. See
-        # <https://github.com/matplotlib/matplotlib/issues/5311>.
-        # For now, just take the first tick direction of each of the axes.
+        # <https://github.com/matplotlib/matplotlib/pull/5290>.  Unfortunately, _tickdir
+        # doesn't seem to be quite accurate. See
+        # <https://github.com/matplotlib/matplotlib/issues/5311>.  For now, just take
+        # the first tick direction of each of the axes.
         x_tick_dirs = [tick._tickdir for tick in obj.xaxis.get_major_ticks()]
         y_tick_dirs = [tick._tickdir for tick in obj.yaxis.get_major_ticks()]
         if x_tick_dirs or y_tick_dirs:
@@ -256,9 +274,8 @@ class Axes(object):
 
     def _grid(self, obj, data):
         # Don't use get_{x,y}gridlines for gridlines; see discussion on
-        # <http://sourceforge.net/p/matplotlib/mailman/message/25169234/>
-        # Coordinate of the lines are entirely meaningless, but styles
-        # (colors,...) are respected.
+        # <http://sourceforge.net/p/matplotlib/mailman/message/25169234/> Coordinate of
+        # the lines are entirely meaningless, but styles (colors,...) are respected.
         if obj.xaxis._gridOnMajor:
             self.axis_options.append("xmajorgrids")
         if obj.xaxis._gridOnMinor:
@@ -516,15 +533,14 @@ def _get_tick_position(obj, axes_obj):
 
 
 def _get_ticks(data, xy, ticks, ticklabels):
-    """
-    Gets a {'x','y'}, a number of ticks and ticks labels, and returns the
+    """Gets a {'x','y'}, a number of ticks and ticks labels, and returns the
     necessary axis options for the given configuration.
     """
     axis_options = []
     pgfplots_ticks = []
     pgfplots_ticklabels = []
     is_label_required = False
-    for (tick, ticklabel) in zip(ticks, ticklabels):
+    for tick, ticklabel in zip(ticks, ticklabels):
         pgfplots_ticks.append(tick)
         # store the label anyway
         label = ticklabel.get_text()
@@ -533,8 +549,8 @@ def _get_ticks(data, xy, ticks, ticklabels):
             pgfplots_ticklabels.append(label)
         else:
             is_label_required = True
-        # Check if the label is necessary. If one of the labels is, then all
-        # of them must appear in the TikZ plot.
+        # Check if the label is necessary. If one of the labels is, then all of them
+        # must appear in the TikZ plot.
         if label:
             try:
                 label_float = float(label.replace(u"\N{MINUS SIGN}", "-"))
@@ -542,8 +558,8 @@ def _get_ticks(data, xy, ticks, ticklabels):
             except ValueError:
                 is_label_required = True
 
-    # Leave the ticks to PGFPlots if not in STRICT mode and if there are no
-    # explicit labels.
+    # Leave the ticks to PGFPlots if not in STRICT mode and if there are no explicit
+    # labels.
     if data["strict"] or is_label_required:
         if pgfplots_ticks:
             ff = data["float format"]
