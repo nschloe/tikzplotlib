@@ -42,6 +42,7 @@ def get_tikz_code(
     include_disclaimer=True,
     standalone=False,
     float_format="{:.15g}",
+    table_row_sep="\n",
 ):
     """Main function. Here, the recursion into the image starts and the
     contents are picked up. The actual file gets written in this routine.
@@ -112,7 +113,7 @@ def get_tikz_code(
     :type extra_axis_parameters: a list or set of strings for the pfgplots axes.
 
     :param extra_tikzpicture_parameters: Extra tikzpicture options to be passed
-                                        (as a set) to pgfplots.
+                                         (as a set) to pgfplots.
 
     :type extra_tikzpicture_parameters: a set of strings for the pfgplots
                                         tikzpicture.
@@ -122,8 +123,24 @@ def get_tikz_code(
                 ``savefig.dpi`` from matplotlib.rcParams. Default is ``None``.
     :type dpi: int
 
-    :returns: None
+    :param show_info: Show extra info on the command line. Default is ``False``.
+    :type show_info: bool
 
+    :param include_disclaimer: Include matplotlib2tikz disclaimer in the output.
+                               Set ``False`` to make tests reproducible.
+                               Default is ``True``.
+    :type include_disclaimer: bool
+
+    :param standalone: Include wrapper code for a standalone LaTeX file.
+    :type standalone: bool
+
+    :param float_format: Format for float entities. Default is ```"{:.15g}"```.
+    :type float_format: str
+
+    :param table_row_sep: Row separator for table data. Default is ```"\\n"```.
+    :type table_row_sep: str
+
+    :returns: None
 
     The following optional attributes of matplotlib's objects are recognized
     and handled:
@@ -179,6 +196,7 @@ def get_tikz_code(
         )
 
     data["float format"] = float_format
+    data["table_row_sep"] = table_row_sep
 
     # print message about necessary pgfplot libs to command line
     if show_info:
