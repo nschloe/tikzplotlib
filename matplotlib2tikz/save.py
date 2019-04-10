@@ -245,7 +245,7 @@ def save(filepath, *args, encoding=None, **kwargs):
                      For supported values: see ``codecs`` module.
     :returns: None
     """
-    code = get_tikz_code(*args, **kwargs)
+    code = get_tikz_code(*args, filepath=filepath, **kwargs)
     file_handle = codecs.open(filepath, "w", encoding)
     try:
         file_handle.write(code)
