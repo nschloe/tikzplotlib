@@ -33,9 +33,11 @@ def _unidiff_output(expected, actual):
     return "".join(diff)
 
 
-def assert_equality(plot, filename):
+def assert_equality(plot, filename, **extra_get_tikz_code_args):
     plot()
-    code = matplotlib2tikz.get_tikz_code(include_disclaimer=False)
+    code = matplotlib2tikz.get_tikz_code(
+        include_disclaimer=False, **extra_get_tikz_code_args
+    )
     plt.close()
 
     this_dir = os.path.dirname(os.path.abspath(__file__))
@@ -43,7 +45,9 @@ def assert_equality(plot, filename):
         reference = f.read()
     assert reference == code, _unidiff_output(reference, code)
 
-    code = matplotlib2tikz.get_tikz_code(include_disclaimer=False, standalone=True)
+    code = matplotlib2tikz.get_tikz_code(
+        include_disclaimer=False, standalone=True, **extra_get_tikz_code_args
+    )
     assert _compile(code) is not None
     return
 

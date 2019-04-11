@@ -21,9 +21,9 @@ def draw_line2d(data, obj):
     content = []
     addplot_options = []
 
-    # If line is of length 0, do nothing.  Otherwise, an empty \addplot table
-    # will be created, which will be interpreted as an external data source
-    # in either the file '' or '.tex'.  Instead, render nothing.
+    # If line is of length 0, do nothing.  Otherwise, an empty \addplot table will be
+    # created, which will be interpreted as an external data source in either the file
+    # '' or '.tex'.  Instead, render nothing.
     if len(obj.get_xdata()) == 0:
         return data, []
 
@@ -291,7 +291,10 @@ def _table(obj, data):
         xdata = [date.strftime("%Y-%m-%d %H:%M") for date in xdata]
         xformat = "{}"
         col_sep = ","
-        content.append("table [header=false,col sep=comma] {%\n")
+        opts = ["header=false", "col sep=comma"]
+        if data["table_row_sep"] != "\n":
+            opts.append("row sep=" + data["table row sep"])
+        content.append("table [{}] {{%\n".format(",".join(opts)))
         data["current axes"].axis_options.append("date coordinates in=x")
         # Replace float xmin/xmax by datetime
         # <https://github.com/matplotlib/matplotlib/issues/13727>.
@@ -321,12 +324,18 @@ def _table(obj, data):
 
         for (x, y, is_masked) in zip(xdata, ydata, ydata_mask):
             if is_masked:
-                plot_table.append((xformat + col_sep + "nan\n").format(x))
+                plot_table.append(
+                    (xformat + col_sep + "nan" + data["table_row_sep"]).format(x)
+                )
             else:
-                plot_table.append((xformat + col_sep + ff + "\n").format(x, y))
+                plot_table.append(
+                    (xformat + col_sep + ff + data["table_row_sep"]).format(x, y)
+                )
     else:
         for x, y in zip(xdata, ydata):
-            plot_table.append((xformat + col_sep + ff + "\n").format(x, y))
+            plot_table.append(
+                (xformat + col_sep + ff + data["table_row_sep"]).format(x, y)
+            )
 
     if data["externalize tables"]:
         filename, rel_filepath = files.new_filename(data, "table", ".tsv")

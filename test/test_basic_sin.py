@@ -25,7 +25,7 @@ def plot():
 
 
 def test():
-    assert_equality(plot, "test_basic_sin_reference.tex")
+    assert_equality(plot, "test_basic_sin_reference.tex", table_row_sep="\\\\\n")
     return
 
 
