@@ -314,7 +314,7 @@ def mpl_linestyle2pgfplots_linestyle(line_style, line=None):
 
         assert len(line_style[1]) == 4
         return "dash pattern=on {}pt off {}pt on {}pt off {}pt".format(*line_style[1])
-    
+
     if isinstance(line, mpl.lines.Line2D) and line.is_dashed():
         # see matplotlib.lines.Line2D.set_dashes
 
