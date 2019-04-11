@@ -293,7 +293,7 @@ def mpl_linewidth2pgfp_linewidth(data, line_width):
     return out
 
 
-def mpl_linestyle2pgfplots_linestyle(line_style):
+def mpl_linestyle2pgfplots_linestyle(line_style, line=None):
     """Translates a line style of matplotlib to the corresponding style
     in PGFPlots.
     """
@@ -314,6 +314,28 @@ def mpl_linestyle2pgfplots_linestyle(line_style):
 
         assert len(line_style[1]) == 4
         return "dash pattern=on {}pt off {}pt on {}pt off {}pt".format(*line_style[1])
+
+    if isinstance(line, mpl.lines.Line2D) and line.is_dashed():
+        # see matplotlib.lines.Line2D.set_dashes
+
+        # get defaults
+        default_dashOffset, default_dashSeq = mpl.lines._get_dash_pattern(line_style)
+
+        # get dash format of line under test
+        dashSeq = line._us_dashSeq
+        dashOffset = line._us_dashOffset
+
+        lst = list()
+        if dashSeq != default_dashSeq:
+            # generate own dash sequence
+            format_string = " ".join(len(dashSeq) // 2 * ["on {}pt off {}pt"])
+            lst.append("dash pattern=" + format_string.format(*dashSeq))
+
+        if dashOffset != default_dashOffset:
+            lst.append("dash phase={}pt".format(dashOffset))
+
+        if len(lst) > 0:
+            return ", ".join(lst)
 
     return {
         "": None,
