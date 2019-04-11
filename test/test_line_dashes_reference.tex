@@ -1,0 +1,58 @@
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.12156862745098,0.466666666666667,0.705882352941177}
+\definecolor{color1}{rgb}{1,0.498039215686275,0.0549019607843137}
+\definecolor{color2}{rgb}{0.172549019607843,0.627450980392157,0.172549019607843}
+\definecolor{color3}{rgb}{0.83921568627451,0.152941176470588,0.156862745098039}
+\definecolor{color4}{rgb}{0.580392156862745,0.403921568627451,0.741176470588235}
+\definecolor{color5}{rgb}{0.549019607843137,0.337254901960784,0.294117647058824}
+\definecolor{color6}{rgb}{0.890196078431372,0.466666666666667,0.76078431372549}
+
+\begin{axis}[
+tick align=outside,
+tick pos=left,
+x grid style={white!69.01960784313725!black},
+xmin=-0.05, xmax=1.05,
+xtick style={color=black},
+y grid style={white!69.01960784313725!black},
+ymin=-0.35, ymax=7.35,
+ytick style={color=black}
+]
+\addplot [semithick, color0]
+table {%
+0 0
+1 1
+};
+\addplot [semithick, color1, dashed]
+table {%
+0 1
+1 2
+};
+\addplot [semithick, color2, dash pattern=on 1pt off 3pt on 3pt off 3pt]
+table {%
+0 2
+1 3
+};
+\addplot [semithick, color3, dotted]
+table {%
+0 3
+1 4
+};
+\addplot [semithick, color4, dash pattern=on 10pt off 1pt, dash phase=1pt]
+table {%
+0 4
+1 5
+};
+\addplot [semithick, color5, dash pattern=on 10pt off 1pt, dash phase=5pt]
+table {%
+0 5
+1 6
+};
+\addplot [semithick, color6, dash pattern=on 1pt off 2pt on 3pt off 4pt]
+table {%
+0 6
+1 7
+};
+\end{axis}
+
+\end{tikzpicture}
