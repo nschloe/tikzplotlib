@@ -7,7 +7,7 @@ from helpers import assert_equality
 
 def plot():
     fig = plt.figure()
-    linestyles = ["-", "--", "-.", ":", (1, (10, 1)), (5, (10, 1)), (0, (1, 2, 3, 4))]
+    linestyles = ["-", "--", "-.", ":", (0, (10, 1)), (5, (10, 1)), (0, (1, 2, 3, 4))]
     for idx, ls in enumerate(linestyles):
         plt.plot([idx, idx + 1], linestyle=ls)
     return fig
