@@ -43,7 +43,7 @@ def assert_equality(plot, filename, **extra_get_tikz_code_args):
     this_dir = os.path.dirname(os.path.abspath(__file__))
     with open(os.path.join(this_dir, filename), "r", encoding="utf-8") as f:
         reference = f.read()
-    assert reference == code, _unidiff_output(reference, code)
+    assert reference == code, _unidiff_output(code, reference)
 
     code = matplotlib2tikz.get_tikz_code(
         include_disclaimer=False, standalone=True, **extra_get_tikz_code_args
