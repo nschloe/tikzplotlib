@@ -154,17 +154,6 @@ To run the tests, just check out this repository and type
 pytest
 ```
 
-### Distribution
-
-To create a new release
-
-1. bump the `__version__` number,
-
-2. publish to PyPi and GitHub:
-    ```
-    $ make publish
-    ```
-
 ### License
 
 matplotlib2tikz is published under the [MIT license](https://en.wikipedia.org/wiki/MIT_License).
