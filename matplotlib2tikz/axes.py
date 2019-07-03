@@ -46,7 +46,7 @@ class Axes(object):
         if xlabel:
             xlabel = mpl_backend_pgf.common_texification(xlabel)
             self.axis_options.append(u"xlabel={{{}}}".format(xlabel))
-            if xrotation != 90:
+            if xrotation != 0:
                 self.axis_options.append(
                     u"xlabel style={{rotate={}}}".format(xrotation - 90)
                 )
