@@ -47,14 +47,18 @@ class Axes(object):
             xlabel = mpl_backend_pgf.common_texification(xlabel)
             self.axis_options.append(u"xlabel={{{}}}".format(xlabel))
             if xrotation != 90:
-                self.axis_options.append(u"xlabel style={{rotate={}}}".format(xrotation - 90))
+                self.axis_options.append(
+                    u"xlabel style={{rotate={}}}".format(xrotation - 90)
+                )
         ylabel = obj.get_ylabel()
         yrotation = obj.yaxis.get_label().get_rotation()
         if ylabel:
             ylabel = mpl_backend_pgf.common_texification(ylabel)
             self.axis_options.append(u"ylabel={{{}}}".format(ylabel))
             if yrotation != 90:
-                self.axis_options.append(u"ylabel style={{rotate={}}}".format(yrotation - 90))
+                self.axis_options.append(
+                    u"ylabel style={{rotate={}}}".format(yrotation - 90)
+                )
 
         # Axes limits.
         # Sort the limits so make sure that the smaller of the two is actually *min.
