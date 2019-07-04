@@ -5,7 +5,6 @@ import warnings
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import six
 
 from . import axes
 from . import image as img
@@ -257,11 +256,7 @@ def save(filepath, *args, encoding=None, **kwargs):
     """
     code = get_tikz_code(*args, filepath=filepath, **kwargs)
     file_handle = codecs.open(filepath, "w", encoding)
-    try:
-        file_handle.write(code)
-    except UnicodeEncodeError:
-        # We're probably using Python 2, so treat unicode explicitly
-        file_handle.write(six.text_type(code).encode("utf-8"))
+    file_handle.write(code)
     file_handle.close()
     return
 

@@ -1,7 +1,6 @@
 import datetime
 
 import numpy
-import six
 from matplotlib.dates import num2date
 
 from . import color as mycol
@@ -213,7 +212,7 @@ def _marker(
     if extra_mark_options:
         mark_options.append(extra_mark_options)
     if marker_face_color is None or (
-        isinstance(marker_face_color, six.string_types) and marker_face_color == "none"
+        isinstance(marker_face_color, str) and marker_face_color == "none"
     ):
         mark_options.append("fill opacity=0")
     else:

@@ -21,7 +21,7 @@ setup(
     url="https://github.com/nschloe/tikzplotlib",
     author=about["__author__"],
     author_email=about["__email__"],
-    install_requires=["matplotlib >= 1.4.0", "numpy", "Pillow", "six"],
+    install_requires=["matplotlib >= 1.4.0", "numpy", "Pillow"],
     description="Convert matplotlib figures into TikZ/PGFPlots",
     long_description=read("README.md"),
     long_description_content_type="text/markdown",
