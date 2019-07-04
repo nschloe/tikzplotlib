@@ -15,7 +15,7 @@ import sys
 
 import mock
 
-MOCK_MODULES = ["matplotlib", "pipdate"]
+MOCK_MODULES = ["matplotlib"]
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 
@@ -33,7 +33,7 @@ extensions = [
     "sphinx.ext.doctest",
     "sphinx.ext.todo",
     "sphinx.ext.coverage",
-    "sphinx.ext.pngmath",
+    "sphinx.ext.imgmath",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -50,7 +50,7 @@ master_doc = "index"
 
 # General information about the project.
 project = u"tikzplotlib"
-copyright = u"2010-2018, Nico Schlömer"
+copyright = u"2010-2019, Nico Schlömer"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
