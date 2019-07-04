@@ -408,8 +408,6 @@ def _recurse(data, obj):
             pass
         else:
             warnings.warn(
-                "tikzplotlib: Don't know how to handle object {}.".format(
-                    type(child)
-                )
+                "tikzplotlib: Don't know how to handle object {}.".format(type(child))
             )
     return data, content.flatten()
