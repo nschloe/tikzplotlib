@@ -4,7 +4,7 @@ import argparse
 import os
 import importlib.util
 
-import matplotlib2tikz as m2t
+import tikzplotlib as m2t
 import matplotlib.pyplot as plt
 
 

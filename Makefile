@@ -1,4 +1,4 @@
-VERSION=$(shell python3 -c "import matplotlib2tikz; print(matplotlib2tikz.__version__)")
+VERSION=$(shell python3 -c "import tikzplotlib; print(tikzplotlib.__version__)")
 
 default:
 	@echo "\"make publish\"?"
@@ -24,8 +24,8 @@ clean:
 	@rm -rf *.egg-info/ build/ dist/ MANIFEST
 
 black:
-	black setup.py matplotlib2tikz/ test/*.py
+	black setup.py tikzplotlib/ test/*.py
 
 lint:
-	black --check setup.py matplotlib2tikz/ test/*.py
-	flake8 setup.py matplotlib2tikz/ test/*.py
+	black --check setup.py tikzplotlib/ test/*.py
+	flake8 setup.py tikzplotlib/ test/*.py

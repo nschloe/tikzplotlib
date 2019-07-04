@@ -9,8 +9,8 @@ jobs:
       - run: apt update
       - run: apt install -y python3-pip
       - run: pip3 install -U black flake8
-      - run: LC_ALL=C.UTF-8 black --check setup.py matplotlib2tikz/ test/*.py
-      - run: flake8 setup.py matplotlib2tikz/ test/*.py
+      - run: LC_ALL=C.UTF-8 black --check setup.py tikzplotlib/ test/*.py
+      - run: flake8 setup.py tikzplotlib/ test/*.py
   build:
     working_directory: ~/work
     docker:
@@ -28,7 +28,7 @@ jobs:
       - run: pip3 install .[all]
       - run: pip3 check
       # The actual test
-      - run: cd test/ && MPLBACKEND=Agg pytest --cov matplotlib2tikz
+      - run: cd test/ && MPLBACKEND=Agg pytest --cov tikzplotlib
       # submit to codecov
       - run: apt install -y curl
       - run: bash <(curl -s https://codecov.io/bash)

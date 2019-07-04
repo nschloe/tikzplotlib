@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 # https://packaging.python.org/single_source_version/
 base_dir = os.path.abspath(os.path.dirname(__file__))
 about = {}
-with open(os.path.join(base_dir, "matplotlib2tikz", "__about__.py"), "rb") as f:
+with open(os.path.join(base_dir, "tikzplotlib", "__about__.py"), "rb") as f:
     exec(f.read(), about)
 
 
@@ -17,10 +17,10 @@ def read(fname):
 
 
 setup(
-    name="matplotlib2tikz",
+    name="tikzplotlib",
     version=about["__version__"],
     packages=find_packages(),
-    url="https://github.com/nschloe/matplotlib2tikz",
+    url="https://github.com/nschloe/tikzplotlib",
     author=about["__author__"],
     author_email=about["__email__"],
     install_requires=["matplotlib >= 1.4.0", "numpy", "Pillow", "six"],

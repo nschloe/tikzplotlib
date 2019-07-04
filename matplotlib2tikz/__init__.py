@@ -4,7 +4,7 @@
 """
 from __future__ import print_function
 
-from matplotlib2tikz.__about__ import (
+from tikzplotlib.__about__ import (
     __author__,
     __email__,
     __copyright__,
@@ -13,7 +13,7 @@ from matplotlib2tikz.__about__ import (
     __status__,
 )
 
-from matplotlib2tikz.save import get_tikz_code, save
+from tikzplotlib.save import get_tikz_code, save
 
 __all__ = [
     "__author__",

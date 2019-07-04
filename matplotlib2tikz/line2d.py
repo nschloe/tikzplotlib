@@ -66,7 +66,7 @@ def draw_line2d(data, obj):
         addplot_options.append("only marks")
 
     # Check if a line is in a legend and forget it if not.
-    # Fixes <https://github.com/nschloe/matplotlib2tikz/issues/167>.
+    # Fixes <https://github.com/nschloe/tikzplotlib/issues/167>.
     legend_text = get_legend_text(obj)
     if legend_text is None and has_legend(obj.axes):
         addplot_options.append("forget plot")

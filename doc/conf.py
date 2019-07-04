@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# matplotlib2tikz documentation build configuration file, created by
+# tikzplotlib documentation build configuration file, created by
 # sphinx-quickstart on Mon May 10 14:00:31 2010.
 #
 # This file is execfile()d with the current directory set to its containing
@@ -51,7 +51,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = u"matplotlib2tikz"
+project = u"tikzplotlib"
 copyright = u"2010-2018, Nico Schlömer"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -61,7 +61,7 @@ copyright = u"2010-2018, Nico Schlömer"
 # https://packaging.python.org/single_source_version/
 this_dir = os.path.abspath(os.path.dirname(__file__))
 about = {}
-about_file = os.path.join(this_dir, "..", "matplotlib2tikz", "__about__.py")
+about_file = os.path.join(this_dir, "..", "tikzplotlib", "__about__.py")
 with open(about_file) as f:
     exec(f.read(), about)
 # The short X.Y version.
@@ -179,7 +179,7 @@ html_static_path = ["_static"]
 # html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "matplotlib2tikzdoc"
+htmlhelp_basename = "tikzplotlibdoc"
 
 
 # -- Options for LaTeX output -------------------------------------------------
@@ -195,8 +195,8 @@ latex_paper_size = "a4"
 latex_documents = [
     (
         "index",
-        "matplotlib2tikz.tex",
-        u"matplotlib2tikz Documentation",
+        "tikzplotlib.tex",
+        u"tikzplotlib Documentation",
         u"Nico Schlömer",
         "manual",
     )
