@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 __author__ = u"Nico Schlömer"
 __email__ = "nico.schloemer@gmail.com"
 __copyright__ = u"Copyright (c) 2010-2019, {} <{}>".format(__author__, __email__)

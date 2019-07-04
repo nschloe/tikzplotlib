@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 

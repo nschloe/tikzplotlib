@@ -24,8 +24,8 @@ clean:
 	@rm -rf *.egg-info/ build/ dist/ MANIFEST
 
 black:
-	black setup.py tikzplotlib/ test/*.py
+	black .
 
 lint:
-	black --check setup.py tikzplotlib/ test/*.py
+	black --check .
 	flake8 setup.py tikzplotlib/ test/*.py

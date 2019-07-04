@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # Taken from http://matplotlib.org/examples/pylab_examples/fancybox_demo.html
 import matplotlib.pyplot as plt
 import matplotlib.transforms as mtransforms

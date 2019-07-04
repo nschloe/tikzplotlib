@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 import matplotlib as mpl
 import numpy
 from matplotlib.backends import backend_pgf as mpl_backend_pgf

@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
 """ Box Plot test
-
 This test plots a box plot with three data series. The causes an empty Line2D
 to be plotted.  Without care, this can turn into an empty table in PGFPlot
 which crashes latex (due to it treating an empty table as a table with

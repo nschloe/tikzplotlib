@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # tikzplotlib documentation build configuration file, created by
 # sphinx-quickstart on Mon May 10 14:00:31 2010.
 #

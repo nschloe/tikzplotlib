@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 """Script to convert Matplotlib generated figures into TikZ/PGFPlots figures.
 """
 from __future__ import print_function

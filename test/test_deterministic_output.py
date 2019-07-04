@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # assert repeated exports of the same plot produce the same output file
 
 import sys
