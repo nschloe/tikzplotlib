@@ -1,8 +1,8 @@
 # assert repeated exports of the same plot produce the same output file
 
+import subprocess
 import sys
 import tempfile
-import subprocess
 
 # We create the tikz files in separate subprocesses, as when producing those in
 # the same process, the order of axis parameters is deterministic.

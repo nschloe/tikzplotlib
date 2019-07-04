@@ -1,9 +1,10 @@
 import argparse
-import os
 import importlib.util
+import os
+
+import matplotlib.pyplot as plt
 
 import tikzplotlib as m2t
-import matplotlib.pyplot as plt
 
 
 def _main():

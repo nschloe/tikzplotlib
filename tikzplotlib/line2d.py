@@ -1,13 +1,12 @@
 import datetime
-import six
 
-from matplotlib.dates import num2date
 import numpy
+import six
+from matplotlib.dates import num2date
 
 from . import color as mycol
-from . import path as mypath
 from . import files
-
+from . import path as mypath
 from .util import get_legend_text, has_legend, transform_to_data_coordinates
 
 

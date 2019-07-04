@@ -2,13 +2,12 @@
 """
 from tikzplotlib.__about__ import (
     __author__,
-    __email__,
     __copyright__,
+    __email__,
     __license__,
-    __version__,
     __status__,
+    __version__,
 )
-
 from tikzplotlib.save import get_tikz_code, save
 
 __all__ = [

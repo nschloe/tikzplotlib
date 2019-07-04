@@ -8,14 +8,10 @@ import matplotlib.pyplot as plt
 import six
 
 from . import axes
-from . import legend
-from . import line2d
 from . import image as img
+from . import legend, line2d, patch, path
 from . import quadmesh as qmsh
-from . import path
-from . import patch
 from . import text
-
 from .__about__ import __version__
 
 
