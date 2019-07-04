@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="248.46875"
+   height="54.90625"
+   version="1.1"
+   id="svg14"
+   sodipodi:docname="mpl.svg"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   style="fill-opacity:0.8;stroke:#777777"
+   inkscape:export-filename="/tmp/mpl.png"
+   inkscape:export-xdpi="132.69"
+   inkscape:export-ydpi="132.69">
+  <metadata
+     id="metadata20">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs18" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     id="namedview16"
+     showgrid="false"
+     inkscape:zoom="1.84375"
+     inkscape:cx="101.99247"
+     inkscape:cy="-4.5538336"
+     inkscape:window-x="0"
+     inkscape:window-y="34"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg14"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <flowRoot
+     xml:space="preserve"
+     id="flowRoot22"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.75px;line-height:0%;font-family:'Helvetica LT Std';-inkscape-font-specification:'Helvetica LT Std';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     transform="translate(-149.42969,18.310547)"><flowRegion
+       id="flowRegion24"><rect
+         id="rect26"
+         width="355.79663"
+         height="128"
+         x="145.8983"
+         y="9.2203388" /></flowRegion><flowPara
+       id="flowPara28"
+       style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:64px;font-family:Calibri;-inkscape-font-specification:'Calibri Italic'">ti<flowSpan
+   style="fill:#ff7f00;fill-opacity:1"
+   id="flowSpan4673">k</flowSpan>zplotlib</flowPara></flowRoot></svg>
