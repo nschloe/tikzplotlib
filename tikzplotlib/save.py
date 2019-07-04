@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import codecs
 import os
 import tempfile
@@ -307,7 +305,7 @@ def _print_pgfplot_libs_message(data):
     return
 
 
-class _ContentManager(object):
+class _ContentManager:
     """Basic Content Manager for tikzplotlib
 
     This manager uses a dictionary to map z-order to an array of content

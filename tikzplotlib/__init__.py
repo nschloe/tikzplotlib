@@ -1,7 +1,5 @@
 """Script to convert Matplotlib generated figures into TikZ/PGFPlots figures.
 """
-from __future__ import print_function
-
 from tikzplotlib.__about__ import (
     __author__,
     __email__,
