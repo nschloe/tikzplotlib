@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 desc = "Rotated labels"
 phash = "a91fa2a3713dcc0b"
 

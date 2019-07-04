@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
-#
 import matplotlib.pyplot as plt
 from matplotlib.collections import PolyCollection
-
 
 from helpers import assert_equality
 

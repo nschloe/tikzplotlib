@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 import matplotlib.pyplot as plt
 
 # the picture 'lena.png' with origin='lower' is flipped upside-down.

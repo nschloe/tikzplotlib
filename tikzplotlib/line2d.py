@@ -1,17 +1,11 @@
-# -*- coding: utf-8 -*-
-#
-from __future__ import print_function
-
 import datetime
-import six
 
-from matplotlib.dates import num2date
 import numpy
+from matplotlib.dates import num2date
 
 from . import color as mycol
-from . import path as mypath
 from . import files
-
+from . import path as mypath
 from .util import get_legend_text, has_legend, transform_to_data_coordinates
 
 
@@ -66,7 +60,7 @@ def draw_line2d(data, obj):
         addplot_options.append("only marks")
 
     # Check if a line is in a legend and forget it if not.
-    # Fixes <https://github.com/nschloe/matplotlib2tikz/issues/167>.
+    # Fixes <https://github.com/nschloe/tikzplotlib/issues/167>.
     legend_text = get_legend_text(obj)
     if legend_text is None and has_legend(obj.axes):
         addplot_options.append("forget plot")
@@ -218,7 +212,7 @@ def _marker(
     if extra_mark_options:
         mark_options.append(extra_mark_options)
     if marker_face_color is None or (
-        isinstance(marker_face_color, six.string_types) and marker_face_color == "none"
+        isinstance(marker_face_color, str) and marker_face_color == "none"
     ):
         mark_options.append("fill opacity=0")
     else:

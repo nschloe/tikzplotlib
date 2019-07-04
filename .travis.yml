@@ -52,11 +52,11 @@ before_script:
 
 # run tests
 script:
-  - pylint matplotlib2tikz/
+  - pylint tikzplotlib/
   - pylint test/*py
   # cd into test directory to make sure we're using the pip-installed
-  # matplotlib2tikz.
-  - cd test && MPLBACKEND=Agg pytest --cov matplotlib2tikz
+  # tikzplotlib.
+  - cd test && MPLBACKEND=Agg pytest --cov tikzplotlib
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

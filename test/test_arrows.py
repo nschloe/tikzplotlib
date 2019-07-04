@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 
@@ -64,8 +62,8 @@ def plot():
 #     # plt.show()
 #
 #     plot()
-#     import matplotlib2tikz
-#     code = matplotlib2tikz.get_tikz_code(include_disclaimer=False, standalone=True)
+#     import tikzplotlib
+#     code = tikzplotlib.get_tikz_code(include_disclaimer=False, standalone=True)
 #     plt.close()
 #     helpers._does_compile(code)
 

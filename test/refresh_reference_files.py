@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
-#
 import argparse
-import os
 import importlib.util
+import os
 
-import matplotlib2tikz as m2t
 import matplotlib.pyplot as plt
+
+import tikzplotlib as m2t
 
 
 def _main():

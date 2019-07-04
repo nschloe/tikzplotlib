@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
 """ Bar Chart Legend test
-
 This tests plots a simple bar chart.  Bar charts are plotted as
 rectangle patches witch are difficult to tell from other rectangle
 patches that should not be plotted in PGFPlots (e.g. axis, legend)

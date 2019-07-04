@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
-#
 import datetime as date
-from matplotlib import dates
+
 import matplotlib.pyplot as plt
+from matplotlib import dates
 
 from helpers import assert_equality
 

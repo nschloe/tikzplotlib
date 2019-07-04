@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 import os
 import subprocess
 import tempfile
@@ -7,7 +5,7 @@ import tempfile
 import matplotlib
 import matplotlib.pyplot as plt
 
-import matplotlib2tikz
+import tikzplotlib
 
 
 def print_tree(obj, indent=""):
@@ -35,7 +33,7 @@ def _unidiff_output(expected, actual):
 
 def assert_equality(plot, filename, **extra_get_tikz_code_args):
     plot()
-    code = matplotlib2tikz.get_tikz_code(
+    code = tikzplotlib.get_tikz_code(
         include_disclaimer=False, **extra_get_tikz_code_args
     )
     plt.close()
@@ -45,7 +43,7 @@ def assert_equality(plot, filename, **extra_get_tikz_code_args):
         reference = f.read()
     assert reference == code, _unidiff_output(code, reference)
 
-    code = matplotlib2tikz.get_tikz_code(
+    code = tikzplotlib.get_tikz_code(
         include_disclaimer=False, standalone=True, **extra_get_tikz_code_args
     )
     assert _compile(code) is not None
@@ -82,7 +80,7 @@ def _compile(code):
 
 def compare_mpl_latex(plot):
     plot()
-    code = matplotlib2tikz.get_tikz_code(standalone=True)
+    code = tikzplotlib.get_tikz_code(standalone=True)
     directory = os.getcwd()
     filename = "test-0.png"
     plt.savefig(filename)

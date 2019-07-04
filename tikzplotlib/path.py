@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
-#
 import matplotlib as mpl
 import numpy
 
 from . import color
 from .axes import _mpl_cmap2pgf_cmap
-
-from .util import has_legend, get_legend_text
+from .util import get_legend_text, has_legend
 
 
 def draw_path(data, path, draw_options=None, simplify=None):

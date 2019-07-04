@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*-
 """ Box Plot test
-
 This test plots a box plot with three data series. The causes an empty Line2D
 to be plotted.  Without care, this can turn into an empty table in PGFPlot
 which crashes latex (due to it treating an empty table as a table with
 external data in the file '' or '.tex')
-See: https://github.com/nschloe/matplotlib2tikz/pull/134
+See: https://github.com/nschloe/tikzplotlib/pull/134
 """
 import matplotlib.pyplot as plt
 

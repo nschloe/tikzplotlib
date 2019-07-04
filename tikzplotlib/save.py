@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-#
-from __future__ import print_function
-
 import codecs
 import os
 import tempfile
@@ -9,17 +5,12 @@ import warnings
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import six
 
 from . import axes
-from . import legend
-from . import line2d
 from . import image as img
+from . import legend, line2d, patch, path
 from . import quadmesh as qmsh
-from . import path
-from . import patch
 from . import text
-
 from .__about__ import __version__
 
 
@@ -51,7 +42,7 @@ def get_tikz_code(
 
     :param figurewidth: If not ``None``, this will be used as figure width
                         within the TikZ/PGFPlots output. If ``figureheight``
-                        is not given, ``matplotlib2tikz`` will try to preserve
+                        is not given, ``tikzplotlib`` will try to preserve
                         the original width/height ratio.
                         Note that ``figurewidth`` can be a string literal,
                         such as ``'\\figurewidth'``.
@@ -59,7 +50,7 @@ def get_tikz_code(
 
     :param figureheight: If not ``None``, this will be used as figure height
                          within the TikZ/PGFPlots output. If ``figurewidth`` is
-                         not given, ``matplotlib2tikz`` will try to preserve
+                         not given, ``tikzplotlib`` will try to preserve
                          the original width/height ratio.  Note that
                          ``figurewidth`` can be a string literal, such as
                          ``'\\figureheight'``.
@@ -126,7 +117,7 @@ def get_tikz_code(
     :param show_info: Show extra info on the command line. Default is ``False``.
     :type show_info: bool
 
-    :param include_disclaimer: Include matplotlib2tikz disclaimer in the output.
+    :param include_disclaimer: Include tikzplotlib disclaimer in the output.
                                Set ``False`` to make tests reproducible.
                                Default is ``True``.
     :type include_disclaimer: bool
@@ -145,7 +136,7 @@ def get_tikz_code(
     The following optional attributes of matplotlib's objects are recognized
     and handled:
 
-     - axes.Axes._matplotlib2tikz_anchors
+     - axes.Axes._tikzplotlib_anchors
        This attribute can be set to a list of ((x,y), anchor_name) tuples.
        Invisible nodes at the respective location will be created which  can be
        referenced from outside the axis environment.
@@ -214,7 +205,7 @@ def get_tikz_code(
     code = """"""
 
     if include_disclaimer:
-        disclaimer = "This file was created by matplotlib2tikz v{}.".format(__version__)
+        disclaimer = "This file was created by tikzplotlib v{}.".format(__version__)
         code += _tex_comment(disclaimer)
 
     # write the contents
@@ -265,11 +256,7 @@ def save(filepath, *args, encoding=None, **kwargs):
     """
     code = get_tikz_code(*args, filepath=filepath, **kwargs)
     file_handle = codecs.open(filepath, "w", encoding)
-    try:
-        file_handle.write(code)
-    except UnicodeEncodeError:
-        # We're probably using Python 2, so treat unicode explicitly
-        file_handle.write(six.text_type(code).encode("utf-8"))
+    file_handle.write(code)
     file_handle.close()
     return
 
@@ -309,8 +296,8 @@ def _print_pgfplot_libs_message(data):
     return
 
 
-class _ContentManager(object):
-    """Basic Content Manager for matplotlib2tikz
+class _ContentManager:
+    """Basic Content Manager for tikzplotlib
 
     This manager uses a dictionary to map z-order to an array of content
     to be drawn at the z-order.
@@ -341,7 +328,7 @@ def _recurse(data, obj):
     content = _ContentManager()
     for child in obj.get_children():
         # Some patches are Spines, too; skip those entirely.
-        # See <https://github.com/nschloe/matplotlib2tikz/issues/277>.
+        # See <https://github.com/nschloe/tikzplotlib/issues/277>.
         if isinstance(child, mpl.spines.Spine):
             continue
 
@@ -408,8 +395,6 @@ def _recurse(data, obj):
             pass
         else:
             warnings.warn(
-                "matplotlib2tikz: Don't know how to handle object {}.".format(
-                    type(child)
-                )
+                "tikzplotlib: Don't know how to handle object {}.".format(type(child))
             )
     return data, content.flatten()
