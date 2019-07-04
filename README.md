@@ -10,6 +10,10 @@
 [![GitHub stars](https://img.shields.io/github/stars/nschloe/tikzplotlib.svg?logo=github&label=Stars&logoColor=white)](https://github.com/nschloe/tikzplotlib)
 [![PyPi downloads](https://img.shields.io/pypi/dd/tikzplotlib.svg)](https://pypistats.org/packages/tikzplotlib)
 
+<p align="center">
+  <img src="https://nschloe.github.io/tikzplotlib/logo-tikzplotlib.png" width="60%">
+</p>
+
 This is tikzplotlib, a Python tool for converting matplotlib figures into
 [PGFPlots](https://www.ctan.org/pkg/pgfplots) ([PGF/TikZ](https://www.ctan.org/pkg/pgf))
 figures like
