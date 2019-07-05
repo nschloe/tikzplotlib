@@ -37,9 +37,9 @@ def draw_line2d(data, obj):
         if drawstyle == "steps-mid":
             style = "const plot mark mid"
         elif drawstyle == "steps-pre" or drawstyle == "steps":
-            style = "const plot mark left"
-        elif drawstyle == "steps-post":
             style = "const plot mark right"
+        elif drawstyle == "steps-post":
+            style = "const plot mark left"
         addplot_options.append("{}".format(style))
 
     alpha = obj.get_alpha()
