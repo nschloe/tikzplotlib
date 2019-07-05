@@ -31,6 +31,17 @@ def draw_line2d(data, obj):
     data, line_xcolor, _ = mycol.mpl_color2xcolor(data, color)
     addplot_options.append(line_xcolor)
 
+    # get draw style
+    drawstyle = obj.get_drawstyle()
+    if drawstyle is not (None or "default"):
+        if drawstyle == "steps-mid":
+            style = "const plot mark mid"
+        elif drawstyle == "steps-pre" or drawstyle == "steps":
+            style = "const plot mark left"
+        elif drawstyle == "steps-post":
+            style = "const plot mark right"
+        addplot_options.append("{}".format(style))
+
     alpha = obj.get_alpha()
     if alpha is not None:
         addplot_options.append("opacity={}".format(alpha))
