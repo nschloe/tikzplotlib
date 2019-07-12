@@ -33,10 +33,12 @@ def draw_line2d(data, obj):
 
     # get draw style
     drawstyle = obj.get_drawstyle()
-    if drawstyle is not (None or "default"):
+    if drawstyle in [None, "default"]:
+        pass
+    else:
         if drawstyle == "steps-mid":
             style = "const plot mark mid"
-        elif drawstyle == "steps-pre" or drawstyle == "steps":
+        elif drawstyle in ["steps-pre", "steps"]:
             style = "const plot mark right"
         elif drawstyle == "steps-post":
             style = "const plot mark left"
