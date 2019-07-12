@@ -1,0 +1,60 @@
+% This file was created by tikzplotlib v0.8.0.
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.75,0.75,0}
+
+\begin{axis}[
+axis background/.style={fill=white!89.80392156862746!black},
+axis line style={white},
+legend cell align={left},
+legend style={at={(0.03,0.97)}, anchor=north west, draw=white!80.0!black, fill=white!89.80392156862746!black},
+tick align=outside,
+tick pos=left,
+x grid style={white},
+xmajorgrids,
+xmin=-0.2, xmax=4.2,
+xtick style={color=white!33.33333333333333!black},
+y grid style={white},
+ymajorgrids,
+ymin=0.85, ymax=4.15,
+ytick style={color=white!33.33333333333333!black}
+]
+\addplot [semithick, red, const plot mark right]
+table {%
+0 1
+1 2
+2 1
+3 4
+4 2
+};
+\addlegendentry{default}
+\addplot [semithick, blue, const plot mark right, dashed]
+table {%
+0 1
+1 2
+2 1
+3 4
+4 2
+};
+\addlegendentry{pre}
+\addplot [semithick, green!50.0!black, const plot mark left, dash pattern=on 1pt off 3pt on 3pt off 3pt]
+table {%
+0 1
+1 2
+2 1
+3 4
+4 2
+};
+\addlegendentry{post}
+\addplot [semithick, color0, const plot mark mid, dotted]
+table {%
+0 1
+1 2
+2 1
+3 4
+4 2
+};
+\addlegendentry{mid}
+\end{axis}
+
+\end{tikzpicture}
