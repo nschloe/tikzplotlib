@@ -636,10 +636,10 @@ def _handle_linear_segmented_color_map(cmap, data):
     # For an explanation of what _segmentdata contains, see
     # http://matplotlib.org/mpl_examples/pylab_examples/custom_cmap.py
     # A key sentence:
-    # If there are discontinuities, then it is a little more complicated.
-    # Label the 3 elements in each row in the cdict entry for a given color as
-    # (x, y0, y1).  Then for values of x between x[i] and x[i+1] the color
-    # value is interpolated between y1[i] and y0[i+1].
+    # If there are discontinuities, then it is a little more complicated.  Label the 3
+    # elements in each row in the cdict entry for a given color as (x, y0, y1).  Then
+    # for values of x between x[i] and x[i+1] the color value is interpolated between
+    # y1[i] and y0[i+1].
     segdata = cmap._segmentdata
     red = segdata["red"]
     green = segdata["green"]
@@ -695,18 +695,17 @@ def _handle_linear_segmented_color_map(cmap, data):
         if x >= 1.0:
             break
 
-    # The PGFPlots color map has an actual physical scale, like (0cm,10cm), and
-    # the points where the colors change is also given in those units. As of
-    # now (2010-05-06) it is crucial for PGFPlots that the difference between
-    # two successive points is an integer multiple of a given unity (parameter
-    # to the colormap; e.g., 1cm).  At the same time, TeX suffers from
-    # significant round-off errors, so make sure that this unit is not too
-    # small such that the round- off errors don't play much of a role. A unit
-    # of 1pt, e.g., does most often not work.
+    # The PGFPlots color map has an actual physical scale, like (0cm,10cm), and the
+    # points where the colors change is also given in those units. As of now
+    # (2010-05-06) it is crucial for PGFPlots that the difference between two successive
+    # points is an integer multiple of a given unity (parameter to the colormap; e.g.,
+    # 1cm).  At the same time, TeX suffers from significant round-off errors, so make
+    # sure that this unit is not too small such that the round- off errors don't play
+    # much of a role. A unit of 1pt, e.g., does most often not work.
     unit = "pt"
 
-    # Scale to integer (too high integers will firstly be slow and secondly may
-    # produce dimension errors or memory errors in latex)
+    # Scale to integer (too high integers will firstly be slow and secondly may produce
+    # dimension errors or memory errors in latex)
     # 0-1000 is the internal granularity of PGFplots.
     # 16300 was the maximum value for pgfplots<=1.13
     X = _scale_to_int(numpy.array(X), 1000)
@@ -776,15 +775,12 @@ def _handle_listed_color_map(cmap, data):
     return (colormap_string, is_custom_colormap)
 
 
-def _scale_to_int(X, max_val=None):
+def _scale_to_int(X, max_val):
+    """Scales the array X such that it contains only integers.
     """
-    Scales the array X such that it contains only integers.
-    """
-
-    if max_val is None:
-        X = X / _gcd_array(X)
-    else:
-        X = X / max(1 / max_val, _gcd_array(X))
+    # if max_val is None:
+    #     X = X / _gcd_array(X)
+    X = X / max(1 / max_val, _gcd_array(X))
     return [int(entry) for entry in X]
 
 

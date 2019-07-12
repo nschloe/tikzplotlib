@@ -289,6 +289,10 @@ def _table(obj, data):
     else:
         if isinstance(ydata_mask, numpy.bool_) and not ydata_mask:
             ydata_mask = []
+        elif callable(ydata_mask):
+            # pandas.Series have the method mask
+            # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.mask.html
+            ydata_mask = []
 
     axis_options = []
 
