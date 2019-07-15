@@ -18,7 +18,7 @@ def plot():
     plt.plot(x, y5, "c.",)
     plt.legend(["default", "pre", "post", "mid", "default"])
 
-        return plt.gcf()
+    return plt.gcf()
 
 
 if __name__ == "__main__":
