@@ -1,23 +1,20 @@
-% This file was created by tikzplotlib v0.8.0.
+% This file was created by tikzplotlib v0.8.1.
 \begin{tikzpicture}
 
 \definecolor{color0}{rgb}{0.75,0.75,0}
+\definecolor{color1}{rgb}{0,0.75,0.75}
 
 \begin{axis}[
-axis background/.style={fill=white!89.80392156862746!black},
-axis line style={white},
 legend cell align={left},
-legend style={at={(0.03,0.97)}, anchor=north west, draw=white!80.0!black, fill=white!89.80392156862746!black},
+legend style={at={(0.03,0.97)}, anchor=north west, draw=white!80.0!black},
 tick align=outside,
 tick pos=left,
-x grid style={white},
-xmajorgrids,
+x grid style={white!69.01960784313725!black},
 xmin=-0.2, xmax=4.2,
-xtick style={color=white!33.33333333333333!black},
-y grid style={white},
-ymajorgrids,
-ymin=0.85, ymax=4.15,
-ytick style={color=white!33.33333333333333!black}
+xtick style={color=black},
+y grid style={white!69.01960784313725!black},
+ymin=0.8, ymax=5.2,
+ytick style={color=black}
 ]
 \addplot [semithick, red, const plot mark right]
 table {%
@@ -55,6 +52,15 @@ table {%
 4 2
 };
 \addlegendentry{mid}
+\addplot [semithick, color1, mark=*, mark size=3, mark options={solid}, only marks]
+table {%
+0 2
+1 3
+2 2
+3 5
+4 3
+};
+\addlegendentry{default}
 \end{axis}
 
 \end{tikzpicture}
