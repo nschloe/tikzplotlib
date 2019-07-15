@@ -1,9 +1,11 @@
-import matplotlib.pyplot as plt
-import numpy as np
+from helpers import assert_equality
 
 
 def plot():
-    plt.figure()
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    fig = plt.figure()
     x = np.arange(5)
     y1 = np.array([1, 2, 1, 4, 2])
     y2 = np.array([1, 2, 1, 4, 2])
@@ -15,10 +17,14 @@ def plot():
     plt.step(x, y2, "b--", where="pre")
     plt.step(x, y3, "g-.", where="post")
     plt.step(x, y4, "y:", where="mid")
-    plt.plot(x, y5, "c.",)
+    plt.plot(x, y5, "c.")
     plt.legend(["default", "pre", "post", "mid", "default"])
 
-    return plt.gcf()
+    return fig
+
+
+def test():
+    assert_equality(plot, __file__[:-3] + "_reference.tex")
 
 
 if __name__ == "__main__":
