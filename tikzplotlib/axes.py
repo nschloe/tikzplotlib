@@ -769,8 +769,7 @@ def _handle_listed_color_map(cmap, data):
             )
             for (k, rgb) in enumerate(repeated_cols[: cmap.N])
         ]
-
-    colormap_string = "{mymap}{[1{}]\n {}\n}".format(unit, ";\n  ".join(colors))
+    colormap_string = "{{mymap}}{{[1{}]\n {}\n}}".format(unit, ";\n  ".join(colors))
     is_custom_colormap = True
     return (colormap_string, is_custom_colormap)
 
