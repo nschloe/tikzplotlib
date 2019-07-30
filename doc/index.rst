@@ -1,5 +1,5 @@
 .. tikzplotlib documentation master file, created by
-   sphinx-quickstart on Mon May 10 14:00:31 2010.
+   sphinx-quickstart on Tue Jul 30 11:59:20 2019.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
