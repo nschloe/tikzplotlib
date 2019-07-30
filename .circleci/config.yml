@@ -9,7 +9,7 @@ jobs:
       - run: apt update
       - run: apt install -y python3-pip
       - run: pip3 install -U black flake8
-      - run: LC_ALL=C.UTF-8 black --check setup.py tikzplotlib/ test/*.py
+      - run: LC_ALL=C.UTF-8 black --check .
       - run: flake8 setup.py tikzplotlib/ test/*.py
   build:
     working_directory: ~/work
