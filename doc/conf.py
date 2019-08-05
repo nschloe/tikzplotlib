@@ -31,6 +31,9 @@ with open(about_file) as f:
 # The full version, including alpha/beta/rc tags.
 release = about["__version__"]
 
+# WARNING: conf value "version" should not be empty for EPUB3
+version = about["__version__"]
+
 # for sphinx 1.*
 master_doc = "index"
 
