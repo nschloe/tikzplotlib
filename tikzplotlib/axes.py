@@ -66,9 +66,9 @@ class Axes:
         self.axis_options.append(("xmin=" + ff + ", xmax=" + ff).format(*sorted(xlim)))
         self.axis_options.append(("ymin=" + ff + ", ymax=" + ff).format(*sorted(ylim)))
         # When the axis is inverted add additional option
-        if (xlim != sorted(xlim)):
+        if xlim != sorted(xlim):
             self.axis_options.append("x dir=reverse")
-        if (ylim != sorted(ylim)):
+        if ylim != sorted(ylim):
             self.axis_options.append("y dir=reverse")
 
         # axes scaling
