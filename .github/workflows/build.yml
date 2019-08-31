@@ -1,0 +1,39 @@
+name: build
+
+on: [push]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-python@v1
+      with:
+        python-version: "3.x"
+    - uses: actions/checkout@v1
+    - name: Lint with flake8
+      run: |
+        pip install --upgrade pip
+        pip install flake8
+        flake8 .
+    - name: Lint with black
+      run: |
+        pip install black
+        black --check .
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-python@v1
+      with:
+        python-version: "3.x"
+    - uses: actions/checkout@v1
+    - name: Install package
+      run: |
+        pip install --upgrade pip
+        pip install .
+    - name: Test with pytest
+      run: |
+        pip install pytest pytest-cov
+        pytest --cov tikzplotlib
+    - name: Submit to codecov
+      run: bash <(curl -s https://codecov.io/bash) -R ~/work

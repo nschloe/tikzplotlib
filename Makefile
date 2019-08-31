@@ -32,4 +32,4 @@ black:
 
 lint:
 	black --check .
-	flake8 setup.py tikzplotlib/ test/*.py
+	flake8 .
