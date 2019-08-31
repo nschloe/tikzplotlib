@@ -43,4 +43,7 @@ jobs:
         pip install -r test_requirements.txt
         MPLBACKEND=Agg pytest --cov tikzplotlib
     - name: Submit to codecov
-      run: bash <(curl -s https://codecov.io/bash) -R ~/work
+      run: |
+        pwd
+        ls
+        bash <(curl -s https://codecov.io/bash) -R ~/work
