@@ -1,0 +1,46 @@
+name: test
+
+on: [push]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-python@v1
+      with:
+        python-version: "3.x"
+    - uses: actions/checkout@v1
+    - name: Lint with flake8
+      run: |
+        pip install --upgrade pip
+        pip install flake8
+        flake8 .
+    - name: Lint with black
+      run: |
+        pip install black
+        black --check .
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-python@v1
+      with:
+        python-version: "3.x"
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: sudo apt-get install -y texlive-latex-base texlive-latex-extra python3-tk python3-scipy
+    - name: Install package
+      run: |
+        pip install --upgrade pip
+        pip install .
+    - name: Extract tests from README
+      run: |
+        pip install excode
+        excode README.md test/zzz_readme_test.py --filter python,test
+    - name: Test with pytest
+      run: |
+        pip install pytest pytest-cov
+        pip install -r test_requirements.txt
+        cd test/ && MPLBACKEND=Agg pytest --cov tikzplotlib
+    - name: Submit to codecov
+      run: bash <(curl -s https://codecov.io/bash) -R ~/work/tikzplotlib
