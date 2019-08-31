@@ -582,7 +582,7 @@ def _get_ticks(data, xy, ticks, ticklabels):
 
         if is_label_required:
             axis_options.append(
-                "{}ticklabels={{{}}}".format(xy, ",".join(pgfplots_ticklabels))
+                u"{}ticklabels={{{}}}".format(xy, u",".join(pgfplots_ticklabels))
             )
     return axis_options
 
