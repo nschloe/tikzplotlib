@@ -6,7 +6,7 @@ from . import color
 
 
 class Axes:
-    def __init__(self, data, obj):
+    def __init__(self, data, obj):  # noqa: C901
         """Returns the PGFPlots code for an axis environment.
         """
         self.content = []
