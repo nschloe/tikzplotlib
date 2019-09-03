@@ -6,7 +6,7 @@ from . import color
 
 
 class Axes:
-    def __init__(self, data, obj):
+    def __init__(self, data, obj):  # noqa: C901
         """Returns the PGFPlots code for an axis environment.
         """
         self.content = []
@@ -59,12 +59,17 @@ class Axes:
                 )
 
         # Axes limits.
-        # Sort the limits so make sure that the smaller of the two is actually *min.
         ff = data["float format"]
-        xlim = sorted(list(obj.get_xlim()))
-        self.axis_options.append(("xmin=" + ff + ", xmax=" + ff).format(*xlim))
-        ylim = sorted(list(obj.get_ylim()))
-        self.axis_options.append(("ymin=" + ff + ", ymax=" + ff).format(*ylim))
+        xlim = list(obj.get_xlim())
+        ylim = list(obj.get_ylim())
+        # Sort the limits so make sure that the smaller of the two is actually *min.
+        self.axis_options.append(("xmin=" + ff + ", xmax=" + ff).format(*sorted(xlim)))
+        self.axis_options.append(("ymin=" + ff + ", ymax=" + ff).format(*sorted(ylim)))
+        # When the axis is inverted add additional option
+        if xlim != sorted(xlim):
+            self.axis_options.append("x dir=reverse")
+        if ylim != sorted(ylim):
+            self.axis_options.append("y dir=reverse")
 
         # axes scaling
         if obj.get_xscale() == "log":
