@@ -305,7 +305,9 @@ class Axes:
             self.axis_options.append("ymajorgrids")
         if obj.yaxis._gridOnMinor:
             self.axis_options.append("yminorgrids")
-
+        
+        self.axis_options.append("grid style=dotted")
+        
         ylines = obj.get_ygridlines()
         if ylines:
             ygridcolor = ylines[0].get_color()
