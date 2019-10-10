@@ -15,6 +15,6 @@ def plot():
 
 
 def test():
-    assert_equality(plot, __file__[:-3] + "_reference.tex", table_row_sep='\\\\\n')
+    assert_equality(plot, __file__[:-3] + "_reference.tex", table_row_sep="\\\\\n")
     assert_equality(plot, __file__[:-3] + "_reference2.tex")
     return
