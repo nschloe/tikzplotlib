@@ -23,7 +23,7 @@ ymin=-1.1, ymax=1.1,
 ytick style={color=white!33.33333333333333!black}
 ]
 \addplot [semithick, color0, mark=*, mark size=3, mark options={solid}]
-table {%
+table [row sep=\\] {%
 0 0\\
 0.1 0.587785252292473\\
 0.2 0.951056516295154\\
@@ -47,7 +47,7 @@ table {%
 };
 \addlegendentry{sin}
 \addplot [very thick, color1, opacity=0.3, mark=*, mark size=3, mark options={solid}]
-table {%
+table [row sep=\\] {%
 0 1\\
 0.1 0.809016994374947\\
 0.2 0.309016994374947\\
