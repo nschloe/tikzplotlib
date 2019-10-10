@@ -1,0 +1,34 @@
+\begin{tikzpicture}
+
+\begin{axis}[
+log basis y={10},
+tick align=outside,
+tick pos=left,
+x grid style={green!50.0!black},
+xmajorgrids,
+xmin=-0.45, xmax=9.45,
+xminorgrids,
+xtick style={color=black},
+y grid style={green!50.0!black},
+ymajorgrids,
+ymin=0.354813389233575, ymax=2818382931.26445,
+yminorgrids,
+ymode=log,
+ytick style={color=black}
+]
+\addplot [ultra thin, blue]
+table [row sep=\\] {%
+0 1\\
+1 10\\
+2 100\\
+3 1000\\
+4 10000\\
+5 100000\\
+6 1000000\\
+7 10000000\\
+8 100000000\\
+9 1000000000\\
+};
+\end{axis}
+
+\end{tikzpicture}

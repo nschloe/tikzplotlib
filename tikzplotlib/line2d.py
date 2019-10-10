@@ -303,9 +303,6 @@ def _table(obj, data):
         xformat = "{}"
         col_sep = ","
         opts = ["header=false", "col sep=comma"]
-        if data["table_row_sep"] != "\n":
-            opts.append("row sep=" + data["table row sep"])
-        content.append("table [{}] {{%\n".format(",".join(opts)))
         data["current axes"].axis_options.append("date coordinates in=x")
         # Replace float xmin/xmax by datetime
         # <https://github.com/matplotlib/matplotlib/issues/13727>.
@@ -322,8 +319,16 @@ def _table(obj, data):
             )
         )
     else:
+        opts = []
         xformat = ff
         col_sep = " "
+
+    if data["table_row_sep"] != "\n":
+        # don't want the \n in the table definition, just in the data (below)
+        opts.append("row sep=" + data["table_row_sep"].strip())
+    if len(opts) > 0:
+        content.append("table [{}] {{%\n".format(",".join(opts)))
+    else:
         content.append("table {%\n")
 
     plot_table = []
