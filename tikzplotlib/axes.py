@@ -1,8 +1,12 @@
 import matplotlib as mpl
 import numpy
-from matplotlib.backends import backend_pgf as mpl_backend_pgf
+from matplotlib.backends.backend_pgf import common_texification as mpl_common_texification
 
 from . import color
+
+
+def _common_texification(string):
+    return mpl_common_texification(string).replace("&", "\\&")
 
 
 class Axes:
@@ -36,14 +40,14 @@ class Axes:
         title = obj.get_title()
         data["current axis title"] = title
         if title:
-            title = mpl_backend_pgf.common_texification(title)
+            title = _common_texification(title)
             self.axis_options.append(u"title={{{}}}".format(title))
 
         # get axes titles
         xlabel = obj.get_xlabel()
         xrotation = obj.xaxis.get_label().get_rotation()
         if xlabel:
-            xlabel = mpl_backend_pgf.common_texification(xlabel)
+            xlabel = _common_texification(xlabel)
             self.axis_options.append(u"xlabel={{{}}}".format(xlabel))
             if xrotation != 0:
                 self.axis_options.append(
@@ -52,7 +56,7 @@ class Axes:
         ylabel = obj.get_ylabel()
         yrotation = obj.yaxis.get_label().get_rotation()
         if ylabel:
-            ylabel = mpl_backend_pgf.common_texification(ylabel)
+            ylabel = _common_texification(ylabel)
             self.axis_options.append(u"ylabel={{{}}}".format(ylabel))
             if yrotation != 90:
                 self.axis_options.append(
@@ -559,7 +563,7 @@ def _get_ticks(data, xy, ticks, ticklabels):
         # store the label anyway
         label = ticklabel.get_text()
         if ticklabel.get_visible():
-            label = mpl_backend_pgf.common_texification(label)
+            label = _common_texification(label)
             pgfplots_ticklabels.append(label)
         else:
             is_label_required = True
