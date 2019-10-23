@@ -18,7 +18,12 @@ def draw_line2d(data, obj):
     # If line is of length 0, do nothing.  Otherwise, an empty \addplot table will be
     # created, which will be interpreted as an external data source in either the file
     # '' or '.tex'.  Instead, render nothing.
-    if len(obj.get_xdata()) == 0:
+    xdata = obj.get_xdata()
+    if isinstance(xdata, int) or isinstance(xdata, float):
+        # https://github.com/nschloe/tikzplotlib/issues/339
+        xdata = [xdata]
+
+    if len(xdata) == 0:
         return data, []
 
     # get the linewidth (in pt)
@@ -250,12 +255,15 @@ def _marker(
     return
 
 
-def _table(obj, data):
+def _table(obj, data):  # noqa: C901
     # get_xydata() always gives float data, no matter what
     xdata, ydata = obj.get_xydata().T
 
     # get_{x,y}data gives datetime or string objects if so specified in the plotter
     xdata_alt = obj.get_xdata()
+    if isinstance(xdata_alt, int) or isinstance(xdata, float):
+        # https://github.com/nschloe/tikzplotlib/issues/339
+        xdata_alt = [xdata_alt]
 
     ff = data["float format"]
 
