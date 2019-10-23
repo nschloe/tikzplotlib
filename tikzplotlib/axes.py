@@ -36,6 +36,7 @@ class Axes:
         title = obj.get_title()
         data["current axis title"] = title
         if title:
+            title = mpl_backend_pgf.common_texification(title)
             self.axis_options.append(u"title={{{}}}".format(title))
 
         # get axes titles
