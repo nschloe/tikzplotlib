@@ -152,6 +152,10 @@ def draw_pathcollection(data, obj):
         except (TypeError, IndexError):
             ls = None
 
+        # TODO marker info
+        # <https://github.com/nschloe/tikzplotlib/issues/324>
+        # <https://github.com/matplotlib/matplotlib/issues/15496>
+
     is_contour = len(dd) == 1
     if is_contour:
         draw_options = ["draw=none"]

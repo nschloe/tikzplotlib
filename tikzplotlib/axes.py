@@ -847,7 +847,7 @@ def _find_associated_colorbar(obj):
 
 
 def _try_f2i(x):
-    """Convert losslessly float to int if possible.
+    """If possible, convert float to int without rounding.
     Used for log base: if not used, base for log scale can be "10.0" (and then
     printed as such  by pgfplots).
     """
