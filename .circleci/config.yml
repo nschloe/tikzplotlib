@@ -20,9 +20,7 @@ jobs:
       - run: sudo apt install -y texlive-latex-base texlive-latex-extra
       - run: pip3 install -U pytest pytest-cov excode --user
       - checkout
-      - run:
-          command: excode README.md test/zzz_readme_test.py --filter python,test
-          working_directory: work/
+      - run: excode README.md test/zzz_readme_test.py --filter python,test
       - run: pip3 install -r test_requirements.txt --user
       - run: pip3 install .[all] --user
       - run: pip3 check
