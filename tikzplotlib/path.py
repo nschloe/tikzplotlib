@@ -1,9 +1,11 @@
 import matplotlib as mpl
 import numpy
+from matplotlib.markers import MarkerStyle
 
 from . import color
 from .axes import _mpl_cmap2pgf_cmap
 from .util import get_legend_text, has_legend
+from ._markers import _mpl_marker2pgfp_marker
 
 
 def draw_path(data, path, draw_options=None, simplify=None):
@@ -135,6 +137,7 @@ def draw_pathcollection(data, obj):
         ec = None
         fc = None
         ls = None
+        marker0 = None
     else:
         # gather the draw options
         try:
@@ -152,17 +155,37 @@ def draw_pathcollection(data, obj):
         except (TypeError, IndexError):
             ls = None
 
-        # TODO marker info
-        # <https://github.com/nschloe/tikzplotlib/issues/324>
-        # <https://github.com/matplotlib/matplotlib/issues/15496>
+        # "solution" from
+        # <https://github.com/matplotlib/matplotlib/issues/4672#issuecomment-378702670>
+        p = obj.get_paths()[0]
+        ms = {style: MarkerStyle(style) for style in MarkerStyle.markers}
+        paths = {
+            style: marker.get_path().transformed(marker.get_transform())
+            for style, marker in ms.items()
+        }
+        marker0 = None
+        for marker, path in paths.items():
+            if (
+                numpy.all(path.codes == p.codes)
+                and (path.vertices.shape == p.vertices.shape)
+                and numpy.max(numpy.abs(path.vertices - p.vertices)) < 1.0e-10
+            ):
+                marker0 = marker
+                break
 
     is_contour = len(dd) == 1
     if is_contour:
         draw_options = ["draw=none"]
 
+    if marker0 is not None:
+        data, pgfplots_marker, marker_options = _mpl_marker2pgfp_marker(
+            data, marker0, fc
+        )
+        draw_options += ["marker={}".format(pgfplots_marker)] + marker_options
+
     # `only mark` plots don't need linewidth
     data, extra_draw_options = get_draw_options(data, obj, ec, fc, ls, None)
-    draw_options.extend(extra_draw_options)
+    draw_options += extra_draw_options
 
     if obj.get_cmap():
         mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(obj.get_cmap(), data)
