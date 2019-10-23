@@ -4,7 +4,7 @@ import os
 
 import matplotlib.pyplot as plt
 
-import tikzplotlib as m2t
+import tikzplotlib as tpl
 
 
 def _main():
@@ -24,7 +24,7 @@ def _main():
             spec.loader.exec_module(module)
             module.plot()
 
-            code = m2t.get_tikz_code(include_disclaimer=False)
+            code = tpl.get_tikz_code(include_disclaimer=False)
             plt.close()
 
             tex_filename = filename[:-3] + "_reference.tex"
