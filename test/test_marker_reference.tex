@@ -15,7 +15,22 @@ ymajorgrids,
 ymin=-1.1, ymax=1.1,
 ytick style={color=black}
 ]
-\addplot [semithick, black, mark=*, mark size=3, mark repeat=20, mark options={solid,draw=red}]
+\addplot [only marks, draw=black, fill=black, colormap/viridis]
+table{%
+x                      y
+0 0
+0.628318530717959 0.951056516295154
+1.25663706143592 0.587785252292473
+1.88495559215388 -0.587785252292473
+2.51327412287183 -0.951056516295154
+3.14159265358979 -2.44929359829471e-16
+3.76991118430775 0.951056516295154
+4.39822971502571 0.587785252292473
+5.02654824574367 -0.587785252292473
+5.65486677646163 -0.951056516295154
+6.28318530717959 -4.89858719658941e-16
+};
+\addplot [semithick, black, mark=*, mark size=3, mark repeat=2, mark options={solid,draw=red}]
 table {%
 0 0
 0.628318530717959 0.587785252292473
@@ -29,7 +44,7 @@ table {%
 5.65486677646163 -0.587785252292473
 6.28318530717959 -2.44929359829471e-16
 };
-\addplot [semithick, black, dashed, mark=square*, mark size=3, mark repeat=20, mark options={solid,draw=red}]
+\addplot [semithick, black, dashed, mark=square*, mark size=3, mark repeat=3, mark options={solid,draw=red}]
 table {%
 0 1
 0.628318530717959 0.809016994374947
