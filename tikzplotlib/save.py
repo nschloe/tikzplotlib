@@ -105,9 +105,7 @@ def get_tikz_code(
 
     :param extra_tikzpicture_parameters: Extra tikzpicture options to be passed
                                          (as a set) to pgfplots.
-
-    :type extra_tikzpicture_parameters: a set of strings for the pfgplots
-                                        tikzpicture.
+    :type extra_tikzpicture_parameters: a set of strings for the pfgplots tikzpicture.
 
     :param dpi: The resolution in dots per inch of the rendered image in case
                 of QuadMesh plots. If ``None`` it will default to the value
@@ -166,7 +164,6 @@ def get_tikz_code(
     data["font size"] = textsize
     data["custom colors"] = {}
     data["legend colors"] = []
-    data["extra tikzpicture parameters"] = extra_tikzpicture_parameters
     data["add axis environment"] = add_axis_environment
     data["show_info"] = show_info
     # rectangle_legends is used to keep track of which rectangles have already
@@ -210,10 +207,10 @@ def get_tikz_code(
 
     # write the contents
     if wrap and add_axis_environment:
-        code += "\\begin{tikzpicture}\n\n"
+        code += "\\begin{tikzpicture}"
         if extra_tikzpicture_parameters:
-            code += ",\n".join(data["extra tikzpicture parameters"])
-            code += "\n"
+            code += "[\n" + ",\n".join(extra_tikzpicture_parameters) + "\n]"
+        code += "\n\n"
 
     coldefs = _get_color_definitions(data)
     if coldefs:
