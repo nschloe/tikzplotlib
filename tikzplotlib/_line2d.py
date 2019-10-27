@@ -3,11 +3,11 @@ import datetime
 import numpy
 from matplotlib.dates import num2date
 
-from . import color as mycol
-from . import files
-from . import path as mypath
-from .util import get_legend_text, has_legend, transform_to_data_coordinates
+from . import _color as mycol
+from . import _files
+from . import _path as mypath
 from ._markers import _mpl_marker2pgfp_marker
+from ._util import get_legend_text, has_legend, transform_to_data_coordinates
 
 
 def draw_line2d(data, obj):
@@ -291,7 +291,7 @@ def _table(obj, data):  # noqa: C901
             )
 
     if data["externalize tables"]:
-        filename, rel_filepath = files.new_filename(data, "table", ".tsv")
+        filename, rel_filepath = _files.new_filename(data, "table", ".tsv")
         with open(filename, "w") as f:
             # No encoding handling required: plot_table is only ASCII
             f.write("".join(plot_table))

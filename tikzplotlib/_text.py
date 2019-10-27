@@ -1,6 +1,6 @@
 import matplotlib as mpl
 
-from . import color
+from . import _color
 
 
 def draw_text(data, obj):
@@ -47,7 +47,7 @@ def draw_text(data, obj):
     anchor = _transform_positioning(ha, va)
     if anchor is not None:
         properties.append(anchor)
-    data, col, _ = color.mpl_color2xcolor(data, converter.to_rgb(obj.get_color()))
+    data, col, _ = _color.mpl_color2xcolor(data, converter.to_rgb(obj.get_color()))
     properties.append("text={}".format(col))
     properties.append("rotate={:.1f}".format(obj.get_rotation()))
 
@@ -170,7 +170,7 @@ def _annotation(obj, data, content):
             if obj.arrowprops["arrowstyle"] is not None:
                 if obj.arrowprops["arrowstyle"] in arrow_translate:
                     arrow_style += arrow_translate[obj.arrowprops["arrowstyle"]]
-                    data, col, _ = color.mpl_color2xcolor(
+                    data, col, _ = _color.mpl_color2xcolor(
                         data, obj.arrow_patch.get_ec()
                     )
                     arrow_style.append(col)
@@ -197,10 +197,10 @@ def _annotation(obj, data, content):
 def _bbox(bbox, data, properties, scaling):
     bbox_style = bbox.get_boxstyle()
     if bbox.get_fill():
-        data, fc, _ = color.mpl_color2xcolor(data, bbox.get_facecolor())
+        data, fc, _ = _color.mpl_color2xcolor(data, bbox.get_facecolor())
         if fc:
             properties.append("fill={}".format(fc))
-    data, ec, _ = color.mpl_color2xcolor(data, bbox.get_edgecolor())
+    data, ec, _ = _color.mpl_color2xcolor(data, bbox.get_edgecolor())
     if ec:
         properties.append("draw={}".format(ec))
     # XXX: This is ugly, too

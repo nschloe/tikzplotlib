@@ -1,6 +1,6 @@
 from PIL import Image
 
-from . import files
+from . import _files
 
 
 def draw_quadmesh(data, obj):
@@ -10,7 +10,7 @@ def draw_quadmesh(data, obj):
     content = []
 
     # Generate file name for current object
-    filename, rel_filepath = files.new_filename(data, "img", ".png")
+    filename, rel_filepath = _files.new_filename(data, "img", ".png")
 
     # Get the dpi for rendering and store the original dpi of the figure
     dpi = data["dpi"]

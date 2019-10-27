@@ -4,7 +4,7 @@ from matplotlib.backends.backend_pgf import (
     common_texification as mpl_common_texification,
 )
 
-from . import color
+from . import _color
 
 
 def _common_texification(string):
@@ -129,14 +129,14 @@ class Axes:
         # axis line styles
         # Assume that the bottom edge color is the color of the entire box.
         axcol = obj.spines["bottom"].get_edgecolor()
-        data, col, _ = color.mpl_color2xcolor(data, axcol)
+        data, col, _ = _color.mpl_color2xcolor(data, axcol)
         if col != "black":
             self.axis_options.append("axis line style={{{}}}".format(col))
 
         # background color
         bgcolor = obj.get_facecolor()
 
-        data, col, _ = color.mpl_color2xcolor(data, bgcolor)
+        data, col, _ = _color.mpl_color2xcolor(data, bgcolor)
         if col != "white":
             self.axis_options.append("axis background/.style={{fill={}}}".format(col))
 
@@ -228,7 +228,7 @@ class Axes:
             pass
         else:
             c0 = l0.get_color()
-            data, xtickcolor, _ = color.mpl_color2xcolor(data, c0)
+            data, xtickcolor, _ = _color.mpl_color2xcolor(data, c0)
             self.axis_options.append("xtick style={{color={}}}".format(xtickcolor))
 
         try:
@@ -237,7 +237,7 @@ class Axes:
             pass
         else:
             c0 = l0.get_color()
-            data, ytickcolor, _ = color.mpl_color2xcolor(data, c0)
+            data, ytickcolor, _ = _color.mpl_color2xcolor(data, c0)
             self.axis_options.append("ytick style={{color={}}}".format(ytickcolor))
 
         # Find tick direction
@@ -305,7 +305,7 @@ class Axes:
         xlines = obj.get_xgridlines()
         if xlines:
             xgridcolor = xlines[0].get_color()
-            data, col, _ = color.mpl_color2xcolor(data, xgridcolor)
+            data, col, _ = _color.mpl_color2xcolor(data, xgridcolor)
             if col != "black":
                 self.axis_options.append("x grid style={{{}}}".format(col))
 
@@ -317,7 +317,7 @@ class Axes:
         ylines = obj.get_ygridlines()
         if ylines:
             ygridcolor = ylines[0].get_color()
-            data, col, _ = color.mpl_color2xcolor(data, ygridcolor)
+            data, col, _ = _color.mpl_color2xcolor(data, ygridcolor)
             if col != "black":
                 self.axis_options.append("y grid style={{{}}}".format(col))
 

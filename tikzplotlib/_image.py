@@ -2,7 +2,7 @@ import matplotlib as mpl
 import numpy
 import PIL
 
-from . import files
+from . import _files
 
 
 def draw_image(data, obj):
@@ -10,7 +10,7 @@ def draw_image(data, obj):
     """
     content = []
 
-    filename, rel_filepath = files.new_filename(data, "img", ".png")
+    filename, rel_filepath = _files.new_filename(data, "img", ".png")
 
     # store the image as in a file
     img_array = obj.get_array()

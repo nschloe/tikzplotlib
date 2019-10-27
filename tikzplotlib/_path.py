@@ -2,10 +2,10 @@ import matplotlib as mpl
 import numpy
 from matplotlib.markers import MarkerStyle
 
-from . import color
-from .axes import _mpl_cmap2pgf_cmap
-from .util import get_legend_text, has_legend
+from . import _color
+from ._axes import _mpl_cmap2pgf_cmap
 from ._markers import _mpl_marker2pgfp_marker
+from ._util import get_legend_text, has_legend
 
 
 def draw_path(data, path, draw_options=None, simplify=None):
@@ -239,13 +239,13 @@ def get_draw_options(data, obj, ec, fc, style, width):
     draw_options = []
 
     if ec is not None:
-        data, col, ec_rgba = color.mpl_color2xcolor(data, ec)
+        data, col, ec_rgba = _color.mpl_color2xcolor(data, ec)
         if ec_rgba[3] != 0.0:
             # Don't draw if it's invisible anyways.
             draw_options.append("draw={}".format(col))
 
     if fc is not None:
-        data, col, fc_rgba = color.mpl_color2xcolor(data, fc)
+        data, col, fc_rgba = _color.mpl_color2xcolor(data, fc)
         if fc_rgba[3] != 0.0:
             # Don't draw if it's invisible anyways.
             draw_options.append("fill={}".format(col))

@@ -6,11 +6,11 @@ import warnings
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-from . import axes
-from . import image as img
-from . import legend, line2d, patch, path
-from . import quadmesh as qmsh
-from . import text
+from . import _axes
+from . import _image as img
+from . import _legend, _line2d, _patch, _path
+from . import _quadmesh as qmsh
+from . import _text
 from .__about__ import __version__
 
 
@@ -105,9 +105,7 @@ def get_tikz_code(
 
     :param extra_tikzpicture_parameters: Extra tikzpicture options to be passed
                                          (as a set) to pgfplots.
-
-    :type extra_tikzpicture_parameters: a set of strings for the pfgplots
-                                        tikzpicture.
+    :type extra_tikzpicture_parameters: a set of strings for the pfgplots tikzpicture.
 
     :param dpi: The resolution in dots per inch of the rendered image in case
                 of QuadMesh plots. If ``None`` it will default to the value
@@ -166,7 +164,6 @@ def get_tikz_code(
     data["font size"] = textsize
     data["custom colors"] = {}
     data["legend colors"] = []
-    data["extra tikzpicture parameters"] = extra_tikzpicture_parameters
     data["add axis environment"] = add_axis_environment
     data["show_info"] = show_info
     # rectangle_legends is used to keep track of which rectangles have already
@@ -210,10 +207,10 @@ def get_tikz_code(
 
     # write the contents
     if wrap and add_axis_environment:
-        code += "\\begin{tikzpicture}\n\n"
+        code += "\\begin{tikzpicture}"
         if extra_tikzpicture_parameters:
-            code += ",\n".join(data["extra tikzpicture parameters"])
-            code += "\n"
+            code += "[\n" + ",\n".join(extra_tikzpicture_parameters) + "\n]"
+        code += "\n\n"
 
     coldefs = _get_color_definitions(data)
     if coldefs:
@@ -333,7 +330,7 @@ def _recurse(data, obj):
             continue
 
         if isinstance(child, mpl.axes.Axes):
-            ax = axes.Axes(data, child)
+            ax = _axes.Axes(data, child)
 
             if ax.is_colorbar:
                 continue
@@ -362,34 +359,34 @@ def _recurse(data, obj):
                     print("".join(ax.get_begin_code()[1:]))
                     print("=========================================================")
         elif isinstance(child, mpl.lines.Line2D):
-            data, cont = line2d.draw_line2d(data, child)
+            data, cont = _line2d.draw_line2d(data, child)
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.image.AxesImage):
             data, cont = img.draw_image(data, child)
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.patches.Patch):
-            data, cont = patch.draw_patch(data, child)
+            data, cont = _patch.draw_patch(data, child)
             content.extend(cont, child.get_zorder())
         elif isinstance(
             child, (mpl.collections.PatchCollection, mpl.collections.PolyCollection)
         ):
-            data, cont = patch.draw_patchcollection(data, child)
+            data, cont = _patch.draw_patchcollection(data, child)
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.collections.PathCollection):
-            data, cont = path.draw_pathcollection(data, child)
+            data, cont = _path.draw_pathcollection(data, child)
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.collections.LineCollection):
-            data, cont = line2d.draw_linecollection(data, child)
+            data, cont = _line2d.draw_linecollection(data, child)
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.collections.QuadMesh):
             data, cont = qmsh.draw_quadmesh(data, child)
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.legend.Legend):
-            data = legend.draw_legend(data, child)
+            data = _legend.draw_legend(data, child)
             if data["legend colors"]:
                 content.extend(data["legend colors"], 0)
         elif isinstance(child, (mpl.text.Text, mpl.text.Annotation)):
-            data, cont = text.draw_text(data, child)
+            data, cont = _text.draw_text(data, child)
             content.extend(cont, child.get_zorder())
         elif isinstance(child, (mpl.axis.XAxis, mpl.axis.YAxis)):
             pass
