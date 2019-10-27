@@ -1,6 +1,6 @@
 import matplotlib as mpl
 
-from . import path as mypath
+from . import _path as mypath
 
 
 def draw_patch(data, obj):

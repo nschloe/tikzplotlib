@@ -2,7 +2,7 @@ import warnings
 
 import numpy
 
-from . import color as mycol
+from . import _color as mycol
 
 
 def draw_legend(data, obj):
