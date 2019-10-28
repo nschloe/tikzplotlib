@@ -214,13 +214,12 @@ def get_tikz_code(
 
     coldefs = _get_color_definitions(data)
     if coldefs:
-        code += "\n".join(coldefs)
-        code += "\n\n"
+        code += "\n".join(coldefs) + "\n\n"
 
     code += "".join(content)
 
     if wrap and add_axis_environment:
-        code += "\\end{tikzpicture}"
+        code += "\\end{tikzpicture}\n"
 
     if standalone:
         # create a latex wrapper for the tikz
@@ -234,7 +233,7 @@ def get_tikz_code(
 \\DeclareUnicodeCharacter{{2212}}{{−}}
 \\begin{{document}}
 {}
-\\end{{document}}""".format(
+\\end{{document}}\n""".format(
             code
         )
 
