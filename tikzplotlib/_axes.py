@@ -335,11 +335,10 @@ class Axes:
             colorbar_ticks_minor = colorbar.ax.get_xticks("minor")
             axis_limits = colorbar.ax.get_xlim()
 
-            # In matplotlib, the colorbar color limits are determined by
-            # get_clim(), and the tick positions are as usual with respect
-            # to {x,y}lim. In PGFPlots, however, they are mixed together.
-            # Hence, scale the tick positions just like {x,y}lim are scaled
-            # to clim.
+            # In matplotlib, the colorbar color limits are determined by get_clim(), and
+            # the tick positions are as usual with respect to {x,y}lim. In PGFPlots,
+            # however, they are mixed together.  Hence, scale the tick positions just
+            # like {x,y}lim are scaled to clim.
             colorbar_ticks = (colorbar_ticks - axis_limits[0]) / (
                 axis_limits[1] - axis_limits[0]
             ) * (limits[1] - limits[0]) + limits[0]
@@ -368,11 +367,10 @@ class Axes:
             colorbar_ticks_minor = colorbar.ax.get_yticks("minor")
             axis_limits = colorbar.ax.get_ylim()
 
-            # In matplotlib, the colorbar color limits are determined by
-            # get_clim(), and the tick positions are as usual with respect
-            # to {x,y}lim. In PGFPlots, however, they are mixed together.
-            # Hence, scale the tick positions just like {x,y}lim are scaled
-            # to clim.
+            # In matplotlib, the colorbar color limits are determined by get_clim(), and
+            # the tick positions are as usual with respect to {x,y}lim. In PGFPlots,
+            # however, they are mixed together.  Hence, scale the tick positions just
+            # like {x,y}lim are scaled to clim.
             colorbar_ticks = (colorbar_ticks - axis_limits[0]) / (
                 axis_limits[1] - axis_limits[0]
             ) * (limits[1] - limits[0]) + limits[0]
@@ -493,8 +491,8 @@ class Axes:
                     )
                 )
 
-            # Ignore horizontal alignment if no '{x,y} tick label text width' has
-            # been passed in the 'extra' parameter
+            # Ignore horizontal alignment if no '{x,y} tick label text width' has been
+            # passed in the 'extra' parameter
             if tick_label_text_width:
                 if tick_labels_horizontal_alignment_same_value:
                     values.append(
@@ -565,6 +563,8 @@ def _get_ticks(data, xy, ticks, ticklabels):
         pgfplots_ticks.append(tick)
         # store the label anyway
         label = ticklabel.get_text()
+        if "," in label:
+            label = "{" + label + "}"
         if ticklabel.get_visible():
             label = _common_texification(label)
             pgfplots_ticklabels.append(label)
@@ -813,9 +813,9 @@ def _gcd(a, b):
     This algoritm also works for real numbers:
     Find the greatest number h such that a and b are integer multiples of h.
     """
-    # Keep the tolerance somewhat significantly above machine precision as
-    # otherwise round-off errors will be accounted for, returning 1.0e-10
-    # instead of 1.0 for the values
+    # Keep the tolerance somewhat significantly above machine precision as otherwise
+    # round-off errors will be accounted for, returning 1.0e-10 instead of 1.0 for the
+    # values
     #   [1.0, 2.0000000001, 3.0, 4.0].
     while a > 1.0e-5:
         a, b = b % a, a
@@ -829,9 +829,9 @@ def _linear_interpolation(x, X, Y):
 
 
 def _find_associated_colorbar(obj):
-    """A rather poor way of telling whether an axis has a colorbar associated:
-    Check the next axis environment, and see if it is de facto a color bar;
-    if yes, return the color bar object.
+    """A rather poor way of telling whether an axis has a colorbar associated: Check the
+    next axis environment, and see if it is de facto a color bar; if yes, return the
+    color bar object.
     """
     for child in obj.get_children():
         try:
@@ -840,8 +840,7 @@ def _find_associated_colorbar(obj):
             continue
         if cbar is not None:  # really necessary?
             # if fetch was successful, cbar contains
-            # (reference to colorbar,
-            #   reference to axis containing colorbar)
+            # (reference to colorbar, reference to axis containing colorbar)
             return cbar
     return None
 

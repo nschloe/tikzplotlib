@@ -17,7 +17,8 @@ def plot():
 
     cbar = fig.colorbar(cax, ticks=[-1, 0, 1], orientation="horizontal")
     # horizontal colorbar
-    cbar.ax.set_xticklabels(["Low", "Medium", "High"])
+    # Use comma in label
+    cbar.ax.set_xticklabels(["Low", "Medium", "High,Higher"])
     return fig
 
 
