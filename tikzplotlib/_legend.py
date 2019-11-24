@@ -38,11 +38,8 @@ def draw_legend(data, obj):
         position = [bbox_center[0], bbox_center[1]]
 
     legend_style = [
-        # These are the mpl default setting for legends, see
-        # <https://matplotlib.org/3.1.1/api/legend_api.html#matplotlib.legend.Legend>.
-        # Keep an eye on <https://github.com/matplotlib/matplotlib/issues/15764> to see
-        # if we can get() the opacity from the legend object.
-        "fill opacity=0.8",
+        # https://github.com/matplotlib/matplotlib/issues/15764#issuecomment-557823370
+        "fill opacity={}".format(obj.get_frame().get_alpha()),
         "draw opacity=1",
         "text opacity=1",
     ]
