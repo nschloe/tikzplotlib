@@ -560,7 +560,6 @@ def _get_ticks(data, xy, ticks, ticklabels):
     pgfplots_ticklabels = []
     is_label_required = False
     for tick, ticklabel in zip(ticks, ticklabels):
-        pgfplots_ticks.append(tick)
         # store the label anyway
         label = ticklabel.get_text()
         if "," in label:
@@ -578,6 +577,9 @@ def _get_ticks(data, xy, ticks, ticklabels):
                 is_label_required = is_label_required or (label and label_float != tick)
             except ValueError:
                 is_label_required = True
+    # note: ticks may be present even if labels are not, keep them for grid lines
+    for tick in ticks:
+        pgfplots_ticks.append(tick)
 
     # Leave the ticks to PGFPlots if not in STRICT mode and if there are no explicit
     # labels.
