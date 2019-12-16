@@ -1,3 +1,6 @@
 [tool.black]
 line-length = 80
 target-version = ['py37']
+
+[tool.bandit]
+skips = ["B101", "B102"]
