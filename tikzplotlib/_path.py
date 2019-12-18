@@ -262,7 +262,7 @@ def get_draw_options(data, obj, ec, fc, style, width):
     else:
         if ec is not None and ec_rgba[3] != 1.0:
             draw_options.append(("draw opacity=" + ff).format(ec_rgba[3]))
-        if fc is not None and fc_rgba[3] != 1.0:
+        if fc is not None and 0 < fc_rgba[3] != 1.0:
             draw_options.append(("fill opacity=" + ff).format(fc_rgba[3]))
 
     if width is not None:
