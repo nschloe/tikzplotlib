@@ -309,7 +309,7 @@ def get_draw_options(data, obj, ec, fc, ls, lw, hatch=None):
         finally:
             if h_rgba[3] > 0:
                 data, pattern = _mpl_hatch2pgfp_pattern(data, hatch, h_col, h_rgba)
-                if ec_rgba[3] == 0.0:
+                if ec is not None and ec_rgba[3] == 0.0:
                     # 'draw=none' must be specified for the border to be omitted
                     # when a pattern is drawn using \draw.
                     draw_options.append("draw={}".format(ec_col))
