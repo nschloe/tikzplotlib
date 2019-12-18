@@ -1,4 +1,5 @@
 import matplotlib as mpl
+from functools import wraps
 
 from . import _path as mypath
 
@@ -29,6 +30,39 @@ def draw_patch(data, obj):
         data, obj.get_path(), draw_options=draw_options
     )
     return data, path_command
+
+def _is_in_legend(obj):
+    label = obj.get_label()
+    leg = obj.axes.get_legend()
+    if leg is None:
+        return False
+    return label in [txt.get_text() for txt in leg.get_texts()]
+
+
+def legendimage(func):
+    """ Decorator for handling legend of mpl.Patch """
+
+    @wraps(func)
+    def wrapper(data, obj, draw_options):
+        data, content, legend_type = func(data, obj, draw_options)
+
+        legend = "\n"
+        if _is_in_legend(obj):
+            # Unfortunately, patch legend entries need \addlegendimage in Pgfplots.
+            do = ", ".join([legend_type] + draw_options) if draw_options else ""
+            legend = "\\addlegendimage{{{}}}\n\\addlegendentry{{{}}}\n\n".format(
+                do, obj.get_label()
+            )
+
+        # content might be str or list
+        try:
+            content += legend
+        except TypeError:
+            content += [legend]
+
+        return data, content
+
+    return wrapper
 
 
 def draw_patchcollection(data, obj):
@@ -79,12 +113,6 @@ def draw_patchcollection(data, obj):
     return data, content
 
 
-def _is_in_legend(obj):
-    label = obj.get_label()
-    leg = obj.axes.get_legend()
-    if leg is None:
-        return False
-    return label in [txt.get_text() for txt in leg.get_texts()]
 
 
 def _draw_rectangle(data, obj, draw_options):
