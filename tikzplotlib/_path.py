@@ -233,8 +233,19 @@ def draw_pathcollection(data, obj):
     return data, content
 
 
-def get_draw_options(data, obj, ec, fc, style, width):
+def get_draw_options(data, obj, ec, fc, ls, lw):
     """Get the draw options for a given (patch) object.
+        Get the draw options for a given (patch) object.
+        Input:
+            data -
+            obj -
+            ec - edge color
+            fc - face color
+            ls - linestyle
+            lw - linewidth
+        Output:
+            draw_options - list, to be ",".join(draw_options) to produce the
+                           draw options passed to PGF
     """
     draw_options = []
 
@@ -265,15 +276,15 @@ def get_draw_options(data, obj, ec, fc, style, width):
         if fc is not None and 0 < fc_rgba[3] != 1.0:
             draw_options.append(("fill opacity=" + ff).format(fc_rgba[3]))
 
-    if width is not None:
-        w = mpl_linewidth2pgfp_linewidth(data, width)
-        if w:
-            draw_options.append(w)
+    if lw is not None:
+        lw_ = mpl_linewidth2pgfp_linewidth(data, lw)
+        if lw_:
+            draw_options.append(lw_)
 
-    if style is not None:
-        ls = mpl_linestyle2pgfplots_linestyle(style)
-        if ls is not None and ls != "solid":
-            draw_options.append(ls)
+    if ls is not None:
+        ls_ = mpl_linestyle2pgfplots_linestyle(ls)
+        if ls_ is not None and ls_ != "solid":
+            draw_options.append(ls_)
 
     return data, draw_options
 
