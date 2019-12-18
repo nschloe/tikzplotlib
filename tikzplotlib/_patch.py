@@ -14,6 +14,7 @@ def draw_patch(data, obj):
         obj.get_facecolor(),
         obj.get_linestyle(),
         obj.get_linewidth(),
+        obj.get_hatch(),
     )
 
     if isinstance(obj, mpl.patches.Rectangle):
