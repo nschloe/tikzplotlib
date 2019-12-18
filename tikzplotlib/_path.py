@@ -239,16 +239,16 @@ def get_draw_options(data, obj, ec, fc, style, width):
     draw_options = []
 
     if ec is not None:
-        data, col, ec_rgba = _color.mpl_color2xcolor(data, ec)
+        data, ec_col, ec_rgba = _color.mpl_color2xcolor(data, ec)
         if ec_rgba[3] != 0.0:
             # Don't draw if it's invisible anyways.
-            draw_options.append("draw={}".format(col))
+            draw_options.append("draw={}".format(ec_col))
 
     if fc is not None:
-        data, col, fc_rgba = _color.mpl_color2xcolor(data, fc)
+        data, fc_col, fc_rgba = _color.mpl_color2xcolor(data, fc)
         if fc_rgba[3] != 0.0:
             # Don't draw if it's invisible anyways.
-            draw_options.append("fill={}".format(col))
+            draw_options.append("fill={}".format(fc_col))
 
     # handle transparency
     ff = data["float format"]
