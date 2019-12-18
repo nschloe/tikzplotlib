@@ -251,9 +251,7 @@ def get_draw_options(data, obj, ec, fc, ls, lw):
 
     if ec is not None:
         data, ec_col, ec_rgba = _color.mpl_color2xcolor(data, ec)
-        if ec_rgba[3] != 0.0:
-            # Don't draw if it's invisible anyways.
-            draw_options.append("draw={}".format(ec_col))
+        draw_options.append("draw={}".format(ec_col))
 
     if fc is not None:
         data, fc_col, fc_rgba = _color.mpl_color2xcolor(data, fc)
@@ -271,7 +269,7 @@ def get_draw_options(data, obj, ec, fc, ls, lw):
     ):
         draw_options.append(("opacity=" + ff).format(ec[3]))
     else:
-        if ec is not None and ec_rgba[3] != 1.0:
+        if ec is not None and 0 < ec_rgba[3] != 1.0:
             draw_options.append(("draw opacity=" + ff).format(ec_rgba[3]))
         if fc is not None and 0 < fc_rgba[3] != 1.0:
             draw_options.append(("fill opacity=" + ff).format(fc_rgba[3]))
