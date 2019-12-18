@@ -24,12 +24,10 @@ def draw_patch(data, obj):
     elif isinstance(obj, mpl.patches.Ellipse):
         # ellipse specialization
         return _draw_ellipse(data, obj, draw_options)
+    else:
+        # regular patch
+        return _draw_polygon(data, obj, draw_options)
 
-    # regular patch
-    data, path_command, _, _ = mypath.draw_path(
-        data, obj.get_path(), draw_options=draw_options
-    )
-    return data, path_command
 
 def _is_in_legend(obj):
     label = obj.get_label()
@@ -112,7 +110,14 @@ def draw_patchcollection(data, obj):
 
     return data, content
 
+@legendimage
+def _draw_polygon(data, obj, draw_options):
+    data, content, _, is_area = mypath.draw_path(
+        data, obj.get_path(), draw_options=draw_options
+    )
+    legend_type = "area legend" if is_area else "line legend"
 
+    return data, content, legend_type
 
 
 def _draw_rectangle(data, obj, draw_options):
@@ -158,6 +163,7 @@ def _draw_rectangle(data, obj, draw_options):
     return data, cont
 
 
+@legendimage
 def _draw_ellipse(data, obj, draw_options):
     """Return the PGFPlots code for ellipses.
     """
@@ -180,17 +186,19 @@ def _draw_ellipse(data, obj, draw_options):
         + ff
         + " and "
         + ff
-        + ");\n"
+        + ");"
     ).format(",".join(draw_options), x, y, 0.5 * obj.width, 0.5 * obj.height)
-    return data, cont
+
+    return data, cont, "area legend"
 
 
+@legendimage
 def _draw_circle(data, obj, draw_options):
     """Return the PGFPlots code for circles.
     """
     x, y = obj.center
     ff = data["float format"]
-    cont = ("\\draw[{}] (axis cs:" + ff + "," + ff + ") circle (" + ff + ");\n").format(
+    cont = ("\\draw[{}] (axis cs:" + ff + "," + ff + ") circle (" + ff + ");").format(
         ",".join(draw_options), x, y, obj.get_radius()
     )
-    return data, cont
+    return data, cont, "area legend"
