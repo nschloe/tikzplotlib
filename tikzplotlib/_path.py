@@ -6,6 +6,7 @@ from . import _color
 from ._axes import _mpl_cmap2pgf_cmap
 from ._markers import _mpl_marker2pgfp_marker
 from ._util import get_legend_text, has_legend
+from ._hatches import _mpl_hatch2pgfp_pattern
 
 
 def draw_path(data, path, draw_options=None, simplify=None):
@@ -233,7 +234,7 @@ def draw_pathcollection(data, obj):
     return data, content
 
 
-def get_draw_options(data, obj, ec, fc, ls, lw):
+def get_draw_options(data, obj, ec, fc, ls, lw, hatch=None):
     """Get the draw options for a given (patch) object.
         Get the draw options for a given (patch) object.
         Input:
@@ -243,6 +244,7 @@ def get_draw_options(data, obj, ec, fc, ls, lw):
             fc - face color
             ls - linestyle
             lw - linewidth
+            hatch=None - hatch, i.e., pattern within closed path
         Output:
             draw_options - list, to be ",".join(draw_options) to produce the
                            draw options passed to PGF
@@ -283,6 +285,35 @@ def get_draw_options(data, obj, ec, fc, ls, lw):
         ls_ = mpl_linestyle2pgfplots_linestyle(ls)
         if ls_ is not None and ls_ != "solid":
             draw_options.append(ls_)
+
+    if hatch is not None:
+        # In matplotlib hatches are rendered with edge color and linewidth
+        # In PGFPlots patterns are rendered in 'pattern color' which defaults to
+        # black and according to opacity fill.
+        # No 'pattern line width' option exist.
+        # This can be achieved with custom patterns, see _hatches.py
+
+        # There exist an obj.get_hatch_color() method in the mpl API,
+        # but it seems to be unused
+        try:
+            hc = obj._hatch_color
+        except AttributeError:  # Fallback to edge color
+            if ec is None or ec_rgba[3] == 0.0:
+                # Assuming that a hatch marker indicates that hatches are wanted, also
+                # when the edge color is (0, 0, 0, 0), i.e., the edge is invisible
+                h_col, h_rgba = "black", numpy.array([0, 0, 0, 1])
+            else:
+                h_col, h_rgba = ec_col, ec_rgba
+        else:
+            data, h_col, h_rgba = _color.mpl_color2xcolor(data, hc)
+        finally:
+            if h_rgba[3] > 0:
+                data, pattern = _mpl_hatch2pgfp_pattern(data, hatch, h_col, h_rgba)
+                if ec_rgba[3] == 0.0:
+                    # 'draw=none' must be specified for the border to be omitted
+                    # when a pattern is drawn using \draw.
+                    draw_options.append("draw={}".format(ec_col))
+                draw_options += pattern
 
     return data, draw_options
 
