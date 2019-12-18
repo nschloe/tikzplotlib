@@ -11,3 +11,4 @@ build/
 .pytest_cache/
 bin/
 *.gz
+lib/
