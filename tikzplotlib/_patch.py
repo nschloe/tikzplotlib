@@ -37,30 +37,17 @@ def _is_in_legend(obj):
     return label in [txt.get_text() for txt in leg.get_texts()]
 
 
-def legendimage(func):
+def _patch_legend(obj, draw_options, legend_type):
     """ Decorator for handling legend of mpl.Patch """
+    legend = "\n"
+    if _is_in_legend(obj):
+        # Unfortunately, patch legend entries need \addlegendimage in Pgfplots.
+        do = ", ".join([legend_type] + draw_options) if draw_options else ""
+        legend = "\\addlegendimage{{{}}}\n\\addlegendentry{{{}}}\n\n".format(
+            do, obj.get_label()
+        )
 
-    @wraps(func)
-    def wrapper(data, obj, draw_options):
-        data, content, legend_type = func(data, obj, draw_options)
-
-        legend = "\n"
-        if _is_in_legend(obj):
-            # Unfortunately, patch legend entries need \addlegendimage in Pgfplots.
-            do = ", ".join([legend_type] + draw_options) if draw_options else ""
-            legend = "\\addlegendimage{{{}}}\n\\addlegendentry{{{}}}\n\n".format(
-                do, obj.get_label()
-            )
-
-        # content might be str or list
-        try:
-            content += legend
-        except TypeError:
-            content += [legend]
-
-        return data, content
-
-    return wrapper
+    return legend
 
 
 def draw_patchcollection(data, obj):
@@ -97,27 +84,22 @@ def draw_patchcollection(data, obj):
         )
         content.append(cont)
 
-    if _is_in_legend(obj):
-        # Unfortunately, patch legend entries need \addlegendimage in Pgfplots.
-        tpe = "area legend" if is_area else "line legend"
-        do = ", ".join([tpe] + draw_options) if draw_options else ""
-        content += [
-            "\\addlegendimage{{{}}}\n".format(do),
-            "\\addlegendentry{{{}}}\n\n".format(obj.get_label()),
-        ]
-    else:
-        content.append("\n")
+    legend_type = "area legend" if is_area else "line legend"
+    legend = _patch_legend(obj, draw_options, legend_type)
+    content.append(legend)
 
     return data, content
 
-@legendimage
+
 def _draw_polygon(data, obj, draw_options):
     data, content, _, is_area = mypath.draw_path(
         data, obj.get_path(), draw_options=draw_options
     )
     legend_type = "area legend" if is_area else "line legend"
+    legend = _patch_legend(obj, draw_options, legend_type)
+    content += legend
 
-    return data, content, legend_type
+    return data, content
 
 
 def _draw_rectangle(data, obj, draw_options):
@@ -163,7 +145,6 @@ def _draw_rectangle(data, obj, draw_options):
     return data, cont
 
 
-@legendimage
 def _draw_ellipse(data, obj, draw_options):
     """Return the PGFPlots code for ellipses.
     """
@@ -177,7 +158,7 @@ def _draw_ellipse(data, obj, draw_options):
         fmt = "rotate around={{" + ff + ":(axis cs:" + ff + "," + ff + ")}}"
         draw_options.append(fmt.format(obj.angle, x, y))
 
-    cont = (
+    content = (
         "\\draw[{}] (axis cs:"
         + ff
         + ","
@@ -186,19 +167,23 @@ def _draw_ellipse(data, obj, draw_options):
         + ff
         + " and "
         + ff
-        + ");"
+        + ");\n"
     ).format(",".join(draw_options), x, y, 0.5 * obj.width, 0.5 * obj.height)
 
-    return data, cont, "area legend"
+    legend = _patch_legend(obj, draw_options, "area legend")
+    content += legend
+
+    return data, content
 
 
-@legendimage
 def _draw_circle(data, obj, draw_options):
     """Return the PGFPlots code for circles.
     """
     x, y = obj.center
     ff = data["float format"]
-    cont = ("\\draw[{}] (axis cs:" + ff + "," + ff + ") circle (" + ff + ");").format(
-        ",".join(draw_options), x, y, obj.get_radius()
-    )
-    return data, cont, "area legend"
+    content = (
+        "\\draw[{}] (axis cs:" + ff + "," + ff + ") circle (" + ff + ");\n"
+    ).format(",".join(draw_options), x, y, obj.get_radius())
+    legend = _patch_legend(obj, draw_options, "area legend")
+    content += legend
+    return data, content
