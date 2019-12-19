@@ -327,7 +327,7 @@ class Axes:
         colorbar_styles = []
 
         orientation = colorbar.orientation
-        limits = colorbar.get_clim()
+        limits = colorbar.mappable.get_clim()
         if orientation == "horizontal":
             self.axis_options.append("colorbar horizontal")
 
