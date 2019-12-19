@@ -95,8 +95,7 @@ def _draw_polygon(data, obj, draw_options):
         data, obj.get_path(), draw_options=draw_options
     )
     legend_type = "area legend" if is_area else "line legend"
-    legend = _patch_legend(obj, draw_options, legend_type)
-    content += legend
+    content += _patch_legend(obj, draw_options, legend_type)
 
     return data, content
 
@@ -169,8 +168,7 @@ def _draw_ellipse(data, obj, draw_options):
         + ");\n"
     ).format(",".join(draw_options), x, y, 0.5 * obj.width, 0.5 * obj.height)
 
-    legend = _patch_legend(obj, draw_options, "area legend")
-    content += legend
+    content += _patch_legend(obj, draw_options, "area legend")
 
     return data, content
 
@@ -183,6 +181,6 @@ def _draw_circle(data, obj, draw_options):
     content = (
         "\\draw[{}] (axis cs:" + ff + "," + ff + ") circle (" + ff + ");\n"
     ).format(",".join(draw_options), x, y, obj.get_radius())
-    legend = _patch_legend(obj, draw_options, "area legend")
-    content += legend
+    content += _patch_legend(obj, draw_options, "area legend")
+
     return data, content
