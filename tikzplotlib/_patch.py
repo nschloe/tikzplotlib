@@ -39,11 +39,11 @@ def _is_in_legend(obj):
 
 def _patch_legend(obj, draw_options, legend_type):
     """ Decorator for handling legend of mpl.Patch """
-    legend = "\n"
+    legend = ""
     if _is_in_legend(obj):
         # Unfortunately, patch legend entries need \addlegendimage in Pgfplots.
         do = ", ".join([legend_type] + draw_options) if draw_options else ""
-        legend = "\\addlegendimage{{{}}}\n\\addlegendentry{{{}}}\n\n".format(
+        legend += "\\addlegendimage{{{}}}\n\\addlegendentry{{{}}}\n\n".format(
             do, obj.get_label()
         )
 
@@ -85,7 +85,7 @@ def draw_patchcollection(data, obj):
         content.append(cont)
 
     legend_type = "area legend" if is_area else "line legend"
-    legend = _patch_legend(obj, draw_options, legend_type)
+    legend = _patch_legend(obj, draw_options, legend_type) or "\n"
     content.append(legend)
 
     return data, content
