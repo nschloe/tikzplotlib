@@ -10,7 +10,6 @@ def plot():
     """
     import matplotlib.pyplot as plt
     from matplotlib.patches import Ellipse, Polygon
-    import numpy as np
 
     fig, (ax1, ax2, ax3) = plt.subplots(3)
 
