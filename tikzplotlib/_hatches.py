@@ -90,14 +90,14 @@ def _mpl_hatch2pgfp_pattern(data, hatch, color_name, color_rgba):
         Output:
             draw_options - list, empty or with a post action string
     """
-    data["tikz libs"].add("patterns")
-
     hatch = __validate_hatch(hatch)
     try:
         pgfplots_pattern = _MP_HATCH2PGF_PATTERN.get(hatch)
     except KeyError:
         warnings.warn("tikzplotlib: The hatch", hatch, "is ignored.")
         return data, []
+
+    data["tikz libs"].add("patterns")
 
     pattern_options = [f"pattern={pgfplots_pattern}"]
     if color_name != "black":
