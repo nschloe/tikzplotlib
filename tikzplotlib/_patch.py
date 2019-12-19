@@ -1,5 +1,4 @@
 import matplotlib as mpl
-from functools import wraps
 
 from . import _path as mypath
 
