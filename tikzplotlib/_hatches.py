@@ -106,6 +106,7 @@ def _mpl_hatch2pgfp_pattern(data, hatch, color_name, color_rgba):
     if color_rgba[3] != 1:
         ff = data["float format"]
         # PGFPlots render patterns according to opacity fill.
+        # This change is within the scope of the postaction
         pattern_options.append(("fill opacity=" + ff).format(color_rgba[3]))
 
     # Add pattern as postaction to allow color fill and pattern together
