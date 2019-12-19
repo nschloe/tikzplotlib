@@ -14,6 +14,7 @@ def draw_patch(data, obj):
         obj.get_facecolor(),
         obj.get_linestyle(),
         obj.get_linewidth(),
+        obj.get_hatch(),
     )
 
     if isinstance(obj, mpl.patches.Rectangle):
@@ -22,12 +23,30 @@ def draw_patch(data, obj):
     elif isinstance(obj, mpl.patches.Ellipse):
         # ellipse specialization
         return _draw_ellipse(data, obj, draw_options)
+    else:
+        # regular patch
+        return _draw_polygon(data, obj, draw_options)
 
-    # regular patch
-    data, path_command, _, _ = mypath.draw_path(
-        data, obj.get_path(), draw_options=draw_options
-    )
-    return data, path_command
+
+def _is_in_legend(obj):
+    label = obj.get_label()
+    leg = obj.axes.get_legend()
+    if leg is None:
+        return False
+    return label in [txt.get_text() for txt in leg.get_texts()]
+
+
+def _patch_legend(obj, draw_options, legend_type):
+    """ Decorator for handling legend of mpl.Patch """
+    legend = ""
+    if _is_in_legend(obj):
+        # Unfortunately, patch legend entries need \addlegendimage in Pgfplots.
+        do = ", ".join([legend_type] + draw_options) if draw_options else ""
+        legend += "\\addlegendimage{{{}}}\n\\addlegendentry{{{}}}\n\n".format(
+            do, obj.get_label()
+        )
+
+    return legend
 
 
 def draw_patchcollection(data, obj):
@@ -64,26 +83,21 @@ def draw_patchcollection(data, obj):
         )
         content.append(cont)
 
-    if _is_in_legend(obj):
-        # Unfortunately, patch legend entries need \addlegendimage in Pgfplots.
-        tpe = "area legend" if is_area else "line legend"
-        do = ", ".join([tpe] + draw_options) if draw_options else ""
-        content += [
-            "\\addlegendimage{{{}}}\n".format(do),
-            "\\addlegendentry{{{}}}\n\n".format(obj.get_label()),
-        ]
-    else:
-        content.append("\n")
+    legend_type = "area legend" if is_area else "line legend"
+    legend = _patch_legend(obj, draw_options, legend_type) or "\n"
+    content.append(legend)
 
     return data, content
 
 
-def _is_in_legend(obj):
-    label = obj.get_label()
-    leg = obj.axes.get_legend()
-    if leg is None:
-        return False
-    return label in [txt.get_text() for txt in leg.get_texts()]
+def _draw_polygon(data, obj, draw_options):
+    data, content, _, is_area = mypath.draw_path(
+        data, obj.get_path(), draw_options=draw_options
+    )
+    legend_type = "area legend" if is_area else "line legend"
+    content += _patch_legend(obj, draw_options, legend_type)
+
+    return data, content
 
 
 def _draw_rectangle(data, obj, draw_options):
@@ -142,7 +156,7 @@ def _draw_ellipse(data, obj, draw_options):
         fmt = "rotate around={{" + ff + ":(axis cs:" + ff + "," + ff + ")}}"
         draw_options.append(fmt.format(obj.angle, x, y))
 
-    cont = (
+    content = (
         "\\draw[{}] (axis cs:"
         + ff
         + ","
@@ -153,7 +167,10 @@ def _draw_ellipse(data, obj, draw_options):
         + ff
         + ");\n"
     ).format(",".join(draw_options), x, y, 0.5 * obj.width, 0.5 * obj.height)
-    return data, cont
+
+    content += _patch_legend(obj, draw_options, "area legend")
+
+    return data, content
 
 
 def _draw_circle(data, obj, draw_options):
@@ -161,7 +178,9 @@ def _draw_circle(data, obj, draw_options):
     """
     x, y = obj.center
     ff = data["float format"]
-    cont = ("\\draw[{}] (axis cs:" + ff + "," + ff + ") circle (" + ff + ");\n").format(
-        ",".join(draw_options), x, y, obj.get_radius()
-    )
-    return data, cont
+    content = (
+        "\\draw[{}] (axis cs:" + ff + "," + ff + ") circle (" + ff + ");\n"
+    ).format(",".join(draw_options), x, y, obj.get_radius())
+    content += _patch_legend(obj, draw_options, "area legend")
+
+    return data, content
