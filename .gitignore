@@ -9,6 +9,3 @@ build/
 .cache/
 *.egg-info/
 .pytest_cache/
-bin/
-*.gz
-lib/
