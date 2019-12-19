@@ -253,11 +253,14 @@ def get_draw_options(data, obj, ec, fc, ls, lw, hatch=None):
 
     if ec is not None:
         data, ec_col, ec_rgba = _color.mpl_color2xcolor(data, ec)
-        draw_options.append("draw={}".format(ec_col))
+        if ec_rgba[3] > 0:
+            draw_options.append("draw={}".format(ec_col))
+        else:
+            draw_options.append("draw=none")
 
     if fc is not None:
         data, fc_col, fc_rgba = _color.mpl_color2xcolor(data, fc)
-        if fc_rgba[3] != 0.0:
+        if fc_rgba[3] > 0.0:
             # Don't draw if it's invisible anyways.
             draw_options.append("fill={}".format(fc_col))
 
@@ -271,9 +274,9 @@ def get_draw_options(data, obj, ec, fc, ls, lw, hatch=None):
     ):
         draw_options.append(("opacity=" + ff).format(ec[3]))
     else:
-        if ec is not None and 0 < ec_rgba[3] != 1.0:
+        if ec is not None and 0 < ec_rgba[3] < 1.0:
             draw_options.append(("draw opacity=" + ff).format(ec_rgba[3]))
-        if fc is not None and 0 < fc_rgba[3] != 1.0:
+        if fc is not None and 0 < fc_rgba[3] < 1.0:
             draw_options.append(("fill opacity=" + ff).format(fc_rgba[3]))
 
     if lw is not None:
@@ -309,10 +312,6 @@ def get_draw_options(data, obj, ec, fc, ls, lw, hatch=None):
         finally:
             if h_rgba[3] > 0:
                 data, pattern = _mpl_hatch2pgfp_pattern(data, hatch, h_col, h_rgba)
-                if ec is not None and ec_rgba[3] == 0.0:
-                    # 'draw=none' must be specified for the border to be omitted
-                    # when a pattern is drawn using \draw.
-                    draw_options.append("draw={}".format(ec_col))
                 draw_options += pattern
 
     return data, draw_options
