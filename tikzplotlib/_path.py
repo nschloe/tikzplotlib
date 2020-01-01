@@ -1,6 +1,7 @@
 import matplotlib as mpl
 import numpy
 from matplotlib.markers import MarkerStyle
+from matplotlib.dates import num2date, DateConverter
 
 from . import _color
 from ._axes import _mpl_cmap2pgf_cmap
@@ -22,10 +23,14 @@ def draw_path(data, path, draw_options=None, simplify=None):
     ):
         return data, "", None, False
 
+    x_is_date = isinstance(data["current mpl axes obj"].xaxis.converter, DateConverter)
     nodes = []
     ff = data["float format"]
+    xformat = "{}" if x_is_date else ff
     prev = None
     for vert, code in path.iter_segments(simplify=simplify):
+        if x_is_date:
+            vert = [num2date(vert[0]), vert[1]]
         # nschloe, Oct 2, 2015:
         #   The transform call yields warnings and it is unclear why. Perhaps
         #   the input data is not suitable? Anyhow, this should not happen.
@@ -38,9 +43,9 @@ def draw_path(data, path, draw_options=None, simplify=None):
         # if code == mpl.path.Path.STOP: pass
         is_area = False
         if code == mpl.path.Path.MOVETO:
-            nodes.append(("(axis cs:" + ff + "," + ff + ")").format(*vert))
+            nodes.append(("(axis cs:" + xformat + "," + ff + ")").format(*vert))
         elif code == mpl.path.Path.LINETO:
-            nodes.append(("--(axis cs:" + ff + "," + ff + ")").format(*vert))
+            nodes.append(("--(axis cs:" + xformat + "," + ff + ")").format(*vert))
         elif code == mpl.path.Path.CURVE3:
             # Quadratic Bezier curves aren't natively supported in TikZ, but
             # can be emulated as cubic Beziers.
