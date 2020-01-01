@@ -1,6 +1,7 @@
 import matplotlib as mpl
 import numpy
 from matplotlib.markers import MarkerStyle
+from matplotlib.dates import num2date, DateConverter
 
 from . import _color
 from ._axes import _mpl_cmap2pgf_cmap
@@ -22,8 +23,10 @@ def draw_path(data, path, draw_options=None, simplify=None):
     ):
         return data, "", None, False
 
+    x_is_date = isinstance(data["current mpl axes obj"].xaxis.converter, DateConverter)
     nodes = []
     ff = data["float format"]
+    xformat = "{}" if x_is_date else ff
     prev = None
     for vert, code in path.iter_segments(simplify=simplify):
         # nschloe, Oct 2, 2015:
@@ -38,9 +41,13 @@ def draw_path(data, path, draw_options=None, simplify=None):
         # if code == mpl.path.Path.STOP: pass
         is_area = False
         if code == mpl.path.Path.MOVETO:
-            nodes.append(("(axis cs:" + ff + "," + ff + ")").format(*vert))
+            if x_is_date:
+                vert = [num2date(vert[0]), vert[1]]
+            nodes.append(("(axis cs:" + xformat + "," + ff + ")").format(*vert))
         elif code == mpl.path.Path.LINETO:
-            nodes.append(("--(axis cs:" + ff + "," + ff + ")").format(*vert))
+            if x_is_date:
+                vert = [num2date(vert[0]), vert[1]]
+            nodes.append(("--(axis cs:" + xformat + "," + ff + ")").format(*vert))
         elif code == mpl.path.Path.CURVE3:
             # Quadratic Bezier curves aren't natively supported in TikZ, but
             # can be emulated as cubic Beziers.
@@ -63,20 +70,24 @@ def draw_path(data, path, draw_options=None, simplify=None):
             Q1 = 1.0 / 3.0 * prev + 2.0 / 3.0 * vert[0:2]
             Q2 = 2.0 / 3.0 * vert[0:2] + 1.0 / 3.0 * vert[2:4]
             Q3 = vert[2:4]
+            if x_is_date:
+                Q1 = [num2date(Q1[0]), Q1[1]]
+                Q2 = [num2date(Q2[0]), Q2[1]]
+                Q3 = [num2date(Q3[0]), Q3[1]]
             nodes.append(
                 (
                     ".. controls (axis cs:"
-                    + ff
+                    + xformat
                     + ","
                     + ff
                     + ") "
                     + "and (axis cs:"
-                    + ff
+                    + xformat
                     + ","
                     + ff
                     + ") "
                     + ".. (axis cs:"
-                    + ff
+                    + xformat
                     + ","
                     + ff
                     + ")"
@@ -84,20 +95,29 @@ def draw_path(data, path, draw_options=None, simplify=None):
             )
         elif code == mpl.path.Path.CURVE4:
             # Cubic Bezier curves.
+            if x_is_date:
+                vert = [
+                    num2date(vert[0]),
+                    vert[1],
+                    num2date(vert[2]),
+                    vert[3],
+                    num2date(vert[4]),
+                    vert[5],
+                ]
             nodes.append(
                 (
                     ".. controls (axis cs:"
-                    + ff
+                    + xformat
                     + ","
                     + ff
                     + ") "
                     + "and (axis cs:"
-                    + ff
+                    + xformat
                     + ","
                     + ff
                     + ") "
                     + ".. (axis cs:"
-                    + ff
+                    + xformat
                     + ","
                     + ff
                     + ")"
