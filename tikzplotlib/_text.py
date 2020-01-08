@@ -9,18 +9,32 @@ def draw_text(data, obj):
     content = []
     properties = []
     style = []
+    ff = data["float format"]
     if isinstance(obj, mpl.text.Annotation):
-        _annotation(obj, data, content)
+        pos = _annotation(obj, data, content)
+    else:
+        pos = obj.get_position()
 
-    # 1: coordinates
-    # 2: properties (shapes, rotation, etc)
-    # 3: text style
-    # 4: the text
-    #                   -------1--------2---3--4--
-    pos = obj.get_position()
+    if isinstance(pos, str):
+        tikz_pos = pos
+    else:
+        # from .util import transform_to_data_coordinates
+        # pos = transform_to_data_coordinates(obj, *pos)
 
-    # from .util import transform_to_data_coordinates
-    # pos = transform_to_data_coordinates(obj, *pos)
+        if obj.axes:
+            # If the coordinates are relative to an axis, use `axis cs`.
+            tikz_pos = ("(axis cs:{ff},{ff})").format(ff=ff).format(*pos)
+        else:
+            # relative to the entire figure, it's a getting a littler harder. See
+            # <http://tex.stackexchange.com/a/274902/13262> for a solution to the
+            # problem:
+            tikz_pos = (
+                "({{$(current bounding box.south west)!" + ff + "!"
+                "(current bounding box.south east)$}}"
+                "|-"
+                "{{$(current bounding box.south west)!" + ff + "!"
+                "(current bounding box.north west)$}})"
+            ).format(*pos)
 
     text = obj.get_text()
 
@@ -35,7 +49,6 @@ def draw_text(data, obj):
     # without the factor 0.5, the fonts are too big most of the time.
     # TODO fix this
     scaling = 0.5 * size / data["font size"]
-    ff = data["float format"]
     if scaling != 1.0:
         properties.append(("scale=" + ff).format(scaling))
 
@@ -92,21 +105,6 @@ def draw_text(data, obj):
     # elif weight == 'light' or (isinstance(weight, int) and weight < 300):
     #     style.append('\\lfseries')
 
-    if obj.axes:
-        # If the coordinates are relative to an axis, use `axis cs`.
-        tikz_pos = ("(axis cs:" + ff + "," + ff + ")").format(*pos)
-    else:
-        # relative to the entire figure, it's a getting a littler harder. See
-        # <http://tex.stackexchange.com/a/274902/13262> for a solution to the
-        # problem:
-        tikz_pos = (
-            "({{$(current bounding box.south west)!" + ff + "!"
-            "(current bounding box.south east)$}}"
-            "|-"
-            "{{$(current bounding box.south west)!" + ff + "!"
-            "(current bounding box.north west)$}})"
-        ).format(*pos)
-
     if "\n" in text:
         # http://tex.stackexchange.com/a/124114/13262
         properties.append("align={}".format(ha))
@@ -117,8 +115,8 @@ def draw_text(data, obj):
         text = text.replace("\n ", "\\\\")
 
     content.append(
-        "\\node at {}[\n  {}\n]{{{}}};\n".format(
-            tikz_pos, ",\n  ".join(properties), " ".join(style + [text])
+        "\\draw {pos} node[\n  {props}\n]{{{text}}};\n".format(
+            pos=tikz_pos, props=",\n  ".join(properties), text=" ".join(style + [text])
         )
     )
     return data, content
@@ -140,58 +138,89 @@ def _transform_positioning(ha, va):
     return "anchor={} {}".format(va_mpl_to_tikz[va], ha_mpl_to_tikz[ha]).strip()
 
 
+def _parse_annotation_coords(ff, coords, xy):
+    """ Convert a coordinate name and xy into a tikz coordinate string """
+    # todo: add support for all the missing ones
+    if coords == "data":
+        return ("(axis cs:{ff},{ff})").format(ff=ff).format(*xy)
+    elif coords == "figure points":
+        raise NotImplementedError
+    elif coords == "figure pixels":
+        raise NotImplementedError
+    elif coords == "figure fraction":
+        raise NotImplementedError
+    elif coords == "axes points":
+        raise NotImplementedError
+    elif coords == "axes pixels":
+        raise NotImplementedError
+    elif coords == "axes fraction":
+        raise NotImplementedError
+    elif coords == "data":
+        raise NotImplementedError
+    elif coords == "polar":
+        raise NotImplementedError
+    else:
+        # unknown
+        raise NotImplementedError
+
+
 def _annotation(obj, data, content):
     ann_xy = obj.xy
     ann_xycoords = obj.xycoords
     ann_xytext = obj.xyann
     ann_textcoords = obj.anncoords
-    if ann_xycoords != "data" or ann_textcoords != "data":
-        # Anything else except for explicit positioning is not supported yet
-        return data, content
-    else:  # Create a basic tikz arrow
-        arrow_translate = {
-            "-": ["-"],
-            "->": ["->"],
-            "<-": ["<-"],
-            "<->": ["<->"],
-            "|-|": ["|-|"],
-            "-|>": ["-latex"],
-            "<|-": ["latex-"],
-            "<|-|>": ["latex-latex"],
-            "]-[": ["|-|"],
-            "-[": ["-|"],
-            "]-": ["|-"],
-            "fancy": ["-latex", "very thick"],
-            "simple": ["-latex", "very thick"],
-            "wedge": ["-latex", "very thick"],
-        }
-        arrow_style = []
-        if obj.arrowprops is not None:
-            if obj.arrowprops["arrowstyle"] is not None:
-                if obj.arrowprops["arrowstyle"] in arrow_translate:
-                    arrow_style += arrow_translate[obj.arrowprops["arrowstyle"]]
-                    data, col, _ = _color.mpl_color2xcolor(
-                        data, obj.arrow_patch.get_ec()
-                    )
-                    arrow_style.append(col)
 
-        ff = data["float format"]
-        arrow_fmt = (
-            "\\draw[{}] (axis cs:"
-            + ff
-            + ","
-            + ff
-            + ") -- (axis cs:"
-            + ff
-            + ","
-            + ff
-            + ");\n"
-        )
-        the_arrow = arrow_fmt.format(
-            ",".join(arrow_style), ann_xytext[0], ann_xytext[1], ann_xy[0], ann_xy[1]
+    ff = data["float format"]
+
+    try:
+        xy_pos = _parse_annotation_coords(ff, ann_xycoords, ann_xy)
+    except NotImplementedError:
+        # Anything else except for explicit positioning is not supported yet
+        return obj.get_position()
+
+    # special cases only for text_coords
+    if ann_textcoords == "offset points":
+        text_pos = "{{}} ++({ff}pt,{ff}pt)".format(ff=ff).format(xy_pos, *ann_xytext)
+    elif ann_textcoords == "offset pixels":
+        text_pos = "{{}} ++({ff}px,{ff}px)".format(ff=ff).format(xy_pos, *ann_xytext)
+    else:
+        try:
+            text_pos = _parse_annotation_coords(ff, ann_xycoords, ann_xytext)
+        except NotImplementedError:
+            # Anything else except for explicit positioning is not supported yet
+            return obj.get_position()
+
+    # Create a basic tikz arrow
+    arrow_translate = {
+        "-": ["-"],
+        "->": ["->"],
+        "<-": ["<-"],
+        "<->": ["<->"],
+        "|-|": ["|-|"],
+        "-|>": ["-latex"],
+        "<|-": ["latex-"],
+        "<|-|>": ["latex-latex"],
+        "]-[": ["|-|"],
+        "-[": ["-|"],
+        "]-": ["|-"],
+        "fancy": ["-latex", "very thick"],
+        "simple": ["-latex", "very thick"],
+        "wedge": ["-latex", "very thick"],
+    }
+    arrow_style = []
+    if obj.arrowprops is not None:
+        if obj.arrowprops["arrowstyle"] is not None:
+            if obj.arrowprops["arrowstyle"] in arrow_translate:
+                arrow_style += arrow_translate[obj.arrowprops["arrowstyle"]]
+                data, col, _ = _color.mpl_color2xcolor(data, obj.arrow_patch.get_ec())
+                arrow_style.append(col)
+
+    if arrow_style:
+        the_arrow = ("\\draw[{}] {} -- {};\n").format(
+            ",".join(arrow_style), text_pos, xy_pos
         )
         content.append(the_arrow)
-    return
+    return text_pos
 
 
 def _bbox(bbox, data, properties, scaling):

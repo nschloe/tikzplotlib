@@ -26,6 +26,13 @@ def plot():
         textcoords="offset points",
         arrowprops=dict(arrowstyle="->"),
     )
+    ax.annotate(
+        "no arrow",
+        xy=(0, 1),
+        xycoords="data",
+        xytext=(50, -30),
+        textcoords="offset pixels",
+    )
     return fig
 
 

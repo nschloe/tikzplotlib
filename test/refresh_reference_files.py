@@ -28,7 +28,7 @@ def _main():
             plt.close()
 
             tex_filename = filename[:-3] + "_reference.tex"
-            with open(os.path.join(this_dir, tex_filename), "w") as f:
+            with open(os.path.join(this_dir, tex_filename), "w", encoding="utf8") as f:
                 f.write(code)
     return
 
