@@ -2,8 +2,16 @@ from helpers import assert_equality
 
 
 def plot():
-    from matplotlib.patches import Circle, Ellipse, Polygon, Rectangle, Wedge
+    from matplotlib.patches import (
+        Circle,
+        Ellipse,
+        Polygon,
+        Rectangle,
+        Wedge,
+        FancyArrowPatch,
+    )
     from matplotlib.collections import PatchCollection
+    from matplotlib.path import Path
     from matplotlib import pyplot as plt
     import numpy as np
     import matplotlib as mpl
@@ -56,6 +64,18 @@ def plot():
 
     circle = Circle(xy=[0.0, 1.0], radius=0.5, color="r", alpha=0.4)
     ax.add_patch(circle)
+
+    arrow = FancyArrowPatch(posA=[0.25, 0.25], posB=[0.5, 0.25], arrowstyle="->")
+    ax.add_patch(arrow)
+
+    curved_arrow = FancyArrowPatch(
+        path=Path(
+            [(0.3, 0.3), (0.5, 1.0), (1.0, 0.8), (0.8, 0.3)],
+            [Path.MOVETO, Path.CURVE4, Path.CURVE4, Path.CURVE4],
+        ),
+        arrowstyle="-|>",
+    )
+    ax.add_patch(curved_arrow)
 
     plt.colorbar(p)
 

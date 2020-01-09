@@ -1,4 +1,5 @@
 import matplotlib as mpl
+from matplotlib.patches import ArrowStyle
 
 from . import _color
 
@@ -164,6 +165,34 @@ def _parse_annotation_coords(ff, coords, xy):
         raise NotImplementedError
 
 
+def _get_arrow_style(obj, data):
+    # get a style string from a FancyArrowPatch
+    arrow_translate = {
+        ArrowStyle._style_list["-"]: ["-"],
+        ArrowStyle._style_list["->"]: ["->"],
+        ArrowStyle._style_list["<-"]: ["<-"],
+        ArrowStyle._style_list["<->"]: ["<->"],
+        ArrowStyle._style_list["|-|"]: ["|-|"],
+        ArrowStyle._style_list["-|>"]: ["-latex"],
+        ArrowStyle._style_list["<|-"]: ["latex-"],
+        ArrowStyle._style_list["<|-|>"]: ["latex-latex"],
+        ArrowStyle._style_list["]-["]: ["|-|"],
+        ArrowStyle._style_list["-["]: ["-|"],
+        ArrowStyle._style_list["]-"]: ["|-"],
+        ArrowStyle._style_list["fancy"]: ["-latex", "very thick"],
+        ArrowStyle._style_list["simple"]: ["-latex", "very thick"],
+        ArrowStyle._style_list["wedge"]: ["-latex", "very thick"],
+    }
+    style_cls = type(obj.get_arrowstyle())
+    try:
+        style = arrow_translate[style_cls]
+    except KeyError:
+        raise NotImplementedError("Unknown arrow style {}".format(style_cls))
+    else:
+        data, col, _ = _color.mpl_color2xcolor(data, obj.get_ec())
+        return style + ["draw=" + col]
+
+
 def _annotation(obj, data, content):
     ann_xy = obj.xy
     ann_xycoords = obj.xycoords
@@ -190,35 +219,9 @@ def _annotation(obj, data, content):
             # Anything else except for explicit positioning is not supported yet
             return obj.get_position()
 
-    # Create a basic tikz arrow
-    arrow_translate = {
-        "-": ["-"],
-        "->": ["->"],
-        "<-": ["<-"],
-        "<->": ["<->"],
-        "|-|": ["|-|"],
-        "-|>": ["-latex"],
-        "<|-": ["latex-"],
-        "<|-|>": ["latex-latex"],
-        "]-[": ["|-|"],
-        "-[": ["-|"],
-        "]-": ["|-"],
-        "fancy": ["-latex", "very thick"],
-        "simple": ["-latex", "very thick"],
-        "wedge": ["-latex", "very thick"],
-    }
-    arrow_style = []
-    if obj.arrowprops is not None:
-        if obj.arrowprops["arrowstyle"] is not None:
-            if obj.arrowprops["arrowstyle"] in arrow_translate:
-                arrow_style += arrow_translate[obj.arrowprops["arrowstyle"]]
-                data, col, _ = _color.mpl_color2xcolor(data, obj.arrow_patch.get_ec())
-                arrow_style.append(col)
-
-    if arrow_style:
-        the_arrow = ("\\draw[{}] {} -- {};\n").format(
-            ",".join(arrow_style), text_pos, xy_pos
-        )
+    if obj.arrow_patch:
+        style = ",".join(_get_arrow_style(obj.arrow_patch, data))
+        the_arrow = ("\\draw[{}] {} -- {};\n").format(style, text_pos, xy_pos)
         content.append(the_arrow)
     return text_pos
 
