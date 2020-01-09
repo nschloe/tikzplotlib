@@ -190,7 +190,7 @@ def _get_arrow_style(obj, data):
         raise NotImplementedError("Unknown arrow style {}".format(style_cls))
     else:
         data, col, _ = _color.mpl_color2xcolor(data, obj.get_ec())
-        return style + [col]
+        return style + ["draw=" + col]
 
 
 def _annotation(obj, data, content):

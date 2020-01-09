@@ -198,6 +198,10 @@ ytick style={color=black}
 
 \draw[draw=none,fill=color0,fill opacity=0.4,rotate around={45:(axis cs:1,0.5)}] (axis cs:1,0.5) ellipse (0.5 and 0.25);
 \draw[draw=red,fill=red,opacity=0.4] (axis cs:0,1) circle (0.5);
+\draw[->,draw=black] (axis cs:0.25,0.25) -- (axis cs:0.5,0.25);
+\path [draw=black, -latex, draw=black]
+(axis cs:0.3,0.3)
+.. controls (axis cs:0.5,1) and (axis cs:1,0.8) .. (axis cs:0.8,0.3);
 \end{axis}
 
 \end{tikzpicture}
