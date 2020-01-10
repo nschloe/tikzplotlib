@@ -67,31 +67,27 @@ def draw_patchcollection(data, obj):
     """Returns PGFPlots code for a number of patch objects.
     """
     content = []
-    # Gather the draw options.
-    try:
-        ec = obj.get_edgecolor()[0]
-    except IndexError:
-        ec = None
 
-    try:
-        fc = obj.get_facecolor()[0]
-    except IndexError:
-        fc = None
+    # recompute the face colors
+    obj.update_scalarmappable()
 
-    try:
-        ls = obj.get_linestyle()[0]
-    except IndexError:
-        ls = None
+    def ensure_list(x):
+        return [None] if len(x) == 0 else x
 
-    try:
-        w = obj.get_linewidth()[0]
-    except IndexError:
-        w = None
-
-    data, draw_options = mypath.get_draw_options(data, obj, ec, fc, ls, w)
+    ecs = ensure_list(obj.get_edgecolor())
+    fcs = ensure_list(obj.get_facecolor())
+    lss = ensure_list(obj.get_linestyle())
+    ws = ensure_list(obj.get_linewidth())
 
     paths = obj.get_paths()
-    for path in paths:
+    for i, path in enumerate(paths):
+        # Gather the draw options.
+        ec = ecs[i % len(ecs)]
+        fc = fcs[i % len(fcs)]
+        ls = lss[i % len(lss)]
+        w = ws[i % len(ws)]
+
+        data, draw_options = mypath.get_draw_options(data, obj, ec, fc, ls, w)
         data, cont, draw_options, is_area = mypath.draw_path(
             data, path, draw_options=draw_options
         )
