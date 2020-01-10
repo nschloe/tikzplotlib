@@ -305,7 +305,7 @@ def get_draw_options(data, obj, ec, fc, ls, lw, hatch=None):
             draw_options.append(lw_)
 
     if ls is not None:
-        ls_ = mpl_linestyle2pgfplots_linestyle(ls)
+        ls_ = mpl_linestyle2pgfplots_linestyle(data, ls)
         if ls_ is not None and ls_ != "solid":
             draw_options.append(ls_)
 
@@ -352,7 +352,8 @@ def mpl_linewidth2pgfp_linewidth(data, line_width):
             }[line_width]
         except KeyError:
             # explicit line width
-            return f"line width={line_width}pt"
+            ff = data["float format"]
+            return f"line width={ff}pt".format(line_width)
 
     # The following is an alternative approach to line widths.
     # The default line width in matplotlib is 1.0pt, in PGFPlots 0.4pt
@@ -371,12 +372,13 @@ def mpl_linewidth2pgfp_linewidth(data, line_width):
         }[scaled_line_width]
     except KeyError:
         # explicit line width
-        out = "line width={}pt".format(0.4 * line_width)
+        ff = data["float format"]
+        out = f"line width={ff}pt".format(0.4 * line_width)
 
     return out
 
 
-def mpl_linestyle2pgfplots_linestyle(line_style, line=None):
+def mpl_linestyle2pgfplots_linestyle(data, line_style, line=None):
     """Translates a line style of matplotlib to the corresponding style
     in PGFPlots.
     """
@@ -388,15 +390,19 @@ def mpl_linestyle2pgfplots_linestyle(line_style, line=None):
     # dashed: (0, (6.0, 6.0))
     # dotted: (0, (1.0, 3.0))
     # dashdot: (0, (3.0, 5.0, 1.0, 5.0))
+    ff = data["float format"]
     if isinstance(line_style, tuple):
         if line_style[0] is None:
             return None
 
         if len(line_style[1]) == 2:
-            return "dash pattern=on {}pt off {}pt".format(*line_style[1])
+            fmt = f"dash pattern=on {ff}pt off {ff}pt"
+            print(fmt, type(fmt))
+            return fmt.format(*line_style[1])
 
         assert len(line_style[1]) == 4
-        return "dash pattern=on {}pt off {}pt on {}pt off {}pt".format(*line_style[1])
+        fmt = f"dash pattern=on {ff}pt off {ff}pt on {ff}pt off {ff}pt"
+        return fmt.format(*line_style[1])
 
     if isinstance(line, mpl.lines.Line2D) and line.is_dashed():
         # see matplotlib.lines.Line2D.set_dashes
@@ -411,7 +417,7 @@ def mpl_linestyle2pgfplots_linestyle(line_style, line=None):
         lst = list()
         if dashSeq != default_dashSeq:
             # generate own dash sequence
-            format_string = " ".join(len(dashSeq) // 2 * ["on {}pt off {}pt"])
+            format_string = " ".join(len(dashSeq) // 2 * [f"on {ff}pt off {ff}pt"])
             lst.append("dash pattern=" + format_string.format(*dashSeq))
 
         if dashOffset != default_dashOffset:

@@ -54,7 +54,7 @@ def draw_line2d(data, obj):
     if alpha is not None:
         addplot_options.append(f"opacity={alpha}")
 
-    linestyle = mypath.mpl_linestyle2pgfplots_linestyle(obj.get_linestyle(), line=obj)
+    linestyle = mypath.mpl_linestyle2pgfplots_linestyle(data, obj.get_linestyle(), line=obj)
     if linestyle is not None and linestyle != "solid":
         addplot_options.append(linestyle)
 
