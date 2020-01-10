@@ -397,7 +397,6 @@ def mpl_linestyle2pgfplots_linestyle(data, line_style, line=None):
 
         if len(line_style[1]) == 2:
             fmt = f"dash pattern=on {ff}pt off {ff}pt"
-            print(fmt, type(fmt))
             return fmt.format(*line_style[1])
 
         assert len(line_style[1]) == 4
