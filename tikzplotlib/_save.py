@@ -202,7 +202,7 @@ def get_tikz_code(
     code = """"""
 
     if include_disclaimer:
-        disclaimer = "This file was created by tikzplotlib v{}.".format(__version__)
+        disclaimer = f"This file was created by tikzplotlib v{__version__}."
         code += _tex_comment(disclaimer)
 
     # write the contents

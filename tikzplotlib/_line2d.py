@@ -48,11 +48,11 @@ def draw_line2d(data, obj):
             style = "const plot mark right"
         elif drawstyle == "steps-post":
             style = "const plot mark left"
-        addplot_options.append("{}".format(style))
+        addplot_options.append(f"{style}")
 
     alpha = obj.get_alpha()
     if alpha is not None:
-        addplot_options.append("opacity={}".format(alpha))
+        addplot_options.append(f"opacity={alpha}")
 
     linestyle = mypath.mpl_linestyle2pgfplots_linestyle(obj.get_linestyle(), line=obj)
     if linestyle is not None and linestyle != "solid":
@@ -93,7 +93,7 @@ def draw_line2d(data, obj):
     content += c
 
     if legend_text is not None:
-        content.append("\\addlegendentry{{{}}}\n".format(legend_text))
+        content.append(f"\\addlegendentry{{{legend_text}}}\n")
 
     return data, content
 
@@ -143,12 +143,12 @@ def _marker(
         # make sure we didn't round off to zero by accident
         if pgf_size == 0 and mark_size != 0:
             pgf_size = 1
-        addplot_options.append("mark size={:d}".format(pgf_size))
+        addplot_options.append(f"mark size={pgf_size:d}")
 
     mark_every = obj.get_markevery()
     if mark_every:
         if type(mark_every) is int:
-            addplot_options.append("mark repeat={:d}".format(mark_every))
+            addplot_options.append(f"mark repeat={mark_every:d}")
         else:
             # python starts at index 0, pgfplots at index 1
             pgf_marker = [1 + m for m in mark_every]

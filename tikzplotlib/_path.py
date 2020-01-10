@@ -202,7 +202,7 @@ def draw_pathcollection(data, obj):
         data, pgfplots_marker, marker_options = _mpl_marker2pgfp_marker(
             data, marker0, fc
         )
-        draw_options += ["marker={}".format(pgfplots_marker)] + marker_options
+        draw_options += [f"marker={pgfplots_marker}"] + marker_options
 
     # `only mark` plots don't need linewidth
     data, extra_draw_options = get_draw_options(data, obj, ec, fc, ls, None)
@@ -236,10 +236,10 @@ def draw_pathcollection(data, obj):
             )
 
         do = " [{}]".format(", ".join(draw_options)) if draw_options else ""
-        content.append("\\addplot{}\n".format(do))
+        content.append(f"\\addplot{do}\n")
 
         to = " [{}]".format(", ".join(table_options)) if table_options else ""
-        content.append("table{}{{%\n".format(to))
+        content.append(f"table{to}{{%\n")
 
         content.append((" ".join(labels)).strip() + "\n")
         ff = data["float format"]
@@ -249,7 +249,7 @@ def draw_pathcollection(data, obj):
         content.append("};\n")
 
     if legend_text is not None:
-        content.append("\\addlegendentry{{{}}}\n".format(legend_text))
+        content.append(f"\\addlegendentry{{{legend_text}}}\n")
 
     return data, content
 
@@ -274,7 +274,7 @@ def get_draw_options(data, obj, ec, fc, ls, lw, hatch=None):
     if ec is not None:
         data, ec_col, ec_rgba = _color.mpl_color2xcolor(data, ec)
         if ec_rgba[3] > 0:
-            draw_options.append("draw={}".format(ec_col))
+            draw_options.append(f"draw={ec_col}")
         else:
             draw_options.append("draw=none")
 
@@ -282,7 +282,7 @@ def get_draw_options(data, obj, ec, fc, ls, lw, hatch=None):
         data, fc_col, fc_rgba = _color.mpl_color2xcolor(data, fc)
         if fc_rgba[3] > 0.0:
             # Don't draw if it's invisible anyways.
-            draw_options.append("fill={}".format(fc_col))
+            draw_options.append(f"fill={fc_col}")
 
     # handle transparency
     ff = data["float format"]
@@ -352,7 +352,7 @@ def mpl_linewidth2pgfp_linewidth(data, line_width):
             }[line_width]
         except KeyError:
             # explicit line width
-            return "line width={}pt".format(line_width)
+            return f"line width={line_width}pt"
 
     # The following is an alternative approach to line widths.
     # The default line width in matplotlib is 1.0pt, in PGFPlots 0.4pt
@@ -415,7 +415,7 @@ def mpl_linestyle2pgfplots_linestyle(line_style, line=None):
             lst.append("dash pattern=" + format_string.format(*dashSeq))
 
         if dashOffset != default_dashOffset:
-            lst.append("dash phase={}pt".format(dashOffset))
+            lst.append(f"dash phase={dashOffset}pt")
 
         if len(lst) > 0:
             return ", ".join(lst)
