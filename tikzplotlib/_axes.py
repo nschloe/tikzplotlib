@@ -386,7 +386,9 @@ class Axes:
             )
             colorbar_styles.append("ylabel={" + colorbar_ylabel + "}")
 
-        mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(colorbar.get_cmap(), data)
+        mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(
+            colorbar.mappable.get_cmap(), data
+        )
         if is_custom_cmap:
             self.axis_options.append("colormap=" + mycolormap)
         else:
