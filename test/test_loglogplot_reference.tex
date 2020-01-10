@@ -1,28 +1,28 @@
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0.12156862745098,0.466666666666667,0.705882352941177}
+\definecolor{color0}{rgb}{0.12156863,0.46666667,0.70588235}
 
 \begin{axis}[
 log basis x={10},
 log basis y={10},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
-xmin=0.501187233627272, xmax=1995262.31496888,
+x grid style={white!69.019608!black},
+xmin=0.50118723, xmax=1995262.3,
 xmode=log,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
-ymin=0.251188643150958, ymax=3981071705534.97,
+y grid style={white!69.019608!black},
+ymin=0.25118864, ymax=3.9810717e+12,
 ymode=log,
 ytick style={color=black}
 ]
-\addplot [line width=0.8400000000000001pt, color0]
+\addplot [line width=0.84pt, color0]
 table {%
 1 1
-31.6227766016838 1000
+31.622777 1000
 1000 1000000
-31622.7766016838 1000000000
-1000000 1000000000000
+31622.777 1e+09
+1000000 1e+12
 };
 \end{axis}
 
