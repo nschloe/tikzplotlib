@@ -19,7 +19,7 @@ import os
 # -- Project information -----------------------------------------------------
 
 project = "tikzplotlib"
-copyright = "2010-2019, Nico Schlömer"
+copyright = "2010-2020, Nico Schlömer"
 author = "Nico Schlömer"
 
 # https://packaging.python.org/single_source_version/
