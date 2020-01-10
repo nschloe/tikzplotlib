@@ -222,15 +222,14 @@ def get_tikz_code(
         code += "\\end{tikzpicture}\n"
 
     if standalone:
-        # create a latex wrapper for the tikz
-        # <https://tex.stackexchange.com/a/361070/13262>
+        # When using pdflatex, this is necessary:
+        # \\DeclareUnicodeCharacter{{2212}}{{−}}
         code = """\\documentclass{{standalone}}
 \\usepackage[utf8]{{inputenc}}
 \\usepackage{{pgfplots}}
 \\usepgfplotslibrary{{groupplots}}
 \\usepgfplotslibrary{{dateplot}}
 \\pgfplotsset{{compat=newest}}
-\\DeclareUnicodeCharacter{{2212}}{{−}}
 \\begin{{document}}
 {}
 \\end{{document}}\n""".format(

@@ -6,7 +6,7 @@ def plot():
     import numpy as np
 
     fig = plt.figure()
-    with plt.style.context(("ggplot")):
+    with plt.style.context("ggplot"):
         t = np.arange(0.0, 2.0, 0.1)
         s = np.sin(2 * np.pi * t)
         s2 = np.cos(2 * np.pi * t)

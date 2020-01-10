@@ -44,26 +44,26 @@ class Axes:
         data["current axis title"] = title
         if title:
             title = _common_texification(title)
-            self.axis_options.append(u"title={{{}}}".format(title))
+            self.axis_options.append("title={{{}}}".format(title))
 
         # get axes titles
         xlabel = obj.get_xlabel()
         xrotation = obj.xaxis.get_label().get_rotation()
         if xlabel:
             xlabel = _common_texification(xlabel)
-            self.axis_options.append(u"xlabel={{{}}}".format(xlabel))
+            self.axis_options.append("xlabel={{{}}}".format(xlabel))
             if xrotation != 0:
                 self.axis_options.append(
-                    u"xlabel style={{rotate={}}}".format(xrotation - 90)
+                    "xlabel style={{rotate={}}}".format(xrotation - 90)
                 )
         ylabel = obj.get_ylabel()
         yrotation = obj.yaxis.get_label().get_rotation()
         if ylabel:
             ylabel = _common_texification(ylabel)
-            self.axis_options.append(u"ylabel={{{}}}".format(ylabel))
+            self.axis_options.append("ylabel={{{}}}".format(ylabel))
             if yrotation != 90:
                 self.axis_options.append(
-                    u"ylabel style={{rotate={}}}".format(yrotation - 90)
+                    "ylabel style={{rotate={}}}".format(yrotation - 90)
                 )
 
         # Axes limits.
@@ -573,7 +573,7 @@ def _get_ticks(data, xy, ticks, ticklabels):
         # must appear in the TikZ plot.
         if label:
             try:
-                label_float = float(label.replace(u"\N{MINUS SIGN}", "-"))
+                label_float = float(label.replace("\N{MINUS SIGN}", "-"))
                 is_label_required = is_label_required or (label and label_float != tick)
             except ValueError:
                 is_label_required = True
@@ -597,7 +597,7 @@ def _get_ticks(data, xy, ticks, ticklabels):
 
         if is_label_required:
             axis_options.append(
-                u"{}ticklabels={{{}}}".format(xy, u",".join(pgfplots_ticklabels))
+                "{}ticklabels={{{}}}".format(xy, ",".join(pgfplots_ticklabels))
             )
     return axis_options
 

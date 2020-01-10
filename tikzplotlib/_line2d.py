@@ -201,7 +201,7 @@ def _table(obj, data):  # noqa: C901
     elif isinstance(xdata_alt[0], str):
         data["current axes"].axis_options += [
             "xtick={{{}}}".format(",".join([ff.format(x) for x in xdata])),
-            u"xticklabels={{{}}}".format(u",".join(xdata_alt)),
+            "xticklabels={{{}}}".format(",".join(xdata_alt)),
         ]
         xdata, ydata = transform_to_data_coordinates(obj, xdata, ydata)
     else:
