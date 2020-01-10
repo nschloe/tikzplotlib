@@ -18,7 +18,6 @@ def print_tree(obj, indent=""):
 
     for child in obj.get_children():
         print_tree(child, indent + "   ")
-    return
 
 
 # https://stackoverflow.com/a/845432/353337
@@ -47,7 +46,6 @@ def assert_equality(plot, filename, **extra_get_tikz_code_args):
         include_disclaimer=False, standalone=True, **extra_get_tikz_code_args
     )
     assert _compile(code) is not None
-    return
 
 
 def _compile(code):
@@ -96,4 +94,3 @@ def compare_mpl_latex(plot):
     png_path = os.path.join(pdf_dirname, "test-1.png")
 
     os.rename(png_path, os.path.join(directory, "test-1.png"))
-    return

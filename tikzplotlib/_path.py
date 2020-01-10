@@ -1,13 +1,13 @@
 import matplotlib as mpl
 import numpy
+from matplotlib.dates import DateConverter, num2date
 from matplotlib.markers import MarkerStyle
-from matplotlib.dates import num2date, DateConverter
 
 from . import _color
 from ._axes import _mpl_cmap2pgf_cmap
+from ._hatches import _mpl_hatch2pgfp_pattern
 from ._markers import _mpl_marker2pgfp_marker
 from ._util import get_legend_text, has_legend
-from ._hatches import _mpl_hatch2pgfp_pattern
 
 
 def draw_path(data, path, draw_options=None, simplify=None):

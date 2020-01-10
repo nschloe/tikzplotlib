@@ -18,4 +18,3 @@ def plot():
 
 def test():
     assert_equality(plot, "test_errorbar_reference.tex")
-    return

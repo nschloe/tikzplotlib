@@ -79,9 +79,7 @@ def draw_legend(data, obj):
             break
 
     if alignment:
-        data["current axes"].axis_options.append(
-            f"legend cell align={{{alignment}}}"
-        )
+        data["current axes"].axis_options.append(f"legend cell align={{{alignment}}}")
 
     if obj._ncol != 1:
         data["current axes"].axis_options.append(f"legend columns={obj._ncol}")

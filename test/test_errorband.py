@@ -21,7 +21,6 @@ def plot():
 
 def test():
     assert_equality(plot, "test_errorband_reference.tex")
-    return
 
 
 if __name__ == "__main__":

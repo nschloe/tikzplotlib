@@ -150,8 +150,6 @@ class Axes:
         else:
             self.content.append("\\begin{axis}")
 
-        return
-
     def get_begin_code(self):
         content = self.content
         if self.axis_options:
@@ -201,7 +199,6 @@ class Axes:
         else:
             # TODO keep an eye on https://tex.stackexchange.com/q/480058/13262
             pass
-        return
 
     def _ticks(self, data, obj):
         # get ticks
@@ -291,8 +288,6 @@ class Axes:
             self.axis_options.append(x_tick_position_string)
             self.axis_options.append(y_tick_position_string)
 
-        return
-
     def _grid(self, obj, data):
         # Don't use get_{x,y}gridlines for gridlines; see discussion on
         # <http://sourceforge.net/p/matplotlib/mailman/message/25169234/> Coordinate of
@@ -320,8 +315,6 @@ class Axes:
             data, col, _ = _color.mpl_color2xcolor(data, ygridcolor)
             if col != "black":
                 self.axis_options.append(f"y grid style={{{col}}}")
-
-        return
 
     def _colorbar(self, colorbar, data):
         colorbar_styles = []
@@ -408,8 +401,6 @@ class Axes:
                 "colorbar style={{{}}}".format(",".join(colorbar_styles))
             )
 
-        return
-
     def _subplot(self, obj, data):
         # https://github.com/matplotlib/matplotlib/issues/7225#issuecomment-252173667
         geom = obj.get_subplotspec().get_topmost_subplotspec().get_geometry()
@@ -430,8 +421,6 @@ class Axes:
                     )
                     data["is_in_groupplot_env"] = True
                     data["pgfplots libs"].add("groupplots")
-
-        return
 
     def _get_label_rotation_and_horizontal_alignment(self, obj, data, x_or_y):
         tick_label_text_width = None

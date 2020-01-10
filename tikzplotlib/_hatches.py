@@ -17,7 +17,6 @@ r"""
 
 import warnings
 
-
 BAD_MP_HATCH = ["o", "O"]  # Bad hatch/pattern correspondance
 UNUSED_PGF_PATTERN = ["dots"]
 _MP_HATCH2PGF_PATTERN = {
