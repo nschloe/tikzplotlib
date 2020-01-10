@@ -44,26 +44,26 @@ class Axes:
         data["current axis title"] = title
         if title:
             title = _common_texification(title)
-            self.axis_options.append(u"title={{{}}}".format(title))
+            self.axis_options.append(f"title={{{title}}}")
 
         # get axes titles
         xlabel = obj.get_xlabel()
         xrotation = obj.xaxis.get_label().get_rotation()
         if xlabel:
             xlabel = _common_texification(xlabel)
-            self.axis_options.append(u"xlabel={{{}}}".format(xlabel))
+            self.axis_options.append(f"xlabel={{{xlabel}}}")
             if xrotation != 0:
                 self.axis_options.append(
-                    u"xlabel style={{rotate={}}}".format(xrotation - 90)
+                    "xlabel style={{rotate={}}}".format(xrotation - 90)
                 )
         ylabel = obj.get_ylabel()
         yrotation = obj.yaxis.get_label().get_rotation()
         if ylabel:
             ylabel = _common_texification(ylabel)
-            self.axis_options.append(u"ylabel={{{}}}".format(ylabel))
+            self.axis_options.append(f"ylabel={{{ylabel}}}")
             if yrotation != 90:
                 self.axis_options.append(
-                    u"ylabel style={{rotate={}}}".format(yrotation - 90)
+                    "ylabel style={{rotate={}}}".format(yrotation - 90)
                 )
 
         # Axes limits.
@@ -131,14 +131,14 @@ class Axes:
         axcol = obj.spines["bottom"].get_edgecolor()
         data, col, _ = _color.mpl_color2xcolor(data, axcol)
         if col != "black":
-            self.axis_options.append("axis line style={{{}}}".format(col))
+            self.axis_options.append(f"axis line style={{{col}}}")
 
         # background color
         bgcolor = obj.get_facecolor()
 
         data, col, _ = _color.mpl_color2xcolor(data, bgcolor)
         if col != "white":
-            self.axis_options.append("axis background/.style={{fill={}}}".format(col))
+            self.axis_options.append(f"axis background/.style={{fill={col}}}")
 
         # find color bar
         colorbar = _find_associated_colorbar(obj)
@@ -149,8 +149,6 @@ class Axes:
             self.content.append("\n\\nextgroupplot")
         else:
             self.content.append("\\begin{axis}")
-
-        return
 
     def get_begin_code(self):
         content = self.content
@@ -201,7 +199,6 @@ class Axes:
         else:
             # TODO keep an eye on https://tex.stackexchange.com/q/480058/13262
             pass
-        return
 
     def _ticks(self, data, obj):
         # get ticks
@@ -229,7 +226,7 @@ class Axes:
         else:
             c0 = l0.get_color()
             data, xtickcolor, _ = _color.mpl_color2xcolor(data, c0)
-            self.axis_options.append("xtick style={{color={}}}".format(xtickcolor))
+            self.axis_options.append(f"xtick style={{color={xtickcolor}}}")
 
         try:
             l0 = obj.get_yticklines()[0]
@@ -238,7 +235,7 @@ class Axes:
         else:
             c0 = l0.get_color()
             data, ytickcolor, _ = _color.mpl_color2xcolor(data, c0)
-            self.axis_options.append("ytick style={{color={}}}".format(ytickcolor))
+            self.axis_options.append(f"ytick style={{color={ytickcolor}}}")
 
         # Find tick direction
         # For new matplotlib versions, we could replace the direction getter by
@@ -286,12 +283,10 @@ class Axes:
         y_tick_position_string, y_tick_position = _get_tick_position(obj, "y")
 
         if x_tick_position == y_tick_position and x_tick_position is not None:
-            self.axis_options.append("tick pos={}".format(x_tick_position))
+            self.axis_options.append(f"tick pos={x_tick_position}")
         else:
             self.axis_options.append(x_tick_position_string)
             self.axis_options.append(y_tick_position_string)
-
-        return
 
     def _grid(self, obj, data):
         # Don't use get_{x,y}gridlines for gridlines; see discussion on
@@ -307,7 +302,7 @@ class Axes:
             xgridcolor = xlines[0].get_color()
             data, col, _ = _color.mpl_color2xcolor(data, xgridcolor)
             if col != "black":
-                self.axis_options.append("x grid style={{{}}}".format(col))
+                self.axis_options.append(f"x grid style={{{col}}}")
 
         if obj.yaxis._gridOnMajor:
             self.axis_options.append("ymajorgrids")
@@ -319,9 +314,7 @@ class Axes:
             ygridcolor = ylines[0].get_color()
             data, col, _ = _color.mpl_color2xcolor(data, ygridcolor)
             if col != "black":
-                self.axis_options.append("y grid style={{{}}}".format(col))
-
-        return
+                self.axis_options.append(f"y grid style={{{col}}}")
 
     def _colorbar(self, colorbar, data):
         colorbar_styles = []
@@ -393,7 +386,9 @@ class Axes:
             )
             colorbar_styles.append("ylabel={" + colorbar_ylabel + "}")
 
-        mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(colorbar.get_cmap(), data)
+        mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(
+            colorbar.mappable.get_cmap(), data
+        )
         if is_custom_cmap:
             self.axis_options.append("colormap=" + mycolormap)
         else:
@@ -407,8 +402,6 @@ class Axes:
             self.axis_options.append(
                 "colorbar style={{{}}}".format(",".join(colorbar_styles))
             )
-
-        return
 
     def _subplot(self, obj, data):
         # https://github.com/matplotlib/matplotlib/issues/7225#issuecomment-252173667
@@ -431,11 +424,9 @@ class Axes:
                     data["is_in_groupplot_env"] = True
                     data["pgfplots libs"].add("groupplots")
 
-        return
-
     def _get_label_rotation_and_horizontal_alignment(self, obj, data, x_or_y):
         tick_label_text_width = None
-        tick_label_text_width_identifier = "{} tick label text width".format(x_or_y)
+        tick_label_text_width_identifier = f"{x_or_y} tick label text width"
         if tick_label_text_width_identifier in self.axis_options:
             self.axis_options.remove(tick_label_text_width_identifier)
 
@@ -473,7 +464,7 @@ class Axes:
             # been passed in the 'extra' parameter
             if tick_label_text_width:
                 values.append("align={}".format(tick_labels_horizontal_alignment[0]))
-                values.append("text width={}".format(tick_label_text_width))
+                values.append(f"text width={tick_label_text_width}")
 
             if values:
                 label_style = "{}ticklabel style = {{{}}}".format(
@@ -498,7 +489,7 @@ class Axes:
                     values.append(
                         "align={}".format(tick_labels_horizontal_alignment[0])
                     )
-                    values.append("text width={}".format(tick_label_text_width))
+                    values.append(f"text width={tick_label_text_width}")
                 else:
                     for idx, x in enumerate(tick_labels_horizontal_alignment):
                         label_style += "{}_tick_label_ha_{}/.initial = {}".format(
@@ -510,7 +501,7 @@ class Axes:
                             x_or_y
                         )
                     )
-                    values.append("text width={}".format(tick_label_text_width))
+                    values.append(f"text width={tick_label_text_width}")
 
             label_style = (
                 "every {} tick label/.style = {{\n"
@@ -537,7 +528,7 @@ def _get_tick_position(obj, axes_obj):
 
     major_ticks_position = None
     if not major_ticks_bottom_show_all and not major_ticks_top_show_all:
-        position_string = "{}majorticks=false".format(axes_obj)
+        position_string = f"{axes_obj}majorticks=false"
     elif major_ticks_bottom_show_all and major_ticks_top_show_all:
         major_ticks_position = "both"
     elif major_ticks_bottom_show_all:
@@ -546,7 +537,7 @@ def _get_tick_position(obj, axes_obj):
         major_ticks_position = "right"
 
     if major_ticks_position:
-        position_string = "{}tick pos={}".format(axes_obj, major_ticks_position)
+        position_string = f"{axes_obj}tick pos={major_ticks_position}"
 
     return position_string, major_ticks_position
 
@@ -573,7 +564,7 @@ def _get_ticks(data, xy, ticks, ticklabels):
         # must appear in the TikZ plot.
         if label:
             try:
-                label_float = float(label.replace(u"\N{MINUS SIGN}", "-"))
+                label_float = float(label.replace("\N{MINUS SIGN}", "-"))
                 is_label_required = is_label_required or (label and label_float != tick)
             except ValueError:
                 is_label_required = True
@@ -593,11 +584,11 @@ def _get_ticks(data, xy, ticks, ticklabels):
             )
         else:
             val = "{}" if "minor" in xy else "\\empty"
-            axis_options.append("{}tick={}".format(xy, val))
+            axis_options.append(f"{xy}tick={val}")
 
         if is_label_required:
             axis_options.append(
-                u"{}ticklabels={{{}}}".format(xy, u",".join(pgfplots_ticklabels))
+                "{}ticklabels={{{}}}".format(xy, ",".join(pgfplots_ticklabels))
             )
     return axis_options
 

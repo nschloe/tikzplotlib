@@ -6,7 +6,7 @@ def plot():
     import numpy as np
 
     fig = plt.figure()
-    with plt.style.context(("fivethirtyeight")):
+    with plt.style.context("fivethirtyeight"):
         np.random.seed(123)
         plt.scatter(
             np.linspace(0, 100, 101),

@@ -149,7 +149,7 @@ def _draw_rectangle(data, obj, draw_options):
         cont += "\\addlegendimage{{ybar,ybar legend,{}}};\n".format(
             ",".join(draw_options)
         )
-        cont += "\\addlegendentry{{{}}}\n\n".format(label)
+        cont += f"\\addlegendentry{{{label}}}\n\n"
     return data, cont
 
 

@@ -62,7 +62,7 @@ def draw_text(data, obj):
     if anchor is not None:
         properties.append(anchor)
     data, col, _ = _color.mpl_color2xcolor(data, converter.to_rgb(obj.get_color()))
-    properties.append("text={}".format(col))
+    properties.append(f"text={col}")
     properties.append("rotate={:.1f}".format(obj.get_rotation()))
 
     if obj.get_style() == "italic":
@@ -108,7 +108,7 @@ def draw_text(data, obj):
 
     if "\n" in text:
         # http://tex.stackexchange.com/a/124114/13262
-        properties.append("align={}".format(ha))
+        properties.append(f"align={ha}")
         # Manipulating the text here is actually against mpl2tikz's policy not
         # to do that. On the other hand, newlines should translate into
         # newlines.
@@ -187,7 +187,7 @@ def _get_arrow_style(obj, data):
     try:
         style = arrow_translate[style_cls]
     except KeyError:
-        raise NotImplementedError("Unknown arrow style {}".format(style_cls))
+        raise NotImplementedError(f"Unknown arrow style {style_cls}")
     else:
         data, col, _ = _color.mpl_color2xcolor(data, obj.get_ec())
         return style + ["draw=" + col]
@@ -231,10 +231,10 @@ def _bbox(bbox, data, properties, scaling):
     if bbox.get_fill():
         data, fc, _ = _color.mpl_color2xcolor(data, bbox.get_facecolor())
         if fc:
-            properties.append("fill={}".format(fc))
+            properties.append(f"fill={fc}")
     data, ec, _ = _color.mpl_color2xcolor(data, bbox.get_edgecolor())
     if ec:
-        properties.append("draw={}".format(ec))
+        properties.append(f"draw={ec}")
     # XXX: This is ugly, too
     ff = data["float format"]
     properties.append(("line width=" + ff + "pt").format(bbox.get_lw() * 0.4))

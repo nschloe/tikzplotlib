@@ -1,13 +1,13 @@
 import matplotlib as mpl
 import numpy
+from matplotlib.dates import DateConverter, num2date
 from matplotlib.markers import MarkerStyle
-from matplotlib.dates import num2date, DateConverter
 
 from . import _color
 from ._axes import _mpl_cmap2pgf_cmap
+from ._hatches import _mpl_hatch2pgfp_pattern
 from ._markers import _mpl_marker2pgfp_marker
 from ._util import get_legend_text, has_legend
-from ._hatches import _mpl_hatch2pgfp_pattern
 
 
 def draw_path(data, path, draw_options=None, simplify=None):
@@ -202,7 +202,7 @@ def draw_pathcollection(data, obj):
         data, pgfplots_marker, marker_options = _mpl_marker2pgfp_marker(
             data, marker0, fc
         )
-        draw_options += ["marker={}".format(pgfplots_marker)] + marker_options
+        draw_options += [f"marker={pgfplots_marker}"] + marker_options
 
     # `only mark` plots don't need linewidth
     data, extra_draw_options = get_draw_options(data, obj, ec, fc, ls, None)
@@ -236,10 +236,10 @@ def draw_pathcollection(data, obj):
             )
 
         do = " [{}]".format(", ".join(draw_options)) if draw_options else ""
-        content.append("\\addplot{}\n".format(do))
+        content.append(f"\\addplot{do}\n")
 
         to = " [{}]".format(", ".join(table_options)) if table_options else ""
-        content.append("table{}{{%\n".format(to))
+        content.append(f"table{to}{{%\n")
 
         content.append((" ".join(labels)).strip() + "\n")
         ff = data["float format"]
@@ -249,7 +249,7 @@ def draw_pathcollection(data, obj):
         content.append("};\n")
 
     if legend_text is not None:
-        content.append("\\addlegendentry{{{}}}\n".format(legend_text))
+        content.append(f"\\addlegendentry{{{legend_text}}}\n")
 
     return data, content
 
@@ -274,7 +274,7 @@ def get_draw_options(data, obj, ec, fc, ls, lw, hatch=None):
     if ec is not None:
         data, ec_col, ec_rgba = _color.mpl_color2xcolor(data, ec)
         if ec_rgba[3] > 0:
-            draw_options.append("draw={}".format(ec_col))
+            draw_options.append(f"draw={ec_col}")
         else:
             draw_options.append("draw=none")
 
@@ -282,7 +282,7 @@ def get_draw_options(data, obj, ec, fc, ls, lw, hatch=None):
         data, fc_col, fc_rgba = _color.mpl_color2xcolor(data, fc)
         if fc_rgba[3] > 0.0:
             # Don't draw if it's invisible anyways.
-            draw_options.append("fill={}".format(fc_col))
+            draw_options.append(f"fill={fc_col}")
 
     # handle transparency
     ff = data["float format"]
@@ -305,7 +305,7 @@ def get_draw_options(data, obj, ec, fc, ls, lw, hatch=None):
             draw_options.append(lw_)
 
     if ls is not None:
-        ls_ = mpl_linestyle2pgfplots_linestyle(ls)
+        ls_ = mpl_linestyle2pgfplots_linestyle(data, ls)
         if ls_ is not None and ls_ != "solid":
             draw_options.append(ls_)
 
@@ -352,7 +352,8 @@ def mpl_linewidth2pgfp_linewidth(data, line_width):
             }[line_width]
         except KeyError:
             # explicit line width
-            return "line width={}pt".format(line_width)
+            ff = data["float format"]
+            return f"line width={ff}pt".format(line_width)
 
     # The following is an alternative approach to line widths.
     # The default line width in matplotlib is 1.0pt, in PGFPlots 0.4pt
@@ -371,12 +372,13 @@ def mpl_linewidth2pgfp_linewidth(data, line_width):
         }[scaled_line_width]
     except KeyError:
         # explicit line width
-        out = "line width={}pt".format(0.4 * line_width)
+        ff = data["float format"]
+        out = f"line width={ff}pt".format(0.4 * line_width)
 
     return out
 
 
-def mpl_linestyle2pgfplots_linestyle(line_style, line=None):
+def mpl_linestyle2pgfplots_linestyle(data, line_style, line=None):
     """Translates a line style of matplotlib to the corresponding style
     in PGFPlots.
     """
@@ -388,15 +390,18 @@ def mpl_linestyle2pgfplots_linestyle(line_style, line=None):
     # dashed: (0, (6.0, 6.0))
     # dotted: (0, (1.0, 3.0))
     # dashdot: (0, (3.0, 5.0, 1.0, 5.0))
+    ff = data["float format"]
     if isinstance(line_style, tuple):
         if line_style[0] is None:
             return None
 
         if len(line_style[1]) == 2:
-            return "dash pattern=on {}pt off {}pt".format(*line_style[1])
+            fmt = f"dash pattern=on {ff}pt off {ff}pt"
+            return fmt.format(*line_style[1])
 
         assert len(line_style[1]) == 4
-        return "dash pattern=on {}pt off {}pt on {}pt off {}pt".format(*line_style[1])
+        fmt = f"dash pattern=on {ff}pt off {ff}pt on {ff}pt off {ff}pt"
+        return fmt.format(*line_style[1])
 
     if isinstance(line, mpl.lines.Line2D) and line.is_dashed():
         # see matplotlib.lines.Line2D.set_dashes
@@ -411,11 +416,11 @@ def mpl_linestyle2pgfplots_linestyle(line_style, line=None):
         lst = list()
         if dashSeq != default_dashSeq:
             # generate own dash sequence
-            format_string = " ".join(len(dashSeq) // 2 * ["on {}pt off {}pt"])
+            format_string = " ".join(len(dashSeq) // 2 * [f"on {ff}pt off {ff}pt"])
             lst.append("dash pattern=" + format_string.format(*dashSeq))
 
         if dashOffset != default_dashOffset:
-            lst.append("dash phase={}pt".format(dashOffset))
+            lst.append(f"dash phase={dashOffset}pt")
 
         if len(lst) > 0:
             return ", ".join(lst)

@@ -1,17 +1,17 @@
 \begin{tikzpicture}
 
 \definecolor{color0}{rgb}{1,1,0}
-\definecolor{color1}{rgb}{0.12156862745098,0.466666666666667,0.705882352941177}
+\definecolor{color1}{rgb}{0.12156863,0.46666667,0.70588235}
 \definecolor{color2}{rgb}{0.5,0.3,0.8}
 
 \begin{groupplot}[group style={group size=1 by 3}]
 \nextgroupplot[
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=0.41, xmax=4.59,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
+y grid style={white!69.019608!black},
 ymin=0, ymax=10.5,
 ytick style={color=black}
 ]
@@ -27,10 +27,10 @@ ytick style={color=black}
 \nextgroupplot[
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=0.41, xmax=4.59,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
+y grid style={white!69.019608!black},
 ymin=0, ymax=10.5,
 ytick style={color=black}
 ]
@@ -38,20 +38,20 @@ ytick style={color=black}
 \draw[draw=black,fill=color0,postaction={pattern=grid}] (axis cs:1.6,0) rectangle (axis cs:2.4,2);
 \draw[draw=black,fill=color0,postaction={pattern=crosshatch}] (axis cs:2.6,0) rectangle (axis cs:3.4,3);
 \draw[draw=black,fill=color0,postaction={pattern=north west lines}] (axis cs:3.6,0) rectangle (axis cs:4.4,4);
-\draw[draw=none,fill=green!50.19607843137255!black,postaction={pattern=fivepointed stars}] (axis cs:0.6,1) rectangle (axis cs:1.4,7);
-\draw[draw=none,fill=green!50.19607843137255!black,postaction={pattern=sixpointed stars}] (axis cs:1.6,2) rectangle (axis cs:2.4,8);
-\draw[draw=none,fill=green!50.19607843137255!black,postaction={pattern=bricks}] (axis cs:2.6,3) rectangle (axis cs:3.4,9);
-\draw[draw=none,fill=green!50.19607843137255!black,postaction={pattern=crosshatch dots}] (axis cs:3.6,4) rectangle (axis cs:4.4,10);
+\draw[draw=none,fill=green!50.196078!black,postaction={pattern=fivepointed stars}] (axis cs:0.6,1) rectangle (axis cs:1.4,7);
+\draw[draw=none,fill=green!50.196078!black,postaction={pattern=sixpointed stars}] (axis cs:1.6,2) rectangle (axis cs:2.4,8);
+\draw[draw=none,fill=green!50.196078!black,postaction={pattern=bricks}] (axis cs:2.6,3) rectangle (axis cs:3.4,9);
+\draw[draw=none,fill=green!50.196078!black,postaction={pattern=crosshatch dots}] (axis cs:3.6,4) rectangle (axis cs:4.4,10);
 
 \nextgroupplot[
 legend cell align={left},
-legend style={fill opacity=0.8, draw opacity=1, text opacity=1, draw=white!80.0!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, draw=white!80!black},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=0, xmax=6,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
+y grid style={white!69.019608!black},
 ymin=0, ymax=2.5,
 ytick style={color=black}
 ]

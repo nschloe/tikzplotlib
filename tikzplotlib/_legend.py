@@ -49,14 +49,14 @@ def draw_legend(data, obj):
             ("at={{(" + ff + "," + ff + ")}}").format(position[0], position[1])
         )
     if anchor:
-        legend_style.append("anchor={}".format(anchor))
+        legend_style.append(f"anchor={anchor}")
 
     # Get the edgecolor of the box
     if obj.get_frame_on():
         edgecolor = obj.get_frame().get_edgecolor()
         data, frame_xcolor, _ = mycol.mpl_color2xcolor(data, edgecolor)
         if frame_xcolor != "black":  # black is default
-            legend_style.append("draw={}".format(frame_xcolor))
+            legend_style.append(f"draw={frame_xcolor}")
     else:
         legend_style.append("draw=none")
 
@@ -64,7 +64,7 @@ def draw_legend(data, obj):
     facecolor = obj.get_frame().get_facecolor()
     data, fill_xcolor, _ = mycol.mpl_color2xcolor(data, facecolor)
     if fill_xcolor != "white":  # white is default
-        legend_style.append("fill={}".format(fill_xcolor))
+        legend_style.append(f"fill={fill_xcolor}")
 
     # Get the horizontal alignment
     try:
@@ -79,12 +79,10 @@ def draw_legend(data, obj):
             break
 
     if alignment:
-        data["current axes"].axis_options.append(
-            "legend cell align={{{}}}".format(alignment)
-        )
+        data["current axes"].axis_options.append(f"legend cell align={{{alignment}}}")
 
     if obj._ncol != 1:
-        data["current axes"].axis_options.append("legend columns={}".format(obj._ncol))
+        data["current axes"].axis_options.append(f"legend columns={obj._ncol}")
 
     # Write styles to data
     if legend_style:

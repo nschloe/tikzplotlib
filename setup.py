@@ -21,7 +21,7 @@ setup(
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     license=about["__license__"],
-    python_requires=">=3",
+    python_requires=">=3.6",
     classifiers=[
         about["__status__"],
         about["__license__"],
