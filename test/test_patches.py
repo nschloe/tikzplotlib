@@ -55,7 +55,7 @@ def plot():
         patches.append(polygon)
 
     colors = 100 * np.random.rand(len(patches))
-    p = PatchCollection(patches, cmap=mpl.cm.jet, alpha=0.4)
+    p = PatchCollection(patches, cmap=mpl.cm.viridis, alpha=0.4)
     p.set_array(np.array(colors))
     ax.add_collection(p)
 
