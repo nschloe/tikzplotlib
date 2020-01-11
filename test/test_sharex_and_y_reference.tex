@@ -2,11 +2,13 @@
 
 \begin{groupplot}[group style={group size=2 by 2}]
 \nextgroupplot[
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
 x grid style={white!69.019608!black},
 xmin=-0.245, xmax=5.145,
 xtick style={color=black},
+xticklabels={},
 y grid style={white!69.019608!black},
 ymin=-1.1, ymax=1.1,
 ytick style={color=black}
@@ -66,14 +68,18 @@ table {%
 };
 
 \nextgroupplot[
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
+scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
 x grid style={white!69.019608!black},
 xmin=-0.245, xmax=5.145,
 xtick style={color=black},
+xticklabels={},
 y grid style={white!69.019608!black},
 ymin=-1.1, ymax=1.1,
-ytick style={color=black}
+ytick style={color=black},
+yticklabels={}
 ]
 \addplot [semithick, red]
 table {%
@@ -194,6 +200,7 @@ table {%
 };
 
 \nextgroupplot[
+scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
 x grid style={white!69.019608!black},
@@ -201,7 +208,8 @@ xmin=-0.245, xmax=5.145,
 xtick style={color=black},
 y grid style={white!69.019608!black},
 ymin=-1.1, ymax=1.1,
-ytick style={color=black}
+ytick style={color=black},
+yticklabels={}
 ]
 \addplot [semithick, black]
 table {%

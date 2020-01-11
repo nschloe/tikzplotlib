@@ -572,6 +572,12 @@ def _get_ticks(data, xy, ticks, ticklabels):
     for tick in ticks:
         pgfplots_ticks.append(tick)
 
+    # if the labels are all missing, then we need to output an empty set of labels
+    if len(ticklabels) == 0 and len(ticks) != 0:
+        axis_options.append(f"{xy}ticklabels={{}}")
+        # remove the multiplier too
+        axis_options.append(f"scaled {xy} ticks=" + r"manual:{}{\pgfmathparse{#1}}")
+
     # Leave the ticks to PGFPlots if not in STRICT mode and if there are no explicit
     # labels.
     if data["strict"] or is_label_required:
