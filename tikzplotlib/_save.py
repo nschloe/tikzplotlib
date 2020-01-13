@@ -316,6 +316,24 @@ class _ContentManager:
         return content_out
 
 
+def _draw_collection(data, child):
+    if isinstance(
+        child, (mpl.collections.PatchCollection, mpl.collections.PolyCollection)
+    ):
+        return _patch.draw_patchcollection(data, child)
+    elif isinstance(child, mpl.collections.PathCollection):
+        return _path.draw_pathcollection(data, child)
+    elif isinstance(child, mpl.collections.LineCollection):
+        return _line2d.draw_linecollection(data, child)
+    elif isinstance(child, mpl.collections.QuadMesh):
+        return qmsh.draw_quadmesh(data, child)
+    else:
+        warnings.warn(
+            "tikzplotlib: Don't know how to handle object {}.".format(type(child))
+        )
+        return data, []
+
+
 def _recurse(data, obj):
     """Iterates over all children of the current object, gathers the contents
     contributing to the resulting PGFPlots file, and returns those.
@@ -365,19 +383,8 @@ def _recurse(data, obj):
         elif isinstance(child, mpl.patches.Patch):
             data, cont = _patch.draw_patch(data, child)
             content.extend(cont, child.get_zorder())
-        elif isinstance(
-            child, (mpl.collections.PatchCollection, mpl.collections.PolyCollection)
-        ):
-            data, cont = _patch.draw_patchcollection(data, child)
-            content.extend(cont, child.get_zorder())
-        elif isinstance(child, mpl.collections.PathCollection):
-            data, cont = _path.draw_pathcollection(data, child)
-            content.extend(cont, child.get_zorder())
-        elif isinstance(child, mpl.collections.LineCollection):
-            data, cont = _line2d.draw_linecollection(data, child)
-            content.extend(cont, child.get_zorder())
-        elif isinstance(child, mpl.collections.QuadMesh):
-            data, cont = qmsh.draw_quadmesh(data, child)
+        elif isinstance(child, mpl.collections.Collection):
+            data, cont = _draw_collection(data, child)
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.legend.Legend):
             data = _legend.draw_legend(data, child)
