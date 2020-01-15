@@ -317,21 +317,14 @@ class _ContentManager:
 
 
 def _draw_collection(data, child):
-    if isinstance(
-        child, (mpl.collections.PatchCollection, mpl.collections.PolyCollection)
-    ):
-        return _patch.draw_patchcollection(data, child)
-    elif isinstance(child, mpl.collections.PathCollection):
+    if isinstance(child, mpl.collections.PathCollection):
         return _path.draw_pathcollection(data, child)
     elif isinstance(child, mpl.collections.LineCollection):
         return _line2d.draw_linecollection(data, child)
     elif isinstance(child, mpl.collections.QuadMesh):
         return qmsh.draw_quadmesh(data, child)
     else:
-        warnings.warn(
-            "tikzplotlib: Don't know how to handle object {}.".format(type(child))
-        )
-        return data, []
+        return _patch.draw_patchcollection(data, child)
 
 
 def _recurse(data, obj):
