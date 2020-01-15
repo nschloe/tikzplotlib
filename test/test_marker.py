@@ -11,7 +11,7 @@ def plot():
         s = np.sin(t)
         c = np.cos(t)
         s2 = np.sin(2 * t)
-        ax.plot(t, s, "ko-", mec="r", markevery=2)
+        ax.plot(t, s, "ko-", mec="r", markevery=2, markersize=3)
         ax.plot(t, c, "ks--", mec="r", markevery=3)
         ax.scatter(t, s2, s=100, c="black", marker="+")
         ax.set_xlim(t[0], t[-1])
