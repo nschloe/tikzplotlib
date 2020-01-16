@@ -166,34 +166,34 @@ class Axes:
         return ""
 
     def _set_axis_dimensions(self, data, aspect_num, xlim, ylim):
-        if data["fwidth"] and data["fheight"]:
+        if data["axis width"] and data["axis height"]:
             # width and height overwrite aspect ratio
-            self.axis_options.append("width=" + data["fwidth"])
-            self.axis_options.append("height=" + data["fheight"])
-        elif data["fwidth"]:
-            # only data['fwidth'] given. calculate height by the aspect ratio
-            self.axis_options.append("width=" + data["fwidth"])
+            self.axis_options.append("width=" + data["axis width"])
+            self.axis_options.append("height=" + data["axis height"])
+        elif data["axis width"]:
+            # only data["axis width"] given. calculate height by the aspect ratio
+            self.axis_options.append("width=" + data["axis width"])
             if aspect_num:
                 alpha = aspect_num * (ylim[1] - ylim[0]) / (xlim[1] - xlim[0])
                 if alpha == 1.0:
-                    data["fheight"] = data["fwidth"]
+                    data["axis height"] = data["axis width"]
                 else:
-                    # Concatenate the literals, as data['fwidth'] could as well
+                    # Concatenate the literals, as data["axis width"] could as well
                     # be a LaTeX length variable such as \figurewidth.
-                    data["fheight"] = str(alpha) + "*" + data["fwidth"]
-                self.axis_options.append("height=" + data["fheight"])
-        elif data["fheight"]:
-            # only data['fheight'] given. calculate width by the aspect ratio
-            self.axis_options.append("height=" + data["fheight"])
+                    data["axis height"] = str(alpha) + "*" + data["axis width"]
+                self.axis_options.append("height=" + data["axis height"])
+        elif data["axis height"]:
+            # only data["axis height"] given. calculate width by the aspect ratio
+            self.axis_options.append("height=" + data["axis height"])
             if aspect_num:
                 alpha = aspect_num * (ylim[1] - ylim[0]) / (xlim[1] - xlim[0])
                 if alpha == 1.0:
-                    data["fwidth"] = data["fheight"]
+                    data["axis width"] = data["axis height"]
                 else:
-                    # Concatenate the literals, as data['fheight'] could as
+                    # Concatenate the literals, as data["axis height"] could as
                     # well be a LaTeX length variable such as \figureheight.
-                    data["fwidth"] = str(1.0 / alpha) + "*" + data["fheight"]
-                self.axis_options.append("width=" + data["fwidth"])
+                    data["axis width"] = str(1.0 / alpha) + "*" + data["axis height"]
+                self.axis_options.append("width=" + data["axis width"])
         else:
             # TODO keep an eye on https://tex.stackexchange.com/q/480058/13262
             pass

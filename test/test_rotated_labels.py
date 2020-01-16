@@ -59,7 +59,7 @@ def test_rotated_labels_parameters(
     if y_tick_label_width:
         extra_dict["y tick label text width"] = y_tick_label_width
 
-    tikzplotlib.save(tikz_file, figurewidth="7.5cm", extra_axis_parameters=extra_dict)
+    tikzplotlib.save(tikz_file, axis_width="7.5cm", extra_axis_parameters=extra_dict)
 
     # close figure
     plt.close(fig)
@@ -94,7 +94,7 @@ def test_rotated_labels_parameters_different_values(
     if y_tick_label_width:
         extra_dict["y tick label text width"] = y_tick_label_width
 
-    tikzplotlib.save(tikz_file, figurewidth="7.5cm", extra_axis_parameters=extra_dict)
+    tikzplotlib.save(tikz_file, axis_width="7.5cm", extra_axis_parameters=extra_dict)
 
     # close figure
     plt.close(fig)
@@ -116,7 +116,7 @@ def test_rotated_labels_parameters_no_ticks():
     _, tmp_base = tempfile.mkstemp()
     tikz_file = tmp_base + "_tikz.tex"
 
-    tikzplotlib.save(tikz_file, figurewidth="7.5cm")
+    tikzplotlib.save(tikz_file, axis_width="7.5cm")
 
     # close figure
     plt.close(fig)
