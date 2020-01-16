@@ -140,12 +140,10 @@ def _marker(
 
     mark_size = obj.get_markersize()
     if mark_size:
+        ff = data["float format"]
         # setting half size because pgfplots counts the radius/half-width
-        pgf_size = int(0.5 * mark_size)
-        # make sure we didn't round off to zero by accident
-        if pgf_size == 0 and mark_size != 0:
-            pgf_size = 1
-        addplot_options.append(f"mark size={pgf_size:d}")
+        pgf_size = 0.5 * mark_size
+        addplot_options.append(f"mark size={pgf_size:{ff[2:-1]}}")
 
     mark_every = obj.get_markevery()
     if mark_every:
