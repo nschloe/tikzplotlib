@@ -63,6 +63,12 @@ def _patch_legend(obj, draw_options, legend_type):
     return legend
 
 
+def zip_modulo(*seqs):
+    n = max(len(seq) for seq in seqs)
+    for i in range(n):
+        yield tuple(seq[i % len(seq)] for seq in seqs)
+
+
 def draw_patchcollection(data, obj):
     """Returns PGFPlots code for a number of patch objects.
     """
@@ -78,15 +84,15 @@ def draw_patchcollection(data, obj):
     fcs = ensure_list(obj.get_facecolor())
     lss = ensure_list(obj.get_linestyle())
     ws = ensure_list(obj.get_linewidth())
+    ts = ensure_list(obj.get_transforms())
+    offs = obj.get_offsets()
 
     paths = obj.get_paths()
-    for i, path in enumerate(paths):
-        # Gather the draw options.
-        ec = ecs[i % len(ecs)]
-        fc = fcs[i % len(fcs)]
-        ls = lss[i % len(lss)]
-        w = ws[i % len(ws)]
+    for path, ec, fc, ls, w, t, off in zip_modulo(paths, ecs, fcs, lss, ws, ts, offs):
+        if t is None:
+            t = mpl.transforms.IdentityTransform()
 
+        path = path.transformed(mpl.transforms.Affine2D(t).translate(*off))
         data, draw_options = mypath.get_draw_options(data, obj, ec, fc, ls, w)
         data, cont, draw_options, is_area = mypath.draw_path(
             data, path, draw_options=draw_options
