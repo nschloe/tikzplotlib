@@ -75,8 +75,7 @@ def plot():
 
 
 def test():
-    assert_equality(plot, "test_colorbars_reference.tex")
-    return
+    assert_equality(plot, "test_colorbars_reference.tex", assert_compilation=False)
 
 
 if __name__ == "__main__":

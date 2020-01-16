@@ -30,7 +30,9 @@ def _unidiff_output(expected, actual):
     return "".join(diff)
 
 
-def assert_equality(plot, filename, **extra_get_tikz_code_args):
+def assert_equality(
+    plot, filename, assert_compilation=True, **extra_get_tikz_code_args
+):
     plot()
     code = tikzplotlib.get_tikz_code(
         include_disclaimer=False, float_format=".8g", **extra_get_tikz_code_args
@@ -42,11 +44,13 @@ def assert_equality(plot, filename, **extra_get_tikz_code_args):
         reference = f.read()
     assert reference == code, _unidiff_output(code, reference)
 
-    plot()
-    code = tikzplotlib.get_tikz_code(
-        include_disclaimer=False, standalone=True, **extra_get_tikz_code_args
-    )
-    assert _compile(code) is not None, code
+    if assert_compilation:
+        plot()
+        code = tikzplotlib.get_tikz_code(
+            include_disclaimer=False, standalone=True, **extra_get_tikz_code_args
+        )
+        plt.close()
+        assert _compile(code) is not None, code
 
 
 def _compile(code):
