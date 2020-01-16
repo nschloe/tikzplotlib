@@ -24,7 +24,7 @@ def _main():
             spec.loader.exec_module(module)
             module.plot()
 
-            code = tpl.get_tikz_code(include_disclaimer=False, float_format="{:.8g}")
+            code = tpl.get_tikz_code(include_disclaimer=False, float_format=".8g")
             plt.close()
 
             tex_filename = filename[:-3] + "_reference.tex"

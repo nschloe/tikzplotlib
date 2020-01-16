@@ -26,7 +26,7 @@ def draw_path(data, path, draw_options=None, simplify=None):
     x_is_date = isinstance(data["current mpl axes obj"].xaxis.converter, DateConverter)
     nodes = []
     ff = data["float format"]
-    xformat = "{}" if x_is_date else ff
+    xformat = "" if x_is_date else ff
     prev = None
     for vert, code in path.iter_segments(simplify=simplify):
         # nschloe, Oct 2, 2015:
@@ -43,11 +43,11 @@ def draw_path(data, path, draw_options=None, simplify=None):
         if code == mpl.path.Path.MOVETO:
             if x_is_date:
                 vert = [num2date(vert[0]), vert[1]]
-            nodes.append(("(axis cs:" + xformat + "," + ff + ")").format(*vert))
+            nodes.append(f"(axis cs:{vert[0]:{xformat}},{vert[1]:{ff}})")
         elif code == mpl.path.Path.LINETO:
             if x_is_date:
                 vert = [num2date(vert[0]), vert[1]]
-            nodes.append(("--(axis cs:" + xformat + "," + ff + ")").format(*vert))
+            nodes.append(f"--(axis cs:{vert[0]:{xformat}},{vert[1]:{ff}})")
         elif code == mpl.path.Path.CURVE3:
             # Quadratic Bezier curves aren't natively supported in TikZ, but
             # can be emulated as cubic Beziers.
@@ -75,23 +75,10 @@ def draw_path(data, path, draw_options=None, simplify=None):
                 Q2 = [num2date(Q2[0]), Q2[1]]
                 Q3 = [num2date(Q3[0]), Q3[1]]
             nodes.append(
-                (
-                    ".. controls (axis cs:"
-                    + xformat
-                    + ","
-                    + ff
-                    + ") "
-                    + "and (axis cs:"
-                    + xformat
-                    + ","
-                    + ff
-                    + ") "
-                    + ".. (axis cs:"
-                    + xformat
-                    + ","
-                    + ff
-                    + ")"
-                ).format(Q1[0], Q1[1], Q2[0], Q2[1], Q3[0], Q3[1])
+                ".. controls "
+                f"(axis cs:{Q1[0]:{xformat}},{Q1[1]:{ff}}) and "
+                f"(axis cs:{Q2[0]:{xformat}},{Q2[1]:{ff}}) .. "
+                f"(axis cs:{Q3[0]:{xformat}},{Q3[1]:{ff}})"
             )
         elif code == mpl.path.Path.CURVE4:
             # Cubic Bezier curves.
@@ -105,23 +92,10 @@ def draw_path(data, path, draw_options=None, simplify=None):
                     vert[5],
                 ]
             nodes.append(
-                (
-                    ".. controls (axis cs:"
-                    + xformat
-                    + ","
-                    + ff
-                    + ") "
-                    + "and (axis cs:"
-                    + xformat
-                    + ","
-                    + ff
-                    + ") "
-                    + ".. (axis cs:"
-                    + xformat
-                    + ","
-                    + ff
-                    + ")"
-                ).format(*vert)
+                ".. controls "
+                f"(axis cs:{vert[0]:{xformat}},{vert[1]:{ff}}) and "
+                f"(axis cs:{vert[2]:{xformat}},{vert[3]:{ff}}) .. "
+                f"(axis cs:{vert[4]:{xformat}},{vert[5]:{ff}})"
             )
         else:
             assert code == mpl.path.Path.CLOSEPOLY
@@ -187,7 +161,7 @@ def draw_pathcollection(data, obj):
         marker0 = None
         for marker, path in paths.items():
             if (
-                numpy.all(path.codes == p.codes)
+                numpy.array_equal(path.codes, p.codes)
                 and (path.vertices.shape == p.vertices.shape)
                 and numpy.max(numpy.abs(path.vertices - p.vertices)) < 1.0e-10
             ):
@@ -243,7 +217,7 @@ def draw_pathcollection(data, obj):
 
         content.append((" ".join(labels)).strip() + "\n")
         ff = data["float format"]
-        fmt = (" ".join(dd.shape[1] * [ff])) + "\n"
+        fmt = (" ".join(dd.shape[1] * ["{:" + ff + "}"])) + "\n"
         for d in dd:
             content.append(fmt.format(*tuple(d)))
         content.append("};\n")
@@ -292,12 +266,12 @@ def get_draw_options(data, obj, ec, fc, ls, lw, hatch=None):
         and ec_rgba[3] != 1.0
         and ec_rgba[3] == fc_rgba[3]
     ):
-        draw_options.append(("opacity=" + ff).format(ec[3]))
+        draw_options.append(f"opacity={ec[3]:{ff}}")
     else:
         if ec is not None and 0 < ec_rgba[3] < 1.0:
-            draw_options.append(("draw opacity=" + ff).format(ec_rgba[3]))
+            draw_options.append(f"draw opacity={ec_rgba[3]:{ff}}")
         if fc is not None and 0 < fc_rgba[3] < 1.0:
-            draw_options.append(("fill opacity=" + ff).format(fc_rgba[3]))
+            draw_options.append(f"fill opacity={fc_rgba[3]:{ff}}")
 
     if lw is not None:
         lw_ = mpl_linewidth2pgfp_linewidth(data, lw)
@@ -353,7 +327,7 @@ def mpl_linewidth2pgfp_linewidth(data, line_width):
         except KeyError:
             # explicit line width
             ff = data["float format"]
-            return f"line width={ff}pt".format(line_width)
+            return f"line width={line_width:{ff}}pt"
 
     # The following is an alternative approach to line widths.
     # The default line width in matplotlib is 1.0pt, in PGFPlots 0.4pt
@@ -373,7 +347,7 @@ def mpl_linewidth2pgfp_linewidth(data, line_width):
     except KeyError:
         # explicit line width
         ff = data["float format"]
-        out = f"line width={ff}pt".format(0.4 * line_width)
+        out = f"line width={0.4 * line_width:{ff}}pt"
 
     return out
 
@@ -396,12 +370,19 @@ def mpl_linestyle2pgfplots_linestyle(data, line_style, line=None):
             return None
 
         if len(line_style[1]) == 2:
-            fmt = f"dash pattern=on {ff}pt off {ff}pt"
-            return fmt.format(*line_style[1])
+            return (
+                "dash pattern="
+                f"on {line_style[1][0]:{ff}}pt off {line_style[1][1]:{ff}}pt"
+            )
 
         assert len(line_style[1]) == 4
-        fmt = f"dash pattern=on {ff}pt off {ff}pt on {ff}pt off {ff}pt"
-        return fmt.format(*line_style[1])
+        return (
+            "dash pattern="
+            f"on {line_style[1][0]:{ff}}pt "
+            f"off {line_style[1][1]:{ff}}pt "
+            f"on {line_style[1][2]:{ff}}pt "
+            f"off {line_style[1][3]:{ff}}pt"
+        )
 
     if isinstance(line, mpl.lines.Line2D) and line.is_dashed():
         # see matplotlib.lines.Line2D.set_dashes
@@ -416,8 +397,13 @@ def mpl_linestyle2pgfplots_linestyle(data, line_style, line=None):
         lst = list()
         if dashSeq != default_dashSeq:
             # generate own dash sequence
-            format_string = " ".join(len(dashSeq) // 2 * [f"on {ff}pt off {ff}pt"])
-            lst.append("dash pattern=" + format_string.format(*dashSeq))
+            lst.append(
+                "dash pattern="
+                + " ".join(
+                    f"on {a:{ff}}pt off {b:{ff}}pt"
+                    for a, b in zip(dashSeq[0::2], dashSeq[1::2])
+                )
+            )
 
         if dashOffset != default_dashOffset:
             lst.append(f"dash phase={dashOffset}pt")

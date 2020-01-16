@@ -33,7 +33,7 @@ def _unidiff_output(expected, actual):
 def assert_equality(plot, filename, **extra_get_tikz_code_args):
     plot()
     code = tikzplotlib.get_tikz_code(
-        include_disclaimer=False, float_format="{:.8g}", **extra_get_tikz_code_args
+        include_disclaimer=False, float_format=".8g", **extra_get_tikz_code_args
     )
     plt.close()
 

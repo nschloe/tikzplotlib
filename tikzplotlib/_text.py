@@ -24,18 +24,18 @@ def draw_text(data, obj):
 
         if obj.axes:
             # If the coordinates are relative to an axis, use `axis cs`.
-            tikz_pos = ("(axis cs:{ff},{ff})").format(ff=ff).format(*pos)
+            tikz_pos = f"(axis cs:{pos[0]:{ff}},{pos[1]:{ff}})"
         else:
             # relative to the entire figure, it's a getting a littler harder. See
             # <http://tex.stackexchange.com/a/274902/13262> for a solution to the
             # problem:
             tikz_pos = (
-                "({{$(current bounding box.south west)!" + ff + "!"
-                "(current bounding box.south east)$}}"
+                f"({{$(current bounding box.south west)!{pos[0]:{ff}}!"
+                "(current bounding box.south east)$}"
                 "|-"
-                "{{$(current bounding box.south west)!" + ff + "!"
-                "(current bounding box.north west)$}})"
-            ).format(*pos)
+                f"{{$(current bounding box.south west)!{pos[1]:{ff}}!"
+                "(current bounding box.north west)$})"
+            )
 
     text = obj.get_text()
 
@@ -51,7 +51,7 @@ def draw_text(data, obj):
     # TODO fix this
     scaling = 0.5 * size / data["font size"]
     if scaling != 1.0:
-        properties.append(("scale=" + ff).format(scaling))
+        properties.append(f"scale={scaling:{ff}}")
 
     if bbox is not None:
         _bbox(bbox, data, properties, scaling)
@@ -143,7 +143,8 @@ def _parse_annotation_coords(ff, coords, xy):
     """ Convert a coordinate name and xy into a tikz coordinate string """
     # todo: add support for all the missing ones
     if coords == "data":
-        return ("(axis cs:{ff},{ff})").format(ff=ff).format(*xy)
+        x, y = xy
+        return f"(axis cs:{x:{ff}},{y:{ff}})"
     elif coords == "figure points":
         raise NotImplementedError
     elif coords == "figure pixels":
@@ -209,9 +210,13 @@ def _annotation(obj, data, content):
 
     # special cases only for text_coords
     if ann_textcoords == "offset points":
-        text_pos = "{{}} ++({ff}pt,{ff}pt)".format(ff=ff).format(xy_pos, *ann_xytext)
+        x, y = ann_xytext
+        unit = "pt"
+        text_pos = f"{xy_pos} ++({x:{ff}}{unit},{y:{ff}}{unit})"
     elif ann_textcoords == "offset pixels":
-        text_pos = "{{}} ++({ff}px,{ff}px)".format(ff=ff).format(xy_pos, *ann_xytext)
+        x, y = ann_xytext
+        unit = "px"
+        text_pos = f"{xy_pos} ++({x:{ff}}{unit},{y:{ff}}{unit})"
     else:
         try:
             text_pos = _parse_annotation_coords(ff, ann_xycoords, ann_xytext)
@@ -237,10 +242,10 @@ def _bbox(bbox, data, properties, scaling):
         properties.append(f"draw={ec}")
     # XXX: This is ugly, too
     ff = data["float format"]
-    properties.append(("line width=" + ff + "pt").format(bbox.get_lw() * 0.4))
-    properties.append(
-        ("inner sep=" + ff + "pt").format(bbox_style.pad * data["font size"])
-    )
+    line_width = bbox.get_lw() * 0.4
+    properties.append(f"line width={line_width:{ff}}pt")
+    inner_sep = bbox_style.pad * data["font size"]
+    properties.append(f"inner sep={inner_sep:{ff}}pt")
     # Rounded boxes
     if isinstance(bbox_style, mpl.patches.BoxStyle.Round):
         properties.append("rounded corners")
