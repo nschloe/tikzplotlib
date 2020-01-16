@@ -27,6 +27,7 @@ def get_tikz_code(
     wrap=True,
     add_axis_environment=True,
     extra_axis_parameters=None,
+    extra_groupstyle_parameters={},
     extra_tikzpicture_parameters=None,
     dpi=None,
     show_info=False,
@@ -174,6 +175,7 @@ def get_tikz_code(
         data["extra axis options [base]"] = set(extra_axis_parameters).copy()
     else:
         data["extra axis options [base]"] = set()
+    data["extra groupstyle options [base]"] = extra_groupstyle_parameters
 
     if dpi:
         data["dpi"] = dpi

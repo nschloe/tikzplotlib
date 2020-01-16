@@ -417,9 +417,11 @@ class Axes:
                 # subplotspec geometry positioning is 0-based
                 self.subplot_index = geom[2] + 1
                 if "is_in_groupplot_env" not in data or not data["is_in_groupplot_env"]:
+                    group_style = ["group size={} by {}".format(geom[1], geom[0])]
+                    group_style.extend(data["extra groupstyle options [base]"])
+                    options = ["group style={{{}}}".format(", ".join(group_style))]
                     self.content.append(
-                        "\\begin{{groupplot}}[group style="
-                        "{{group size={} by {}}}]".format(geom[1], geom[0])
+                        "\\begin{{groupplot}}[{}]".format(", ".join(options))
                     )
                     data["is_in_groupplot_env"] = True
                     data["pgfplots libs"].add("groupplots")
