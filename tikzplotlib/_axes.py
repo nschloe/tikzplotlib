@@ -53,18 +53,14 @@ class Axes:
             xlabel = _common_texification(xlabel)
             self.axis_options.append(f"xlabel={{{xlabel}}}")
             if xrotation != 0:
-                self.axis_options.append(
-                    "xlabel style={{rotate={}}}".format(xrotation - 90)
-                )
+                self.axis_options.append("xlabel style={{rotate={xrotation - 90)}}}")
         ylabel = obj.get_ylabel()
         yrotation = obj.yaxis.get_label().get_rotation()
         if ylabel:
             ylabel = _common_texification(ylabel)
             self.axis_options.append(f"ylabel={{{ylabel}}}")
             if yrotation != 90:
-                self.axis_options.append(
-                    "ylabel style={{rotate={}}}".format(yrotation - 90)
-                )
+                self.axis_options.append("ylabel style={{rotate={yrotation - 90}}}")
 
         # Axes limits.
         ff = data["float format"]
@@ -419,7 +415,7 @@ class Axes:
                 # subplotspec geometry positioning is 0-based
                 self.subplot_index = geom[2] + 1
                 if "is_in_groupplot_env" not in data or not data["is_in_groupplot_env"]:
-                    group_style = ["group size={} by {}".format(geom[1], geom[0])]
+                    group_style = [f"group size={geom[1]} by {geom[0]}"]
                     group_style.extend(data["extra groupstyle options [base]"])
                     options = ["group style={{{}}}".format(", ".join(group_style))]
                     self.content.append(
@@ -462,12 +458,12 @@ class Axes:
             values = []
 
             if any(tick_labels_rotation) != 0:
-                values.append("rotate={}".format(tick_labels_rotation[0]))
+                values.append(f"rotate={tick_labels_rotation[0]}")
 
             # Horizontal alignment will be ignored if no 'x/y tick label text width' has
             # been passed in the 'extra' parameter
             if tick_label_text_width:
-                values.append("align={}".format(tick_labels_horizontal_alignment[0]))
+                values.append(f"align={tick_labels_horizontal_alignment[0]}")
                 values.append(f"text width={tick_label_text_width}")
 
             if values:
@@ -478,7 +474,7 @@ class Axes:
             values = []
 
             if tick_labels_rotation_same_value:
-                values.append("rotate={}".format(tick_labels_rotation[0]))
+                values.append("rotate={tick_labels_rotation[0]}")
             else:
                 values.append(
                     "rotate={{{},0}}[\\ticknum]".format(
@@ -490,20 +486,14 @@ class Axes:
             # passed in the 'extra' parameter
             if tick_label_text_width:
                 if tick_labels_horizontal_alignment_same_value:
-                    values.append(
-                        "align={}".format(tick_labels_horizontal_alignment[0])
-                    )
+                    values.append(f"align={tick_labels_horizontal_alignment[0]}")
                     values.append(f"text width={tick_label_text_width}")
                 else:
                     for idx, x in enumerate(tick_labels_horizontal_alignment):
-                        label_style += "{}_tick_label_ha_{}/.initial = {}".format(
-                            x_or_y, idx, x
-                        )
+                        label_style += f"{x_or_y}_tick_label_ha_{idx}/.initial = {x}"
 
                     values.append(
-                        "align=\\pgfkeysvalueof{{/pgfplots/{}_tick_label_ha_\\ticknum}}".format(
-                            x_or_y
-                        )
+                        f"align=\\pgfkeysvalueof{{/pgfplots/{x_or_y}_tick_label_ha_\\ticknum}}"
                     )
                     values.append(f"text width={tick_label_text_width}")
 
@@ -777,10 +767,8 @@ def _handle_listed_color_map(cmap, data):
         reps = int(float(cmap.N) / len(cmap.colors) - 0.5) + 1
         repeated_cols = reps * cmap.colors
         colors = [
-            ("rgb({}{})=(" + ff + "," + ff + "," + ff + ")").format(
-                k, unit, rgb[0], rgb[1], rgb[2]
-            )
-            for (k, rgb) in enumerate(repeated_cols[: cmap.N])
+            "rgb({k}{unit})=({rgb[0]:{ff}},{rgb[1]:{ff}},{rgb[2]:{ff}})"
+            for k, rgb in enumerate(repeated_cols[: cmap.N])
         ]
     colormap_string = "{{mymap}}{{[1{}]\n {}\n}}".format(unit, ";\n  ".join(colors))
     is_custom_colormap = True
