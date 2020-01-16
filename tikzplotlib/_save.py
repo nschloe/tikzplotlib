@@ -17,8 +17,8 @@ from .__about__ import __version__
 def get_tikz_code(
     figure="gcf",
     filepath=None,
-    figurewidth=None,
-    figureheight=None,
+    axis_width=None,
+    axis_height=None,
     textsize=10.0,
     tex_relative_path_to_data=None,
     externalize_tables=False,
@@ -41,63 +41,57 @@ def get_tikz_code(
 
     :param figure: either a Figure object or 'gcf' (default).
 
-    :param figurewidth: If not ``None``, this will be used as figure width
-                        within the TikZ/PGFPlots output. If ``figureheight``
-                        is not given, ``tikzplotlib`` will try to preserve
-                        the original width/height ratio.
-                        Note that ``figurewidth`` can be a string literal,
-                        such as ``'\\figurewidth'``.
-    :type figurewidth: str
+    :param axis_width: If not ``None``, this will be used as figure width within the
+                       TikZ/PGFPlots output. If ``axis_height`` is not given,
+                       ``tikzplotlib`` will try to preserve the original width/height
+                       ratio.  Note that ``axis_width`` can be a string literal, such as
+                       ``'\\axis_width'``.
+    :type axis_width: str
 
-    :param figureheight: If not ``None``, this will be used as figure height
-                         within the TikZ/PGFPlots output. If ``figurewidth`` is
-                         not given, ``tikzplotlib`` will try to preserve
-                         the original width/height ratio.  Note that
-                         ``figurewidth`` can be a string literal, such as
-                         ``'\\figureheight'``.
-    :type figureheight: str
+    :param axis_height: If not ``None``, this will be used as figure height within the
+                        TikZ/PGFPlots output. If ``axis_width`` is not given,
+                        ``tikzplotlib`` will try to preserve the original width/height
+                        ratio.  Note that ``axis_width`` can be a string literal, such
+                        as ``'\\axis_height'``.
+    :type axis_height: str
 
-    :param textsize: The text size (in pt) that the target latex document is
-                     using.  Default is 10.0.
+    :param textsize: The text size (in pt) that the target latex document is using.
+                     Default is 10.0.
     :type textsize: float
 
-    :param tex_relative_path_to_data: In some cases, the TikZ file will have to
-                                      refer to another file, e.g., a PNG for
-                                      image plots. When ``\\input`` into a
-                                      regular LaTeX document, the additional
-                                      file is looked for in a folder relative
-                                      to the LaTeX file, not the TikZ file.
-                                      This arguments optionally sets the
-                                      relative path from the LaTeX file to the
-                                      data.
+    :param tex_relative_path_to_data: In some cases, the TikZ file will have to refer to
+                                      another file, e.g., a PNG for image plots. When
+                                      ``\\input`` into a regular LaTeX document, the
+                                      additional file is looked for in a folder relative
+                                      to the LaTeX file, not the TikZ file.  This
+                                      arguments optionally sets the relative path from
+                                      the LaTeX file to the data.
     :type tex_relative_path_to_data: str
 
-    :param externalize_tables: Whether or not to externalize plot data tables
-                               into tsv files.
+    :param externalize_tables: Whether or not to externalize plot data tables into tsv
+                               files.
     :type externalize_tables: bool
 
-    :param override_externals: Whether or not to override existing external
-                               files (such as tsv or images) with conflicting
-                               names (the alternative is to choose other
-                               names).
+    :param override_externals: Whether or not to override existing external files (such
+                               as tsv or images) with conflicting names (the alternative
+                               is to choose other names).
     :type override_externals: bool
 
-    :param strict: Whether or not to strictly stick to matplotlib's appearance.
-                   This influences, for example, whether tick marks are set
-                   exactly as in the matplotlib plot, or if TikZ/PGFPlots
-                   can decide where to put the ticks.
+    :param strict: Whether or not to strictly stick to matplotlib's appearance. This
+                   influences, for example, whether tick marks are set exactly as in the
+                   matplotlib plot, or if TikZ/PGFPlots can decide where to put the
+                   ticks.
     :type strict: bool
 
-    :param wrap: Whether ``'\\begin{tikzpicture}'`` and
-                 ``'\\end{tikzpicture}'`` will be written. One might need to
-                 provide custom arguments to the environment (eg. scale= etc.).
-                 Default is ``True``.
+    :param wrap: Whether ``'\\begin{tikzpicture}'`` and ``'\\end{tikzpicture}'`` will be
+                 written. One might need to provide custom arguments to the environment
+                 (eg. scale= etc.).  Default is ``True``.
     :type wrap: bool
 
-    :param add_axis_environment: Whether ``'\\begin{axis}[...]'`` and
-                                 ``'\\end{axis}'`` will be written. One needs to
-                                 set the environment in the document. If ``False``
-                                 additionally sets ``wrap=False``. Default is ``True``.
+    :param add_axis_environment: Whether ``'\\begin{axis}[...]'`` and ``'\\end{axis}'``
+                                 will be written. One needs to set the environment in
+                                 the document. If ``False`` additionally sets
+                                 ``wrap=False``. Default is ``True``.
     :type add_axis_environment: bool
 
     :param extra_axis_parameters: Extra axis options to be passed (as a list or set)
@@ -144,8 +138,8 @@ def get_tikz_code(
     if figure == "gcf":
         figure = plt.gcf()
     data = {}
-    data["fwidth"] = figurewidth
-    data["fheight"] = figureheight
+    data["axis width"] = axis_width
+    data["axis height"] = axis_height
     data["rel data path"] = tex_relative_path_to_data
     data["externalize tables"] = externalize_tables
     data["override externals"] = override_externals
