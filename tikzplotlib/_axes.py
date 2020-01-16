@@ -48,19 +48,19 @@ class Axes:
 
         # get axes titles
         xlabel = obj.get_xlabel()
-        xrotation = obj.xaxis.get_label().get_rotation()
         if xlabel:
             xlabel = _common_texification(xlabel)
             self.axis_options.append(f"xlabel={{{xlabel}}}")
+            xrotation = obj.xaxis.get_label().get_rotation()
             if xrotation != 0:
-                self.axis_options.append("xlabel style={{rotate={xrotation - 90)}}}")
+                self.axis_options.append(f"xlabel style={{rotate={xrotation - 90}}}")
         ylabel = obj.get_ylabel()
-        yrotation = obj.yaxis.get_label().get_rotation()
         if ylabel:
             ylabel = _common_texification(ylabel)
             self.axis_options.append(f"ylabel={{{ylabel}}}")
+            yrotation = obj.yaxis.get_label().get_rotation()
             if yrotation != 90:
-                self.axis_options.append("ylabel style={{rotate={yrotation - 90}}}")
+                self.axis_options.append(f"ylabel style={{rotate={yrotation - 90}}}")
 
         # Axes limits.
         ff = data["float format"]
