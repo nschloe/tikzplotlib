@@ -213,10 +213,10 @@ def _annotation(obj, data, content):
         x, y = ann_xytext
         unit = "pt"
         text_pos = f"{xy_pos} ++({x:{ff}}{unit},{y:{ff}}{unit})"
-    elif ann_textcoords == "offset pixels":
-        x, y = ann_xytext
-        unit = "px"
-        text_pos = f"{xy_pos} ++({x:{ff}}{unit},{y:{ff}}{unit})"
+    # elif ann_textcoords == "offset pixels":
+    #     x, y = ann_xytext
+    #     unit = "px"
+    #     text_pos = f"{xy_pos} ++({x:{ff}}{unit},{y:{ff}}{unit})"
     else:
         try:
             text_pos = _parse_annotation_coords(ff, ann_xycoords, ann_xytext)

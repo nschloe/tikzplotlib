@@ -176,7 +176,7 @@ def draw_pathcollection(data, obj):
         data, pgfplots_marker, marker_options = _mpl_marker2pgfp_marker(
             data, marker0, fc
         )
-        draw_options += [f"marker={pgfplots_marker}"] + marker_options
+        draw_options += [f"mark={pgfplots_marker}"] + marker_options
 
     # `only mark` plots don't need linewidth
     data, extra_draw_options = get_draw_options(data, obj, ec, fc, ls, None)

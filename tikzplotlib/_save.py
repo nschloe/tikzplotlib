@@ -218,20 +218,19 @@ def get_tikz_code(
         code += "\\end{tikzpicture}\n"
 
     if standalone:
-        # When using pdflatex, this is necessary:
-        # \\DeclareUnicodeCharacter{{2212}}{{−}}
-        code = """\\documentclass{{standalone}}
+        # When using pdflatex, \\DeclareUnicodeCharacter is necessary.
+        code = f"""\\documentclass{{standalone}}
 \\usepackage[utf8]{{inputenc}}
 \\usepackage{{pgfplots}}
+\\DeclareUnicodeCharacter{{2212}}{{−}}
 \\usepgfplotslibrary{{groupplots}}
 \\usepgfplotslibrary{{dateplot}}
+\\usetikzlibrary{{patterns}}
+\\usetikzlibrary{{shapes.arrows}}
 \\pgfplotsset{{compat=newest}}
 \\begin{{document}}
-{}
-\\end{{document}}\n""".format(
-            code
-        )
-
+{code}
+\\end{{document}}\n"""
     return code
 
 
