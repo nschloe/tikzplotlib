@@ -139,15 +139,12 @@ def _draw_rectangle(data, obj, draw_options):
     left_lower_x = obj.get_x()
     left_lower_y = obj.get_y()
     ff = data["float format"]
+    do = ",".join(draw_options)
+    right_upper_x = left_lower_x + obj.get_width()
+    right_upper_y = left_lower_y + obj.get_height()
     cont = (
-        "\\draw[{}] (axis cs:" + ff + "," + ff + ") "
-        "rectangle (axis cs:" + ff + "," + ff + ");\n"
-    ).format(
-        ",".join(draw_options),
-        left_lower_x,
-        left_lower_y,
-        left_lower_x + obj.get_width(),
-        left_lower_y + obj.get_height(),
+        f"\\draw[{do}] (axis cs:{left_lower_x:{ff}},{left_lower_y:{ff}}) "
+        f"rectangle (axis cs:{right_upper_x:{ff}},{right_upper_y:{ff}});\n"
     )
 
     if label != "_nolegend_" and label not in data["rectangle_legends"]:
@@ -169,21 +166,15 @@ def _draw_ellipse(data, obj, draw_options):
     ff = data["float format"]
 
     if obj.angle != 0:
-        fmt = "rotate around={{" + ff + ":(axis cs:" + ff + "," + ff + ")}}"
-        draw_options.append(fmt.format(obj.angle, x, y))
+        draw_options.append(
+            f"rotate around={{{obj.angle:{ff}}:(axis cs:{x:{ff}},{y:{ff}})}}"
+        )
 
+    do = ",".join(draw_options)
     content = (
-        "\\draw[{}] (axis cs:"
-        + ff
-        + ","
-        + ff
-        + ") ellipse ("
-        + ff
-        + " and "
-        + ff
-        + ");\n"
-    ).format(",".join(draw_options), x, y, 0.5 * obj.width, 0.5 * obj.height)
-
+        f"\\draw[{do}] (axis cs:{x:{ff}},{y:{ff}}) ellipse "
+        f"({0.5 * obj.width:{ff}} and {0.5 * obj.height:{ff}});\n"
+    )
     content += _patch_legend(obj, draw_options, "area legend")
 
     return data, content
@@ -194,11 +185,11 @@ def _draw_circle(data, obj, draw_options):
     """
     x, y = obj.center
     ff = data["float format"]
+    do = ",".join(draw_options)
     content = (
-        "\\draw[{}] (axis cs:" + ff + "," + ff + ") circle (" + ff + ");\n"
-    ).format(",".join(draw_options), x, y, obj.get_radius())
+        f"\\draw[{do}] (axis cs:{x:{ff}},{y:{ff}}) circle ({obj.get_radius():{ff}});\n"
+    )
     content += _patch_legend(obj, draw_options, "area legend")
-
     return data, content
 
 
@@ -207,9 +198,11 @@ def _draw_fancy_arrow(data, obj, draw_options):
     ff = data["float format"]
     if obj._posA_posB is not None:
         posA, posB = obj._posA_posB
-        content = "\\draw[{{}}] (axis cs:{ff},{ff}) -- (axis cs:{ff},{ff});\n".format(
-            ff=ff
-        ).format(",".join(style), *posA, *posB)
+        do = ",".join(style)
+        content = (
+            f"\\draw[{do}] (axis cs:{posA[0]:{ff}},{posA[1]:{ff}}) -- "
+            f"(axis cs:{posB[0]:{ff}},{posB[1]:{ff}});\n"
+        )
     else:
         data, content, _, _ = mypath.draw_path(
             data, obj._path_original, draw_options=draw_options + style

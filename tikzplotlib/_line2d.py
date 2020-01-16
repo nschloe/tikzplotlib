@@ -143,7 +143,7 @@ def _marker(
         ff = data["float format"]
         # setting half size because pgfplots counts the radius/half-width
         pgf_size = 0.5 * mark_size
-        addplot_options.append(f"mark size={pgf_size:{ff[2:-1]}}")
+        addplot_options.append(f"mark size={pgf_size:{ff}}")
 
     mark_every = obj.get_markevery()
     if mark_every:
@@ -200,7 +200,7 @@ def _table(obj, data):  # noqa: C901
         xdata = xdata_alt
     elif isinstance(xdata_alt[0], str):
         data["current axes"].axis_options += [
-            "xtick={{{}}}".format(",".join([ff.format(x) for x in xdata])),
+            "xtick={{{}}}".format(",".join([f"{x:{ff}}" for x in xdata])),
             "xticklabels={{{}}}".format(",".join(xdata_alt)),
         ]
         xdata, ydata = transform_to_data_coordinates(obj, xdata, ydata)
@@ -237,7 +237,7 @@ def _table(obj, data):  # noqa: C901
 
     if isinstance(xdata[0], datetime.datetime):
         xdata = [date.strftime("%Y-%m-%d %H:%M") for date in xdata]
-        xformat = "{}"
+        xformat = ""
         col_sep = ","
         opts = ["header=false", "col sep=comma"]
         data["current axes"].axis_options.append("date coordinates in=x")
@@ -269,26 +269,16 @@ def _table(obj, data):  # noqa: C901
         content.append("table {%\n")
 
     plot_table = []
+    table_row_sep = data["table_row_sep"]
+    ydata[ydata_mask] = numpy.nan
     if any(ydata_mask):
         # matplotlib jumps at masked images, while PGFPlots by default interpolates.
         # Hence, if we have a masked plot, make sure that PGFPlots jumps as well.
         if "unbounded coords=jump" not in data["current axes"].axis_options:
             data["current axes"].axis_options.append("unbounded coords=jump")
 
-        for (x, y, is_masked) in zip(xdata, ydata, ydata_mask):
-            if is_masked:
-                plot_table.append(
-                    (xformat + col_sep + "nan" + data["table_row_sep"]).format(x)
-                )
-            else:
-                plot_table.append(
-                    (xformat + col_sep + ff + data["table_row_sep"]).format(x, y)
-                )
-    else:
-        for x, y in zip(xdata, ydata):
-            plot_table.append(
-                (xformat + col_sep + ff + data["table_row_sep"]).format(x, y)
-            )
+    for x, y in zip(xdata, ydata):
+        plot_table.append(f"{x:{xformat}}{col_sep}{y:{ff}}{table_row_sep}")
 
     if data["externalize tables"]:
         filename, rel_filepath = _files.new_filename(data, "table", ".tsv")

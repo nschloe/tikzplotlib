@@ -33,7 +33,7 @@ def get_tikz_code(
     show_info=False,
     include_disclaimer=True,
     standalone=False,
-    float_format="{:.15g}",
+    float_format=".15g",
     table_row_sep="\n",
 ):
     """Main function. Here, the recursion into the image starts and the
@@ -124,7 +124,7 @@ def get_tikz_code(
     :param standalone: Include wrapper code for a standalone LaTeX file.
     :type standalone: bool
 
-    :param float_format: Format for float entities. Default is ```"{:.15g}"```.
+    :param float_format: Format for float entities. Default is ```".15g"```.
     :type float_format: str
 
     :param table_row_sep: Row separator for table data. Default is ```"\\n"```.
@@ -268,9 +268,12 @@ def _get_color_definitions(data):
     """Returns the list of custom color definitions for the TikZ file.
     """
     definitions = []
-    fmt = "\\definecolor{{{}}}{{rgb}}{{" + ",".join(3 * [data["float format"]]) + "}}"
+    ff = data["float format"]
     for name, rgb in data["custom colors"].items():
-        definitions.append(fmt.format(name, rgb[0], rgb[1], rgb[2]))
+        definitions.append(
+            f"\\definecolor{{{name}}}{{rgb}}"
+            f"{{{rgb[0]:{ff}},{rgb[1]:{ff}},{rgb[2]:{ff}}}}"
+        )
     return definitions
 
 

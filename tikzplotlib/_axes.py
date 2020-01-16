@@ -53,26 +53,24 @@ class Axes:
             xlabel = _common_texification(xlabel)
             self.axis_options.append(f"xlabel={{{xlabel}}}")
             if xrotation != 0:
-                self.axis_options.append(
-                    "xlabel style={{rotate={}}}".format(xrotation - 90)
-                )
+                self.axis_options.append("xlabel style={{rotate={xrotation - 90)}}}")
         ylabel = obj.get_ylabel()
         yrotation = obj.yaxis.get_label().get_rotation()
         if ylabel:
             ylabel = _common_texification(ylabel)
             self.axis_options.append(f"ylabel={{{ylabel}}}")
             if yrotation != 90:
-                self.axis_options.append(
-                    "ylabel style={{rotate={}}}".format(yrotation - 90)
-                )
+                self.axis_options.append("ylabel style={{rotate={yrotation - 90}}}")
 
         # Axes limits.
         ff = data["float format"]
         xlim = list(obj.get_xlim())
+        xlim0, xlim1 = sorted(xlim)
         ylim = list(obj.get_ylim())
+        ylim0, ylim1 = sorted(ylim)
         # Sort the limits so make sure that the smaller of the two is actually *min.
-        self.axis_options.append(("xmin=" + ff + ", xmax=" + ff).format(*sorted(xlim)))
-        self.axis_options.append(("ymin=" + ff + ", ymax=" + ff).format(*sorted(ylim)))
+        self.axis_options.append(f"xmin={xlim0:{ff}}, xmax={xlim1:{ff}}")
+        self.axis_options.append(f"ymin={ylim0:{ff}}, ymax={ylim1:{ff}}")
         # When the axis is inverted add additional option
         if xlim != sorted(xlim):
             self.axis_options.append("x dir=reverse")
@@ -395,8 +393,8 @@ class Axes:
             self.axis_options.append("colormap/" + mycolormap)
 
         ff = data["float format"]
-        self.axis_options.append(("point meta min=" + ff).format(limits[0]))
-        self.axis_options.append(("point meta max=" + ff).format(limits[1]))
+        self.axis_options.append(f"point meta min={limits[0]:{ff}}")
+        self.axis_options.append(f"point meta max={limits[1]:{ff}}")
 
         if colorbar_styles:
             self.axis_options.append(
@@ -417,7 +415,7 @@ class Axes:
                 # subplotspec geometry positioning is 0-based
                 self.subplot_index = geom[2] + 1
                 if "is_in_groupplot_env" not in data or not data["is_in_groupplot_env"]:
-                    group_style = ["group size={} by {}".format(geom[1], geom[0])]
+                    group_style = [f"group size={geom[1]} by {geom[0]}"]
                     group_style.extend(data["extra groupstyle options [base]"])
                     options = ["group style={{{}}}".format(", ".join(group_style))]
                     self.content.append(
@@ -460,12 +458,12 @@ class Axes:
             values = []
 
             if any(tick_labels_rotation) != 0:
-                values.append("rotate={}".format(tick_labels_rotation[0]))
+                values.append(f"rotate={tick_labels_rotation[0]}")
 
             # Horizontal alignment will be ignored if no 'x/y tick label text width' has
             # been passed in the 'extra' parameter
             if tick_label_text_width:
-                values.append("align={}".format(tick_labels_horizontal_alignment[0]))
+                values.append(f"align={tick_labels_horizontal_alignment[0]}")
                 values.append(f"text width={tick_label_text_width}")
 
             if values:
@@ -476,7 +474,7 @@ class Axes:
             values = []
 
             if tick_labels_rotation_same_value:
-                values.append("rotate={}".format(tick_labels_rotation[0]))
+                values.append("rotate={tick_labels_rotation[0]}")
             else:
                 values.append(
                     "rotate={{{},0}}[\\ticknum]".format(
@@ -488,20 +486,14 @@ class Axes:
             # passed in the 'extra' parameter
             if tick_label_text_width:
                 if tick_labels_horizontal_alignment_same_value:
-                    values.append(
-                        "align={}".format(tick_labels_horizontal_alignment[0])
-                    )
+                    values.append(f"align={tick_labels_horizontal_alignment[0]}")
                     values.append(f"text width={tick_label_text_width}")
                 else:
                     for idx, x in enumerate(tick_labels_horizontal_alignment):
-                        label_style += "{}_tick_label_ha_{}/.initial = {}".format(
-                            x_or_y, idx, x
-                        )
+                        label_style += f"{x_or_y}_tick_label_ha_{idx}/.initial = {x}"
 
                     values.append(
-                        "align=\\pgfkeysvalueof{{/pgfplots/{}_tick_label_ha_\\ticknum}}".format(
-                            x_or_y
-                        )
+                        f"align=\\pgfkeysvalueof{{/pgfplots/{x_or_y}_tick_label_ha_\\ticknum}}"
                     )
                     values.append(f"text width={tick_label_text_width}")
 
@@ -587,7 +579,7 @@ def _get_ticks(data, xy, ticks, ticklabels):
             ff = data["float format"]
             axis_options.append(
                 "{}tick={{{}}}".format(
-                    xy, ",".join([ff.format(el) for el in pgfplots_ticks])
+                    xy, ",".join([f"{el:{ff}}" for el in pgfplots_ticks])
                 )
             )
         else:
@@ -726,11 +718,10 @@ def _handle_linear_segmented_color_map(cmap, data):
 
     color_changes = []
     ff = data["float format"]
-    for (k, x) in enumerate(X):
+    for k, x in enumerate(X):
         color_changes.append(
-            ("rgb({}{})=(" + ff + "," + ff + "," + ff + ")").format(
-                *((x, unit) + colors[k])
-            )
+            f"rgb({x}{unit})="
+            f"({colors[k][0]:{ff}},{colors[k][1]:{ff}},{colors[k][2]:{ff}})"
         )
 
     colormap_string = "{{mymap}}{{[1{}]\n  {}\n}}".format(
@@ -769,19 +760,15 @@ def _handle_listed_color_map(cmap, data):
     ff = data["float format"]
     if cmap.N is None or cmap.N == len(cmap.colors):
         colors = [
-            ("rgb({}{})=(" + ff + "," + ff + "," + ff + ")").format(
-                k, unit, rgb[0], rgb[1], rgb[2]
-            )
-            for (k, rgb) in enumerate(cmap.colors)
+            f"rgb({k}{unit})=({rgb[0]:{ff}},{rgb[1]:{ff}},{rgb[2]:{ff}})"
+            for k, rgb in enumerate(cmap.colors)
         ]
     else:
         reps = int(float(cmap.N) / len(cmap.colors) - 0.5) + 1
         repeated_cols = reps * cmap.colors
         colors = [
-            ("rgb({}{})=(" + ff + "," + ff + "," + ff + ")").format(
-                k, unit, rgb[0], rgb[1], rgb[2]
-            )
-            for (k, rgb) in enumerate(repeated_cols[: cmap.N])
+            "rgb({k}{unit})=({rgb[0]:{ff}},{rgb[1]:{ff}},{rgb[2]:{ff}})"
+            for k, rgb in enumerate(repeated_cols[: cmap.N])
         ]
     colormap_string = "{{mymap}}{{[1{}]\n {}\n}}".format(unit, ";\n  ".join(colors))
     is_custom_colormap = True
