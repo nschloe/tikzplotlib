@@ -140,10 +140,11 @@ def _draw_rectangle(data, obj, draw_options):
     left_lower_y = obj.get_y()
     ff = data["float format"]
     do = ",".join(draw_options)
+    right_upper_x = left_lower_x + obj.get_width()
+    right_upper_y = left_lower_y + obj.get_height()
     cont = (
         f"\\draw[{do}] (axis cs:{left_lower_x:{ff}},{left_lower_y:{ff}}) "
-        f"rectangle (axis cs:{left_lower_x + obj.get_width():{ff}},"
-        f"{left_lower_y + obj.get_height():{ff}});\n"
+        f"rectangle (axis cs:{right_upper_x:{ff}},{right_upper_y:{ff}});\n"
     )
 
     if label != "_nolegend_" and label not in data["rectangle_legends"]:
