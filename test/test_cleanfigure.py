@@ -130,6 +130,23 @@ def test_isInBox():
 
 
 def test_getVisualLimits():
+    """
+        octave code
+        ```octave
+            addpath ("../matlab2tikz/src")
+
+            x = linspace(1, 100, 20);
+            y1 = linspace(1, 100, 20);
+
+            figure
+            plot(x, y1)
+            xlim([20, 80])
+            ylim([20, 80])
+            set(gcf,'Units','Inches');
+            set(gcf,'Position',[2.5 2.5 5 5])
+            cleanfigure;
+        ```
+    """
     x = np.linspace(1, 100, 20)
     y = np.linspace(1, 100, 20)
 
