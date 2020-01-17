@@ -150,7 +150,7 @@ def removeData(data, id_remove):
 
 
 def removeNaNs(data):
-    """Removes superflous NaNs in the data, i.e. those at the end/beginning of the data and consequtive ones.
+    """Removes superflous NaNs in the data, i.e. those at the end/beginning of the data and consecutive ones.
     
     Parameters
     ----------
@@ -187,7 +187,7 @@ def removeNaNs(data):
 
 
 def isInBox(data, xLim, yLim):
-    """Returns a mask that indicates, whether a data point is within the limits
+    """Returns a mask that indicates, whether a data point is within the limits.
 
     Parameters
     ----------
@@ -205,7 +205,7 @@ def isInBox(data, xLim, yLim):
 
 
 def getVisualData(axhandle, linehandle):
-    """Returns the visual representation of the data (Respecting possible log_scaling and projection into the image plane)
+    """Returns the visual representation of the data (Respecting possible log_scaling and projection into the image plane).
     
     Parameters
     ----------
@@ -217,9 +217,9 @@ def getVisualData(axhandle, linehandle):
     Returns
     -------
     np.ndarray
-        xData with shape [N, 1]
+        xData with shape [N, ]
     np.ndarray
-        yData with shape [N, 1]
+        yData with shape [N, ]
     """
     is3D = False
 
