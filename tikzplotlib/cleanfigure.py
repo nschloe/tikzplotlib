@@ -3,6 +3,12 @@ import matplotlib
 from matplotlib import pyplot as plt
 
 
+# TODO: implement 3D functionality
+# TODO: implement remaining functions
+# TODO: find suitable test cases for remaining functions.
+# TODO: subplot support
+
+
 def cleanfigure(fighandle=None, axhandle=None, target_resolution=600, scalePrecision=1.0):
     """cleans figure as a preparation for tikz export. 
     This will minimize the number of points required for the tikz figure.
@@ -523,6 +529,7 @@ def moveToBox(x, xRef, xLim, yLim):
 
     # #% Create the new point
     # xNew = x + bsxfun(@times ,minAlpha, (xRef-x));
+    raise NotImplementedError
     return xNew
 
 
@@ -661,6 +668,9 @@ def simplifyLine(fighandle, axhandle, linehandle, target_resolution):
     linehandle.set_ydata(data[:, 1])
 
 
+def simplifyStairs(fighandle, axhandle, linehandle):
+    # TODO: implement this
+    raise NotImplementedError
 
 
 def pixelate(x, y, xToPix, yToPix):
@@ -823,6 +833,35 @@ def opheimSimplify(x, y, tol):
     return mask
 
 
+def updateAlpha(X1, X2, X3, X4, minAlpha):
+    """Checks whether the segments X1--X2 and X3--X4 intersect.
+    
+    Parameters
+    ----------
+    X1 : [type]
+        [description]
+    X2 : [type]
+        [description]
+    X3 : [type]
+        [description]
+    X4 : [type]
+        [description]
+    minAlpha : [type]
+        [description]
+    
+    Returns
+    -------
+    [type]
+        [description]
+    
+    Raises
+    ------
+    NotImplementedError
+        [description]
+    """
+    # TODO implement this
+    raise NotImplementedError
+    return minAlpha
 
 
 def limitPrecision(fighandle, axhandle, linehandle, alpha):
@@ -882,6 +921,9 @@ def limitPrecision(fighandle, axhandle, linehandle, alpha):
     linehandle.set_ydata(data[:, 1])
 
 
+def pruneOutsideText(fighandle, axhandle, linehandle):
+    # TODO implement this
+    raise NotImplementedError
 
 
 def segmentVisible(data, dataIsInBox, xLim, yLim):
@@ -963,6 +1005,33 @@ def corners2D(xLim, yLim):
     return bottomLeft, topLeft, bottomRight, topRight
 
 
+def corners3D(xLim, yLim, zLim):
+    # TODO: implement this
+    raise NotImplementedError
+    return corners
+
+
+def getProjectionMatrix(fighandle, axhandle, linehandle):
+    # TODO: implement this
+    raise NotImplementedError
+
+
+def isValidTargetResolution(val):
+    # TODO: implement this
+    raise NotImplementedError
+    return isValid
+
+
+def isValidAxis(val): 
+    # TODO: implement this
+    raise NotImplementedError
+    return isValid
+
+
+def normalizeAxis(fighandle, axhandle):
+    # TODO: implement this
+    raise NotImplementedError
+    return isValid
 
 
 def segmentsIntersect(X1, X2, X3, X4):
