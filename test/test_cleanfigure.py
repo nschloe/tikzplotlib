@@ -31,7 +31,7 @@ def test_pruneOutsideBox():
         ax.set_ylim([20, 80])
         ax.set_xlim([20, 80])
         cleanfigure.pruneOutsideBox(fig, ax, l)
-        plt.show()
+        assert l.get_xdata().shape == (14,)
 
 
 def test_replaceDataWithNaN():
