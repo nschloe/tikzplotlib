@@ -318,35 +318,172 @@ def test_opheimSimplify():
     assert np.allclose(mask * 1, np.array([1,] + [0,] * 10 + [1,]))
 
 
-# TODO: test for getVisualData
-
-
-def test_cleanfigure():
-    """test high-level usage for simple example.
-    Test is successfull if generated tikz code saves correct amount of lines
+class Test_plottypes:
+    """Testing plot types found here https://matplotlib.org/3.1.1/tutorials/introductory/sample_plots.html
+    
+    TODO: implement 3D tests
     """
-    from tikzplotlib import get_tikz_code
 
-    x = np.linspace(1, 100, 20)
-    y = np.linspace(1, 100, 20)
+    def test_plot(self):
+        from tikzplotlib import get_tikz_code
 
-    with plt.rc_context(rc=RC_PARAMS):
-        fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-        ax.plot(x, y)
-        ax.set_ylim([20, 80])
-        ax.set_xlim([20, 80])
-        raw = get_tikz_code()
+        x = np.linspace(1, 100, 20)
+        y = np.linspace(1, 100, 20)
 
-        cleanfigure.cleanfigure(fig, ax)
-        clean = get_tikz_code()
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+            ax.plot(x, y)
+            ax.set_ylim([20, 80])
+            ax.set_xlim([20, 80])
+            cleanfigure.cleanfigure(fig, ax)
+            assert True
 
-        # Use number of lines to test if it worked.
-        # the baseline (raw) should have 20 points
-        # the clean version (clean) should have 2 points
-        # the difference in line numbers should therefore be 2
-        numLinesRaw = raw.count("\n")
-        numLinesClean = clean.count("\n")
-        assert numLinesRaw - numLinesClean == 18
+    def test_scatter(self):
+        from tikzplotlib import get_tikz_code
+
+        x = np.linspace(1, 100, 20)
+        y = np.linspace(1, 100, 20)
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+            ax.scatter(x, y)
+            ax.set_ylim([20, 80])
+            ax.set_xlim([20, 80])
+            cleanfigure.cleanfigure(fig, ax)
+            assert True
+
+    def test_bar(self):
+        from tikzplotlib import get_tikz_code
+
+        x = np.linspace(1, 100, 20)
+        y = np.linspace(1, 100, 20)
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+            ax.bar(x, y)
+            ax.set_ylim([20, 80])
+            ax.set_xlim([20, 80])
+            cleanfigure.cleanfigure(fig, ax)
+            assert True
+
+    def test_hist(self):
+        """creates same test case as bar"""
+        from tikzplotlib import get_tikz_code
+
+        x = np.linspace(1, 100, 20)
+        y = np.linspace(1, 100, 20)
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+            ax.hist(x, y)
+            ax.set_ylim([20, 80])
+            ax.set_xlim([20, 80])
+            cleanfigure.cleanfigure(fig, ax)
+            assert True
+
+
+class Test_lineplot:
+    def test_line_no_markers(self):
+        """test high-level usage for simple example.
+        Test is successfull if generated tikz code saves correct amount of lines
+        """
+        from tikzplotlib import get_tikz_code
+
+        x = np.linspace(1, 100, 20)
+        y = np.linspace(1, 100, 20)
+
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+            ax.plot(x, y, linestyle="-", marker="None")
+            ax.set_ylim([20, 80])
+            ax.set_xlim([20, 80])
+            raw = get_tikz_code()
+
+            cleanfigure.cleanfigure(fig, ax)
+            clean = get_tikz_code()
+
+            # Use number of lines to test if it worked.
+            # the baseline (raw) should have 20 points
+            # the clean version (clean) should have 2 points
+            # the difference in line numbers should therefore be 2
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 18
+
+    def test_no_line_markers(self):
+        """test high-level usage for simple example.
+        Test is successfull if generated tikz code saves correct amount of lines
+        """
+        from tikzplotlib import get_tikz_code
+
+        x = np.linspace(1, 100, 20)
+        y = np.linspace(1, 100, 20)
+
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+            ax.plot(x, y, linestyle="None", marker="*")
+            ax.set_ylim([20, 80])
+            ax.set_xlim([20, 80])
+            raw = get_tikz_code()
+
+            cleanfigure.cleanfigure(fig, ax)
+            clean = get_tikz_code()
+
+            # Use number of lines to test if it worked.
+            # the baseline (raw) should have 20 points
+            # the clean version (clean) should have 2 points
+            # the difference in line numbers should therefore be 2
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 6
+
+    def test_line_markers(self):
+        """test high-level usage for simple example.
+        Test is successfull if generated tikz code saves correct amount of lines
+        """
+        from tikzplotlib import get_tikz_code
+
+        x = np.linspace(1, 100, 20)
+        y = np.linspace(1, 100, 20)
+
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+            ax.plot(x, y, linestyle="-", marker="*")
+            ax.set_ylim([20, 80])
+            ax.set_xlim([20, 80])
+            raw = get_tikz_code()
+
+            cleanfigure.cleanfigure(fig, ax)
+            clean = get_tikz_code()
+
+            # Use number of lines to test if it worked.
+            # the baseline (raw) should have 20 points
+            # the clean version (clean) should have 2 points
+            # the difference in line numbers should therefore be 2
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 6
+
+    def test_sine(self):
+        from tikzplotlib import get_tikz_code
+
+        x = np.linspace(1, 2 * np.pi, 100)
+        y = np.sin(8 * x)
+
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+            ax.plot(x, y, linestyle="-", marker="*")
+            ax.set_xlim([0.5 * np.pi, 1.5 * np.pi])
+            ax.set_ylim([-1, 1])
+            raw = get_tikz_code()
+
+            cleanfigure.cleanfigure(fig, ax)
+            clean = get_tikz_code()
+
+            # Use number of lines to test if it worked.
+            # the baseline (raw) should have 20 points
+            # the clean version (clean) should have 2 points
+            # the difference in line numbers should therefore be 2
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 39
 
 
 def test_segmentVisible():
@@ -425,4 +562,29 @@ def test_segmentsIntersect():
     X4 = np.array([80, 80])
     mask = cleanfigure.segmentsIntersect(X1, X2, X3, X4)
     assert np.allclose(mask * 1, np.zeros_like(mask))
+
+
+def test_pixelate():
+    xToPix = 49.952
+    yToPix = 49.952
+    xData = np.array(
+        [
+            21.842,
+            27.053,
+            32.263,
+            37.474,
+            42.684,
+            47.895,
+            53.105,
+            58.316,
+            63.526,
+            68.737,
+            73.947,
+            79.158,
+        ]
+    )
+    yData = xData.copy()
+    mask = cleanfigure.pixelate(xData, yData, xToPix, yToPix)
+    assert mask.shape == (12,)
+    assert np.all(mask)
 
