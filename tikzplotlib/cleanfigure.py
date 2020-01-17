@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib
 from matplotlib import pyplot as plt
 
 
@@ -28,8 +29,19 @@ def cleanfigure(fighandle=None, axhandle=None, target_resolution=600, scalePreci
     elif (fighandle is not None) and (axhandle is None):
         axhandle = fighandle.axes[0]
 
+    # Note: ax.scatter and ax.plot create Line2D objects in a property ax.lines
+    # ax.bar creates BarContainer objects in a property ax.bar
+
     for linehandle in axhandle.lines:
-        cleanline(fighandle, axhandle, linehandle, target_resolution, scalePrecision)
+        if type(linehandle) == matplotlib.lines.Line2D:
+            cleanline(fighandle, axhandle, linehandle, target_resolution, scalePrecision)
+        else:
+            raise NotImplementedError
+
+    for container in axhandle.containers:
+        if type(container) == matplotlib.container.BarContainer:
+            pass
+    
 
 
 def cleanline(fighandle, axhandle, linehandle, target_resolution, scalePrecision):
@@ -250,9 +262,11 @@ def elements(array):
     """
     return array.ndim and array.size
 
+
 def isempty(array):
     """proxy for matlab / octave isempty function"""
     return elements(array) == 0
+
 
 def pruneOutsideBox(fighandle, axhandle, linehandle):
     """Some sections of the line may sit outside of the visible box. Cut those off.
@@ -299,6 +313,9 @@ def pruneOutsideBox(fighandle, axhandle, linehandle):
         shouldPlot = np.logical_or(
             shouldPlot, np.concatenate([segvis, np.array([False]).reshape((-1,))])
         )
+
+    id_replace = np.array([[]])
+    id_remove = np.array([[]])
 
     if not np.all(shouldPlot):
         id_remove = np.argwhere(np.logical_not(shouldPlot))
@@ -593,9 +610,8 @@ def simplifyLine(fighandle, axhandle, linehandle, target_resolution):
     if hasMarkers and not hasLines:
         # Pixelate data at the zoom multiplier
         # TODO implement this
-        # mask      = pixelate(xData, yData, xToPix, yToPix);
-        # id_remove = find(mask==0);
-        raise NotImplementedError
+        mask = pixelate(xData, yData, xToPix, yToPix)
+        id_remove = np.argwhere(mask*1 == 0)
     elif hasLines and not hasMarkers:
         # Get the width of a pixel
         xPixelWidth = 1 / xToPix
@@ -643,6 +659,47 @@ def simplifyLine(fighandle, axhandle, linehandle, target_resolution):
     data = removeData(data, id_remove)
     linehandle.set_xdata(data[:, 0])
     linehandle.set_ydata(data[:, 1])
+
+
+
+
+def pixelate(x, y, xToPix, yToPix):
+    """Rough reduction of data points at a multiple of the target resolution.
+    The resolution is lost only beyond the multiplier magnification.
+    
+    Parameters
+    ----------
+    x : [type]
+        [description]
+    y : [type]
+        [description]
+    xToPix : [type]
+        [description]
+    yToPix : [type]
+        [description]
+    
+    Returns
+    -------
+    np.ndarray
+        boolean mask
+    """
+    # TODO: implement this
+    mult = 2
+    dataPixel = np.round(np.stack([x * xToPix * mult, y * yToPix * mult], axis=1))
+    id_orig = np.argsort(dataPixel[:, 0])
+    dataPixelSorted = dataPixel[id_orig, :]
+
+    m = np.logical_or(np.diff(dataPixelSorted[:, 0]) != 0, np.diff(dataPixelSorted[:, 1]) != 0)
+    mask_sorted = np.concatenate([np.array([True]).reshape((-1, )), m], axis=0)
+
+    mask = np.ones((x.shape)) == 0
+    mask[id_orig] = mask_sorted
+    mask[0] = True
+    mask[-1] = True
+
+    isnan = np.logical_or(np.isnan(x), np.isnan(y))
+    mask[isnan] = True
+    return mask
 
 
 def getWidthHeightInPixels(fighandle, target_resolution):
@@ -766,6 +823,8 @@ def opheimSimplify(x, y, tol):
     return mask
 
 
+
+
 def limitPrecision(fighandle, axhandle, linehandle, alpha):
     """Limit the precision of the given data. If alpha is 0 or negative do nothing.
     
@@ -821,6 +880,8 @@ def limitPrecision(fighandle, axhandle, linehandle, alpha):
 
     linehandle.set_xdata(data[:, 0])
     linehandle.set_ydata(data[:, 1])
+
+
 
 
 def segmentVisible(data, dataIsInBox, xLim, yLim):
@@ -902,6 +963,8 @@ def corners2D(xLim, yLim):
     return bottomLeft, topLeft, bottomRight, topRight
 
 
+
+
 def segmentsIntersect(X1, X2, X3, X4):
     """Checks whether the segments X1--X2 and X3--X4 intersect.
     
@@ -927,7 +990,7 @@ def segmentsIntersect(X1, X2, X3, X4):
 
 
 def crossLines(X1, X2, X3, X4):
-    """    
+    """
     Checks whether the segments X1--X2 and X3--X4 intersect.
     See https://en.wikipedia.org/wiki/Line-line_intersection for reference.
     Given four points X_k=(x_k,y_k), k\in{1,2,3,4}, and the two lines
