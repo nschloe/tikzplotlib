@@ -486,6 +486,34 @@ class Test_lineplot:
             assert numLinesRaw - numLinesClean == 39
 
 
+class Test_subplots:
+    def test_subplot(self):
+        from tikzplotlib import get_tikz_code
+
+        x = np.linspace(1, 100, 20)
+        y = np.linspace(1, 100, 20)
+
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, axes = plt.subplots(2, 2, figsize=(5, 5))
+            plotstyles = [("-", "o"), ("-", "None"), ("None", "o"), ("--", "x")]
+            for ax, style in zip(axes.ravel(), plotstyles):
+                ax.plot(x, y, linestyle=style[0], marker=style[1])
+                ax.set_ylim([20, 80])
+                ax.set_xlim([20, 80])
+            raw = get_tikz_code()
+
+            cleanfigure.cleanfigure(fig)
+            clean = get_tikz_code()
+
+            # Use number of lines to test if it worked.
+            # the baseline (raw) should have 20 points
+            # the clean version (clean) should have 2 points
+            # the difference in line numbers should therefore be 2
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 36
+
+
 def test_segmentVisible():
     """test against matlab2tikz implementation
 
