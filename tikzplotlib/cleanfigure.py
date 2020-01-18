@@ -10,17 +10,19 @@ from matplotlib import pyplot as plt
 
 
 def cleanfigure(fighandle=None, axhandle=None, target_resolution=600, scalePrecision=1.0):
-    """cleans figure as a preparation for tikz export. 
+    """Cleans figure as a preparation for tikz export. 
     This will minimize the number of points required for the tikz figure.
+    If the figure has subplots, it will recursively clean then up.
 
     Note that this function modifies the figure directly (impure function).
+
     
     Parameters
     ----------
     fighandle : obj, optional
-        matplotlib figure handle object. If not provided, it is obtained from gcf(), by default None
+        matplotlib figure handle object. If not provided, it is obtained from `plt.gcf()`, by default None
     axhandle : obj, optional
-        matplotlib figure handle object. If not provided, it is obtained from gca(), by default None
+        matplotlib figure handle object. If not provided, it is obtained from `plt.gcf().axes`, by default None
     target_resolution : int, list of int or np.array
         target resolution of final figure in PPI. If a scalar integer is provided, it is assumed to be square in both axis. 
         If a list or an np.array is provided, it is interpreted as [H, W], by default 600
@@ -29,11 +31,15 @@ def cleanfigure(fighandle=None, axhandle=None, target_resolution=600, scalePreci
     """
     if fighandle is None and axhandle is None:
         fighandle = plt.gcf()
-        axhandle = plt.gca()
+        # recurse into subplots
+        for axhandle in fighandle.axes:
+            cleanfigure(fighandle, axhandle, target_resolution, scalePrecision)
     elif fighandle is None and (axhandle is not None):
         fighandle = axhandle.get_figure()
     elif (fighandle is not None) and (axhandle is None):
-        axhandle = fighandle.axes[0]
+        # recurse into subplots
+        for axhandle in fighandle.axes:
+            cleanfigure(fighandle, axhandle, target_resolution, scalePrecision)
 
     # Note: ax.scatter and ax.plot create Line2D objects in a property ax.lines
     # ax.bar creates BarContainer objects in a property ax.bar
@@ -167,6 +173,17 @@ def removeData(data, id_remove):
     return np.concatenate([xData, yData], axis=1)
 
 
+def diff(x, *args, **kwargs):
+    """modification of np.diff(x, *args, **kwargs).
+    - If x is empty, return np.array([False])
+    - else: return np.diff(x, *args, **kwargs)
+    """
+    if isempty(x):
+        return np.array([False])
+    else:
+        return np.diff(x, *args, **kwargs)
+
+
 def removeNaNs(data):
     """Removes superflous NaNs in the data, i.e. those at the end/beginning of the data and consecutive ones.
     
@@ -184,20 +201,24 @@ def removeNaNs(data):
     xData, yData = np.split(data, 2, 1)
     id_nan = np.any(np.isnan(data), axis=1)
     id_remove = np.argwhere(id_nan).reshape((-1,))
-    id_remove = id_remove[
-        np.concatenate(
-            [np.array([True,]).reshape((-1,)), np.diff(id_remove, axis=0) == 1]
-        )
-    ]
+    if isempty(id_remove):
+        pass
+    else:
+        id_remove = id_remove[
+            np.concatenate(
+                [diff(id_remove, axis=0) == 1, np.array([False,]).reshape((-1,))]
+            )
+        ]
 
     id_first = np.argwhere(np.logical_not(id_nan))[0]
     id_last = np.argwhere(np.logical_not(id_nan))[-1]
 
-    if elements(id_first) == 0:
+    if isempty(id_first):
+        # remove entire data
         id_remove = np.arange(len(xData))
     else:
         id_remove = np.concatenate(
-            [np.arange(1, id_first - 1), id_remove, np.arange(id_last + 1, len(xData))]
+            [np.arange(0, id_first), id_remove, np.arange(id_last + 1, len(xData))]
         )
     xData = np.delete(xData, id_remove, axis=0)
     yData = np.delete(yData, id_remove, axis=0)

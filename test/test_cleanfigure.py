@@ -488,6 +488,30 @@ class Test_lineplot:
 
 class Test_subplots:
     def test_subplot(self):
+        """octave code
+
+        ```octave
+            addpath ("../matlab2tikz/src")
+
+            x = linspace(1, 100, 20);
+            y1 = linspace(1, 100, 20);
+
+            figure
+            subplot(2, 2, 1)
+            plot(x, y1, "-")
+            subplot(2, 2, 2)
+            plot(x, y1, "-")
+            subplot(2, 2, 3)
+            plot(x, y1, "-")
+            subplot(2, 2, 4)
+            plot(x, y1, "-")
+            xlim([20, 80])
+            ylim([20, 80])
+            set(gcf,'Units','Inches');
+            set(gcf,'Position',[2.5 2.5 5 5])
+            cleanfigure;
+        ```
+        """
         from tikzplotlib import get_tikz_code
 
         x = np.linspace(1, 100, 20)
