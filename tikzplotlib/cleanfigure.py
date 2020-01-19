@@ -1,12 +1,17 @@
 import numpy as np
 import matplotlib
 from matplotlib import pyplot as plt
+import mpl_toolkits
+from mpl_toolkits.mplot3d import Axes3D
 
 
 # TODO: implement 3D functionality
 # TODO: implement remaining functions
 # TODO: find suitable test cases for remaining functions.
 # TODO: subplot support
+
+
+STEP_DRAW_STYLES = ["steps-pre", "steps-post", "steps-mid"]
 
 
 def cleanfigure(fighandle=None, axhandle=None, target_resolution=600, scalePrecision=1.0):
@@ -28,6 +33,38 @@ def cleanfigure(fighandle=None, axhandle=None, target_resolution=600, scalePreci
         If a list or an np.array is provided, it is interpreted as [H, W], by default 600
     scalePrecision : float, optional
         scalar value indicating precision when scaling down., by default 1
+
+    Examples
+    --------
+
+        1. 2D lineplot
+        ```python
+            x = np.linspace(1, 100, 20)
+            y = np.linspace(1, 100, 20)
+
+            with plt.rc_context(rc=RC_PARAMS):
+                fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+                ax.plot(x, y)
+                ax.set_ylim([20, 80])
+                ax.set_xlim([20, 80])
+                raw = get_tikz_code()
+
+                cleanfigure.cleanfigure(fig, ax)
+                clean = get_tikz_code()
+
+                # Use number of lines to test if it worked.
+                # the baseline (raw) should have 20 points
+                # the clean version (clean) should have 2 points
+                # the difference in line numbers should therefore be 2
+                numLinesRaw = raw.count("\n")
+                numLinesClean = clean.count("\n")
+                print("number of tikz lines saved", numLinesRaw - numLinesClean)
+        ```
+
+        2. 3D lineplot
+        ```python
+            
+        ```
     """
     if fighandle is None and axhandle is None:
         fighandle = plt.gcf()
@@ -41,18 +78,24 @@ def cleanfigure(fighandle=None, axhandle=None, target_resolution=600, scalePreci
         for axhandle in fighandle.axes:
             cleanfigure(fighandle, axhandle, target_resolution, scalePrecision)
 
-    # Note: ax.scatter and ax.plot create Line2D objects in a property ax.lines
-    # ax.bar creates BarContainer objects in a property ax.bar
 
+    # clean up ax.plot and ax.step
     for linehandle in axhandle.lines:
-        if type(linehandle) == matplotlib.lines.Line2D:
+        if type(linehandle) in [matplotlib.lines.Line2D, mpl_toolkits.mplot3d.art3d.Line3D]:
             cleanline(fighandle, axhandle, linehandle, target_resolution, scalePrecision)
         else:
             raise NotImplementedError
 
+    # clean up ax.bar and ax.hist
     for container in axhandle.containers:
         if type(container) == matplotlib.container.BarContainer:
-            pass
+            import warnings
+            warnings.warn("bar and histogram simplification not implemented. Doing Nothing")
+    
+    # clean up ax.scatter
+    for collection in axhandle.collections:
+        import warnings
+        warnings.warn("scatter simplification not implemented. Doing Nothing")
     
 
 
@@ -73,10 +116,23 @@ def cleanline(fighandle, axhandle, linehandle, target_resolution, scalePrecision
     scalePrecision : float
         scalar value indicating precision when scaling down. By default 1
     """
-    pruneOutsideBox(fighandle, axhandle, linehandle)
-    movePointscloser(fighandle, axhandle, linehandle)
-    simplifyLine(fighandle, axhandle, linehandle, target_resolution)
-    limitPrecision(fighandle, axhandle, linehandle, scalePrecision)
+    if isStep(linehandle):
+        import warnings
+        warnings.warn("step plot simplification not yet implemented.", Warning)
+        # TODO: simplifyStairs not yet working
+        # pruneOutsideBox(fighandle, axhandle, linehandle)
+        # simplifyStairs(fighandle, axhandle, linehandle)
+        # limitPrecision(fighandle, axhandle, linehandle, scalePrecision)
+    else:
+        pruneOutsideBox(fighandle, axhandle, linehandle)
+        movePointscloser(fighandle, axhandle, linehandle)
+        simplifyLine(fighandle, axhandle, linehandle, target_resolution)
+        limitPrecision(fighandle, axhandle, linehandle, scalePrecision)
+
+
+def isStep(linehandle):
+    """return True if linehandle represent `plt.step` plot"""
+    return linehandle._drawstyle in STEP_DRAW_STYLES
 
 
 def getVisualLimits(fighandle, axhandle):
@@ -97,13 +153,12 @@ def getVisualLimits(fighandle, axhandle):
     np.array
         yLim as array of shape [2, ]
     """
-    # TODO: implement 3D functionality
-    is3D = False
+    is3D = ax_is_3D(axhandle)
 
     xLim = np.array(axhandle.get_xlim())
     yLim = np.array(axhandle.get_ylim())
     if is3D:
-        zLim = axhandle.get_ylim()
+        zLim = np.array(axhandle.get_ylim())
 
     # Check for logarithmic scales
     isXlog = axhandle.get_xscale() == "log"
@@ -117,10 +172,25 @@ def getVisualLimits(fighandle, axhandle):
         if isZLog:
             zLim = np.log10(zLim)
 
+    if is3D:
+        P = getProjectionMatrix(axhandle)
+
+        corners = corners3D(xLim, yLim, zLim)
+
+        # Add the canonical 4th dimension
+        corners = np.concatenate([corners, np.ones((8, 1))], axis=1)
+        cornersProjected = P @ corners.T
+
+        xCorners = cornersProjected[0, :] / cornersProjected[3, :]
+        yCorners = cornersProjected[1, :] / cornersProjected[3, :]
+
+        xLim = np.array([np.min(xCorners), np.max(xCorners)])
+        yLim = np.array([np.min(yCorners), np.max(yCorners)])
+
     return xLim, yLim
 
 
-def replaceDataWithNaN(data, id_replace):
+def replaceDataWithNaN(linehandle, id_replace):
     """Replaces data at id_replace with NaNs
     
     Parameters
@@ -136,18 +206,34 @@ def replaceDataWithNaN(data, id_replace):
         data with replace values
     """
     if elements(id_replace) == 0:
-        return data
+        return
 
-    # TODO: add 3D compatibility
-    is3D = False
-    data = data.astype(np.float32)
-    xData, yData = np.split(data, 2, 1)
+    is3D = line_is_3D(linehandle)
+
+    if is3D:
+        xData, yData, zData = linehandle.get_data_3d()
+        zData = zData.copy()
+    else:
+        xData = linehandle.get_xdata().astype(np.float32)
+        yData = linehandle.get_ydata().astype(np.float32)
+
+
     xData[id_replace] = np.NaN
     yData[id_replace] = np.NaN
-    return np.concatenate([xData, yData], axis=1)
+    if is3D:
+        zData = zData.copy()
+        zData[id_replace] = np.NaN
+    
+    if is3D:
+        # TODO: I don't understand why I need to set both to get tikz code reduction to work
+        linehandle.set_data_3d(xData, yData, zData)
+        linehandle.set_data(xData, yData)
+    else:
+        linehandle.set_xdata(xData)
+        linehandle.set_ydata(yData)
 
 
-def removeData(data, id_remove):
+def removeData(linehandle, id_remove):
     """remove data at id_remove
     
     Parameters
@@ -163,14 +249,27 @@ def removeData(data, id_remove):
         new data array
     """
     if elements(id_remove) == 0:
-        return data
+        return
 
-    # TODO: add 3D compatibility
-    is3D = False
-    xData, yData = np.split(data, 2, 1)
+    is3D = line_is_3D(linehandle)
+    if is3D:
+        xData, yData, zData = linehandle.get_data_3d()
+    else:
+        xData = linehandle.get_xdata().astype(np.float32)
+        yData = linehandle.get_ydata().astype(np.float32)
+
     xData = np.delete(xData, id_remove, axis=0)
     yData = np.delete(yData, id_remove, axis=0)
-    return np.concatenate([xData, yData], axis=1)
+    if is3D:
+        zData = np.delete(zData, id_remove, axis=0)
+
+    if is3D:
+        # TODO: I don't understand why I need to set both to get tikz code reduction to work
+        linehandle.set_data_3d(xData, yData, zData)
+        linehandle.set_data(xData, yData)
+    else:
+        linehandle.set_xdata(xData)
+        linehandle.set_ydata(yData)
 
 
 def diff(x, *args, **kwargs):
@@ -184,7 +283,7 @@ def diff(x, *args, **kwargs):
         return np.diff(x, *args, **kwargs)
 
 
-def removeNaNs(data):
+def removeNaNs(linehandle):
     """Removes superflous NaNs in the data, i.e. those at the end/beginning of the data and consecutive ones.
     
     Parameters
@@ -197,8 +296,16 @@ def removeNaNs(data):
     np.ndarray
         new data array
     """
-    # TODO: implement 3D functionality
-    xData, yData = np.split(data, 2, 1)
+
+    is3D = line_is_3D(linehandle)
+    if is3D:
+        xData, yData, zData = linehandle.get_data_3d()
+        data = np.stack([xData, yData, zData], axis=1)
+    else:
+        xData = linehandle.get_xdata().astype(np.float32)
+        yData = linehandle.get_ydata().astype(np.float32)
+        data = np.stack([xData, yData], axis=1)
+
     id_nan = np.any(np.isnan(data), axis=1)
     id_remove = np.argwhere(id_nan).reshape((-1,))
     if isempty(id_remove):
@@ -220,9 +327,15 @@ def removeNaNs(data):
         id_remove = np.concatenate(
             [np.arange(0, id_first), id_remove, np.arange(id_last + 1, len(xData))]
         )
-    xData = np.delete(xData, id_remove, axis=0)
-    yData = np.delete(yData, id_remove, axis=0)
-    return np.concatenate([xData, yData], axis=1)
+    data = np.delete(data, id_remove, axis=0)
+
+    if is3D:
+        # TODO: I don't understand why I need to set both to get tikz code reduction to work
+        linehandle.set_data_3d(data[:, 0], data[:, 1], data[:, 2])
+        linehandle.set_data(xData, yData)
+    else:
+        linehandle.set_xdata(data[:, 0])
+        linehandle.set_ydata(data[:, 1])
 
 
 def isInBox(data, xLim, yLim):
@@ -243,6 +356,14 @@ def isInBox(data, xLim, yLim):
     return mask
 
 
+def line_is_3D(linehandle):
+    return type(linehandle) == mpl_toolkits.mplot3d.art3d.Line3D
+
+
+def ax_is_3D(axhandle):
+    return hasattr(axhandle, "get_zlim")
+
+
 def getVisualData(axhandle, linehandle):
     """Returns the visual representation of the data (Respecting possible log_scaling and projection into the image plane).
     
@@ -260,12 +381,12 @@ def getVisualData(axhandle, linehandle):
     np.ndarray
         yData with shape [N, ]
     """
-    is3D = False
-
-    xData = linehandle.get_xdata()
-    yData = linehandle.get_ydata()
+    is3D = line_is_3D(linehandle)
     if is3D:
-        zData = linehandle.get_zdata()
+        xData, yData, zData = linehandle.get_data_3d()
+    else:
+        xData = linehandle.get_xdata()
+        yData = linehandle.get_ydata()
 
     isXlog = axhandle.get_xscale() == "log"
     if isXlog:
@@ -277,6 +398,14 @@ def getVisualData(axhandle, linehandle):
         isZlog = axhandle.get_zscale() == "log"
         if isZlog:
             zData = np.log10(zData)
+
+    if is3D:
+        P = getProjectionMatrix(axhandle)
+
+        data = np.stack([xData, yData, zData, np.ones_like(zData)], axis=1)
+        dataProjected = P @ data.T
+        xData = dataProjected[0, :] / dataProjected[-1, :]
+        yData = dataProjected[1, :] / dataProjected[-1, :]
 
     xData = np.reshape(xData, (-1,))
     yData = np.reshape(yData, (-1,))
@@ -356,11 +485,9 @@ def pruneOutsideBox(fighandle, axhandle, linehandle):
 
         id_replace = id_remove[idx]
         id_remove = id_remove[np.logical_not(idx)]
-    data = replaceDataWithNaN(data, id_replace)
-    data = removeData(data, id_remove)
-    data = removeNaNs(data)
-    linehandle.set_xdata(data[:, 0])
-    linehandle.set_ydata(data[:, 1])
+    replaceDataWithNaN(linehandle, id_replace)
+    removeData(linehandle, id_remove)
+    removeNaNs(linehandle)
 
 
 def movePointscloser(fighandle, axhandle, linehandle):
@@ -390,8 +517,7 @@ def movePointscloser(fighandle, axhandle, linehandle):
     NotImplementedError
         id_replace is not empty. This code section is not implemented.
     """
-    # TODO: implement 3D functionality
-    is3D = False
+    is3D = line_is_3D(linehandle)
     if is3D:
         return
     xData, yData = getVisualData(axhandle, linehandle)
@@ -714,7 +840,6 @@ def pixelate(x, y, xToPix, yToPix):
     np.ndarray
         boolean mask
     """
-    # TODO: implement this
     mult = 2
     dataPixel = np.round(np.stack([x * xToPix * mult, y * yToPix * mult], axis=1))
     id_orig = np.argsort(dataPixel[:, 0])
@@ -907,16 +1032,22 @@ def limitPrecision(fighandle, axhandle, linehandle, alpha):
     if alpha <= 0:
         return
 
-    xData, yData = getVisualData(axhandle, linehandle)
-    is3D = False
-    # TODO implement 3D functionality
+    is3D = line_is_3D(linehandle)
+    if is3D:
+        xData, yData, zData = linehandle.get_data_3d()
+    else:
+        xData = linehandle.get_xdata().astype(np.float32)
+        yData = linehandle.get_ydata().astype(np.float32)
 
     isXlog = axhandle.get_xscale() == "log"
     isYlog = axhandle.get_yscale() == "log"
+    if is3D:
+        isZlog = axhandle.get_zscale() == "log"
 
     # Put the data into a matrix and log bits into vector
     if is3D:
-        raise NotImplementedError
+        data = np.stack([xData, yData, zData], axis=1)
+        isLog = np.array([isXlog, isYlog, isZlog])
     else:
         data = np.stack([xData, yData], axis=1)
         isLog = np.array([isXlog, isYlog])
@@ -938,8 +1069,13 @@ def limitPrecision(fighandle, axhandle, linehandle, alpha):
     data = np.round(data / leastSignificantBit) * leastSignificantBit
     data[:, isLog] = 10.0 ** data[:, isLog]
 
-    linehandle.set_xdata(data[:, 0])
-    linehandle.set_ydata(data[:, 1])
+    if is3D:
+        # TODO: I don't understand why I need to set both to get tikz code reduction to work
+        linehandle.set_data_3d(data[:, 0], data[:, 1], data[:, 2])
+        linehandle.set_data(data[:, 0], data[:, 1])
+    else:
+        linehandle.set_xdata(data[:, 0])
+        linehandle.set_ydata(data[:, 1])
 
 
 def pruneOutsideText(fighandle, axhandle, linehandle):
@@ -1027,14 +1163,92 @@ def corners2D(xLim, yLim):
 
 
 def corners3D(xLim, yLim, zLim):
-    # TODO: implement this
-    raise NotImplementedError
+    """Determine the corners of the 3D axes as defined by xLim, yLim and zLim.
+    
+    Parameters
+    ----------
+    xLim : list or np.array
+        x-axis limits
+    yLim : list or np.array
+        y-axis limits
+    zLim : list or np.array
+        z-axis limits
+    
+    Returns
+    -------
+    np.ndarray
+        corners as array. Shape [8, 2]
+    """
+
+    # Lower square of the cube
+    lowerBottomLeft = np.array([xLim[0], yLim[0], zLim[0]])
+    lowerTopLeft = np.array([xLim[0], yLim[1], zLim[0]])
+    lowerBottomRight = np.array([xLim[1], yLim[0], zLim[0]])
+    lowerTopRight = np.array([xLim[1], yLim[1], zLim[0]])
+
+    # Upper square of the cube
+    upperBottomLeft = np.array([xLim[0], yLim[0], zLim[1]])
+    upperTopLeft = np.array([xLim[0], yLim[1], zLim[1]])
+    upperBottomRight = np.array([xLim[1], yLim[0], zLim[1]])
+    upperTopRight = np.array([xLim[1], yLim[1], zLim[1]])
+
+    corners = np.array(
+        [
+            lowerBottomLeft, 
+            lowerTopLeft, 
+            lowerBottomRight, 
+            lowerTopRight, 
+            upperBottomLeft, 
+            upperTopLeft, 
+            upperBottomRight, 
+            upperTopRight
+        ]
+    )
     return corners
 
 
-def getProjectionMatrix(fighandle, axhandle, linehandle):
-    # TODO: implement this
-    raise NotImplementedError
+def getProjectionMatrix(axhandle):
+    """Get Projection matrix that projects 3D points into 2D image plane.
+    
+    Parameters
+    ----------
+    axhandle : obj
+        matplotlib axes handle object
+    
+    Returns
+    -------
+    np.ndarray
+        Projection matrix P. Shape [4, 4]
+    """
+    # TODO: write test
+    az = np.deg2rad(axhandle.azim)
+    el = np.deg2rad(axhandle.elev)
+    rotationZ = np.array(
+        [ 
+            [np.cos(-az),   -np.sin(-az),   0, 0],
+            [np.sin(-az),   np.cos(-az),    0, 0],
+            [0,             0,              1, 0],
+            [0,             0,              0, 1]
+        ]
+    )
+    rotationX = np.array(
+        [
+            [1, 0,           0,          0],
+            [0, np.sin(el),  np.cos(el), 0],
+            [0, -np.cos(el), np.sin(el), 0],
+            [0, 0,           0,          1]
+        ]
+    )
+    xLim = axhandle.get_xlim3d()
+    yLim = axhandle.get_ylim3d()
+    zLim = axhandle.get_zlim3d()
+
+    aspectRatio = np.array([xLim[1] - xLim[0], yLim[1] - xLim[0], zLim[1] - zLim[0]])
+    aspectRatio /= aspectRatio[-1]
+    scaleMatrix = np.diag(np.concatenate([aspectRatio, np.array([1.])]))
+    
+    P = rotationX @ rotationZ @ scaleMatrix
+    return P
 
 
 def isValidTargetResolution(val):
