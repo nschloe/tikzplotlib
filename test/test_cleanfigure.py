@@ -8,6 +8,7 @@ RC_PARAMS = {"figure.figsize": [5, 5], "figure.dpi": 220, "pgf.rcfonts": False}
 
 
 def test_recursive_cleanfigure():
+    """ """
     x = np.linspace(1, 100, 20)
     y = np.linspace(1, 100, 20)
 
@@ -21,18 +22,20 @@ def test_recursive_cleanfigure():
 
 def test_pruneOutsideBox():
     """test against matlab2tikz implementation
-
+    
     octave code to generate baseline results. Note that octave has indexing 1...N, whereas python has indexing 0...N-1.
     ```octave
         x = linspace(1, 100, 20);
         y1 = linspace(1, 100, 20);
-
+    
         figure
         plot(x, y1)
         xlim([20, 80])
-        ylim([20, 80])    
+        ylim([20, 80])
         cleanfigure;
     ```
+
+
     """
     x = np.linspace(1, 100, 20)
     y = np.linspace(1, 100, 20)
@@ -48,18 +51,20 @@ def test_pruneOutsideBox():
 
 def test_replaceDataWithNaN():
     """test against matlab2tikz implementation
-
+    
     octave code to generate baseline results. Note that octave has indexing 1...N, whereas python has indexing 0...N-1.
     ```octave
         x = linspace(1, 100, 20);
         y1 = linspace(1, 100, 20);
-
+    
         figure
         plot(x, y1)
         xlim([20, 80])
-        ylim([20, 80])    
+        ylim([20, 80])
         cleanfigure;
     ```
+
+
     """
     id_replace = np.array([0, 16])
     xData = np.linspace(1, 100, 20)
@@ -79,18 +84,20 @@ def test_replaceDataWithNaN():
 
 def test_removeData():
     """test against matlab2tikz implementation
-
+    
     octave code to generate baseline results. Note that octave has indexing 1...N, whereas python has indexing 0...N-1.
     ```octave
         x = linspace(1, 100, 20);
         y1 = linspace(1, 100, 20);
-
+    
         figure
         plot(x, y1)
         xlim([20, 80])
-        ylim([20, 80])    
+        ylim([20, 80])
         cleanfigure;
     ```
+
+
     """
     id_remove = np.array([1, 2, 3, 17, 18, 19])
     xData = np.linspace(1, 100, 20)
@@ -108,18 +115,20 @@ def test_removeData():
 
 def test_removeNaNs():
     """test against matlab2tikz implementation
-
+    
     octave code to generate baseline results. Note that octave has indexing 1...N, whereas python has indexing 0...N-1.
     ```octave
         x = linspace(1, 100, 20);
         y1 = linspace(1, 100, 20);
-
+    
         figure
         plot(x, y1)
         xlim([20, 80])
-        ylim([20, 80])    
+        ylim([20, 80])
         cleanfigure;
     ```
+
+
     """
     id_replace = np.array([0, 16])
     id_remove = np.array([1, 2, 3, 17, 18, 19])
@@ -140,8 +149,8 @@ def test_removeNaNs():
 
 def test_isInBox():
     """octave code to generate baseline results
-
-
+    
+    
         ```octave
             x = 1:10;
             y = 1:10;
@@ -150,6 +159,8 @@ def test_isInBox():
             ylim = [3, 7];
             mask = isInBox(data, xlim, ylim)
         ```
+
+
     """
     x = np.linspace(1, 100, 20)
     y = np.linspace(1, 100, 20)
@@ -164,14 +175,13 @@ def test_isInBox():
 
 
 def test_getVisualLimits():
-    """
-        octave code
+    """octave code
         ```octave
             addpath ("../matlab2tikz/src")
-
+    
             x = linspace(1, 100, 20);
             y1 = linspace(1, 100, 20);
-
+    
             figure
             plot(x, y1)
             xlim([20, 80])
@@ -180,6 +190,8 @@ def test_getVisualLimits():
             set(gcf,'Position',[2.5 2.5 5 5])
             cleanfigure;
         ```
+
+
     """
     x = np.linspace(1, 100, 20)
     y = np.linspace(1, 100, 20)
@@ -195,14 +207,13 @@ def test_getVisualLimits():
 
 
 def test_movePointsCloser():
-    """
-        octave code
+    """octave code
         ```octave
             addpath ("../matlab2tikz/src")
-
+    
             x = linspace(1, 100, 20);
             y1 = linspace(1, 100, 20);
-
+    
             figure
             plot(x, y1)
             xlim([20, 80])
@@ -211,6 +222,8 @@ def test_movePointsCloser():
             set(gcf,'Position',[2.5 2.5 5 5])
             cleanfigure;
         ```
+
+
     """
     x = np.linspace(1, 100, 20)
     y = np.linspace(1, 100, 20)
@@ -226,14 +239,13 @@ def test_movePointsCloser():
 
 
 def test_simplifyLine():
-    """
-        octave code
+    """octave code
         ```octave
             addpath ("../matlab2tikz/src")
-
+    
             x = linspace(1, 100, 20);
             y1 = linspace(1, 100, 20);
-
+    
             figure
             plot(x, y1)
             xlim([20, 80])
@@ -242,6 +254,8 @@ def test_simplifyLine():
             set(gcf,'Position',[2.5 2.5 5 5])
             cleanfigure;
         ```
+
+
     """
     x = np.linspace(1, 100, 20)
     y = np.linspace(1, 100, 20)
@@ -294,14 +308,13 @@ def test_simplifyLine():
 
 
 def test_limitPrecision():
-    """
-        octave code
+    """octave code
         ```octave
             addpath ("../matlab2tikz/src")
-
+    
             x = linspace(1, 100, 20);
             y1 = linspace(1, 100, 20);
-
+    
             figure
             plot(x, y1)
             xlim([20, 80])
@@ -310,6 +323,8 @@ def test_limitPrecision():
             set(gcf,'Position',[2.5 2.5 5 5])
             cleanfigure;
         ```
+
+
     """
     x = np.linspace(1, 100, 20)
     y = np.linspace(1, 100, 20)
@@ -329,14 +344,14 @@ def test_limitPrecision():
 
 def test_opheimSimplify():
     """test path simplification
-
+    
         octave code
         ```octave
             addpath ("../matlab2tikz/src")
-
+    
             x = linspace(1, 100, 20);
             y1 = linspace(1, 100, 20);
-
+    
             figure
             plot(x, y1)
             xlim([20, 80])
@@ -345,6 +360,8 @@ def test_opheimSimplify():
             set(gcf,'Position',[2.5 2.5 5 5])
             cleanfigure;
         ```
+
+
     """
     x = np.array(
         [
@@ -373,6 +390,12 @@ def test_opheimSimplify():
     "function, result", [("plot", False), ("step", True)],
 )
 def test_is_step(function, result):
+    """
+
+    :param function: 
+    :param result: 
+
+    """
     x = np.linspace(1, 100, 20)
     y = np.linspace(1, 100, 20)
 
@@ -386,10 +409,10 @@ def test_is_step(function, result):
 
 
 class Test_plottypes:
-    """Testing plot types found here https://matplotlib.org/3.1.1/tutorials/introductory/sample_plots.html
-    """
+    """Testing plot types found here https://matplotlib.org/3.1.1/tutorials/introductory/sample_plots.html"""
 
     def test_plot(self):
+        """ """
 
         x = np.linspace(1, 100, 20)
         y = np.linspace(1, 100, 20)
@@ -413,6 +436,7 @@ class Test_plottypes:
             assert numLinesRaw - numLinesClean == 18
 
     def test_step(self):
+        """ """
 
         x = np.linspace(1, 100, 20)
         y = np.linspace(1, 100, 20)
@@ -426,6 +450,7 @@ class Test_plottypes:
                 cleanfigure.cleanfigure(fig)
 
     def test_scatter(self):
+        """ """
         # TODO: scatter plots are represented through axes.collections. Currently, this is simply ignored and nothing is done.
 
         x = np.linspace(1, 100, 20)
@@ -439,6 +464,7 @@ class Test_plottypes:
                 cleanfigure.cleanfigure(fig)
 
     def test_bar(self):
+        """ """
 
         x = np.linspace(1, 100, 20)
         y = np.linspace(1, 100, 20)
@@ -464,6 +490,7 @@ class Test_plottypes:
                 cleanfigure.cleanfigure(fig)
 
     def test_plot3d(self):
+        """ """
         from mpl_toolkits.mplot3d import Axes3D
         theta = np.linspace(-4 * np.pi, 4 * np.pi, 100)
         z = np.linspace(-2, 2, 100)
@@ -490,6 +517,7 @@ class Test_plottypes:
             assert numLinesRaw - numLinesClean == 14
 
     def test_scatter3d(self):
+        """ """
         from mpl_toolkits.mplot3d import Axes3D
 
         x, y = np.meshgrid(np.linspace(1, 100, 20), np.linspace(1, 100, 20))
@@ -506,6 +534,7 @@ class Test_plottypes:
                 cleanfigure.cleanfigure(fig)
 
     def test_wireframe3D(self):
+        """ """
         from mpl_toolkits.mplot3d import axes3d
         # Grab some test data.
         X, Y, Z = axes3d.get_test_data(0.05)
@@ -520,6 +549,7 @@ class Test_plottypes:
                 cleanfigure.cleanfigure(fig)
 
     def test_surface3D(self):
+        """ """
         from mpl_toolkits.mplot3d import Axes3D
         from matplotlib import cm
         from matplotlib.ticker import LinearLocator, FormatStrFormatter
@@ -550,6 +580,11 @@ class Test_plottypes:
                 cleanfigure.cleanfigure(fig)
 
     def test_trisurface3D(Self):
+        """
+
+        :param Self: 
+
+        """
         from mpl_toolkits.mplot3d import Axes3D
         import matplotlib.pyplot as plt
         import numpy as np
@@ -582,6 +617,7 @@ class Test_plottypes:
                 cleanfigure.cleanfigure(fig)
 
     def test_contour3D(self):
+        """ """
         from mpl_toolkits.mplot3d import axes3d
         import matplotlib.pyplot as plt
         from matplotlib import cm
@@ -596,6 +632,7 @@ class Test_plottypes:
                 cleanfigure.cleanfigure(fig)
     
     def test_polygon3D(self):
+        """ """
         from mpl_toolkits.mplot3d import Axes3D
         from matplotlib.collections import PolyCollection
         from matplotlib import colors as mcolors
@@ -605,6 +642,11 @@ class Test_plottypes:
             ax = fig.gca(projection='3d')
 
             def cc(arg):
+                """
+
+                :param arg: 
+
+                """
                 return mcolors.to_rgba(arg, alpha=0.6)
 
             xs = np.arange(0, 10, 0.4)
@@ -630,6 +672,7 @@ class Test_plottypes:
                 cleanfigure.cleanfigure(fig)
 
     def test_bar3D(self):
+        """ """
         from mpl_toolkits.mplot3d import Axes3D
         import matplotlib.pyplot as plt
         import numpy as np
@@ -655,6 +698,7 @@ class Test_plottypes:
                 cleanfigure.cleanfigure(fig)
 
     def test_quiver3D(self):
+        """ """
         from mpl_toolkits.mplot3d import axes3d
         import matplotlib.pyplot as plt
         import numpy as np
@@ -680,6 +724,7 @@ class Test_plottypes:
                 cleanfigure.cleanfigure(fig)
 
     def test_2D_in_3D(self):
+        """ """
         from mpl_toolkits.mplot3d import Axes3D
         import numpy as np
         import matplotlib.pyplot as plt
@@ -721,9 +766,12 @@ class Test_plottypes:
 
 
 class Test_lineplot:
+    """ """
     def test_line_no_markers(self):
         """test high-level usage for simple example.
         Test is successfull if generated tikz code saves correct amount of lines
+
+
         """
 
         x = np.linspace(1, 100, 20)
@@ -750,6 +798,8 @@ class Test_lineplot:
     def test_no_line_markers(self):
         """test high-level usage for simple example.
         Test is successfull if generated tikz code saves correct amount of lines
+
+
         """
 
         x = np.linspace(1, 100, 20)
@@ -776,6 +826,8 @@ class Test_lineplot:
     def test_line_markers(self):
         """test high-level usage for simple example.
         Test is successfull if generated tikz code saves correct amount of lines
+
+
         """
 
         x = np.linspace(1, 100, 20)
@@ -800,6 +852,7 @@ class Test_lineplot:
             assert numLinesRaw - numLinesClean == 6
 
     def test_sine(self):
+        """ """
 
         x = np.linspace(1, 2 * np.pi, 100)
         y = np.sin(8 * x)
@@ -824,15 +877,16 @@ class Test_lineplot:
 
 
 class Test_subplots:
+    """ """
     def test_subplot(self):
         """octave code
-
+        
         ```octave
             addpath ("../matlab2tikz/src")
-
+        
             x = linspace(1, 100, 20);
             y1 = linspace(1, 100, 20);
-
+        
             figure
             subplot(2, 2, 1)
             plot(x, y1, "-")
@@ -848,6 +902,8 @@ class Test_subplots:
             set(gcf,'Position',[2.5 2.5 5 5])
             cleanfigure;
         ```
+
+
         """
 
         x = np.linspace(1, 100, 20)
@@ -876,18 +932,20 @@ class Test_subplots:
 
 def test_segmentVisible():
     """test against matlab2tikz implementation
-
+    
     octave code to generate baseline results. Note that octave has indexing 1...N, whereas python has indexing 0...N-1.
     ```octave
         x = linspace(1, 100, 20);
         y1 = linspace(1, 100, 20);
-
+    
         figure
         plot(x, y1)
         xlim([20, 80])
-        ylim([20, 80])    
+        ylim([20, 80])
         cleanfigure;
     ```
+
+
     """
 
     y = np.linspace(1, 100, 20)
@@ -901,8 +959,7 @@ def test_segmentVisible():
 
 
 def test_crossLines():
-    """test against matplotlib2tikz implementation
-    """
+    """test against matplotlib2tikz implementation"""
     y = np.linspace(1, 100, 20)
     x = y.copy()
     data = np.stack([x, y], axis=1)
@@ -939,8 +996,7 @@ def test_crossLines():
 
 
 def test_segmentsIntersect():
-    """test against matplotlib2tikz implementation
-    """
+    """test against matplotlib2tikz implementation"""
     y = np.linspace(1, 100, 20)
     x = y.copy()
     data = np.stack([x, y], axis=1)
@@ -953,6 +1009,7 @@ def test_segmentsIntersect():
 
 
 def test_pixelate():
+    """ """
     xToPix = 49.952
     yToPix = 49.952
     xData = np.array(
@@ -978,6 +1035,7 @@ def test_pixelate():
 
 
 def test_corners3D():
+    """ """
     xlim = ylim = zlim = np.array([-5, 5])
     corners = cleanfigure._corners3D(xlim, ylim, zlim)
 
