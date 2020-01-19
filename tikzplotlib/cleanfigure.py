@@ -793,7 +793,7 @@ def simplifyLine(fighandle, axhandle, linehandle, target_resolution):
         numLines = np.size(lineStart)
 
         # original_code : id_remove = cell(numLines, 1)
-        id_remove = [[] * numLines]
+        id_remove = [np.array([], dtype=np.int32).reshape((-1, ))] * numLines
 
         # Simplify the line segments
         for ii in np.arange(numLines):
@@ -804,15 +804,13 @@ def simplifyLine(fighandle, axhandle, linehandle, target_resolution):
             # Line simplification
             if np.size(x) > 2:
                 mask = opheimSimplify(x, y, tol)
-                id_remove[ii] = np.argwhere(mask == 0) + lineStart[ii]
+                id_remove[ii] = np.argwhere(mask == 0).reshape((-1, )) + lineStart[ii]
         # Merge the indices of the line segments
         # original code : id_remove = cat(1, id_remove{:})
         id_remove = np.concatenate(id_remove)
 
     # remove the data points
-    data = removeData(data, id_remove)
-    linehandle.set_xdata(data[:, 0])
-    linehandle.set_ydata(data[:, 1])
+    removeData(linehandle, id_remove)
 
 
 def simplifyStairs(fighandle, axhandle, linehandle):
