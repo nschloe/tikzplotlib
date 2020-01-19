@@ -812,12 +812,42 @@ def _simplifyLine(fighandle, axhandle, linehandle, target_resolution):
     _removeData(linehandle, id_remove)
 
 
-    removeData(linehandle, id_remove)
+def _simplifyStairs(fighandle, axhandle, linehandle):
+    # TODO: it looks like matlab changes the data to be plotted when using `stairs` command, whereas matplotlib stores the same data but displays it as a step.
 
+    xData = linehandle.get_xdata()
+    yData = linehandle.get_ydata()
+    data = np.stack([xData, yData], 1)
+    if _isempty(xData) or _isempty(yData):
+        return
+    
+    xNoDiff = np.concatenate([np.array([False]).reshape((-1,) ), _diff(xData) == 0])
+    yNoDiff = np.concatenate([np.array([False]).reshape((-1,) ), _diff(yData) == 0])
 
-def simplifyStairs(fighandle, axhandle, linehandle):
-    # TODO: implement this
-    raise NotImplementedError
+    xNoDiff[-1] = False
+    yNoDiff[-1] = False
+
+    xIsMonotone = np.concatenate(
+        [
+            np.array([True]).reshape((-1,) ), 
+            _diff(np.sign(_diff(xData))) == 0,
+            np.array([True]).reshape((-1,) )
+        ]
+    )
+    yIsMonotone = np.concatenate(
+        [
+            np.array([True]).reshape((-1,) ), 
+            _diff(np.sign(_diff(yData))) == 0,
+            np.array([True]).reshape((-1,) )
+        ]
+    )
+    xRemove = np.logical_and(xNoDiff, yIsMonotone)
+    yRemove = np.logical_and(yNoDiff, xIsMonotone)
+
+    id_remove = np.argwhere(xRemove or yRemove)
+    new_data = _removeData(data, id_remove)
+    linehandle.set_xdata(new_data[:, 0])
+    linehandle.set_ydata(new_data[:, 1])
 
 
 def _pixelate(x, y, xToPix, yToPix):

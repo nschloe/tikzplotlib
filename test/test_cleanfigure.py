@@ -246,6 +246,41 @@ def test_simplifyLine():
         assert l.get_ydata().shape == (2,)
 
 
+# def test_simplifyStairs():
+#     """octave code
+
+#     ```octave
+#         %% example 4
+
+#         addpath ("../matlab2tikz/src")
+
+#         x = linspace(1, 100, 20);
+#         y1 = linspace(1, 100, 20);
+
+#         figure
+#         stairs(x, y1)
+#         xlim([20, 80])
+#         ylim([20, 80])
+#         set(gcf,'Units','Inches');
+#         set(gcf,'Position',[2.5 2.5 5 5])
+#         cleanfigure;
+#     ```
+#     """
+#     # TODO: it looks like matlab changes the data to be plotted when using `stairs` command, 
+#     # whereas matplotlib stores the same data but displays it as a step.
+#     x = np.linspace(1, 100, 20)
+#     y = np.linspace(1, 100, 20)
+
+#     with plt.rc_context(rc=RC_PARAMS):
+#         fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+#         (l,) = ax.step(x, y, where="post")
+#         ax.set_ylim([20, 80])
+#         ax.set_xlim([20, 80])
+#         cleanfigure.pruneOutsideBox(fig, ax, l)
+#         cleanfigure.movePointscloser(fig, ax, l)
+#         cleanfigure.simplifyStairs(fig, ax, l)
+
+
 def test_limitPrecision():
     """
         octave code
