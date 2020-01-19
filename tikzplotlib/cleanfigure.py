@@ -2,16 +2,14 @@ import numpy as np
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 import mpl_toolkits
-from mpl_toolkits.mplot3d import Axes3D
 
 
-# TODO: change docstring type [!!!]
-# TODO: see which test cases the matlab2tikz guys used [!]
+# TODO: see which test cases the matlab2tikz guys used [!!!]
+# TODO: find suitable test cases for remaining functions. [!!]
 # TODO: implement remaining functions [!!]
 # - simplify stair : plt.step
 # -- looks like matlabs stairs plot and matplotlibs plt.step is implemented differently. The data representation is different.
 # - there is still a missing code block in movePointsCloser. Maybe find suitable axes limits to get this code block to work
-# TODO: find suitable test cases for remaining functions.
 # TODO: make grid of plot types which are working and which not. 2D and 3D
 
 
@@ -597,8 +595,8 @@ def _movePointscloser(fighandle, axhandle, linehandle):
         X1_second = data[id_second, :]
         X2_second = data[id_second - 1, :]
 
-        newData_first = _moveToBox(X1_first, X2_first, largeXLim, largeYLim)
-        newData_second = _moveToBox(X1_second, X2_second, largeXLim, largeYLim)
+        newData_first = _moveToBox(X1_first, X2_first, largeXlim, largeYlim)
+        newData_second = _moveToBox(X1_second, X2_second, largeXlim, largeYlim)
 
         isXlog = linehandle.get_xscale() == "log"
         if isXlog:
@@ -686,7 +684,11 @@ def _movePointscloser(fighandle, axhandle, linehandle):
 
 
 def _moveToBox(x, xRef, xLim, yLim):
-    """
+    """Takes a box defined by xlim, ylim, a vector of points x and a vector of
+    reference points xRef.
+    Returns the vector of points xNew that sits on the line segment between
+    x and xRef *and* on the box. If several such points exist, take the
+    closest one to x.
 
     :param x: 
     :param xRef: 
@@ -694,11 +696,6 @@ def _moveToBox(x, xRef, xLim, yLim):
     :param yLim: 
 
     """
-    #% Takes a box defined by xlim, ylim, a vector of points x and a vector of
-    #% reference points xRef.
-    #% Returns the vector of points xNew that sits on the line segment between
-    #% x and xRef *and* on the box. If several such points exist, take the
-    #% closest one to x.
     # n = size(x, 1);
 
     # #% Find out with which border the line x---xRef intersects, and determine
@@ -724,7 +721,6 @@ def _moveToBox(x, xRef, xLim, yLim):
     # #% Create the new point
     # xNew = x + bsxfun(@times ,minAlpha, (xRef-x));
     raise NotImplementedError
-    return xNew
 
 
 def _insertData(fighandle, linehandle, id_insert, dataInsert):
@@ -778,7 +774,6 @@ def _simplifyLine(fighandle, axhandle, linehandle, target_resolution):
         return
     W, H = _getWidthHeightInPixels(fighandle, target_resolution)
     xData, yData = _getVisualData(axhandle, linehandle)
-    data = np.stack([xData, yData], axis=1)
     # Only simplify if there are more than 2 points
     if np.size(xData) <= 2 or np.size(yData) <= 2:
         return
@@ -1285,7 +1280,6 @@ def _isValidTargetResolution(val):
     """
     # TODO: implement this
     raise NotImplementedError
-    return isValid
 
 
 def _isValidAxis(val):
@@ -1296,7 +1290,6 @@ def _isValidAxis(val):
     """
     # TODO: implement this
     raise NotImplementedError
-    return isValid
 
 
 def _normalizeAxis(fighandle, axhandle):
@@ -1308,7 +1301,6 @@ def _normalizeAxis(fighandle, axhandle):
     """
     # TODO: implement this
     raise NotImplementedError
-    return isValid
 
 
 def _segmentsIntersect(X1, X2, X3, X4):

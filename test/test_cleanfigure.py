@@ -22,12 +22,13 @@ def test_recursive_cleanfigure():
 
 def test_pruneOutsideBox():
     """test against matlab2tikz implementation
-    
-    octave code to generate baseline results. Note that octave has indexing 1...N, whereas python has indexing 0...N-1.
+
+    octave code to generate baseline results. 
+    Note that octave has indexing 1...N, whereas python has indexing 0...N-1.
     ```octave
         x = linspace(1, 100, 20);
         y1 = linspace(1, 100, 20);
-    
+
         figure
         plot(x, y1)
         xlim([20, 80])
@@ -50,13 +51,14 @@ def test_pruneOutsideBox():
 
 
 def test_replaceDataWithNaN():
-    """test against matlab2tikz implementation
-    
-    octave code to generate baseline results. Note that octave has indexing 1...N, whereas python has indexing 0...N-1.
+    """test against matlab2tikz implementation.
+
+    octave code to generate baseline results. 
+    Note that octave has indexing 1...N, whereas python has indexing 0...N-1.
     ```octave
         x = linspace(1, 100, 20);
         y1 = linspace(1, 100, 20);
-    
+
         figure
         plot(x, y1)
         xlim([20, 80])
@@ -83,13 +85,14 @@ def test_replaceDataWithNaN():
 
 
 def test_removeData():
-    """test against matlab2tikz implementation
-    
-    octave code to generate baseline results. Note that octave has indexing 1...N, whereas python has indexing 0...N-1.
+    """test against matlab2tikz implementation.
+
+    octave code to generate baseline results. 
+    Note that octave has indexing 1...N, whereas python has indexing 0...N-1.
     ```octave
         x = linspace(1, 100, 20);
         y1 = linspace(1, 100, 20);
-    
+
         figure
         plot(x, y1)
         xlim([20, 80])
@@ -102,7 +105,6 @@ def test_removeData():
     id_remove = np.array([1, 2, 3, 17, 18, 19])
     xData = np.linspace(1, 100, 20)
     yData = xData.copy()
-    data = np.stack([xData, yData], axis=1)
 
     with plt.rc_context(rc=RC_PARAMS):
         fig, ax = plt.subplots(1, 1, figsize=(5, 5))
@@ -134,7 +136,6 @@ def test_removeNaNs():
     id_remove = np.array([1, 2, 3, 17, 18, 19])
     xData = np.linspace(1, 100, 20)
     yData = xData.copy()
-    data = np.stack([xData, yData], axis=1)
 
     with plt.rc_context(rc=RC_PARAMS):
         fig, ax = plt.subplots(1, 1, figsize=(5, 5))
@@ -178,10 +179,10 @@ def test_getVisualLimits():
     """octave code
         ```octave
             addpath ("../matlab2tikz/src")
-    
+
             x = linspace(1, 100, 20);
             y1 = linspace(1, 100, 20);
-    
+
             figure
             plot(x, y1)
             xlim([20, 80])
@@ -210,10 +211,10 @@ def test_movePointsCloser():
     """octave code
         ```octave
             addpath ("../matlab2tikz/src")
-    
+
             x = linspace(1, 100, 20);
             y1 = linspace(1, 100, 20);
-    
+
             figure
             plot(x, y1)
             xlim([20, 80])
@@ -491,7 +492,6 @@ class Test_plottypes:
 
     def test_plot3d(self):
         """ """
-        from mpl_toolkits.mplot3d import Axes3D
 
         theta = np.linspace(-4 * np.pi, 4 * np.pi, 100)
         z = np.linspace(-2, 2, 100)
@@ -519,7 +519,6 @@ class Test_plottypes:
 
     def test_scatter3d(self):
         """ """
-        from mpl_toolkits.mplot3d import Axes3D
 
         x, y = np.meshgrid(np.linspace(1, 100, 20), np.linspace(1, 100, 20))
         z = np.abs(x - 50) + np.abs(y - 50)
@@ -552,7 +551,6 @@ class Test_plottypes:
 
     def test_surface3D(self):
         """ """
-        from mpl_toolkits.mplot3d import Axes3D
         from matplotlib import cm
         from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
@@ -589,7 +587,6 @@ class Test_plottypes:
         :param Self: 
 
         """
-        from mpl_toolkits.mplot3d import Axes3D
         import matplotlib.pyplot as plt
         import numpy as np
 
@@ -636,7 +633,6 @@ class Test_plottypes:
 
     def test_polygon3D(self):
         """ """
-        from mpl_toolkits.mplot3d import Axes3D
         from matplotlib.collections import PolyCollection
         from matplotlib import colors as mcolors
 
@@ -677,7 +673,6 @@ class Test_plottypes:
 
     def test_bar3D(self):
         """ """
-        from mpl_toolkits.mplot3d import Axes3D
         import matplotlib.pyplot as plt
         import numpy as np
 
@@ -702,7 +697,6 @@ class Test_plottypes:
 
     def test_quiver3D(self):
         """ """
-        from mpl_toolkits.mplot3d import axes3d
         import matplotlib.pyplot as plt
         import numpy as np
 
@@ -733,7 +727,6 @@ class Test_plottypes:
 
     def test_2D_in_3D(self):
         """ """
-        from mpl_toolkits.mplot3d import Axes3D
         import numpy as np
         import matplotlib.pyplot as plt
 
