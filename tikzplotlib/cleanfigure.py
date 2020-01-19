@@ -5,10 +5,14 @@ import mpl_toolkits
 from mpl_toolkits.mplot3d import Axes3D
 
 
-# TODO: implement 3D functionality
-# TODO: implement remaining functions
+# TODO: change docstring type [!!!]
+# TODO: see which test cases the matlab2tikz guys used [!]
+# TODO: implement remaining functions [!!]
+# - simplify stair : plt.step
+# -- looks like matlabs stairs plot and matplotlibs plt.step is implemented differently. The data representation is different.
+# - there is still a missing code block in movePointsCloser. Maybe find suitable axes limits to get this code block to work
 # TODO: find suitable test cases for remaining functions.
-# TODO: subplot support
+# TODO: make grid of plot types which are working and which not. 2D and 3D
 
 
 STEP_DRAW_STYLES = ["steps-pre", "steps-post", "steps-mid"]
@@ -63,11 +67,12 @@ def cleanfigure(fig=None, targetResolution=600, scalePrecision=1.0):
     """
     if fig is None:
         fig = plt.gcf()
-    elif fig == "gcf": # tikzplotlib syntax
+    elif fig == "gcf":  # tikzplotlib syntax
         fig = plt.gcf()
-    _recursive_cleanfigure(fig, targetResolution=targetResolution, scalePrecision=scalePrecision)
+    _recursive_cleanfigure(
+        fig, targetResolution=targetResolution, scalePrecision=scalePrecision
+    )
 
-    
 
 def _recursive_cleanfigure(obj, targetResolution=600, scalePrecision=1.0):
     """
@@ -81,39 +86,64 @@ def _recursive_cleanfigure(obj, targetResolution=600, scalePrecision=1.0):
         if isinstance(child, mpl.spines.Spine):
             pass
         if isinstance(child, mpl.axes.Axes):
-            # Note: containers contain Patches but are not child objects. 
+            # Note: containers contain Patches but are not child objects.
             # This is a problem because a bar plot creates a Barcontainer.
             _clean_containers(child)
-            _recursive_cleanfigure(child, targetResolution=targetResolution, scalePrecision=scalePrecision)
+            _recursive_cleanfigure(
+                child, targetResolution=targetResolution, scalePrecision=scalePrecision
+            )
         elif isinstance(child, mpl_toolkits.mplot3d.axes3d.Axes3D):
             _clean_containers(child)
-            _recursive_cleanfigure(child, targetResolution=targetResolution, scalePrecision=scalePrecision)
+            _recursive_cleanfigure(
+                child, targetResolution=targetResolution, scalePrecision=scalePrecision
+            )
         elif isinstance(child, mpl.lines.Line2D):
             ax = child.axes
             fig = ax.figure
-            _cleanline(fig, ax, linehandle=child, targetResolution=targetResolution, scalePrecision=scalePrecision)
+            _cleanline(
+                fig,
+                ax,
+                linehandle=child,
+                targetResolution=targetResolution,
+                scalePrecision=scalePrecision,
+            )
         elif isinstance(child, mpl_toolkits.mplot3d.art3d.Line3D):
             ax = child.axes
             fig = ax.figure
-            _cleanline(fig, ax, linehandle=child, targetResolution=targetResolution, scalePrecision=scalePrecision)
+            _cleanline(
+                fig,
+                ax,
+                linehandle=child,
+                targetResolution=targetResolution,
+                scalePrecision=scalePrecision,
+            )
         elif isinstance(child, mpl.image.AxesImage):
             pass
         elif isinstance(child, mpl.patches.Patch):
             pass
         elif isinstance(child, mpl.collections.PathCollection):
             import warnings
-            warnings.warn("Cleaning Path Collections (scatter plot) is not supported yet.")
+
+            warnings.warn(
+                "Cleaning Path Collections (scatter plot) is not supported yet."
+            )
         elif isinstance(child, mpl.collections.LineCollection):
             import warnings
-            warnings.warn("Cleaning Line Collections (scatter plot) is not supported yet.")
+
+            warnings.warn(
+                "Cleaning Line Collections (scatter plot) is not supported yet."
+            )
         elif isinstance(child, mpl_toolkits.mplot3d.art3d.Line3DCollection):
             import warnings
+
             warnings.warn("Cleaning Line3DCollection is not supported yet.")
         elif isinstance(child, mpl_toolkits.mplot3d.art3d.Poly3DCollection):
             import warnings
+
             warnings.warn("Cleaning Poly3DCollections is not supported yet.")
         else:
             pass
+
 
 def _clean_containers(axes):
     """Containers are not children of axes. They need to be visited separately
@@ -124,6 +154,7 @@ def _clean_containers(axes):
     for container in axes.containers:
         if isinstance(container, mpl.container.BarContainer):
             import warnings
+
             warnings.warn("Cleaning Bar Container (bar plot) is not supported yet.")
 
 
@@ -140,6 +171,7 @@ def _cleanline(fighandle, axhandle, linehandle, targetResolution, scalePrecision
     """
     if _isStep(linehandle):
         import warnings
+
         warnings.warn("step plot simplification not yet implemented.", Warning)
         # TODO: simplifyStairs not yet working
         # pruneOutsideBox(fighandle, axhandle, linehandle)
@@ -232,13 +264,12 @@ def _replaceDataWithNan(linehandle, id_replace):
         xData = linehandle.get_xdata().astype(np.float32)
         yData = linehandle.get_ydata().astype(np.float32)
 
-
     xData[id_replace] = np.NaN
     yData[id_replace] = np.NaN
     if is3D:
         zData = zData.copy()
         zData[id_replace] = np.NaN
-    
+
     if is3D:
         # TODO: I don't understand why I need to set both to get tikz code reduction to work
         linehandle.set_data_3d(xData, yData, zData)
@@ -770,7 +801,7 @@ def _simplifyLine(fighandle, axhandle, linehandle, target_resolution):
     if hasMarkers and not hasLines:
         # Pixelate data at the zoom multiplier
         mask = _pixelate(xData, yData, xToPix, yToPix)
-        id_remove = np.argwhere(mask*1 == 0)
+        id_remove = np.argwhere(mask * 1 == 0)
     elif hasLines and not hasMarkers:
         # Get the width of a pixel
         xPixelWidth = 1 / xToPix
@@ -798,7 +829,7 @@ def _simplifyLine(fighandle, axhandle, linehandle, target_resolution):
         numLines = np.size(lineStart)
 
         # original_code : id_remove = cell(numLines, 1)
-        id_remove = [np.array([], dtype=np.int32).reshape((-1, ))] * numLines
+        id_remove = [np.array([], dtype=np.int32).reshape((-1,))] * numLines
 
         # Simplify the line segments
         for ii in np.arange(numLines):
@@ -809,7 +840,7 @@ def _simplifyLine(fighandle, axhandle, linehandle, target_resolution):
             # Line simplification
             if np.size(x) > 2:
                 mask = _opheimSimplify(x, y, tol)
-                id_remove[ii] = np.argwhere(mask == 0).reshape((-1, )) + lineStart[ii]
+                id_remove[ii] = np.argwhere(mask == 0).reshape((-1,)) + lineStart[ii]
         # Merge the indices of the line segments
         # original code : id_remove = cat(1, id_remove{:})
         id_remove = np.concatenate(id_remove)
@@ -833,25 +864,25 @@ def _simplifyStairs(fighandle, axhandle, linehandle):
     data = np.stack([xData, yData], 1)
     if _isempty(xData) or _isempty(yData):
         return
-    
-    xNoDiff = np.concatenate([np.array([False]).reshape((-1,) ), _diff(xData) == 0])
-    yNoDiff = np.concatenate([np.array([False]).reshape((-1,) ), _diff(yData) == 0])
+
+    xNoDiff = np.concatenate([np.array([False]).reshape((-1,)), _diff(xData) == 0])
+    yNoDiff = np.concatenate([np.array([False]).reshape((-1,)), _diff(yData) == 0])
 
     xNoDiff[-1] = False
     yNoDiff[-1] = False
 
     xIsMonotone = np.concatenate(
         [
-            np.array([True]).reshape((-1,) ), 
+            np.array([True]).reshape((-1,)),
             _diff(np.sign(_diff(xData))) == 0,
-            np.array([True]).reshape((-1,) )
+            np.array([True]).reshape((-1,)),
         ]
     )
     yIsMonotone = np.concatenate(
         [
-            np.array([True]).reshape((-1,) ), 
+            np.array([True]).reshape((-1,)),
             _diff(np.sign(_diff(yData))) == 0,
-            np.array([True]).reshape((-1,) )
+            np.array([True]).reshape((-1,)),
         ]
     )
     xRemove = np.logical_and(xNoDiff, yIsMonotone)
@@ -883,8 +914,10 @@ def _pixelate(x, y, xToPix, yToPix):
     id_orig = np.argsort(dataPixel[:, 0])
     dataPixelSorted = dataPixel[id_orig, :]
 
-    m = np.logical_or(np.diff(dataPixelSorted[:, 0]) != 0, np.diff(dataPixelSorted[:, 1]) != 0)
-    mask_sorted = np.concatenate([np.array([True]).reshape((-1, )), m], axis=0)
+    m = np.logical_or(
+        np.diff(dataPixelSorted[:, 0]) != 0, np.diff(dataPixelSorted[:, 1]) != 0
+    )
+    mask_sorted = np.concatenate([np.array([True]).reshape((-1,)), m], axis=0)
 
     mask = np.ones((x.shape)) == 0
     mask[id_orig] = mask_sorted
@@ -1192,14 +1225,14 @@ def _corners3D(xLim, yLim, zLim):
 
     corners = np.array(
         [
-            lowerBottomLeft, 
-            lowerTopLeft, 
-            lowerBottomRight, 
-            lowerTopRight, 
-            upperBottomLeft, 
-            upperTopLeft, 
-            upperBottomRight, 
-            upperTopRight
+            lowerBottomLeft,
+            lowerTopLeft,
+            lowerBottomRight,
+            lowerTopRight,
+            upperBottomLeft,
+            upperTopLeft,
+            upperBottomRight,
+            upperTopRight,
         ]
     )
     return corners
@@ -1217,19 +1250,19 @@ def _getProjectionMatrix(axhandle):
     az = np.deg2rad(axhandle.azim)
     el = np.deg2rad(axhandle.elev)
     rotationZ = np.array(
-        [ 
-            [np.cos(-az),   -np.sin(-az),   0, 0],
-            [np.sin(-az),   np.cos(-az),    0, 0],
-            [0,             0,              1, 0],
-            [0,             0,              0, 1]
+        [
+            [np.cos(-az), -np.sin(-az), 0, 0],
+            [np.sin(-az), np.cos(-az), 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1],
         ]
     )
     rotationX = np.array(
         [
-            [1, 0,           0,          0],
-            [0, np.sin(el),  np.cos(el), 0],
+            [1, 0, 0, 0],
+            [0, np.sin(el), np.cos(el), 0],
             [0, -np.cos(el), np.sin(el), 0],
-            [0, 0,           0,          1]
+            [0, 0, 0, 1],
         ]
     )
     xLim = axhandle.get_xlim3d()
@@ -1238,8 +1271,8 @@ def _getProjectionMatrix(axhandle):
 
     aspectRatio = np.array([xLim[1] - xLim[0], yLim[1] - xLim[0], zLim[1] - zLim[0]])
     aspectRatio /= aspectRatio[-1]
-    scaleMatrix = np.diag(np.concatenate([aspectRatio, np.array([1.])]))
-    
+    scaleMatrix = np.diag(np.concatenate([aspectRatio, np.array([1.0])]))
+
     P = rotationX @ rotationZ @ scaleMatrix
     return P
 
@@ -1255,7 +1288,7 @@ def _isValidTargetResolution(val):
     return isValid
 
 
-def _isValidAxis(val): 
+def _isValidAxis(val):
     """
 
     :param val: 
@@ -1354,4 +1387,3 @@ def _crossLines(X1, X2, X3, X4):
             / detA[id_detA]
         )
     return Lambda
-
