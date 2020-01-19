@@ -708,12 +708,12 @@ def insertData(fighandle, linehandle, id_insert, dataInsert):
 def simplifyLine(fighandle, axhandle, linehandle, target_resolution):
     """Reduce the number of data points in the line 'handle'.
     
-    Aplies a path-simplification algorithm if there are no markers or
+    Applies a path-simplification algorithm if there are no markers or
     pixelization otherwise. Changes are visually negligible at the target
     resolution.
     
     The target resolution is either specificed as the number of PPI or as
-    the [Width, Heigth] of the figure in pixels.
+    the [Width, Height] of the figure in pixels.
     A scalar value of INF or 0 disables path simplification.
     (default = 600)
     
