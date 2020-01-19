@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib
+import matplotlib as mpl
 from matplotlib import pyplot as plt
 import mpl_toolkits
 from mpl_toolkits.mplot3d import Axes3D
@@ -14,7 +14,7 @@ from mpl_toolkits.mplot3d import Axes3D
 STEP_DRAW_STYLES = ["steps-pre", "steps-post", "steps-mid"]
 
 
-def cleanfigure(fighandle=None, axhandle=None, target_resolution=600, scalePrecision=1.0):
+def cleanfigure(fig=None, targetResolution=600, scalePrecision=1.0):
     """Cleans figure as a preparation for tikz export. 
     This will minimize the number of points required for the tikz figure.
     If the figure has subplots, it will recursively clean then up.
@@ -66,40 +66,62 @@ def cleanfigure(fighandle=None, axhandle=None, target_resolution=600, scalePreci
             
         ```
     """
-    if fighandle is None and axhandle is None:
-        fighandle = plt.gcf()
-        # recurse into subplots
-        for axhandle in fighandle.axes:
-            cleanfigure(fighandle, axhandle, target_resolution, scalePrecision)
-    elif fighandle is None and (axhandle is not None):
-        fighandle = axhandle.get_figure()
-    elif (fighandle is not None) and (axhandle is None):
-        # recurse into subplots
-        for axhandle in fighandle.axes:
-            cleanfigure(fighandle, axhandle, target_resolution, scalePrecision)
+    if fig is None:
+        fig = plt.gcf()
+    elif fig == "gcf": # tikzplotlib syntax
+        fig = plt.gcf()
+    _recursive_cleanfigure(fig, targetResolution=targetResolution, scalePrecision=scalePrecision)
 
+    
 
-    # clean up ax.plot and ax.step
-    for linehandle in axhandle.lines:
-        if type(linehandle) in [matplotlib.lines.Line2D, mpl_toolkits.mplot3d.art3d.Line3D]:
-            _cleanline(fighandle, axhandle, linehandle, target_resolution, scalePrecision)
-        else:
-            raise NotImplementedError
-
-    # clean up ax.bar and ax.hist
-    for container in axhandle.containers:
-        if type(container) == matplotlib.container.BarContainer:
+def _recursive_cleanfigure(obj, targetResolution=600, scalePrecision=1.0):
+    for child in obj.get_children():
+        if isinstance(child, mpl.spines.Spine):
+            pass
+        if isinstance(child, mpl.axes.Axes):
+            # Note: containers contain Patches but are not child objects. 
+            # This is a problem because a bar plot creates a Barcontainer.
+            _clean_containers(child)
+            _recursive_cleanfigure(child, targetResolution=targetResolution, scalePrecision=scalePrecision)
+        elif isinstance(child, mpl_toolkits.mplot3d.axes3d.Axes3D):
+            _clean_containers(child)
+            _recursive_cleanfigure(child, targetResolution=targetResolution, scalePrecision=scalePrecision)
+        elif isinstance(child, mpl.lines.Line2D):
+            ax = child.axes
+            fig = ax.figure
+            _cleanline(fig, ax, linehandle=child, targetResolution=targetResolution, scalePrecision=scalePrecision)
+        elif isinstance(child, mpl_toolkits.mplot3d.art3d.Line3D):
+            ax = child.axes
+            fig = ax.figure
+            _cleanline(fig, ax, linehandle=child, targetResolution=targetResolution, scalePrecision=scalePrecision)
+        elif isinstance(child, mpl.image.AxesImage):
+            pass
+        elif isinstance(child, mpl.patches.Patch):
+            pass
+        elif isinstance(child, mpl.collections.PathCollection):
             import warnings
-            warnings.warn("bar and histogram simplification not implemented. Doing Nothing")
-    
-    # clean up ax.scatter
-    for collection in axhandle.collections:
-        import warnings
-        warnings.warn("scatter simplification not implemented. Doing Nothing")
-    
+            warnings.warn("Cleaning Path Collections (scatter plot) is not supported yet.")
+        elif isinstance(child, mpl.collections.LineCollection):
+            import warnings
+            warnings.warn("Cleaning Line Collections (scatter plot) is not supported yet.")
+        elif isinstance(child, mpl_toolkits.mplot3d.art3d.Line3DCollection):
+            import warnings
+            warnings.warn("Cleaning Line3DCollection is not supported yet.")
+        elif isinstance(child, mpl_toolkits.mplot3d.art3d.Poly3DCollection):
+            import warnings
+            warnings.warn("Cleaning Poly3DCollections is not supported yet.")
+        else:
+            pass
+
+def _clean_containers(axes):
+    """Containers are not children of axes. They need to be visited separately"""
+    for container in axes.containers:
+        if isinstance(container, mpl.container.BarContainer):
+            import warnings
+            warnings.warn("Cleaning Bar Container (bar plot) is not supported yet.")
 
 
-def _cleanline(fighandle, axhandle, linehandle, target_resolution, scalePrecision):
+def _cleanline(fighandle, axhandle, linehandle, targetResolution, scalePrecision):
     """Clean a 2D Line plot figure.
     
     Parameters
@@ -126,7 +148,7 @@ def _cleanline(fighandle, axhandle, linehandle, target_resolution, scalePrecisio
     else:
         _pruneOutsideBox(fighandle, axhandle, linehandle)
         _movePointscloser(fighandle, axhandle, linehandle)
-        _simplifyLine(fighandle, axhandle, linehandle, target_resolution)
+        _simplifyLine(fighandle, axhandle, linehandle, targetResolution)
         _limitPrecision(fighandle, axhandle, linehandle, scalePrecision)
 
 
@@ -357,7 +379,7 @@ def _isInBox(data, xLim, yLim):
 
 
 def _lineIs3D(linehandle):
-    return type(linehandle) == mpl_toolkits.mplot3d.art3d.Line3D
+    return isinstance(linehandle, mpl_toolkits.mplot3d.art3d.Line3D)
 
 
 def _axIs3D(axhandle):
