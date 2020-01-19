@@ -1,0 +1,32 @@
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.12156863,0.46666667,0.70588235}
+
+\begin{axis}[
+date coordinates in=x,
+tick align=outside,
+tick pos=left,
+x grid style={white!69.019608!black},
+xmin=2020-01-01 10:48, xmax=2020-01-02 13:12,
+xtick style={color=black},
+y grid style={white!69.019608!black},
+ymin=-0.2, ymax=4.2,
+ytick style={color=black}
+]
+\path [fill=color0]
+(axis cs:2020-01-01 12:00:00+00:00,3)
+--(axis cs:2020-01-01 12:00:00+00:00,1)
+--(axis cs:2020-01-02 12:00:00+00:00,0)
+--(axis cs:2020-01-02 12:00:00+00:00,4)
+--(axis cs:2020-01-02 12:00:00+00:00,4)
+--(axis cs:2020-01-01 12:00:00+00:00,3)
+--cycle;
+
+\addplot [semithick, color0]
+table [header=false,col sep=comma] {%
+2020-01-01 12:00,2
+2020-01-02 12:00,2
+};
+\end{axis}
+
+\end{tikzpicture}

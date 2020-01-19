@@ -1,154 +1,170 @@
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0.12156862745098,0.466666666666667,0.705882352941177}
-\definecolor{color1}{rgb}{1,0.498039215686275,0.0549019607843137}
-\definecolor{color2}{rgb}{0.172549019607843,0.627450980392157,0.172549019607843}
-\definecolor{color3}{rgb}{0.83921568627451,0.152941176470588,0.156862745098039}
+\definecolor{color0}{rgb}{0.12156863,0.46666667,0.70588235}
+\definecolor{color1}{rgb}{1,0.49803922,0.054901961}
+\definecolor{color2}{rgb}{0.17254902,0.62745098,0.17254902}
+\definecolor{color3}{rgb}{0.83921569,0.15294118,0.15686275}
 
 \begin{groupplot}[group style={group size=3 by 3}]
 \nextgroupplot[
 legend cell align={left},
-legend style={draw=white!80.0!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, draw=white!80!black},
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=-0.3, xmax=6.3,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
-ymin=-1.81206645586932, ymax=2.56038564715022,
+xticklabels={},
+y grid style={white!69.019608!black},
+ymin=-1.8120665, ymax=2.5603856,
 ytick style={color=black}
 ]
 \addplot [very thin, color0]
 table {%
 0 1
-0.4 0.617405647901646
-0.8 0.31305050400448
-1.2 0.109140058289877
-1.6 -0.0058952818797375
-2 -0.0563193499921279
-2.4 -0.066894848642377
-2.8 -0.0572965995429406
-3.2 -0.0406926952814831
-3.6 -0.0245027780701879
-4 -0.0119719005216626
-4.4 -0.00377323010811059
-4.8 0.000720094500753043
-5.2 0.00258460239942893
-5.6 0.00286793692188526
-6 0.00238002418800496
+0.4 0.61740565
+0.8 0.3130505
+1.2 0.10914006
+1.6 -0.0058952819
+2 -0.05631935
+2.4 -0.066894849
+2.8 -0.0572966
+3.2 -0.040692695
+3.6 -0.024502778
+4 -0.011971901
+4.4 -0.0037732301
+4.8 0.0007200945
+5.2 0.0025846024
+5.6 0.0028679369
+6 0.0023800242
 };
 \addlegendentry{UR}
 
 \nextgroupplot[
 legend cell align={left},
-legend style={at={(0.03,0.97)}, anchor=north west, draw=white!80.0!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.03,0.97)}, anchor=north west, draw=white!80!black},
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
+scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=-0.3, xmax=6.3,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
-ymin=-1.81206645586932, ymax=2.56038564715022,
-ytick style={color=black}
+xticklabels={},
+y grid style={white!69.019608!black},
+ymin=-1.8120665, ymax=2.5603856,
+ytick style={color=black},
+yticklabels={}
 ]
 \addplot [very thin, color0]
 table {%
 0 1
-0.4 0.97801622502966
-0.8 0.785534621263156
-1.2 0.433820995321303
-1.6 -0.0371198679153043
-2 -0.561739472558052
-2.4 -1.05692810259721
-2.8 -1.4340261793427
-3.2 -1.61331863300479
-3.6 -1.53884359615142
-4 -1.19101633033091
-4.4 -0.594625280944022
-4.8 0.17976081747558
-5.2 1.02205612436531
-5.6 1.79649518929936
-6 2.3616378242857
+0.4 0.97801623
+0.8 0.78553462
+1.2 0.433821
+1.6 -0.037119868
+2 -0.56173947
+2.4 -1.0569281
+2.8 -1.4340262
+3.2 -1.6133186
+3.6 -1.5388436
+4 -1.1910163
+4.4 -0.59462528
+4.8 0.17976082
+5.2 1.0220561
+5.6 1.7964952
+6 2.3616378
 };
 \addlegendentry{UL}
 
 \nextgroupplot[
 legend cell align={left},
-legend style={at={(0.03,0.03)}, anchor=south west, draw=white!80.0!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.03,0.03)}, anchor=south west, draw=white!80!black},
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
+scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=-0.3, xmax=6.3,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
-ymin=-1.81206645586932, ymax=2.56038564715022,
-ytick style={color=black}
+xticklabels={},
+y grid style={white!69.019608!black},
+ymin=-1.8120665, ymax=2.5603856,
+ytick style={color=black},
+yticklabels={}
 ]
 \addplot [very thin, color0]
 table {%
 0 2
-0.4 0.583853163452858
-0.8 0.346356379136388
-1.2 1.96017028665037
-1.6 0.854499966191386
-2 0.160928470923548
-2.4 1.84385395873249
-2.8 1.13673721820783
-3.2 0.0423405196766153
-3.6 1.66031670824408
-4 1.40808206181339
-4.4 3.91736053628744e-05
-4.8 1.424179007337
-5.2 1.64691932232864
-5.6 0.0373941336864324
-6 1.15425144988758
+0.4 0.58385316
+0.8 0.34635638
+1.2 1.9601703
+1.6 0.85449997
+2 0.16092847
+2.4 1.843854
+2.8 1.1367372
+3.2 0.04234052
+3.6 1.6603167
+4 1.4080821
+4.4 3.9173605e-05
+4.8 1.424179
+5.2 1.6469193
+5.6 0.037394134
+6 1.1542514
 };
 \addlegendentry{LL}
 
 \nextgroupplot[
 legend cell align={left},
-legend style={at={(0.03,0.03)}, anchor=south west, draw=white!80.0!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.03,0.03)}, anchor=south west, draw=white!80!black},
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=-0.3, xmax=6.3,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
-ymin=-2.12147231925849, ymax=2.19626058663136,
+xticklabels={},
+y grid style={white!69.019608!black},
+ymin=-2.1214723, ymax=2.1962606,
 ytick style={color=black}
 ]
 \addplot [very thin, color0]
 table {%
 0 2
-0.4 -0.601424425754523
-0.8 -0.716300844056397
-1.2 1.29390525189092
-1.6 0.18924524105951
-2 -0.217354330439026
-2.4 0.98832785613885
-2.8 0.627437965735745
-3.2 0.253303770996275
-3.6 0.938299235493768
-4 0.910455802838593
-4.4 0.65840236439373
-4.8 1.03696130274789
-5.2 1.13609802577068
-5.6 1.00292775397214
-6 1.21535945496279
+0.4 -0.60142443
+0.8 -0.71630084
+1.2 1.2939053
+1.6 0.18924524
+2 -0.21735433
+2.4 0.98832786
+2.8 0.62743797
+3.2 0.25330377
+3.6 0.93829924
+4 0.9104558
+4.4 0.65840236
+4.8 1.0369613
+5.2 1.136098
+5.6 1.0029278
+6 1.2153595
 };
 \addlegendentry{LR}
 
 \nextgroupplot[
 legend cell align={left},
-legend style={at={(0.91,0.5)}, anchor=east, draw=white!80.0!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.91,0.5)}, anchor=east, draw=white!80!black},
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
+scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=-0.3, xmax=6.3,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
-ymin=-2.12147231925849, ymax=2.19626058663136,
-ytick style={color=black}
+xticklabels={},
+y grid style={white!69.019608!black},
+ymin=-2.1214723, ymax=2.1962606,
+ytick style={color=black},
+yticklabels={}
 ]
 \addplot [semithick, color1, forget plot]
 table {%
@@ -191,34 +207,38 @@ table {%
 
 \nextgroupplot[
 legend cell align={left},
-legend style={at={(0.09,0.5)}, anchor=west, draw=white!80.0!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.09,0.5)}, anchor=west, draw=white!80!black},
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
+scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=-0.3, xmax=6.3,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
-ymin=-2.12147231925849, ymax=2.19626058663136,
-ytick style={color=black}
+xticklabels={},
+y grid style={white!69.019608!black},
+ymin=-2.1214723, ymax=2.1962606,
+ytick style={color=black},
+yticklabels={}
 ]
 \addplot [very thin, color0]
 table {%
 0 2
-0.4 -1.30728724172722
-0.8 -0.291000067617227
-1.2 1.68770791746499
-1.6 -1.91531896064677
-2 0.816164123626784
-2.4 0.848358014674
-2.8 -1.92521173262714
-3.2 1.66844672101302
-3.6 -0.255927379254809
-4 -1.33387612330452
-4.4 1.99968661729538
-4.8 -1.28028867893839
-5.2 -0.325981561591411
-5.6 1.70644021544518
-6 -1.90482596083031
+0.4 -1.3072872
+0.8 -0.29100007
+1.2 1.6877079
+1.6 -1.915319
+2 0.81616412
+2.4 0.84835801
+2.8 -1.9252117
+3.2 1.6684467
+3.6 -0.25592738
+4 -1.3338761
+4.4 1.9996866
+4.8 -1.2802887
+5.2 -0.32598156
+5.6 1.7064402
+6 -1.904826
 };
 \addlegendentry{CR}
 \addplot [semithick, color1, forget plot]
@@ -262,106 +282,110 @@ table {%
 
 \nextgroupplot[
 legend cell align={left},
-legend style={at={(0.5,0.09)}, anchor=south, draw=white!80.0!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.5,0.09)}, anchor=south, draw=white!80!black},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=-0.3, xmax=6.3,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
+y grid style={white!69.019608!black},
 ymin=-3.3, ymax=3.3,
 ytick style={color=black}
 ]
 \addplot [very thin, color0]
 table {%
 0 -3
-0.4 -2.65483702755934
-0.8 -1.92942405610683
-1.2 -0.964147493544899
-1.6 0.0746465747094709
-2 1.02213663863179
-2.4 1.74016332366039
-2.8 2.13634897774119
-3.2 2.17473237047717
-3.6 1.87694135184385
-4 1.3144512660846
-4.4 0.593800684986335
-4.8 -0.162428753256752
-5.2 -0.835628364464015
-5.6 -1.32903077825077
-6 -1.58085787783637
+0.4 -2.654837
+0.8 -1.9294241
+1.2 -0.96414749
+1.6 0.074646575
+2 1.0221366
+2.4 1.7401633
+2.8 2.136349
+3.2 2.1747324
+3.6 1.8769414
+4 1.3144513
+4.4 0.59380068
+4.8 -0.16242875
+5.2 -0.83562836
+5.6 -1.3290308
+6 -1.5808579
 };
 \addlegendentry{LC}
 
 \nextgroupplot[
 legend cell align={left},
-legend style={at={(0.5,0.91)}, anchor=north, draw=white!80.0!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.5,0.91)}, anchor=north, draw=white!80!black},
+scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=-0.3, xmax=6.3,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
+y grid style={white!69.019608!black},
 ymin=-3.3, ymax=3.3,
-ytick style={color=black}
+ytick style={color=black},
+yticklabels={}
 ]
 \addplot [very thin, color0]
 table {%
 0 3
-0.4 2.65483702755934
-0.8 1.92942405610683
-1.2 0.964147493544899
-1.6 -0.0746465747094709
-2 -1.02213663863179
-2.4 -1.74016332366039
-2.8 -2.13634897774119
-3.2 -2.17473237047717
-3.6 -1.87694135184385
-4 -1.3144512660846
-4.4 -0.593800684986335
-4.8 0.162428753256752
-5.2 0.835628364464015
-5.6 1.32903077825077
-6 1.58085787783637
+0.4 2.654837
+0.8 1.9294241
+1.2 0.96414749
+1.6 -0.074646575
+2 -1.0221366
+2.4 -1.7401633
+2.8 -2.136349
+3.2 -2.1747324
+3.6 -1.8769414
+4 -1.3144513
+4.4 -0.59380068
+4.8 0.16242875
+5.2 0.83562836
+5.6 1.3290308
+6 1.5808579
 };
 \addlegendentry{UC}
 
 \nextgroupplot[
-legend style={draw=white!80.0!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, draw=white!80!black},
+scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=-0.3, xmax=6.3,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
+y grid style={white!69.019608!black},
 ymin=-3.3, ymax=3.3,
-ytick style={color=black}
+ytick style={color=black},
+yticklabels={}
 ]
 \addplot [very thin, color0, forget plot]
 table {%
 0 2
-0.4 -1.30728724172722
-0.8 -0.291000067617227
-1.2 1.68770791746499
-1.6 -1.91531896064677
-2 0.816164123626784
-2.4 0.848358014674
-2.8 -1.92521173262714
-3.2 1.66844672101302
-3.6 -0.255927379254809
+0.4 -1.3072872
+0.8 -0.29100007
+1.2 1.6877079
+1.6 -1.915319
+2 0.81616412
+2.4 0.84835801
+2.8 -1.9252117
+3.2 1.6684467
+3.6 -0.25592738
 };
 \addplot [very thin, color1, forget plot]
 table {%
-2.4 0.848358014674
-2.8 -1.92521173262714
-3.2 1.66844672101302
-3.6 -0.255927379254809
-4 -1.33387612330452
-4.4 1.99968661729538
-4.8 -1.28028867893839
-5.2 -0.325981561591411
-5.6 1.70644021544518
-6 -1.90482596083031
+2.4 0.84835801
+2.8 -1.9252117
+3.2 1.6684467
+3.6 -0.25592738
+4 -1.3338761
+4.4 1.9996866
+4.8 -1.2802887
+5.2 -0.32598156
+5.6 1.7064402
+6 -1.904826
 };
 \addplot [semithick, color2, forget plot]
 table {%

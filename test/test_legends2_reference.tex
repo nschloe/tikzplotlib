@@ -1,421 +1,445 @@
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0.12156862745098,0.466666666666667,0.705882352941177}
-\definecolor{color1}{rgb}{1,0.498039215686275,0.0549019607843137}
+\definecolor{color0}{rgb}{0.12156863,0.46666667,0.70588235}
+\definecolor{color1}{rgb}{1,0.49803922,0.054901961}
 
 \begin{groupplot}[group style={group size=3 by 3}]
 \nextgroupplot[
 legend cell align={left},
-legend style={at={(0.03,0.97)}, anchor=north west, draw=white!80.0!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.03,0.97)}, anchor=north west, draw=white!80!black},
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=-0.08, xmax=1.68,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
-ymin=-1.04860934210991, ymax=1.09755282581476,
+xticklabels={},
+y grid style={white!69.019608!black},
+ymin=-1.0486093, ymax=1.0975528,
 ytick style={color=black}
 ]
 \addplot [very thin, color0]
 table {%
 0 1
-0.4 0.670320046035639
-0.8 0.449328964117222
-1.2 0.301194211912202
-1.6 0.201896517994655
+0.4 0.67032005
+0.8 0.44932896
+1.2 0.30119421
+1.6 0.20189652
 };
 \addlegendentry{loc 2}
-\addplot [semithick, green!50.0!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
+\addplot [semithick, green!50!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
-0.4 0.587785252292473
-0.8 -0.951056516295154
-1.2 0.951056516295154
-1.6 -0.587785252292473
+0.4 0.58778525
+0.8 -0.95105652
+1.2 0.95105652
+1.6 -0.58778525
 };
 \addplot [semithick, color1, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
 table {%
 0 0
-0.4 0.336472236621213
-0.8 0.587786664902119
-1.2 0.78845736036427
-1.6 0.955511445027436
+0.4 0.33647224
+0.8 0.58778666
+1.2 0.78845736
+1.6 0.95551145
 };
 \addplot [semithick, red, dash pattern=on 1pt off 3pt on 3pt off 3pt, mark=square*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
-0.4 0.394004237375761
-0.8 -0.427337239283835
-1.2 0.286452717909483
-1.6 -0.11867179576646
+0.4 0.39400424
+0.8 -0.42733724
+1.2 0.28645272
+1.6 -0.1186718
 };
 
 \nextgroupplot[
 legend cell align={left},
-legend style={at={(0.03,0.03)}, anchor=south west, draw=white!80.0!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.03,0.03)}, anchor=south west, draw=white!80!black},
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
+scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=-0.08, xmax=1.68,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
-ymin=-1.04860934210991, ymax=1.09755282581476,
-ytick style={color=black}
+xticklabels={},
+y grid style={white!69.019608!black},
+ymin=-1.0486093, ymax=1.0975528,
+ytick style={color=black},
+yticklabels={}
 ]
 \addplot [very thin, color0]
 table {%
 0 1
-0.4 0.670320046035639
-0.8 0.449328964117222
-1.2 0.301194211912202
-1.6 0.201896517994655
+0.4 0.67032005
+0.8 0.44932896
+1.2 0.30119421
+1.6 0.20189652
 };
 \addlegendentry{loc 3}
-\addplot [semithick, green!50.0!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
+\addplot [semithick, green!50!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
-0.4 0.587785252292473
-0.8 -0.951056516295154
-1.2 0.951056516295154
-1.6 -0.587785252292473
+0.4 0.58778525
+0.8 -0.95105652
+1.2 0.95105652
+1.6 -0.58778525
 };
 \addplot [semithick, color1, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
 table {%
 0 0
-0.4 0.336472236621213
-0.8 0.587786664902119
-1.2 0.78845736036427
-1.6 0.955511445027436
+0.4 0.33647224
+0.8 0.58778666
+1.2 0.78845736
+1.6 0.95551145
 };
 \addplot [semithick, red, dash pattern=on 1pt off 3pt on 3pt off 3pt, mark=square*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
-0.4 0.394004237375761
-0.8 -0.427337239283835
-1.2 0.286452717909483
-1.6 -0.11867179576646
+0.4 0.39400424
+0.8 -0.42733724
+1.2 0.28645272
+1.6 -0.1186718
 };
 
 \nextgroupplot[
 legend cell align={left},
-legend style={at={(0.97,0.03)}, anchor=south east, draw=white!80.0!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.97,0.03)}, anchor=south east, draw=white!80!black},
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
+scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=-0.08, xmax=1.68,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
-ymin=-1.04860934210991, ymax=1.09755282581476,
-ytick style={color=black}
+xticklabels={},
+y grid style={white!69.019608!black},
+ymin=-1.0486093, ymax=1.0975528,
+ytick style={color=black},
+yticklabels={}
 ]
 \addplot [very thin, color0]
 table {%
 0 1
-0.4 0.670320046035639
-0.8 0.449328964117222
-1.2 0.301194211912202
-1.6 0.201896517994655
+0.4 0.67032005
+0.8 0.44932896
+1.2 0.30119421
+1.6 0.20189652
 };
 \addlegendentry{loc 4}
-\addplot [semithick, green!50.0!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
+\addplot [semithick, green!50!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
-0.4 0.587785252292473
-0.8 -0.951056516295154
-1.2 0.951056516295154
-1.6 -0.587785252292473
+0.4 0.58778525
+0.8 -0.95105652
+1.2 0.95105652
+1.6 -0.58778525
 };
 \addplot [semithick, color1, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
 table {%
 0 0
-0.4 0.336472236621213
-0.8 0.587786664902119
-1.2 0.78845736036427
-1.6 0.955511445027436
+0.4 0.33647224
+0.8 0.58778666
+1.2 0.78845736
+1.6 0.95551145
 };
 \addplot [semithick, red, dash pattern=on 1pt off 3pt on 3pt off 3pt, mark=square*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
-0.4 0.394004237375761
-0.8 -0.427337239283835
-1.2 0.286452717909483
-1.6 -0.11867179576646
+0.4 0.39400424
+0.8 -0.42733724
+1.2 0.28645272
+1.6 -0.1186718
 };
 
 \nextgroupplot[
 legend cell align={left},
-legend style={at={(0.97,0.5)}, anchor=east, draw=white!80.0!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.97,0.5)}, anchor=east, draw=white!80!black},
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=-0.08, xmax=1.68,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
-ymin=-1.04860934210991, ymax=1.09755282581476,
+xticklabels={},
+y grid style={white!69.019608!black},
+ymin=-1.0486093, ymax=1.0975528,
 ytick style={color=black}
 ]
 \addplot [very thin, color0]
 table {%
 0 1
-0.4 0.670320046035639
-0.8 0.449328964117222
-1.2 0.301194211912202
-1.6 0.201896517994655
+0.4 0.67032005
+0.8 0.44932896
+1.2 0.30119421
+1.6 0.20189652
 };
 \addlegendentry{loc 5}
-\addplot [semithick, green!50.0!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
+\addplot [semithick, green!50!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
-0.4 0.587785252292473
-0.8 -0.951056516295154
-1.2 0.951056516295154
-1.6 -0.587785252292473
+0.4 0.58778525
+0.8 -0.95105652
+1.2 0.95105652
+1.6 -0.58778525
 };
 \addplot [semithick, color1, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
 table {%
 0 0
-0.4 0.336472236621213
-0.8 0.587786664902119
-1.2 0.78845736036427
-1.6 0.955511445027436
+0.4 0.33647224
+0.8 0.58778666
+1.2 0.78845736
+1.6 0.95551145
 };
 \addplot [semithick, red, dash pattern=on 1pt off 3pt on 3pt off 3pt, mark=square*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
-0.4 0.394004237375761
-0.8 -0.427337239283835
-1.2 0.286452717909483
-1.6 -0.11867179576646
+0.4 0.39400424
+0.8 -0.42733724
+1.2 0.28645272
+1.6 -0.1186718
 };
 
 \nextgroupplot[
 legend cell align={left},
-legend style={at={(0.09,0.5)}, anchor=west, draw=white!80.0!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.09,0.5)}, anchor=west, draw=white!80!black},
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
+scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=-0.08, xmax=1.68,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
-ymin=-1.04860934210991, ymax=1.09755282581476,
-ytick style={color=black}
+xticklabels={},
+y grid style={white!69.019608!black},
+ymin=-1.0486093, ymax=1.0975528,
+ytick style={color=black},
+yticklabels={}
 ]
 \addplot [very thin, color0]
 table {%
 0 1
-0.4 0.670320046035639
-0.8 0.449328964117222
-1.2 0.301194211912202
-1.6 0.201896517994655
+0.4 0.67032005
+0.8 0.44932896
+1.2 0.30119421
+1.6 0.20189652
 };
 \addlegendentry{loc 6}
-\addplot [semithick, green!50.0!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
+\addplot [semithick, green!50!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
-0.4 0.587785252292473
-0.8 -0.951056516295154
-1.2 0.951056516295154
-1.6 -0.587785252292473
+0.4 0.58778525
+0.8 -0.95105652
+1.2 0.95105652
+1.6 -0.58778525
 };
 \addplot [semithick, color1, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
 table {%
 0 0
-0.4 0.336472236621213
-0.8 0.587786664902119
-1.2 0.78845736036427
-1.6 0.955511445027436
+0.4 0.33647224
+0.8 0.58778666
+1.2 0.78845736
+1.6 0.95551145
 };
 \addplot [semithick, red, dash pattern=on 1pt off 3pt on 3pt off 3pt, mark=square*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
-0.4 0.394004237375761
-0.8 -0.427337239283835
-1.2 0.286452717909483
-1.6 -0.11867179576646
+0.4 0.39400424
+0.8 -0.42733724
+1.2 0.28645272
+1.6 -0.1186718
 };
 
 \nextgroupplot[
 legend cell align={left},
-legend style={at={(0.91,0.5)}, anchor=east, draw=white!80.0!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.91,0.5)}, anchor=east, draw=white!80!black},
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
+scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=-0.08, xmax=1.68,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
-ymin=-1.04860934210991, ymax=1.09755282581476,
-ytick style={color=black}
+xticklabels={},
+y grid style={white!69.019608!black},
+ymin=-1.0486093, ymax=1.0975528,
+ytick style={color=black},
+yticklabels={}
 ]
 \addplot [very thin, color0]
 table {%
 0 1
-0.4 0.670320046035639
-0.8 0.449328964117222
-1.2 0.301194211912202
-1.6 0.201896517994655
+0.4 0.67032005
+0.8 0.44932896
+1.2 0.30119421
+1.6 0.20189652
 };
 \addlegendentry{loc 7}
-\addplot [semithick, green!50.0!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
+\addplot [semithick, green!50!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
-0.4 0.587785252292473
-0.8 -0.951056516295154
-1.2 0.951056516295154
-1.6 -0.587785252292473
+0.4 0.58778525
+0.8 -0.95105652
+1.2 0.95105652
+1.6 -0.58778525
 };
 \addplot [semithick, color1, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
 table {%
 0 0
-0.4 0.336472236621213
-0.8 0.587786664902119
-1.2 0.78845736036427
-1.6 0.955511445027436
+0.4 0.33647224
+0.8 0.58778666
+1.2 0.78845736
+1.6 0.95551145
 };
 \addplot [semithick, red, dash pattern=on 1pt off 3pt on 3pt off 3pt, mark=square*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
-0.4 0.394004237375761
-0.8 -0.427337239283835
-1.2 0.286452717909483
-1.6 -0.11867179576646
+0.4 0.39400424
+0.8 -0.42733724
+1.2 0.28645272
+1.6 -0.1186718
 };
 
 \nextgroupplot[
 legend cell align={left},
-legend style={at={(0.5,0.09)}, anchor=south, draw=white!80.0!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.5,0.09)}, anchor=south, draw=white!80!black},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=-0.08, xmax=1.68,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
-ymin=-1.04860934210991, ymax=1.09755282581476,
+y grid style={white!69.019608!black},
+ymin=-1.0486093, ymax=1.0975528,
 ytick style={color=black}
 ]
 \addplot [very thin, color0]
 table {%
 0 1
-0.4 0.670320046035639
-0.8 0.449328964117222
-1.2 0.301194211912202
-1.6 0.201896517994655
+0.4 0.67032005
+0.8 0.44932896
+1.2 0.30119421
+1.6 0.20189652
 };
 \addlegendentry{loc 8}
-\addplot [semithick, green!50.0!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
+\addplot [semithick, green!50!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
-0.4 0.587785252292473
-0.8 -0.951056516295154
-1.2 0.951056516295154
-1.6 -0.587785252292473
+0.4 0.58778525
+0.8 -0.95105652
+1.2 0.95105652
+1.6 -0.58778525
 };
 \addplot [semithick, color1, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
 table {%
 0 0
-0.4 0.336472236621213
-0.8 0.587786664902119
-1.2 0.78845736036427
-1.6 0.955511445027436
+0.4 0.33647224
+0.8 0.58778666
+1.2 0.78845736
+1.6 0.95551145
 };
 \addplot [semithick, red, dash pattern=on 1pt off 3pt on 3pt off 3pt, mark=square*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
-0.4 0.394004237375761
-0.8 -0.427337239283835
-1.2 0.286452717909483
-1.6 -0.11867179576646
+0.4 0.39400424
+0.8 -0.42733724
+1.2 0.28645272
+1.6 -0.1186718
 };
 
 \nextgroupplot[
 legend cell align={left},
-legend style={at={(0.5,0.91)}, anchor=north, draw=white!80.0!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.5,0.91)}, anchor=north, draw=white!80!black},
+scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=-0.08, xmax=1.68,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
-ymin=-1.04860934210991, ymax=1.09755282581476,
-ytick style={color=black}
+y grid style={white!69.019608!black},
+ymin=-1.0486093, ymax=1.0975528,
+ytick style={color=black},
+yticklabels={}
 ]
 \addplot [very thin, color0]
 table {%
 0 1
-0.4 0.670320046035639
-0.8 0.449328964117222
-1.2 0.301194211912202
-1.6 0.201896517994655
+0.4 0.67032005
+0.8 0.44932896
+1.2 0.30119421
+1.6 0.20189652
 };
 \addlegendentry{loc 9}
-\addplot [semithick, green!50.0!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
+\addplot [semithick, green!50!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
-0.4 0.587785252292473
-0.8 -0.951056516295154
-1.2 0.951056516295154
-1.6 -0.587785252292473
+0.4 0.58778525
+0.8 -0.95105652
+1.2 0.95105652
+1.6 -0.58778525
 };
 \addplot [semithick, color1, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
 table {%
 0 0
-0.4 0.336472236621213
-0.8 0.587786664902119
-1.2 0.78845736036427
-1.6 0.955511445027436
+0.4 0.33647224
+0.8 0.58778666
+1.2 0.78845736
+1.6 0.95551145
 };
 \addplot [semithick, red, dash pattern=on 1pt off 3pt on 3pt off 3pt, mark=square*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
-0.4 0.394004237375761
-0.8 -0.427337239283835
-1.2 0.286452717909483
-1.6 -0.11867179576646
+0.4 0.39400424
+0.8 -0.42733724
+1.2 0.28645272
+1.6 -0.1186718
 };
 
 \nextgroupplot[
 legend cell align={left},
-legend style={at={(0.5,0.5)}, anchor=center, draw=white!80.0!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, at={(0.5,0.5)}, anchor=center, draw=white!80!black},
+scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=-0.08, xmax=1.68,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
-ymin=-1.04860934210991, ymax=1.09755282581476,
-ytick style={color=black}
+y grid style={white!69.019608!black},
+ymin=-1.0486093, ymax=1.0975528,
+ytick style={color=black},
+yticklabels={}
 ]
 \addplot [very thin, color0]
 table {%
 0 1
-0.4 0.670320046035639
-0.8 0.449328964117222
-1.2 0.301194211912202
-1.6 0.201896517994655
+0.4 0.67032005
+0.8 0.44932896
+1.2 0.30119421
+1.6 0.20189652
 };
 \addlegendentry{loc 10}
-\addplot [semithick, green!50.0!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
+\addplot [semithick, green!50!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
-0.4 0.587785252292473
-0.8 -0.951056516295154
-1.2 0.951056516295154
-1.6 -0.587785252292473
+0.4 0.58778525
+0.8 -0.95105652
+1.2 0.95105652
+1.6 -0.58778525
 };
 \addplot [semithick, color1, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
 table {%
 0 0
-0.4 0.336472236621213
-0.8 0.587786664902119
-1.2 0.78845736036427
-1.6 0.955511445027436
+0.4 0.33647224
+0.8 0.58778666
+1.2 0.78845736
+1.6 0.95551145
 };
 \addplot [semithick, red, dash pattern=on 1pt off 3pt on 3pt off 3pt, mark=square*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
-0.4 0.394004237375761
-0.8 -0.427337239283835
-1.2 0.286452717909483
-1.6 -0.11867179576646
+0.4 0.39400424
+0.8 -0.42733724
+1.2 0.28645272
+1.6 -0.1186718
 };
 \end{groupplot}
 

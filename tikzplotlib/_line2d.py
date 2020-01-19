@@ -3,10 +3,11 @@ import datetime
 import numpy
 from matplotlib.dates import num2date
 
-from . import color as mycol
-from . import files
-from . import path as mypath
-from .util import get_legend_text, has_legend, transform_to_data_coordinates
+from . import _color as mycol
+from . import _files
+from . import _path as mypath
+from ._markers import _mpl_marker2pgfp_marker
+from ._util import get_legend_text, has_legend, transform_to_data_coordinates
 
 
 def draw_line2d(data, obj):
@@ -18,7 +19,12 @@ def draw_line2d(data, obj):
     # If line is of length 0, do nothing.  Otherwise, an empty \addplot table will be
     # created, which will be interpreted as an external data source in either the file
     # '' or '.tex'.  Instead, render nothing.
-    if len(obj.get_xdata()) == 0:
+    xdata = obj.get_xdata()
+    if isinstance(xdata, int) or isinstance(xdata, float):
+        # https://github.com/nschloe/tikzplotlib/issues/339
+        xdata = [xdata]
+
+    if len(xdata) == 0:
         return data, []
 
     # get the linewidth (in pt)
@@ -42,13 +48,15 @@ def draw_line2d(data, obj):
             style = "const plot mark right"
         elif drawstyle == "steps-post":
             style = "const plot mark left"
-        addplot_options.append("{}".format(style))
+        addplot_options.append(f"{style}")
 
     alpha = obj.get_alpha()
     if alpha is not None:
-        addplot_options.append("opacity={}".format(alpha))
+        addplot_options.append(f"opacity={alpha}")
 
-    linestyle = mypath.mpl_linestyle2pgfplots_linestyle(obj.get_linestyle(), line=obj)
+    linestyle = mypath.mpl_linestyle2pgfplots_linestyle(
+        data, obj.get_linestyle(), line=obj
+    )
     if linestyle is not None and linestyle != "solid":
         addplot_options.append(linestyle)
 
@@ -87,7 +95,7 @@ def draw_line2d(data, obj):
     content += c
 
     if legend_text is not None:
-        content.append("\\addlegendentry{{{}}}\n".format(legend_text))
+        content.append(f"\\addlegendentry{{{legend_text}}}\n")
 
     return data, content
 
@@ -118,77 +126,6 @@ def draw_linecollection(data, obj):
     return data, content
 
 
-# for matplotlib markers, see: http://matplotlib.org/api/markers_api.html
-_MP_MARKER2PGF_MARKER = {
-    ".": "*",  # point
-    "o": "o",  # circle
-    "+": "+",  # plus
-    "x": "x",  # x
-    "None": None,
-    " ": None,
-    "": None,
-}
-
-# the following markers are only available with PGF's plotmarks library
-_MP_MARKER2PLOTMARKS = {
-    "v": ("triangle", "rotate=180"),  # triangle down
-    "1": ("triangle", "rotate=180"),
-    "^": ("triangle", None),  # triangle up
-    "2": ("triangle", None),
-    "<": ("triangle", "rotate=270"),  # triangle left
-    "3": ("triangle", "rotate=270"),
-    ">": ("triangle", "rotate=90"),  # triangle right
-    "4": ("triangle", "rotate=90"),
-    "s": ("square", None),
-    "p": ("pentagon", None),
-    "*": ("asterisk", None),
-    "h": ("star", None),  # hexagon 1
-    "H": ("star", None),  # hexagon 2
-    "d": ("diamond", None),  # diamond
-    "D": ("diamond", None),  # thin diamond
-    "|": ("|", None),  # vertical line
-    "_": ("-", None),  # horizontal line
-}
-
-
-def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
-    """Translates a marker style of matplotlib to the corresponding style
-    in PGFPlots.
-    """
-    # try default list
-    try:
-        pgfplots_marker = _MP_MARKER2PGF_MARKER[mpl_marker]
-    except KeyError:
-        pass
-    else:
-        if (marker_face_color is not None) and pgfplots_marker == "o":
-            pgfplots_marker = "*"
-            data["tikz libs"].add("plotmarks")
-        marker_options = None
-        return (data, pgfplots_marker, marker_options)
-
-    # try plotmarks list
-    try:
-        data["tikz libs"].add("plotmarks")
-        pgfplots_marker, marker_options = _MP_MARKER2PLOTMARKS[mpl_marker]
-    except KeyError:
-        # There's no equivalent for the pixel marker (,) in Pgfplots.
-        pass
-    else:
-        if (
-            marker_face_color is not None
-            and (
-                not isinstance(marker_face_color, str)
-                or marker_face_color.lower() != "none"
-            )
-            and pgfplots_marker not in ["|", "-", "asterisk", "star"]
-        ):
-            pgfplots_marker += "*"
-        return (data, pgfplots_marker, marker_options)
-
-    return data, None, None
-
-
 def _marker(
     obj,
     data,
@@ -203,17 +140,15 @@ def _marker(
 
     mark_size = obj.get_markersize()
     if mark_size:
+        ff = data["float format"]
         # setting half size because pgfplots counts the radius/half-width
-        pgf_size = int(0.5 * mark_size)
-        # make sure we didn't round off to zero by accident
-        if pgf_size == 0 and mark_size != 0:
-            pgf_size = 1
-        addplot_options.append("mark size={:d}".format(pgf_size))
+        pgf_size = 0.5 * mark_size
+        addplot_options.append(f"mark size={pgf_size:{ff}}")
 
     mark_every = obj.get_markevery()
     if mark_every:
         if type(mark_every) is int:
-            addplot_options.append("mark repeat={:d}".format(mark_every))
+            addplot_options.append(f"mark repeat={mark_every:d}")
         else:
             # python starts at index 0, pgfplots at index 1
             pgf_marker = [1 + m for m in mark_every]
@@ -222,8 +157,7 @@ def _marker(
             )
 
     mark_options = ["solid"]
-    if extra_mark_options:
-        mark_options.append(extra_mark_options)
+    mark_options += extra_mark_options
     if marker_face_color is None or (
         isinstance(marker_face_color, str) and marker_face_color == "none"
     ):
@@ -250,12 +184,15 @@ def _marker(
     return
 
 
-def _table(obj, data):
+def _table(obj, data):  # noqa: C901
     # get_xydata() always gives float data, no matter what
     xdata, ydata = obj.get_xydata().T
 
     # get_{x,y}data gives datetime or string objects if so specified in the plotter
     xdata_alt = obj.get_xdata()
+    if isinstance(xdata_alt, int) or isinstance(xdata, float):
+        # https://github.com/nschloe/tikzplotlib/issues/339
+        xdata_alt = [xdata_alt]
 
     ff = data["float format"]
 
@@ -263,8 +200,8 @@ def _table(obj, data):
         xdata = xdata_alt
     elif isinstance(xdata_alt[0], str):
         data["current axes"].axis_options += [
-            "xtick={{{}}}".format(",".join([ff.format(x) for x in xdata])),
-            u"xticklabels={{{}}}".format(u",".join(xdata_alt)),
+            "xtick={{{}}}".format(",".join([f"{x:{ff}}" for x in xdata])),
+            "xticklabels={{{}}}".format(",".join(xdata_alt)),
         ]
         xdata, ydata = transform_to_data_coordinates(obj, xdata, ydata)
     else:
@@ -300,12 +237,9 @@ def _table(obj, data):
 
     if isinstance(xdata[0], datetime.datetime):
         xdata = [date.strftime("%Y-%m-%d %H:%M") for date in xdata]
-        xformat = "{}"
+        xformat = ""
         col_sep = ","
         opts = ["header=false", "col sep=comma"]
-        if data["table_row_sep"] != "\n":
-            opts.append("row sep=" + data["table row sep"])
-        content.append("table [{}] {{%\n".format(",".join(opts)))
         data["current axes"].axis_options.append("date coordinates in=x")
         # Replace float xmin/xmax by datetime
         # <https://github.com/matplotlib/matplotlib/issues/13727>.
@@ -322,34 +256,32 @@ def _table(obj, data):
             )
         )
     else:
+        opts = []
         xformat = ff
         col_sep = " "
+
+    if data["table_row_sep"] != "\n":
+        # don't want the \n in the table definition, just in the data (below)
+        opts.append("row sep=" + data["table_row_sep"].strip())
+    if len(opts) > 0:
+        content.append("table [{}] {{%\n".format(",".join(opts)))
+    else:
         content.append("table {%\n")
 
     plot_table = []
+    table_row_sep = data["table_row_sep"]
+    ydata[ydata_mask] = numpy.nan
     if any(ydata_mask):
         # matplotlib jumps at masked images, while PGFPlots by default interpolates.
         # Hence, if we have a masked plot, make sure that PGFPlots jumps as well.
         if "unbounded coords=jump" not in data["current axes"].axis_options:
             data["current axes"].axis_options.append("unbounded coords=jump")
 
-        for (x, y, is_masked) in zip(xdata, ydata, ydata_mask):
-            if is_masked:
-                plot_table.append(
-                    (xformat + col_sep + "nan" + data["table_row_sep"]).format(x)
-                )
-            else:
-                plot_table.append(
-                    (xformat + col_sep + ff + data["table_row_sep"]).format(x, y)
-                )
-    else:
-        for x, y in zip(xdata, ydata):
-            plot_table.append(
-                (xformat + col_sep + ff + data["table_row_sep"]).format(x, y)
-            )
+    for x, y in zip(xdata, ydata):
+        plot_table.append(f"{x:{xformat}}{col_sep}{y:{ff}}{table_row_sep}")
 
     if data["externalize tables"]:
-        filename, rel_filepath = files.new_filename(data, "table", ".tsv")
+        filename, rel_filepath = _files.new_filename(data, "table", ".tsv")
         with open(filename, "w") as f:
             # No encoding handling required: plot_table is only ASCII
             f.write("".join(plot_table))

@@ -1,0 +1,82 @@
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{1,1,0}
+\definecolor{color1}{rgb}{0.12156863,0.46666667,0.70588235}
+\definecolor{color2}{rgb}{0.5,0.3,0.8}
+
+\begin{groupplot}[group style={group size=1 by 3}]
+\nextgroupplot[
+tick align=outside,
+tick pos=left,
+x grid style={white!69.019608!black},
+xmin=0.41, xmax=4.59,
+xtick style={color=black},
+y grid style={white!69.019608!black},
+ymin=0, ymax=10.5,
+ytick style={color=black}
+]
+\draw[draw=black,fill=red,postaction={pattern=north east lines}] (axis cs:0.6,0) rectangle (axis cs:1.4,1);
+\draw[draw=black,fill=red,postaction={pattern=north east lines}] (axis cs:1.6,0) rectangle (axis cs:2.4,2);
+\draw[draw=black,fill=red,postaction={pattern=north east lines}] (axis cs:2.6,0) rectangle (axis cs:3.4,3);
+\draw[draw=black,fill=red,postaction={pattern=north east lines}] (axis cs:3.6,0) rectangle (axis cs:4.4,4);
+\draw[draw=black,fill=blue,postaction={pattern=north east lines}] (axis cs:0.6,1) rectangle (axis cs:1.4,7);
+\draw[draw=black,fill=blue,postaction={pattern=north east lines}] (axis cs:1.6,2) rectangle (axis cs:2.4,8);
+\draw[draw=black,fill=blue,postaction={pattern=north east lines}] (axis cs:2.6,3) rectangle (axis cs:3.4,9);
+\draw[draw=black,fill=blue,postaction={pattern=north east lines}] (axis cs:3.6,4) rectangle (axis cs:4.4,10);
+
+\nextgroupplot[
+tick align=outside,
+tick pos=left,
+x grid style={white!69.019608!black},
+xmin=0.41, xmax=4.59,
+xtick style={color=black},
+y grid style={white!69.019608!black},
+ymin=0, ymax=10.5,
+ytick style={color=black}
+]
+\draw[draw=black,fill=color0,postaction={pattern=horizontal lines}] (axis cs:0.6,0) rectangle (axis cs:1.4,1);
+\draw[draw=black,fill=color0,postaction={pattern=grid}] (axis cs:1.6,0) rectangle (axis cs:2.4,2);
+\draw[draw=black,fill=color0,postaction={pattern=crosshatch}] (axis cs:2.6,0) rectangle (axis cs:3.4,3);
+\draw[draw=black,fill=color0,postaction={pattern=north west lines}] (axis cs:3.6,0) rectangle (axis cs:4.4,4);
+\draw[draw=none,fill=green!50.196078!black,postaction={pattern=fivepointed stars}] (axis cs:0.6,1) rectangle (axis cs:1.4,7);
+\draw[draw=none,fill=green!50.196078!black,postaction={pattern=sixpointed stars}] (axis cs:1.6,2) rectangle (axis cs:2.4,8);
+\draw[draw=none,fill=green!50.196078!black,postaction={pattern=bricks}] (axis cs:2.6,3) rectangle (axis cs:3.4,9);
+\draw[draw=none,fill=green!50.196078!black,postaction={pattern=crosshatch dots}] (axis cs:3.6,4) rectangle (axis cs:4.4,10);
+
+\nextgroupplot[
+legend cell align={left},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, draw=white!80!black},
+tick align=outside,
+tick pos=left,
+x grid style={white!69.019608!black},
+xmin=0, xmax=6,
+xtick style={color=black},
+y grid style={white!69.019608!black},
+ymin=0, ymax=2.5,
+ytick style={color=black}
+]
+\path [draw=black, postaction={pattern=north west lines}]
+(axis cs:1,1)
+--(axis cs:3,1)
+--(axis cs:3,2)
+--(axis cs:1,2)
+--cycle;
+\addlegendimage{area legend, draw=black, postaction={pattern=north west lines}}
+\addlegendentry{Square}
+
+\path [draw=black, postaction={pattern=north east lines, pattern color=color2, fill opacity=0.7}]
+(axis cs:0,0)
+--(axis cs:4,1.1)
+--(axis cs:6,2.5)
+--(axis cs:2,1.4)
+--cycle;
+\addlegendimage{area legend, draw=black, postaction={pattern=north east lines, pattern color=color2, fill opacity=0.7}}
+\addlegendentry{Polygon}
+
+\draw[draw=none,fill=color1,postaction={pattern=fivepointed stars}] (axis cs:4,1.5) ellipse (2 and 0.25);
+\addlegendimage{area legend, draw=none, fill=color1, postaction={pattern=fivepointed stars}}
+\addlegendentry{Ellipse}
+
+\end{groupplot}
+
+\end{tikzpicture}

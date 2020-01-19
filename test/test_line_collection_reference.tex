@@ -1,6 +1,6 @@
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0.12156862745098,0.466666666666667,0.705882352941177}
+\definecolor{color0}{rgb}{0.12156863,0.46666667,0.70588235}
 
 \begin{axis}[
 colorbar,
@@ -11,10 +11,10 @@ point meta min=0,
 tick align=outside,
 tick pos=left,
 title={Line Collection with mapped colors},
-x grid style={white!69.01960784313725!black},
+x grid style={white!69.019608!black},
 xmin=0, xmax=9,
 xtick style={color=black},
-y grid style={white!69.01960784313725!black},
+y grid style={white!69.019608!black},
 ymin=0, ymax=18,
 ytick style={color=black}
 ]
@@ -30,7 +30,7 @@ ytick style={color=black}
 --(axis cs:8,8)
 --(axis cs:9,9);
 
-\path [draw=color0, dash pattern=on 6.4pt off 1.6pt on 1.0pt off 1.6pt]
+\path [draw=color0, dash pattern=on 6.4pt off 1.6pt on 1pt off 1.6pt]
 (axis cs:0,1)
 --(axis cs:1,2)
 --(axis cs:2,3)
@@ -42,7 +42,7 @@ ytick style={color=black}
 --(axis cs:8,9)
 --(axis cs:9,10);
 
-\path [draw=color0, semithick, dash pattern=on 9.600000000000001pt off 2.4000000000000004pt on 1.5pt off 2.4000000000000004pt]
+\path [draw=color0, semithick, dash pattern=on 9.6pt off 2.4pt on 1.5pt off 2.4pt]
 (axis cs:0,2)
 --(axis cs:1,3)
 --(axis cs:2,4)
@@ -54,7 +54,7 @@ ytick style={color=black}
 --(axis cs:8,10)
 --(axis cs:9,11);
 
-\path [draw=color0, thick, dash pattern=on 12.8pt off 3.2pt on 2.0pt off 3.2pt]
+\path [draw=color0, thick, dash pattern=on 12.8pt off 3.2pt on 2pt off 3.2pt]
 (axis cs:0,3)
 --(axis cs:1,4)
 --(axis cs:2,5)

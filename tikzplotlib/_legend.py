@@ -2,7 +2,7 @@ import warnings
 
 import numpy
 
-from . import color as mycol
+from . import _color as mycol
 
 
 def draw_legend(data, obj):
@@ -37,21 +37,24 @@ def draw_legend(data, obj):
         bbox_center = obj.get_bbox_to_anchor()._bbox._points[1]
         position = [bbox_center[0], bbox_center[1]]
 
-    legend_style = []
+    legend_style = [
+        # https://github.com/matplotlib/matplotlib/issues/15764#issuecomment-557823370
+        "fill opacity={}".format(obj.get_frame().get_alpha()),
+        "draw opacity=1",
+        "text opacity=1",
+    ]
     if position:
         ff = data["float format"]
-        legend_style.append(
-            ("at={{(" + ff + "," + ff + ")}}").format(position[0], position[1])
-        )
+        legend_style.append(f"at={{({position[0]:{ff}},{position[1]:{ff}})}}")
     if anchor:
-        legend_style.append("anchor={}".format(anchor))
+        legend_style.append(f"anchor={anchor}")
 
     # Get the edgecolor of the box
     if obj.get_frame_on():
         edgecolor = obj.get_frame().get_edgecolor()
         data, frame_xcolor, _ = mycol.mpl_color2xcolor(data, edgecolor)
         if frame_xcolor != "black":  # black is default
-            legend_style.append("draw={}".format(frame_xcolor))
+            legend_style.append(f"draw={frame_xcolor}")
     else:
         legend_style.append("draw=none")
 
@@ -59,7 +62,7 @@ def draw_legend(data, obj):
     facecolor = obj.get_frame().get_facecolor()
     data, fill_xcolor, _ = mycol.mpl_color2xcolor(data, facecolor)
     if fill_xcolor != "white":  # white is default
-        legend_style.append("fill={}".format(fill_xcolor))
+        legend_style.append(f"fill={fill_xcolor}")
 
     # Get the horizontal alignment
     try:
@@ -74,12 +77,10 @@ def draw_legend(data, obj):
             break
 
     if alignment:
-        data["current axes"].axis_options.append(
-            "legend cell align={{{}}}".format(alignment)
-        )
+        data["current axes"].axis_options.append(f"legend cell align={{{alignment}}}")
 
     if obj._ncol != 1:
-        data["current axes"].axis_options.append("legend columns={}".format(obj._ncol))
+        data["current axes"].axis_options.append(f"legend columns={obj._ncol}")
 
     # Write styles to data
     if legend_style:

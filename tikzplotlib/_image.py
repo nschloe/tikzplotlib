@@ -2,7 +2,7 @@ import matplotlib as mpl
 import numpy
 import PIL
 
-from . import files
+from . import _files
 
 
 def draw_image(data, obj):
@@ -10,7 +10,7 @@ def draw_image(data, obj):
     """
     content = []
 
-    filename, rel_filepath = files.new_filename(data, "img", ".png")
+    filename, rel_filepath = _files.new_filename(data, "img", ".png")
 
     # store the image as in a file
     img_array = obj.get_array()
@@ -52,11 +52,8 @@ def draw_image(data, obj):
     # \includegraphics fails unexpectedly in some cases
     ff = data["float format"]
     content.append(
-        (
-            "\\addplot graphics [includegraphics cmd=\\pgfimage,"
-            "xmin=" + ff + ", xmax=" + ff + ", "
-            "ymin=" + ff + ", ymax=" + ff + "] {{{}}};\n"
-        ).format(*(extent + (rel_filepath,)))
+        "\\addplot graphics [includegraphics cmd=\\pgfimage,"
+        f"xmin={extent[0]:{ff}}, xmax={extent[1]:{ff}}, "
+        f"ymin={extent[2]:{ff}}, ymax={extent[3]:{ff}}] {{{rel_filepath}}};\n"
     )
-
     return data, content

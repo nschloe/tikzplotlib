@@ -4,7 +4,7 @@ import os
 
 import matplotlib.pyplot as plt
 
-import tikzplotlib as m2t
+import tikzplotlib as tpl
 
 
 def _main():
@@ -24,13 +24,12 @@ def _main():
             spec.loader.exec_module(module)
             module.plot()
 
-            code = m2t.get_tikz_code(include_disclaimer=False)
+            code = tpl.get_tikz_code(include_disclaimer=False, float_format=".8g")
             plt.close()
 
             tex_filename = filename[:-3] + "_reference.tex"
-            with open(os.path.join(this_dir, tex_filename), "w") as f:
+            with open(os.path.join(this_dir, tex_filename), "w", encoding="utf8") as f:
                 f.write(code)
-    return
 
 
 if __name__ == "__main__":

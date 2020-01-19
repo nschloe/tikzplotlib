@@ -1,6 +1,6 @@
 from PIL import Image
 
-from . import files
+from . import _files
 
 
 def draw_quadmesh(data, obj):
@@ -10,7 +10,7 @@ def draw_quadmesh(data, obj):
     content = []
 
     # Generate file name for current object
-    filename, rel_filepath = files.new_filename(data, "img", ".png")
+    filename, rel_filepath = _files.new_filename(data, "img", ".png")
 
     # Get the dpi for rendering and store the original dpi of the figure
     dpi = data["dpi"]
@@ -54,11 +54,9 @@ def draw_quadmesh(data, obj):
     # \includegraphics fails unexpectedly in some cases
     ff = data["float format"]
     content.append(
-        (
-            "\\addplot graphics [includegraphics cmd=\\pgfimage,"
-            "xmin=" + ff + ", xmax=" + ff + ", "
-            "ymin=" + ff + ", ymax=" + ff + "] {{{}}};\n"
-        ).format(*(extent + (rel_filepath,)))
+        "\\addplot graphics [includegraphics cmd=\\pgfimage,"
+        f"xmin={extent[0]:{ff}}, xmax={extent[1]:{ff}}, "
+        f"ymin={extent[2]:{ff}}, ymax={extent[3]:{ff}}] {{{rel_filepath}}};\n"
     )
 
     return data, content

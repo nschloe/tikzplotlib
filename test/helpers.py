@@ -18,7 +18,6 @@ def print_tree(obj, indent=""):
 
     for child in obj.get_children():
         print_tree(child, indent + "   ")
-    return
 
 
 # https://stackoverflow.com/a/845432/353337
@@ -31,10 +30,12 @@ def _unidiff_output(expected, actual):
     return "".join(diff)
 
 
-def assert_equality(plot, filename, **extra_get_tikz_code_args):
+def assert_equality(
+    plot, filename, assert_compilation=True, **extra_get_tikz_code_args
+):
     plot()
     code = tikzplotlib.get_tikz_code(
-        include_disclaimer=False, **extra_get_tikz_code_args
+        include_disclaimer=False, float_format=".8g", **extra_get_tikz_code_args
     )
     plt.close()
 
@@ -43,11 +44,13 @@ def assert_equality(plot, filename, **extra_get_tikz_code_args):
         reference = f.read()
     assert reference == code, _unidiff_output(code, reference)
 
-    code = tikzplotlib.get_tikz_code(
-        include_disclaimer=False, standalone=True, **extra_get_tikz_code_args
-    )
-    assert _compile(code) is not None
-    return
+    if assert_compilation:
+        plot()
+        code = tikzplotlib.get_tikz_code(
+            include_disclaimer=False, standalone=True, **extra_get_tikz_code_args
+        )
+        plt.close()
+        assert _compile(code) is not None, code
 
 
 def _compile(code):
@@ -96,4 +99,3 @@ def compare_mpl_latex(plot):
     png_path = os.path.join(pdf_dirname, "test-1.png")
 
     os.rename(png_path, os.path.join(directory, "test-1.png"))
-    return

@@ -1,6 +1,7 @@
 import matplotlib as mpl
+from matplotlib.patches import ArrowStyle
 
-from . import color
+from . import _color
 
 
 def draw_text(data, obj):
@@ -9,18 +10,32 @@ def draw_text(data, obj):
     content = []
     properties = []
     style = []
+    ff = data["float format"]
     if isinstance(obj, mpl.text.Annotation):
-        _annotation(obj, data, content)
+        pos = _annotation(obj, data, content)
+    else:
+        pos = obj.get_position()
 
-    # 1: coordinates
-    # 2: properties (shapes, rotation, etc)
-    # 3: text style
-    # 4: the text
-    #                   -------1--------2---3--4--
-    pos = obj.get_position()
+    if isinstance(pos, str):
+        tikz_pos = pos
+    else:
+        # from .util import transform_to_data_coordinates
+        # pos = transform_to_data_coordinates(obj, *pos)
 
-    # from .util import transform_to_data_coordinates
-    # pos = transform_to_data_coordinates(obj, *pos)
+        if obj.axes:
+            # If the coordinates are relative to an axis, use `axis cs`.
+            tikz_pos = f"(axis cs:{pos[0]:{ff}},{pos[1]:{ff}})"
+        else:
+            # relative to the entire figure, it's a getting a littler harder. See
+            # <http://tex.stackexchange.com/a/274902/13262> for a solution to the
+            # problem:
+            tikz_pos = (
+                f"({{$(current bounding box.south west)!{pos[0]:{ff}}!"
+                "(current bounding box.south east)$}"
+                "|-"
+                f"{{$(current bounding box.south west)!{pos[1]:{ff}}!"
+                "(current bounding box.north west)$})"
+            )
 
     text = obj.get_text()
 
@@ -35,9 +50,8 @@ def draw_text(data, obj):
     # without the factor 0.5, the fonts are too big most of the time.
     # TODO fix this
     scaling = 0.5 * size / data["font size"]
-    ff = data["float format"]
     if scaling != 1.0:
-        properties.append(("scale=" + ff).format(scaling))
+        properties.append(f"scale={scaling:{ff}}")
 
     if bbox is not None:
         _bbox(bbox, data, properties, scaling)
@@ -47,8 +61,8 @@ def draw_text(data, obj):
     anchor = _transform_positioning(ha, va)
     if anchor is not None:
         properties.append(anchor)
-    data, col, _ = color.mpl_color2xcolor(data, converter.to_rgb(obj.get_color()))
-    properties.append("text={}".format(col))
+    data, col, _ = _color.mpl_color2xcolor(data, converter.to_rgb(obj.get_color()))
+    properties.append(f"text={col}")
     properties.append("rotate={:.1f}".format(obj.get_rotation()))
 
     if obj.get_style() == "italic":
@@ -92,24 +106,9 @@ def draw_text(data, obj):
     # elif weight == 'light' or (isinstance(weight, int) and weight < 300):
     #     style.append('\\lfseries')
 
-    if obj.axes:
-        # If the coordinates are relative to an axis, use `axis cs`.
-        tikz_pos = ("(axis cs:" + ff + "," + ff + ")").format(*pos)
-    else:
-        # relative to the entire figure, it's a getting a littler harder. See
-        # <http://tex.stackexchange.com/a/274902/13262> for a solution to the
-        # problem:
-        tikz_pos = (
-            "({{$(current bounding box.south west)!" + ff + "!"
-            "(current bounding box.south east)$}}"
-            "|-"
-            "{{$(current bounding box.south west)!" + ff + "!"
-            "(current bounding box.north west)$}})"
-        ).format(*pos)
-
     if "\n" in text:
         # http://tex.stackexchange.com/a/124114/13262
-        properties.append("align={}".format(ha))
+        properties.append(f"align={ha}")
         # Manipulating the text here is actually against mpl2tikz's policy not
         # to do that. On the other hand, newlines should translate into
         # newlines.
@@ -117,8 +116,8 @@ def draw_text(data, obj):
         text = text.replace("\n ", "\\\\")
 
     content.append(
-        "\\node at {}[\n  {}\n]{{{}}};\n".format(
-            tikz_pos, ",\n  ".join(properties), " ".join(style + [text])
+        "\\draw {pos} node[\n  {props}\n]{{{text}}};\n".format(
+            pos=tikz_pos, props=",\n  ".join(properties), text=" ".join(style + [text])
         )
     )
     return data, content
@@ -140,75 +139,113 @@ def _transform_positioning(ha, va):
     return "anchor={} {}".format(va_mpl_to_tikz[va], ha_mpl_to_tikz[ha]).strip()
 
 
+def _parse_annotation_coords(ff, coords, xy):
+    """ Convert a coordinate name and xy into a tikz coordinate string """
+    # todo: add support for all the missing ones
+    if coords == "data":
+        x, y = xy
+        return f"(axis cs:{x:{ff}},{y:{ff}})"
+    elif coords == "figure points":
+        raise NotImplementedError
+    elif coords == "figure pixels":
+        raise NotImplementedError
+    elif coords == "figure fraction":
+        raise NotImplementedError
+    elif coords == "axes points":
+        raise NotImplementedError
+    elif coords == "axes pixels":
+        raise NotImplementedError
+    elif coords == "axes fraction":
+        raise NotImplementedError
+    elif coords == "data":
+        raise NotImplementedError
+    elif coords == "polar":
+        raise NotImplementedError
+    else:
+        # unknown
+        raise NotImplementedError
+
+
+def _get_arrow_style(obj, data):
+    # get a style string from a FancyArrowPatch
+    arrow_translate = {
+        ArrowStyle._style_list["-"]: ["-"],
+        ArrowStyle._style_list["->"]: ["->"],
+        ArrowStyle._style_list["<-"]: ["<-"],
+        ArrowStyle._style_list["<->"]: ["<->"],
+        ArrowStyle._style_list["|-|"]: ["|-|"],
+        ArrowStyle._style_list["-|>"]: ["-latex"],
+        ArrowStyle._style_list["<|-"]: ["latex-"],
+        ArrowStyle._style_list["<|-|>"]: ["latex-latex"],
+        ArrowStyle._style_list["]-["]: ["|-|"],
+        ArrowStyle._style_list["-["]: ["-|"],
+        ArrowStyle._style_list["]-"]: ["|-"],
+        ArrowStyle._style_list["fancy"]: ["-latex", "very thick"],
+        ArrowStyle._style_list["simple"]: ["-latex", "very thick"],
+        ArrowStyle._style_list["wedge"]: ["-latex", "very thick"],
+    }
+    style_cls = type(obj.get_arrowstyle())
+    try:
+        style = arrow_translate[style_cls]
+    except KeyError:
+        raise NotImplementedError(f"Unknown arrow style {style_cls}")
+    else:
+        data, col, _ = _color.mpl_color2xcolor(data, obj.get_ec())
+        return style + ["draw=" + col]
+
+
 def _annotation(obj, data, content):
     ann_xy = obj.xy
     ann_xycoords = obj.xycoords
     ann_xytext = obj.xyann
     ann_textcoords = obj.anncoords
-    if ann_xycoords != "data" or ann_textcoords != "data":
-        # Anything else except for explicit positioning is not supported yet
-        return data, content
-    else:  # Create a basic tikz arrow
-        arrow_translate = {
-            "-": ["-"],
-            "->": ["->"],
-            "<-": ["<-"],
-            "<->": ["<->"],
-            "|-|": ["|-|"],
-            "-|>": ["-latex"],
-            "<|-": ["latex-"],
-            "<|-|>": ["latex-latex"],
-            "]-[": ["|-|"],
-            "-[": ["-|"],
-            "]-": ["|-"],
-            "fancy": ["-latex", "very thick"],
-            "simple": ["-latex", "very thick"],
-            "wedge": ["-latex", "very thick"],
-        }
-        arrow_style = []
-        if obj.arrowprops is not None:
-            if obj.arrowprops["arrowstyle"] is not None:
-                if obj.arrowprops["arrowstyle"] in arrow_translate:
-                    arrow_style += arrow_translate[obj.arrowprops["arrowstyle"]]
-                    data, col, _ = color.mpl_color2xcolor(
-                        data, obj.arrow_patch.get_ec()
-                    )
-                    arrow_style.append(col)
 
-        ff = data["float format"]
-        arrow_fmt = (
-            "\\draw[{}] (axis cs:"
-            + ff
-            + ","
-            + ff
-            + ") -- (axis cs:"
-            + ff
-            + ","
-            + ff
-            + ");\n"
-        )
-        the_arrow = arrow_fmt.format(
-            ",".join(arrow_style), ann_xytext[0], ann_xytext[1], ann_xy[0], ann_xy[1]
-        )
+    ff = data["float format"]
+
+    try:
+        xy_pos = _parse_annotation_coords(ff, ann_xycoords, ann_xy)
+    except NotImplementedError:
+        # Anything else except for explicit positioning is not supported yet
+        return obj.get_position()
+
+    # special cases only for text_coords
+    if ann_textcoords == "offset points":
+        x, y = ann_xytext
+        unit = "pt"
+        text_pos = f"{xy_pos} ++({x:{ff}}{unit},{y:{ff}}{unit})"
+    # elif ann_textcoords == "offset pixels":
+    #     x, y = ann_xytext
+    #     unit = "px"
+    #     text_pos = f"{xy_pos} ++({x:{ff}}{unit},{y:{ff}}{unit})"
+    else:
+        try:
+            text_pos = _parse_annotation_coords(ff, ann_xycoords, ann_xytext)
+        except NotImplementedError:
+            # Anything else except for explicit positioning is not supported yet
+            return obj.get_position()
+
+    if obj.arrow_patch:
+        style = ",".join(_get_arrow_style(obj.arrow_patch, data))
+        the_arrow = ("\\draw[{}] {} -- {};\n").format(style, text_pos, xy_pos)
         content.append(the_arrow)
-    return
+    return text_pos
 
 
 def _bbox(bbox, data, properties, scaling):
     bbox_style = bbox.get_boxstyle()
     if bbox.get_fill():
-        data, fc, _ = color.mpl_color2xcolor(data, bbox.get_facecolor())
+        data, fc, _ = _color.mpl_color2xcolor(data, bbox.get_facecolor())
         if fc:
-            properties.append("fill={}".format(fc))
-    data, ec, _ = color.mpl_color2xcolor(data, bbox.get_edgecolor())
+            properties.append(f"fill={fc}")
+    data, ec, _ = _color.mpl_color2xcolor(data, bbox.get_edgecolor())
     if ec:
-        properties.append("draw={}".format(ec))
+        properties.append(f"draw={ec}")
     # XXX: This is ugly, too
     ff = data["float format"]
-    properties.append(("line width=" + ff + "pt").format(bbox.get_lw() * 0.4))
-    properties.append(
-        ("inner sep=" + ff + "pt").format(bbox_style.pad * data["font size"])
-    )
+    line_width = bbox.get_lw() * 0.4
+    properties.append(f"line width={line_width:{ff}}pt")
+    inner_sep = bbox_style.pad * data["font size"]
+    properties.append(f"inner sep={inner_sep:{ff}}pt")
     # Rounded boxes
     if isinstance(bbox_style, mpl.patches.BoxStyle.Round):
         properties.append("rounded corners")

@@ -6,7 +6,7 @@ from helpers import assert_equality
 
 def plot():
     fig, ax = plt.subplots()
-    with plt.style.context(("ggplot")):
+    with plt.style.context("ggplot"):
         t = np.linspace(0, 2 * np.pi, 11)
         s = np.sin(t)
         ax.plot(t, s, "k-")
@@ -21,7 +21,6 @@ def plot():
 
 def test():
     assert_equality(plot, "test_errorband_reference.tex")
-    return
 
 
 if __name__ == "__main__":

@@ -59,19 +59,21 @@ tikzplotlib.save("test.tex")
 \definecolor{color1}{rgb}{0.203921568627451,0.541176470588235,0.741176470588235}
 
 \begin{axis}[
-axis background/.style={fill=white!89.80392156862746!black},
+axis background/.style={fill=white!89.8039215686275!black},
 axis line style={white},
 tick align=outside,
 tick pos=left,
-title={Simple plot $\frac{\alpha}{2}$},
+title={Simple plot \(\displaystyle \frac{\alpha}{2}\)},
 x grid style={white},
 xlabel={time (s)},
 xmajorgrids,
 xmin=-0.095, xmax=1.995,
+xtick style={color=white!33.3333333333333!black},
 y grid style={white},
 ylabel={Voltage (mV)},
 ymajorgrids,
-ymin=-1.1, ymax=1.1
+ymin=-1.1, ymax=1.1,
+ytick style={color=white!33.3333333333333!black}
 ]
 \addplot [line width=1.64pt, color0, mark=*, mark size=3, mark options={solid}]
 table {%

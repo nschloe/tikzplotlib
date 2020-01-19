@@ -6,7 +6,7 @@ from helpers import assert_equality
 
 def plot():
     fig = plt.figure()
-    with plt.style.context(("ggplot")):
+    with plt.style.context("ggplot"):
         t = np.arange(0.0, 2.0, 0.1)
         s = np.sin(2 * np.pi * t)
         s2 = np.cos(2 * np.pi * t)
@@ -23,8 +23,7 @@ def plot():
 
 
 def test():
-    assert_equality(plot, "test_basic_sin_reference.tex", table_row_sep="\\\\\n")
-    return
+    assert_equality(plot, "test_basic_sin_reference.tex")
 
 
 if __name__ == "__main__":

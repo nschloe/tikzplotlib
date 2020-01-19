@@ -9,6 +9,7 @@ tag:
 	@echo "Tagging v$(VERSION)..."
 	git tag v$(VERSION)
 	git push --tags
+	curl -H "Authorization: token `cat $(HOME)/.github-access-token`" -d '{"tag_name": "$(VERSION)"}' https://api.github.com/repos/nschloe/tikzplotlib/releases
 
 upload: setup.py
 	@if [ "$(shell git rev-parse --abbrev-ref HEAD)" != "master" ]; then exit 1; fi

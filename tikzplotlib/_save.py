@@ -6,19 +6,19 @@ import warnings
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-from . import axes
-from . import image as img
-from . import legend, line2d, patch, path
-from . import quadmesh as qmsh
-from . import text
+from . import _axes
+from . import _image as img
+from . import _legend, _line2d, _patch, _path
+from . import _quadmesh as qmsh
+from . import _text
 from .__about__ import __version__
 
 
 def get_tikz_code(
     figure="gcf",
     filepath=None,
-    figurewidth=None,
-    figureheight=None,
+    axis_width=None,
+    axis_height=None,
     textsize=10.0,
     tex_relative_path_to_data=None,
     externalize_tables=False,
@@ -27,12 +27,13 @@ def get_tikz_code(
     wrap=True,
     add_axis_environment=True,
     extra_axis_parameters=None,
+    extra_groupstyle_parameters={},
     extra_tikzpicture_parameters=None,
     dpi=None,
     show_info=False,
     include_disclaimer=True,
     standalone=False,
-    float_format="{:.15g}",
+    float_format=".15g",
     table_row_sep="\n",
 ):
     """Main function. Here, the recursion into the image starts and the
@@ -40,63 +41,57 @@ def get_tikz_code(
 
     :param figure: either a Figure object or 'gcf' (default).
 
-    :param figurewidth: If not ``None``, this will be used as figure width
-                        within the TikZ/PGFPlots output. If ``figureheight``
-                        is not given, ``tikzplotlib`` will try to preserve
-                        the original width/height ratio.
-                        Note that ``figurewidth`` can be a string literal,
-                        such as ``'\\figurewidth'``.
-    :type figurewidth: str
+    :param axis_width: If not ``None``, this will be used as figure width within the
+                       TikZ/PGFPlots output. If ``axis_height`` is not given,
+                       ``tikzplotlib`` will try to preserve the original width/height
+                       ratio.  Note that ``axis_width`` can be a string literal, such as
+                       ``'\\axis_width'``.
+    :type axis_width: str
 
-    :param figureheight: If not ``None``, this will be used as figure height
-                         within the TikZ/PGFPlots output. If ``figurewidth`` is
-                         not given, ``tikzplotlib`` will try to preserve
-                         the original width/height ratio.  Note that
-                         ``figurewidth`` can be a string literal, such as
-                         ``'\\figureheight'``.
-    :type figureheight: str
+    :param axis_height: If not ``None``, this will be used as figure height within the
+                        TikZ/PGFPlots output. If ``axis_width`` is not given,
+                        ``tikzplotlib`` will try to preserve the original width/height
+                        ratio.  Note that ``axis_width`` can be a string literal, such
+                        as ``'\\axis_height'``.
+    :type axis_height: str
 
-    :param textsize: The text size (in pt) that the target latex document is
-                     using.  Default is 10.0.
+    :param textsize: The text size (in pt) that the target latex document is using.
+                     Default is 10.0.
     :type textsize: float
 
-    :param tex_relative_path_to_data: In some cases, the TikZ file will have to
-                                      refer to another file, e.g., a PNG for
-                                      image plots. When ``\\input`` into a
-                                      regular LaTeX document, the additional
-                                      file is looked for in a folder relative
-                                      to the LaTeX file, not the TikZ file.
-                                      This arguments optionally sets the
-                                      relative path from the LaTeX file to the
-                                      data.
+    :param tex_relative_path_to_data: In some cases, the TikZ file will have to refer to
+                                      another file, e.g., a PNG for image plots. When
+                                      ``\\input`` into a regular LaTeX document, the
+                                      additional file is looked for in a folder relative
+                                      to the LaTeX file, not the TikZ file.  This
+                                      arguments optionally sets the relative path from
+                                      the LaTeX file to the data.
     :type tex_relative_path_to_data: str
 
-    :param externalize_tables: Whether or not to externalize plot data tables
-                               into tsv files.
+    :param externalize_tables: Whether or not to externalize plot data tables into tsv
+                               files.
     :type externalize_tables: bool
 
-    :param override_externals: Whether or not to override existing external
-                               files (such as tsv or images) with conflicting
-                               names (the alternative is to choose other
-                               names).
+    :param override_externals: Whether or not to override existing external files (such
+                               as tsv or images) with conflicting names (the alternative
+                               is to choose other names).
     :type override_externals: bool
 
-    :param strict: Whether or not to strictly stick to matplotlib's appearance.
-                   This influences, for example, whether tick marks are set
-                   exactly as in the matplotlib plot, or if TikZ/PGFPlots
-                   can decide where to put the ticks.
+    :param strict: Whether or not to strictly stick to matplotlib's appearance. This
+                   influences, for example, whether tick marks are set exactly as in the
+                   matplotlib plot, or if TikZ/PGFPlots can decide where to put the
+                   ticks.
     :type strict: bool
 
-    :param wrap: Whether ``'\\begin{tikzpicture}'`` and
-                 ``'\\end{tikzpicture}'`` will be written. One might need to
-                 provide custom arguments to the environment (eg. scale= etc.).
-                 Default is ``True``.
+    :param wrap: Whether ``'\\begin{tikzpicture}'`` and ``'\\end{tikzpicture}'`` will be
+                 written. One might need to provide custom arguments to the environment
+                 (eg. scale= etc.).  Default is ``True``.
     :type wrap: bool
 
-    :param add_axis_environment: Whether ``'\\begin{axis}[...]'`` and
-                                 ``'\\end{axis}'`` will be written. One needs to
-                                 set the environment in the document. If ``False``
-                                 additionally sets ``wrap=False``. Default is ``True``.
+    :param add_axis_environment: Whether ``'\\begin{axis}[...]'`` and ``'\\end{axis}'``
+                                 will be written. One needs to set the environment in
+                                 the document. If ``False`` additionally sets
+                                 ``wrap=False``. Default is ``True``.
     :type add_axis_environment: bool
 
     :param extra_axis_parameters: Extra axis options to be passed (as a list or set)
@@ -105,9 +100,7 @@ def get_tikz_code(
 
     :param extra_tikzpicture_parameters: Extra tikzpicture options to be passed
                                          (as a set) to pgfplots.
-
-    :type extra_tikzpicture_parameters: a set of strings for the pfgplots
-                                        tikzpicture.
+    :type extra_tikzpicture_parameters: a set of strings for the pfgplots tikzpicture.
 
     :param dpi: The resolution in dots per inch of the rendered image in case
                 of QuadMesh plots. If ``None`` it will default to the value
@@ -125,7 +118,7 @@ def get_tikz_code(
     :param standalone: Include wrapper code for a standalone LaTeX file.
     :type standalone: bool
 
-    :param float_format: Format for float entities. Default is ```"{:.15g}"```.
+    :param float_format: Format for float entities. Default is ```".15g"```.
     :type float_format: str
 
     :param table_row_sep: Row separator for table data. Default is ```"\\n"```.
@@ -145,8 +138,8 @@ def get_tikz_code(
     if figure == "gcf":
         figure = plt.gcf()
     data = {}
-    data["fwidth"] = figurewidth
-    data["fheight"] = figureheight
+    data["axis width"] = axis_width
+    data["axis height"] = axis_height
     data["rel data path"] = tex_relative_path_to_data
     data["externalize tables"] = externalize_tables
     data["override externals"] = override_externals
@@ -166,7 +159,6 @@ def get_tikz_code(
     data["font size"] = textsize
     data["custom colors"] = {}
     data["legend colors"] = []
-    data["extra tikzpicture parameters"] = extra_tikzpicture_parameters
     data["add axis environment"] = add_axis_environment
     data["show_info"] = show_info
     # rectangle_legends is used to keep track of which rectangles have already
@@ -177,6 +169,7 @@ def get_tikz_code(
         data["extra axis options [base]"] = set(extra_axis_parameters).copy()
     else:
         data["extra axis options [base]"] = set()
+    data["extra groupstyle options [base]"] = extra_groupstyle_parameters
 
     if dpi:
         data["dpi"] = dpi
@@ -205,42 +198,39 @@ def get_tikz_code(
     code = """"""
 
     if include_disclaimer:
-        disclaimer = "This file was created by tikzplotlib v{}.".format(__version__)
+        disclaimer = f"This file was created by tikzplotlib v{__version__}."
         code += _tex_comment(disclaimer)
 
     # write the contents
     if wrap and add_axis_environment:
-        code += "\\begin{tikzpicture}\n\n"
+        code += "\\begin{tikzpicture}"
         if extra_tikzpicture_parameters:
-            code += ",\n".join(data["extra tikzpicture parameters"])
-            code += "\n"
+            code += "[\n" + ",\n".join(extra_tikzpicture_parameters) + "\n]"
+        code += "\n\n"
 
     coldefs = _get_color_definitions(data)
     if coldefs:
-        code += "\n".join(coldefs)
-        code += "\n\n"
+        code += "\n".join(coldefs) + "\n\n"
 
     code += "".join(content)
 
     if wrap and add_axis_environment:
-        code += "\\end{tikzpicture}"
+        code += "\\end{tikzpicture}\n"
 
     if standalone:
-        # create a latex wrapper for the tikz
-        # <https://tex.stackexchange.com/a/361070/13262>
-        code = """\\documentclass{{standalone}}
+        # When using pdflatex, \\DeclareUnicodeCharacter is necessary.
+        code = f"""\\documentclass{{standalone}}
 \\usepackage[utf8]{{inputenc}}
 \\usepackage{{pgfplots}}
+\\DeclareUnicodeCharacter{{2212}}{{−}}
 \\usepgfplotslibrary{{groupplots}}
 \\usepgfplotslibrary{{dateplot}}
+\\usetikzlibrary{{patterns}}
+\\usetikzlibrary{{shapes.arrows}}
 \\pgfplotsset{{compat=newest}}
-\\DeclareUnicodeCharacter{{2212}}{{−}}
 \\begin{{document}}
-{}
-\\end{{document}}""".format(
-            code
-        )
-
+{code}
+\\end{{document}}\n"""
     return code
 
 
@@ -271,9 +261,12 @@ def _get_color_definitions(data):
     """Returns the list of custom color definitions for the TikZ file.
     """
     definitions = []
-    fmt = "\\definecolor{{{}}}{{rgb}}{{" + ",".join(3 * [data["float format"]]) + "}}"
+    ff = data["float format"]
     for name, rgb in data["custom colors"].items():
-        definitions.append(fmt.format(name, rgb[0], rgb[1], rgb[2]))
+        definitions.append(
+            f"\\definecolor{{{name}}}{{rgb}}"
+            f"{{{rgb[0]:{ff}},{rgb[1]:{ff}},{rgb[2]:{ff}}}}"
+        )
     return definitions
 
 
@@ -321,6 +314,17 @@ class _ContentManager:
         return content_out
 
 
+def _draw_collection(data, child):
+    if isinstance(child, mpl.collections.PathCollection):
+        return _path.draw_pathcollection(data, child)
+    elif isinstance(child, mpl.collections.LineCollection):
+        return _line2d.draw_linecollection(data, child)
+    elif isinstance(child, mpl.collections.QuadMesh):
+        return qmsh.draw_quadmesh(data, child)
+    else:
+        return _patch.draw_patchcollection(data, child)
+
+
 def _recurse(data, obj):
     """Iterates over all children of the current object, gathers the contents
     contributing to the resulting PGFPlots file, and returns those.
@@ -333,7 +337,7 @@ def _recurse(data, obj):
             continue
 
         if isinstance(child, mpl.axes.Axes):
-            ax = axes.Axes(data, child)
+            ax = _axes.Axes(data, child)
 
             if ax.is_colorbar:
                 continue
@@ -362,34 +366,23 @@ def _recurse(data, obj):
                     print("".join(ax.get_begin_code()[1:]))
                     print("=========================================================")
         elif isinstance(child, mpl.lines.Line2D):
-            data, cont = line2d.draw_line2d(data, child)
+            data, cont = _line2d.draw_line2d(data, child)
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.image.AxesImage):
             data, cont = img.draw_image(data, child)
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.patches.Patch):
-            data, cont = patch.draw_patch(data, child)
+            data, cont = _patch.draw_patch(data, child)
             content.extend(cont, child.get_zorder())
-        elif isinstance(
-            child, (mpl.collections.PatchCollection, mpl.collections.PolyCollection)
-        ):
-            data, cont = patch.draw_patchcollection(data, child)
-            content.extend(cont, child.get_zorder())
-        elif isinstance(child, mpl.collections.PathCollection):
-            data, cont = path.draw_pathcollection(data, child)
-            content.extend(cont, child.get_zorder())
-        elif isinstance(child, mpl.collections.LineCollection):
-            data, cont = line2d.draw_linecollection(data, child)
-            content.extend(cont, child.get_zorder())
-        elif isinstance(child, mpl.collections.QuadMesh):
-            data, cont = qmsh.draw_quadmesh(data, child)
+        elif isinstance(child, mpl.collections.Collection):
+            data, cont = _draw_collection(data, child)
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.legend.Legend):
-            data = legend.draw_legend(data, child)
+            data = _legend.draw_legend(data, child)
             if data["legend colors"]:
                 content.extend(data["legend colors"], 0)
         elif isinstance(child, (mpl.text.Text, mpl.text.Annotation)):
-            data, cont = text.draw_text(data, child)
+            data, cont = _text.draw_text(data, child)
             content.extend(cont, child.get_zorder())
         elif isinstance(child, (mpl.axis.XAxis, mpl.axis.YAxis)):
             pass
