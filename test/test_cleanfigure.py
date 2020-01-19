@@ -50,9 +50,17 @@ def test_replaceDataWithNaN():
     ```
     """
     id_replace = np.array([0, 16])
-    data = np.stack([np.linspace(1, 100, 20)] * 2, axis=1)
+    xData = np.linspace(1, 100, 20)
+    yData = xData.copy()
+    data = np.stack([xData, yData], axis=1)
 
-    newdata = cleanfigure.replaceDataWithNaN(data, id_replace)
+    with plt.rc_context(rc=RC_PARAMS):
+        fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+        l, = ax.plot(xData, yData)
+
+        cleanfigure.replaceDataWithNaN(l, id_replace)
+
+        newdata = np.stack(l.get_data(), axis=1)
         assert newdata.shape == data.shape
         assert np.any(np.isnan(newdata))
 
@@ -73,9 +81,16 @@ def test_removeData():
     ```
     """
     id_remove = np.array([1, 2, 3, 17, 18, 19])
-    data = np.stack([np.linspace(1, 100, 20)] * 2, axis=1)
+    xData = np.linspace(1, 100, 20)
+    yData = xData.copy()
+    data = np.stack([xData, yData], axis=1)
 
-    newdata = cleanfigure.removeData(data, id_remove)
+    with plt.rc_context(rc=RC_PARAMS):
+        fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+        l, = ax.plot(xData, yData)
+
+    cleanfigure.removeData(l, id_remove)
+    newdata = np.stack(l.get_data(), axis=1)
     assert newdata.shape == (14, 2)
 
 
@@ -96,10 +111,17 @@ def test_removeNaNs():
     """
     id_replace = np.array([0, 16])
     id_remove = np.array([1, 2, 3, 17, 18, 19])
-    data = np.stack([np.linspace(1, 100, 20)] * 2, axis=1)
-    newdata = cleanfigure.replaceDataWithNaN(data, id_replace)
-    newdata = cleanfigure.removeData(newdata, id_remove)
-    newdata = cleanfigure.removeNaNs(newdata)
+    xData = np.linspace(1, 100, 20)
+    yData = xData.copy()
+    data = np.stack([xData, yData], axis=1)
+
+    with plt.rc_context(rc=RC_PARAMS):
+        fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+        l, = ax.plot(xData, yData)
+        cleanfigure.replaceDataWithNaN(l, id_replace)
+        cleanfigure.removeData(l, id_remove)
+        cleanfigure.removeNaNs(l)
+        newdata = np.stack(l.get_data(), axis=1)
         assert not np.any(np.isnan(newdata))
         assert newdata.shape == (12, 2)
 
