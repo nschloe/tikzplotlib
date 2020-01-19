@@ -30,7 +30,7 @@ def test_pruneOutsideBox():
         (l,) = ax.plot(x, y)
         ax.set_ylim([20, 80])
         ax.set_xlim([20, 80])
-        cleanfigure.pruneOutsideBox(fig, ax, l)
+        cleanfigure._pruneOutsideBox(fig, ax, l)
         assert l.get_xdata().shape == (14,)
 
 
@@ -58,7 +58,7 @@ def test_replaceDataWithNaN():
         fig, ax = plt.subplots(1, 1, figsize=(5, 5))
         l, = ax.plot(xData, yData)
 
-        cleanfigure.replaceDataWithNaN(l, id_replace)
+        cleanfigure._replaceDataWithNan(l, id_replace)
 
         newdata = np.stack(l.get_data(), axis=1)
         assert newdata.shape == data.shape
@@ -89,7 +89,7 @@ def test_removeData():
         fig, ax = plt.subplots(1, 1, figsize=(5, 5))
         l, = ax.plot(xData, yData)
 
-    cleanfigure.removeData(l, id_remove)
+    cleanfigure._removeData(l, id_remove)
     newdata = np.stack(l.get_data(), axis=1)
     assert newdata.shape == (14, 2)
 
@@ -118,9 +118,9 @@ def test_removeNaNs():
     with plt.rc_context(rc=RC_PARAMS):
         fig, ax = plt.subplots(1, 1, figsize=(5, 5))
         l, = ax.plot(xData, yData)
-        cleanfigure.replaceDataWithNaN(l, id_replace)
-        cleanfigure.removeData(l, id_remove)
-        cleanfigure.removeNaNs(l)
+        cleanfigure._replaceDataWithNan(l, id_replace)
+        cleanfigure._removeData(l, id_remove)
+        cleanfigure._removeNaNs(l)
         newdata = np.stack(l.get_data(), axis=1)
         assert not np.any(np.isnan(newdata))
         assert newdata.shape == (12, 2)
@@ -147,7 +147,7 @@ def test_isInBox():
     tol = 1.0e-10
     relaxedXLim = xLim + np.array([-tol, tol])
     relaxedYLim = yLim + np.array([-tol, tol])
-    mask = cleanfigure.isInBox(data, relaxedXLim, relaxedYLim)
+    mask = cleanfigure._isInBox(data, relaxedXLim, relaxedYLim)
     assert int(np.sum(mask)) == 12
 
 
@@ -177,7 +177,7 @@ def test_getVisualLimits():
         (l,) = ax.plot(x, y)
         ax.set_xlim([20, 80])
         ax.set_ylim([20, 80])
-        xLim, yLim = cleanfigure.getVisualLimits(fig, ax)
+        xLim, yLim = cleanfigure._getVisualLimits(fig, ax)
         assert np.allclose(xLim, np.array([20, 80]))
         assert np.allclose(yLim, np.array([20, 80]))
 
@@ -208,8 +208,8 @@ def test_movePointsCloser():
         (l,) = ax.plot(x, y)
         ax.set_ylim([20, 80])
         ax.set_xlim([20, 80])
-        cleanfigure.pruneOutsideBox(fig, ax, l)
-        cleanfigure.movePointscloser(fig, ax, l)
+        cleanfigure._pruneOutsideBox(fig, ax, l)
+        cleanfigure._movePointscloser(fig, ax, l)
         assert l.get_xdata().shape == (14,)
 
 
@@ -239,9 +239,9 @@ def test_simplifyLine():
         (l,) = ax.plot(x, y)
         ax.set_ylim([20, 80])
         ax.set_xlim([20, 80])
-        cleanfigure.pruneOutsideBox(fig, ax, l)
-        cleanfigure.movePointscloser(fig, ax, l)
-        cleanfigure.simplifyLine(fig, ax, l, 600)
+        cleanfigure._pruneOutsideBox(fig, ax, l)
+        cleanfigure._movePointscloser(fig, ax, l)
+        cleanfigure._simplifyLine(fig, ax, l, 600)
         assert l.get_xdata().shape == (2,)
         assert l.get_ydata().shape == (2,)
 
@@ -272,10 +272,10 @@ def test_limitPrecision():
         (l,) = ax.plot(x, y)
         ax.set_ylim([20, 80])
         ax.set_xlim([20, 80])
-        cleanfigure.pruneOutsideBox(fig, ax, l)
-        cleanfigure.movePointscloser(fig, ax, l)
-        cleanfigure.simplifyLine(fig, ax, l, 600)
-        cleanfigure.limitPrecision(fig, ax, l, 1)
+        cleanfigure._pruneOutsideBox(fig, ax, l)
+        cleanfigure._movePointscloser(fig, ax, l)
+        cleanfigure._simplifyLine(fig, ax, l, 600)
+        cleanfigure._limitPrecision(fig, ax, l, 1)
         assert l.get_xdata().shape == (2,)
         assert l.get_ydata().shape == (2,)
 
@@ -317,7 +317,7 @@ def test_opheimSimplify():
     )
     y = x.copy()
     tol = 0.02
-    mask = cleanfigure.opheimSimplify(x, y, tol)
+    mask = cleanfigure._opheimSimplify(x, y, tol)
     assert mask.shape == (12,)
     assert np.allclose(mask * 1, np.array([1,] + [0,] * 10 + [1,]))
 
@@ -335,7 +335,7 @@ def test_is_step(function, result):
             (l,) = ax.plot(x, y)
         elif function == "step":
             (l,) = ax.step(x, y)
-        assert cleanfigure.isStep(l) == result
+        assert cleanfigure._isStep(l) == result
 
 
 class Test_plottypes:
@@ -849,7 +849,7 @@ def test_segmentVisible():
     dataIsInBox = np.array([0,] * 4 + [1,] * 12 + [0,] * 4) == 1
     xLim = np.array([20, 80])
     yLim = np.array([20, 80])
-    mask = cleanfigure.segmentVisible(data, dataIsInBox, xLim, yLim)
+    mask = cleanfigure._segmentVisible(data, dataIsInBox, xLim, yLim)
     assert np.allclose(mask * 1, np.array([0,] * 3 + [1,] * 13 + [0,] * 3))
 
 
@@ -863,7 +863,7 @@ def test_crossLines():
     X2 = data[1:, :]
     X3 = np.array([80, 20])
     X4 = np.array([80, 80])
-    Lambda = cleanfigure.crossLines(X1, X2, X3, X4)
+    Lambda = cleanfigure._crossLines(X1, X2, X3, X4)
 
     expected_result = np.array(
         [
@@ -901,7 +901,7 @@ def test_segmentsIntersect():
     X2 = data[1:, :]
     X3 = np.array([80, 20])
     X4 = np.array([80, 80])
-    mask = cleanfigure.segmentsIntersect(X1, X2, X3, X4)
+    mask = cleanfigure._segmentsIntersect(X1, X2, X3, X4)
     assert np.allclose(mask * 1, np.zeros_like(mask))
 
 
@@ -925,14 +925,14 @@ def test_pixelate():
         ]
     )
     yData = xData.copy()
-    mask = cleanfigure.pixelate(xData, yData, xToPix, yToPix)
+    mask = cleanfigure._pixelate(xData, yData, xToPix, yToPix)
     assert mask.shape == (12,)
     assert np.all(mask)
 
 
 def test_corners3D():
     xlim = ylim = zlim = np.array([-5, 5])
-    corners = cleanfigure.corners3D(xlim, ylim, zlim)
+    corners = cleanfigure._corners3D(xlim, ylim, zlim)
 
     assert corners.shape == (8, 3)
     assert np.sum(corners) == 0

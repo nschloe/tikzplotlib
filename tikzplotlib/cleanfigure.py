@@ -82,7 +82,7 @@ def cleanfigure(fighandle=None, axhandle=None, target_resolution=600, scalePreci
     # clean up ax.plot and ax.step
     for linehandle in axhandle.lines:
         if type(linehandle) in [matplotlib.lines.Line2D, mpl_toolkits.mplot3d.art3d.Line3D]:
-            cleanline(fighandle, axhandle, linehandle, target_resolution, scalePrecision)
+            _cleanline(fighandle, axhandle, linehandle, target_resolution, scalePrecision)
         else:
             raise NotImplementedError
 
@@ -99,7 +99,7 @@ def cleanfigure(fighandle=None, axhandle=None, target_resolution=600, scalePreci
     
 
 
-def cleanline(fighandle, axhandle, linehandle, target_resolution, scalePrecision):
+def _cleanline(fighandle, axhandle, linehandle, target_resolution, scalePrecision):
     """Clean a 2D Line plot figure.
     
     Parameters
@@ -116,7 +116,7 @@ def cleanline(fighandle, axhandle, linehandle, target_resolution, scalePrecision
     scalePrecision : float
         scalar value indicating precision when scaling down. By default 1
     """
-    if isStep(linehandle):
+    if _isStep(linehandle):
         import warnings
         warnings.warn("step plot simplification not yet implemented.", Warning)
         # TODO: simplifyStairs not yet working
@@ -124,18 +124,18 @@ def cleanline(fighandle, axhandle, linehandle, target_resolution, scalePrecision
         # simplifyStairs(fighandle, axhandle, linehandle)
         # limitPrecision(fighandle, axhandle, linehandle, scalePrecision)
     else:
-        pruneOutsideBox(fighandle, axhandle, linehandle)
-        movePointscloser(fighandle, axhandle, linehandle)
-        simplifyLine(fighandle, axhandle, linehandle, target_resolution)
-        limitPrecision(fighandle, axhandle, linehandle, scalePrecision)
+        _pruneOutsideBox(fighandle, axhandle, linehandle)
+        _movePointscloser(fighandle, axhandle, linehandle)
+        _simplifyLine(fighandle, axhandle, linehandle, target_resolution)
+        _limitPrecision(fighandle, axhandle, linehandle, scalePrecision)
 
 
-def isStep(linehandle):
+def _isStep(linehandle):
     """return True if linehandle represent `plt.step` plot"""
     return linehandle._drawstyle in STEP_DRAW_STYLES
 
 
-def getVisualLimits(fighandle, axhandle):
+def _getVisualLimits(fighandle, axhandle):
     """Returns the visual representation of the axis limits (Respecting
         possible log_scaling and projection into the image plane)
     
@@ -153,7 +153,7 @@ def getVisualLimits(fighandle, axhandle):
     np.array
         yLim as array of shape [2, ]
     """
-    is3D = ax_is_3D(axhandle)
+    is3D = _axIs3D(axhandle)
 
     xLim = np.array(axhandle.get_xlim())
     yLim = np.array(axhandle.get_ylim())
@@ -173,9 +173,9 @@ def getVisualLimits(fighandle, axhandle):
             zLim = np.log10(zLim)
 
     if is3D:
-        P = getProjectionMatrix(axhandle)
+        P = _getProjectionMatrix(axhandle)
 
-        corners = corners3D(xLim, yLim, zLim)
+        corners = _corners3D(xLim, yLim, zLim)
 
         # Add the canonical 4th dimension
         corners = np.concatenate([corners, np.ones((8, 1))], axis=1)
@@ -190,7 +190,7 @@ def getVisualLimits(fighandle, axhandle):
     return xLim, yLim
 
 
-def replaceDataWithNaN(linehandle, id_replace):
+def _replaceDataWithNan(linehandle, id_replace):
     """Replaces data at id_replace with NaNs
     
     Parameters
@@ -205,10 +205,10 @@ def replaceDataWithNaN(linehandle, id_replace):
     np.ndarray
         data with replace values
     """
-    if elements(id_replace) == 0:
+    if _elements(id_replace) == 0:
         return
 
-    is3D = line_is_3D(linehandle)
+    is3D = _lineIs3D(linehandle)
 
     if is3D:
         xData, yData, zData = linehandle.get_data_3d()
@@ -233,7 +233,7 @@ def replaceDataWithNaN(linehandle, id_replace):
         linehandle.set_ydata(yData)
 
 
-def removeData(linehandle, id_remove):
+def _removeData(linehandle, id_remove):
     """remove data at id_remove
     
     Parameters
@@ -248,10 +248,10 @@ def removeData(linehandle, id_remove):
     np.ndarray
         new data array
     """
-    if elements(id_remove) == 0:
+    if _elements(id_remove) == 0:
         return
 
-    is3D = line_is_3D(linehandle)
+    is3D = _lineIs3D(linehandle)
     if is3D:
         xData, yData, zData = linehandle.get_data_3d()
     else:
@@ -272,18 +272,18 @@ def removeData(linehandle, id_remove):
         linehandle.set_ydata(yData)
 
 
-def diff(x, *args, **kwargs):
+def _diff(x, *args, **kwargs):
     """modification of np.diff(x, *args, **kwargs).
     - If x is empty, return np.array([False])
     - else: return np.diff(x, *args, **kwargs)
     """
-    if isempty(x):
+    if _isempty(x):
         return np.array([False])
     else:
         return np.diff(x, *args, **kwargs)
 
 
-def removeNaNs(linehandle):
+def _removeNaNs(linehandle):
     """Removes superflous NaNs in the data, i.e. those at the end/beginning of the data and consecutive ones.
     
     Parameters
@@ -297,7 +297,7 @@ def removeNaNs(linehandle):
         new data array
     """
 
-    is3D = line_is_3D(linehandle)
+    is3D = _lineIs3D(linehandle)
     if is3D:
         xData, yData, zData = linehandle.get_data_3d()
         data = np.stack([xData, yData, zData], axis=1)
@@ -308,19 +308,19 @@ def removeNaNs(linehandle):
 
     id_nan = np.any(np.isnan(data), axis=1)
     id_remove = np.argwhere(id_nan).reshape((-1,))
-    if isempty(id_remove):
+    if _isempty(id_remove):
         pass
     else:
         id_remove = id_remove[
             np.concatenate(
-                [diff(id_remove, axis=0) == 1, np.array([False,]).reshape((-1,))]
+                [_diff(id_remove, axis=0) == 1, np.array([False,]).reshape((-1,))]
             )
         ]
 
     id_first = np.argwhere(np.logical_not(id_nan))[0]
     id_last = np.argwhere(np.logical_not(id_nan))[-1]
 
-    if isempty(id_first):
+    if _isempty(id_first):
         # remove entire data
         id_remove = np.arange(len(xData))
     else:
@@ -338,7 +338,7 @@ def removeNaNs(linehandle):
         linehandle.set_ydata(data[:, 1])
 
 
-def isInBox(data, xLim, yLim):
+def _isInBox(data, xLim, yLim):
     """Returns a mask that indicates, whether a data point is within the limits.
 
     Parameters
@@ -356,15 +356,15 @@ def isInBox(data, xLim, yLim):
     return mask
 
 
-def line_is_3D(linehandle):
+def _lineIs3D(linehandle):
     return type(linehandle) == mpl_toolkits.mplot3d.art3d.Line3D
 
 
-def ax_is_3D(axhandle):
+def _axIs3D(axhandle):
     return hasattr(axhandle, "get_zlim")
 
 
-def getVisualData(axhandle, linehandle):
+def _getVisualData(axhandle, linehandle):
     """Returns the visual representation of the data (Respecting possible log_scaling and projection into the image plane).
     
     Parameters
@@ -381,7 +381,7 @@ def getVisualData(axhandle, linehandle):
     np.ndarray
         yData with shape [N, ]
     """
-    is3D = line_is_3D(linehandle)
+    is3D = _lineIs3D(linehandle)
     if is3D:
         xData, yData, zData = linehandle.get_data_3d()
     else:
@@ -400,7 +400,7 @@ def getVisualData(axhandle, linehandle):
             zData = np.log10(zData)
 
     if is3D:
-        P = getProjectionMatrix(axhandle)
+        P = _getProjectionMatrix(axhandle)
 
         data = np.stack([xData, yData, zData, np.ones_like(zData)], axis=1)
         dataProjected = P @ data.T
@@ -412,19 +412,19 @@ def getVisualData(axhandle, linehandle):
     return xData, yData
 
 
-def elements(array):
+def _elements(array):
     """check if array has elements. 
     https://stackoverflow.com/questions/11295609/how-can-i-check-whether-the-numpy-array-is-empty-or-not
     """
     return array.ndim and array.size
 
 
-def isempty(array):
+def _isempty(array):
     """proxy for matlab / octave isempty function"""
-    return elements(array) == 0
+    return _elements(array) == 0
 
 
-def pruneOutsideBox(fighandle, axhandle, linehandle):
+def _pruneOutsideBox(fighandle, axhandle, linehandle):
     """Some sections of the line may sit outside of the visible box. Cut those off.
 
     This method is not pure because it updates the linehandle object's data.
@@ -441,28 +441,28 @@ def pruneOutsideBox(fighandle, axhandle, linehandle):
     Returns
     -------
     """
-    xData, yData = getVisualData(axhandle, linehandle)
+    xData, yData = _getVisualData(axhandle, linehandle)
 
     data = np.stack([xData, yData], axis=1)
 
-    if elements(data) == 0:
+    if _elements(data) == 0:
         return
 
     hasLines = (linehandle.get_linestyle() is not None) and (
         linehandle.get_linewidth() > 0.0
     )
 
-    xLim, yLim = getVisualLimits(fighandle, axhandle)
+    xLim, yLim = _getVisualLimits(fighandle, axhandle)
 
     tol = 1.0e-10
     relaxedXLim = xLim + np.array([-tol, tol])
     relaxedYLim = yLim + np.array([-tol, tol])
 
-    dataIsInBox = isInBox(data, relaxedXLim, relaxedYLim)
+    dataIsInBox = _isInBox(data, relaxedXLim, relaxedYLim)
 
     shouldPlot = dataIsInBox
     if hasLines:
-        segvis = segmentVisible(data, dataIsInBox, xLim, yLim)
+        segvis = _segmentVisible(data, dataIsInBox, xLim, yLim)
         shouldPlot = np.logical_or(
             shouldPlot, np.concatenate([np.array([False]).reshape((-1,)), segvis])
         )
@@ -485,12 +485,12 @@ def pruneOutsideBox(fighandle, axhandle, linehandle):
 
         id_replace = id_remove[idx]
         id_remove = id_remove[np.logical_not(idx)]
-    replaceDataWithNaN(linehandle, id_replace)
-    removeData(linehandle, id_remove)
-    removeNaNs(linehandle)
+    _replaceDataWithNan(linehandle, id_replace)
+    _removeData(linehandle, id_remove)
+    _removeNaNs(linehandle)
 
 
-def movePointscloser(fighandle, axhandle, linehandle):
+def _movePointscloser(fighandle, axhandle, linehandle):
     """
     Move all points outside a box much larger than the visible one
     to the boundary of that box and make sure that lines in the visible
@@ -517,11 +517,11 @@ def movePointscloser(fighandle, axhandle, linehandle):
     NotImplementedError
         id_replace is not empty. This code section is not implemented.
     """
-    is3D = line_is_3D(linehandle)
+    is3D = _lineIs3D(linehandle)
     if is3D:
         return
-    xData, yData = getVisualData(axhandle, linehandle)
-    xLim, yLim = getVisualLimits(fighandle, axhandle)
+    xData, yData = _getVisualData(axhandle, linehandle)
+    xLim, yLim = _getVisualLimits(fighandle, axhandle)
 
     # Calculate the extension of the extended box
     xWidth = xLim[1] - xLim[0]
@@ -534,14 +534,14 @@ def movePointscloser(fighandle, axhandle, linehandle):
     largeYlim = yLim + extendedFactor * np.array([-yWidth, yWidth])
 
     data = np.stack([xData, yData], axis=1)
-    dataIsInLargeBox = isInBox(data, largeXlim, largeYlim)
+    dataIsInLargeBox = _isInBox(data, largeXlim, largeYlim)
 
     dataIsInLargeBox = np.logical_or(dataIsInLargeBox, np.any(np.isnan(data), axis=1))
 
     id_replace = np.argwhere(np.logical_not(dataIsInLargeBox))
 
     dataInsert = np.array([[]])
-    if not isempty(id_replace):
+    if not _isempty(id_replace):
         # Get the indices of those points, that are the first point in a
         # segment. The last data point at size(data, 1) cannot be the first
         # point in a segment.
@@ -558,8 +558,8 @@ def movePointscloser(fighandle, axhandle, linehandle):
         X1_second = data[id_second, :]
         X2_second = data[id_second - 1, :]
 
-        newData_first = moveToBox(X1_first, X2_first, largeXLim, largeYLim)
-        newData_second = moveToBox(X1_second, X2_second, largeXLim, largeYLim)
+        newData_first = _moveToBox(X1_first, X2_first, largeXLim, largeYLim)
+        newData_second = _moveToBox(X1_second, X2_second, largeXLim, largeYLim)
 
         isXlog = linehandle.get_xscale() == "log"
         if isXlog:
@@ -630,8 +630,8 @@ def movePointscloser(fighandle, axhandle, linehandle):
 
         # TODO: find a test case that enters this code block.
         raise NotImplementedError
-    insertData(fighandle, linehandle, id_replace, dataInsert)
-    if isempty(id_replace):
+    _insertData(fighandle, linehandle, id_replace, dataInsert)
+    if _isempty(id_replace):
         return
     else:
         # TODO: implement this
@@ -646,7 +646,7 @@ def movePointscloser(fighandle, axhandle, linehandle):
         raise NotImplementedError
 
 
-def moveToBox(x, xRef, xLim, yLim):
+def _moveToBox(x, xRef, xLim, yLim):
     #% Takes a box defined by xlim, ylim, a vector of points x and a vector of
     #% reference points xRef.
     #% Returns the vector of points xNew that sits on the line segment between
@@ -680,7 +680,7 @@ def moveToBox(x, xRef, xLim, yLim):
     return xNew
 
 
-def insertData(fighandle, linehandle, id_insert, dataInsert):
+def _insertData(fighandle, linehandle, id_insert, dataInsert):
     """Inserts the elements of the cell array dataInsert at position id_insert.
     
     Parameters
@@ -699,13 +699,13 @@ def insertData(fighandle, linehandle, id_insert, dataInsert):
     NotImplementedError
         id_insert is not empty. This code section is not implemented
     """
-    if isempty(id_insert):
+    if _isempty(id_insert):
         return
     # TODO: actually implement rest of function
     raise NotImplementedError
 
 
-def simplifyLine(fighandle, axhandle, linehandle, target_resolution):
+def _simplifyLine(fighandle, axhandle, linehandle, target_resolution):
     """Reduce the number of data points in the line 'handle'.
     
     Applies a path-simplification algorithm if there are no markers or
@@ -739,14 +739,14 @@ def simplifyLine(fighandle, axhandle, linehandle, target_resolution):
             return
     elif any(np.logical_or(np.isinf(target_resolution), target_resolution == 0)):
         return
-    W, H = getWidthHeightInPixels(fighandle, target_resolution)
-    xData, yData = getVisualData(axhandle, linehandle)
+    W, H = _getWidthHeightInPixels(fighandle, target_resolution)
+    xData, yData = _getVisualData(axhandle, linehandle)
     data = np.stack([xData, yData], axis=1)
     # Only simplify if there are more than 2 points
     if np.size(xData) <= 2 or np.size(yData) <= 2:
         return
 
-    xLim, yLim = getVisualLimits(fighandle, axhandle)
+    xLim, yLim = _getVisualLimits(fighandle, axhandle)
 
     # Automatically guess a tol based on the area of the figure and
     # the area and resolution of the output
@@ -763,8 +763,7 @@ def simplifyLine(fighandle, axhandle, linehandle, target_resolution):
     hasLines = not linehandle.get_linestyle() == "None"
     if hasMarkers and not hasLines:
         # Pixelate data at the zoom multiplier
-        # TODO implement this
-        mask = pixelate(xData, yData, xToPix, yToPix)
+        mask = _pixelate(xData, yData, xToPix, yToPix)
         id_remove = np.argwhere(mask*1 == 0)
     elif hasLines and not hasMarkers:
         # Get the width of a pixel
@@ -803,13 +802,16 @@ def simplifyLine(fighandle, axhandle, linehandle, target_resolution):
 
             # Line simplification
             if np.size(x) > 2:
-                mask = opheimSimplify(x, y, tol)
+                mask = _opheimSimplify(x, y, tol)
                 id_remove[ii] = np.argwhere(mask == 0).reshape((-1, )) + lineStart[ii]
         # Merge the indices of the line segments
         # original code : id_remove = cat(1, id_remove{:})
         id_remove = np.concatenate(id_remove)
 
     # remove the data points
+    _removeData(linehandle, id_remove)
+
+
     removeData(linehandle, id_remove)
 
 
@@ -818,7 +820,7 @@ def simplifyStairs(fighandle, axhandle, linehandle):
     raise NotImplementedError
 
 
-def pixelate(x, y, xToPix, yToPix):
+def _pixelate(x, y, xToPix, yToPix):
     """Rough reduction of data points at a multiple of the target resolution.
     The resolution is lost only beyond the multiplier magnification.
     
@@ -856,7 +858,7 @@ def pixelate(x, y, xToPix, yToPix):
     return mask
 
 
-def getWidthHeightInPixels(fighandle, target_resolution):
+def _getWidthHeightInPixels(fighandle, target_resolution):
     """Target resolution as ppi / dpi. Return width and height in pixels
     
     Parameters
@@ -885,7 +887,7 @@ def getWidthHeightInPixels(fighandle, target_resolution):
     return W, H
 
 
-def opheimSimplify(x, y, tol):
+def _opheimSimplify(x, y, tol):
     """
      Opheim path simplification algorithm
     
@@ -977,7 +979,7 @@ def opheimSimplify(x, y, tol):
     return mask
 
 
-def updateAlpha(X1, X2, X3, X4, minAlpha):
+def _updateAlpha(X1, X2, X3, X4, minAlpha):
     """Checks whether the segments X1--X2 and X3--X4 intersect.
     
     Parameters
@@ -1008,7 +1010,7 @@ def updateAlpha(X1, X2, X3, X4, minAlpha):
     return minAlpha
 
 
-def limitPrecision(fighandle, axhandle, linehandle, alpha):
+def _limitPrecision(fighandle, axhandle, linehandle, alpha):
     """Limit the precision of the given data. If alpha is 0 or negative do nothing.
     
     Parameters
@@ -1030,7 +1032,7 @@ def limitPrecision(fighandle, axhandle, linehandle, alpha):
     if alpha <= 0:
         return
 
-    is3D = line_is_3D(linehandle)
+    is3D = _lineIs3D(linehandle)
     if is3D:
         xData, yData, zData = linehandle.get_data_3d()
     else:
@@ -1051,7 +1053,7 @@ def limitPrecision(fighandle, axhandle, linehandle, alpha):
         isLog = np.array([isXlog, isYlog])
 
     # Only do something if the data is not empty
-    if isempty(data) or np.isinf(data).all():
+    if _isempty(data) or np.isinf(data).all():
         return
 
     # Scale to visual coordinates
@@ -1076,12 +1078,12 @@ def limitPrecision(fighandle, axhandle, linehandle, alpha):
         linehandle.set_ydata(data[:, 1])
 
 
-def pruneOutsideText(fighandle, axhandle, linehandle):
+def _pruneOutsideText(fighandle, axhandle, linehandle):
     # TODO implement this
     raise NotImplementedError
 
 
-def segmentVisible(data, dataIsInBox, xLim, yLim):
+def _segmentVisible(data, dataIsInBox, xLim, yLim):
     """Given a bounding box {x,y}Lim, determine whether the line between all
     pairs of subsequent data points [data(idx,:)<-->data(idx+1,:)] is visible.
     There are two possible cases:
@@ -1113,12 +1115,12 @@ def segmentVisible(data, dataIsInBox, xLim, yLim):
         thisVisible = np.logical_and(dataIsInBox[idx], np.all(np.isfinite(X2), 1))
         nextVisible = np.logical_and(dataIsInBox[idx + 1], np.all(np.isfinite(X1), 1))
 
-        bottomLeft, topLeft, bottomRight, topRight = corners2D(xLim, yLim)
+        bottomLeft, topLeft, bottomRight, topRight = _corners2D(xLim, yLim)
 
-        left = segmentsIntersect(X1, X2, bottomLeft, topLeft)
-        right = segmentsIntersect(X1, X2, bottomRight, topRight)
-        bottom = segmentsIntersect(X1, X2, bottomLeft, bottomRight)
-        top = segmentsIntersect(X1, X2, topLeft, topRight)
+        left = _segmentsIntersect(X1, X2, bottomLeft, topLeft)
+        right = _segmentsIntersect(X1, X2, bottomRight, topRight)
+        bottom = _segmentsIntersect(X1, X2, bottomLeft, bottomRight)
+        top = _segmentsIntersect(X1, X2, topLeft, topRight)
 
         # Check the result
         mask1 = np.logical_or(thisVisible, nextVisible)
@@ -1131,7 +1133,7 @@ def segmentVisible(data, dataIsInBox, xLim, yLim):
     return mask
 
 
-def corners2D(xLim, yLim):
+def _corners2D(xLim, yLim):
     """Determine the corners of the axes as defined by xLim and yLim
     
     Parameters
@@ -1160,7 +1162,7 @@ def corners2D(xLim, yLim):
     return bottomLeft, topLeft, bottomRight, topRight
 
 
-def corners3D(xLim, yLim, zLim):
+def _corners3D(xLim, yLim, zLim):
     """Determine the corners of the 3D axes as defined by xLim, yLim and zLim.
     
     Parameters
@@ -1205,7 +1207,7 @@ def corners3D(xLim, yLim, zLim):
     return corners
 
 
-def getProjectionMatrix(axhandle):
+def _getProjectionMatrix(axhandle):
     """Get Projection matrix that projects 3D points into 2D image plane.
     
     Parameters
@@ -1249,25 +1251,25 @@ def getProjectionMatrix(axhandle):
     return P
 
 
-def isValidTargetResolution(val):
+def _isValidTargetResolution(val):
     # TODO: implement this
     raise NotImplementedError
     return isValid
 
 
-def isValidAxis(val): 
+def _isValidAxis(val): 
     # TODO: implement this
     raise NotImplementedError
     return isValid
 
 
-def normalizeAxis(fighandle, axhandle):
+def _normalizeAxis(fighandle, axhandle):
     # TODO: implement this
     raise NotImplementedError
     return isValid
 
 
-def segmentsIntersect(X1, X2, X3, X4):
+def _segmentsIntersect(X1, X2, X3, X4):
     """Checks whether the segments X1--X2 and X3--X4 intersect.
     
     Parameters
@@ -1282,7 +1284,7 @@ def segmentsIntersect(X1, X2, X3, X4):
     np.ndarray
         bollean mask indicating intersection for each point
     """
-    Lambda = crossLines(X1, X2, X3, X4)
+    Lambda = _crossLines(X1, X2, X3, X4)
 
     # Check whether lambda is in bound
     mask1 = np.logical_and(0.0 < Lambda[:, 0], Lambda[:, 0] < 1.0)
@@ -1291,7 +1293,7 @@ def segmentsIntersect(X1, X2, X3, X4):
     return mask
 
 
-def crossLines(X1, X2, X3, X4):
+def _crossLines(X1, X2, X3, X4):
     """
     Checks whether the segments X1--X2 and X3--X4 intersect.
     See https://en.wikipedia.org/wiki/Line-line_intersection for reference.
