@@ -2,9 +2,7 @@ import numpy as np
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 import mpl_toolkits
-from mpl_toolkits.mplot3d.axes3d import Axes3D
-from mpl_toolkits.mplot3d.art3d import Line3DCollection, Poly3DCollection
-from matplotlib.collections import LineCollection, PathCollection
+from mpl_toolkits import mplot3d
 
 # TODO: see which test cases the matlab2tikz guys used [!!!]
 # TODO: find suitable test cases for remaining functions. [!!]
@@ -135,7 +133,7 @@ def _recursive_cleanfigure(obj, targetResolution=600, scalePrecision=1.0):
                 targetResolution=targetResolution,
                 scalePrecision=scalePrecision,
             )
-        elif isinstance(child, mpl_toolkits.mplot3d.art3d.Line3D):
+        elif isinstance(child, mplot3d.art3d.Line3D):
             ax = child.axes
             fig = ax.figure
             _cleanline(
@@ -161,11 +159,11 @@ def _recursive_cleanfigure(obj, targetResolution=600, scalePrecision=1.0):
             warnings.warn(
                 "Cleaning Line Collections (scatter plot) is not supported yet."
             )
-        elif isinstance(child, mpl_toolkits.mplot3d.art3d.Line3DCollection):
+        elif isinstance(child, mplot3d.art3d.Line3DCollection):
             import warnings
 
             warnings.warn("Cleaning Line3DCollection is not supported yet.")
-        elif isinstance(child, mpl_toolkits.mplot3d.art3d.Poly3DCollection):
+        elif isinstance(child, mplot3d.art3d.Poly3DCollection):
             import warnings
 
             warnings.warn("Cleaning Poly3DCollections is not supported yet.")
