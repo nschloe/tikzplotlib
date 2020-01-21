@@ -18,6 +18,7 @@ def test_recursive_cleanfigure():
         ax.set_ylim([20, 80])
         ax.set_xlim([20, 80])
         cleanfigure._recursive_cleanfigure(fig)
+    plt.close("all")
 
 
 def test_pruneOutsideBox():
@@ -35,8 +36,6 @@ def test_pruneOutsideBox():
         ylim([20, 80])
         cleanfigure;
     ```
-
-
     """
     x = np.linspace(1, 100, 20)
     y = np.linspace(1, 100, 20)
@@ -48,6 +47,7 @@ def test_pruneOutsideBox():
         ax.set_xlim([20, 80])
         cleanfigure._pruneOutsideBox(fig, ax, l)
         assert l.get_xdata().shape == (14,)
+    plt.close("all")
 
 
 def test_replaceDataWithNaN():
@@ -65,8 +65,6 @@ def test_replaceDataWithNaN():
         ylim([20, 80])
         cleanfigure;
     ```
-
-
     """
     id_replace = np.array([0, 16])
     xData = np.linspace(1, 100, 20)
@@ -82,6 +80,7 @@ def test_replaceDataWithNaN():
         newdata = np.stack(l.get_data(), axis=1)
         assert newdata.shape == data.shape
         assert np.any(np.isnan(newdata))
+    plt.close("all")
 
 
 def test_removeData():
@@ -99,8 +98,6 @@ def test_removeData():
         ylim([20, 80])
         cleanfigure;
     ```
-
-
     """
     id_remove = np.array([1, 2, 3, 17, 18, 19])
     xData = np.linspace(1, 100, 20)
@@ -113,6 +110,7 @@ def test_removeData():
     cleanfigure._removeData(l, id_remove)
     newdata = np.stack(l.get_data(), axis=1)
     assert newdata.shape == (14, 2)
+    plt.close("all")
 
 
 def test_removeNaNs():
@@ -144,6 +142,7 @@ def test_removeNaNs():
         newdata = np.stack(l.get_data(), axis=1)
         assert not np.any(np.isnan(newdata))
         assert newdata.shape == (12, 2)
+    plt.close("all")
 
 
 def test_isInBox():
@@ -198,6 +197,7 @@ def test_getVisualLimits():
         xLim, yLim = cleanfigure._getVisualLimits(fig, ax)
         assert np.allclose(xLim, np.array([20, 80]))
         assert np.allclose(yLim, np.array([20, 80]))
+    plt.close("all")
 
 
 def test_movePointsCloser():
@@ -230,6 +230,7 @@ def test_movePointsCloser():
         cleanfigure._pruneOutsideBox(fig, ax, l)
         cleanfigure._movePointscloser(fig, ax, l)
         assert l.get_xdata().shape == (14,)
+    plt.close("all")
 
 
 def test_simplifyLine():
@@ -264,6 +265,7 @@ def test_simplifyLine():
         cleanfigure._simplifyLine(fig, ax, l, 600)
         assert l.get_xdata().shape == (2,)
         assert l.get_ydata().shape == (2,)
+    plt.close("all")
 
 
 # def test_simplifyStairs():
@@ -334,6 +336,7 @@ def test_limitPrecision():
         cleanfigure._limitPrecision(fig, ax, l, 1)
         assert l.get_xdata().shape == (2,)
         assert l.get_ydata().shape == (2,)
+    plt.close("all")
 
 
 def test_opheimSimplify():
@@ -400,6 +403,7 @@ def test_is_step(function, result):
         elif function == "step":
             (l,) = ax.step(x, y)
         assert cleanfigure._isStep(l) == result
+    plt.close("all")
 
 
 class Test_plottypes:
@@ -428,6 +432,7 @@ class Test_plottypes:
             numLinesRaw = raw.count("\n")
             numLinesClean = clean.count("\n")
             assert numLinesRaw - numLinesClean == 18
+        plt.close("all")
 
     def test_step(self):
         """ """
@@ -442,6 +447,7 @@ class Test_plottypes:
             ax.set_xlim([20, 80])
             with pytest.warns(Warning):
                 cleanfigure.cleanfigure(fig)
+        plt.close("all")
 
     def test_scatter(self):
         """ """
@@ -456,6 +462,7 @@ class Test_plottypes:
             ax.set_xlim([20, 80])
             with pytest.warns(Warning):
                 cleanfigure.cleanfigure(fig)
+        plt.close("all")
 
     def test_bar(self):
         """ """
@@ -469,6 +476,7 @@ class Test_plottypes:
             ax.set_xlim([20, 80])
             with pytest.warns(Warning):
                 cleanfigure.cleanfigure(fig)
+        plt.close("all")
 
     def test_hist(self):
         """creates same test case as bar"""
@@ -482,6 +490,7 @@ class Test_plottypes:
             ax.set_xlim([20, 80])
             with pytest.warns(Warning):
                 cleanfigure.cleanfigure(fig)
+        plt.close("all")
 
     def test_plot3d(self):
         """ """
@@ -509,6 +518,7 @@ class Test_plottypes:
             numLinesRaw = raw.count("\n")
             numLinesClean = clean.count("\n")
             assert numLinesRaw - numLinesClean == 14
+        plt.close("all")
 
     def test_scatter3d(self):
         """ """
@@ -525,6 +535,7 @@ class Test_plottypes:
             ax.set_zlim([0, 80])
             with pytest.warns(Warning):
                 cleanfigure.cleanfigure(fig)
+        plt.close("all")
 
     def test_wireframe3D(self):
         """ """
@@ -541,6 +552,7 @@ class Test_plottypes:
             ax.plot_wireframe(X, Y, Z, rstride=10, cstride=10)
             with pytest.warns(Warning):
                 cleanfigure.cleanfigure(fig)
+        plt.close("all")
 
     def test_surface3D(self):
         """ """
@@ -573,6 +585,7 @@ class Test_plottypes:
 
             with pytest.warns(Warning):
                 cleanfigure.cleanfigure(fig)
+        plt.close("all")
 
     def test_trisurface3D(self):
         """
@@ -608,6 +621,7 @@ class Test_plottypes:
             ax.plot_trisurf(x, y, z, linewidth=0.2, antialiased=True)
             with pytest.warns(Warning):
                 cleanfigure.cleanfigure(fig)
+        plt.close("all")
 
     def test_contour3D(self):
         """ """
@@ -623,6 +637,7 @@ class Test_plottypes:
             ax.clabel(cset, fontsize=9, inline=1)
             with pytest.warns(Warning):
                 cleanfigure.cleanfigure(fig)
+        plt.close("all")
 
     def test_polygon3D(self):
         """ """
@@ -663,6 +678,7 @@ class Test_plottypes:
             ax.set_zlim3d(0, 1)
             with pytest.warns(Warning):
                 cleanfigure.cleanfigure(fig)
+        plt.close("all")
 
     def test_bar3D(self):
         """ """
@@ -687,6 +703,7 @@ class Test_plottypes:
             ax.set_zlabel("Z")
             with pytest.warns(Warning):
                 cleanfigure.cleanfigure(fig)
+        plt.close("all")
 
     def test_quiver3D(self):
         """ """
@@ -717,6 +734,7 @@ class Test_plottypes:
             ax.quiver(x, y, z, u, v, w, length=0.1, normalize=True)
             with pytest.warns(Warning):
                 cleanfigure.cleanfigure(fig)
+        plt.close("all")
 
     def test_2D_in_3D(self):
         """ """
@@ -757,6 +775,7 @@ class Test_plottypes:
             ax.view_init(elev=20.0, azim=-35)
             with pytest.warns(Warning):
                 cleanfigure.cleanfigure(fig)
+        plt.close("all")
 
 
 class Test_lineplot:
@@ -789,6 +808,7 @@ class Test_lineplot:
             numLinesRaw = raw.count("\n")
             numLinesClean = clean.count("\n")
             assert numLinesRaw - numLinesClean == 18
+        plt.close("all")
 
     def test_no_line_markers(self):
         """test high-level usage for simple example.
@@ -817,6 +837,7 @@ class Test_lineplot:
             numLinesRaw = raw.count("\n")
             numLinesClean = clean.count("\n")
             assert numLinesRaw - numLinesClean == 6
+        plt.close("all")
 
     def test_line_markers(self):
         """test high-level usage for simple example.
@@ -845,6 +866,7 @@ class Test_lineplot:
             numLinesRaw = raw.count("\n")
             numLinesClean = clean.count("\n")
             assert numLinesRaw - numLinesClean == 6
+        plt.close("all")
 
     def test_sine(self):
         """ """
@@ -869,6 +891,7 @@ class Test_lineplot:
             numLinesRaw = raw.count("\n")
             numLinesClean = clean.count("\n")
             assert numLinesRaw - numLinesClean == 39
+        plt.close("all")
 
 
 class Test_subplots:
@@ -924,6 +947,7 @@ class Test_subplots:
             numLinesRaw = raw.count("\n")
             numLinesClean = clean.count("\n")
             assert numLinesRaw - numLinesClean == 36
+        plt.close("all")
 
 
 def test_segmentVisible():
