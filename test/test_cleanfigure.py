@@ -377,7 +377,7 @@ def test_opheimSimplify():
     tol = 0.02
     mask = cleanfigure._opheimSimplify(x, y, tol)
     assert mask.shape == (12,)
-    assert np.allclose(mask * 1, np.array([1,] + [0,] * 10 + [1,]))
+    assert np.allclose(mask * 1, np.array([1] + [0] * 10 + [1]))
 
 
 @pytest.mark.parametrize(
@@ -947,11 +947,11 @@ def test_segmentVisible():
     y = np.linspace(1, 100, 20)
     x = y.copy()
     data = np.stack([x, y], axis=1)
-    dataIsInBox = np.array([0,] * 4 + [1,] * 12 + [0,] * 4) == 1
+    dataIsInBox = np.array([0] * 4 + [1] * 12 + [0] * 4) == 1
     xLim = np.array([20, 80])
     yLim = np.array([20, 80])
     mask = cleanfigure._segmentVisible(data, dataIsInBox, xLim, yLim)
-    assert np.allclose(mask * 1, np.array([0,] * 3 + [1,] * 13 + [0,] * 3))
+    assert np.allclose(mask * 1, np.array([0] * 3 + [1] * 13 + [0] * 3))
 
 
 def test_crossLines():

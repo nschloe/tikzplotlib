@@ -376,7 +376,7 @@ def _removeNaNs(linehandle):
     else:
         id_remove = id_remove[
             np.concatenate(
-                [_diff(id_remove, axis=0) == 1, np.array([False,]).reshape((-1,))]
+                [_diff(id_remove, axis=0) == 1, np.array([False]).reshape((-1,))]
             )
         ]
 
@@ -545,7 +545,7 @@ def _pruneOutsideBox(fighandle, axhandle, linehandle):
         # diff(id_remove)==1, so replace diff(id_remove)>1 by NaN and remove
         # the rest
         idx = np.diff(id_remove, axis=0) > 1
-        idx = np.concatenate([np.array([True,]).reshape((-1, 1)), idx], axis=0)
+        idx = np.concatenate([np.array([True]).reshape((-1, 1)), idx], axis=0)
 
         id_replace = id_remove[idx]
         id_remove = id_remove[np.logical_not(idx)]
