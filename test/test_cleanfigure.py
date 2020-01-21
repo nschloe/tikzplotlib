@@ -23,7 +23,7 @@ def test_recursive_cleanfigure():
 def test_pruneOutsideBox():
     """test against matlab2tikz implementation
 
-    octave code to generate baseline results. 
+    octave code to generate baseline results.
     Note that octave has indexing 1...N, whereas python has indexing 0...N-1.
     ```octave
         x = linspace(1, 100, 20);
@@ -53,7 +53,7 @@ def test_pruneOutsideBox():
 def test_replaceDataWithNaN():
     """test against matlab2tikz implementation.
 
-    octave code to generate baseline results. 
+    octave code to generate baseline results.
     Note that octave has indexing 1...N, whereas python has indexing 0...N-1.
     ```octave
         x = linspace(1, 100, 20);
@@ -87,7 +87,7 @@ def test_replaceDataWithNaN():
 def test_removeData():
     """test against matlab2tikz implementation.
 
-    octave code to generate baseline results. 
+    octave code to generate baseline results.
     Note that octave has indexing 1...N, whereas python has indexing 0...N-1.
     ```octave
         x = linspace(1, 100, 20);
@@ -117,20 +117,18 @@ def test_removeData():
 
 def test_removeNaNs():
     """test against matlab2tikz implementation
-    
+
     octave code to generate baseline results. Note that octave has indexing 1...N, whereas python has indexing 0...N-1.
     ```octave
         x = linspace(1, 100, 20);
         y1 = linspace(1, 100, 20);
-    
+
         figure
         plot(x, y1)
         xlim([20, 80])
         ylim([20, 80])
         cleanfigure;
     ```
-
-
     """
     id_replace = np.array([0, 16])
     id_remove = np.array([1, 2, 3, 17, 18, 19])
@@ -150,8 +148,7 @@ def test_removeNaNs():
 
 def test_isInBox():
     """octave code to generate baseline results
-    
-    
+
         ```octave
             x = 1:10;
             y = 1:10;
@@ -160,8 +157,6 @@ def test_isInBox():
             ylim = [3, 7];
             mask = isInBox(data, xlim, ylim)
         ```
-
-
     """
     x = np.linspace(1, 100, 20)
     y = np.linspace(1, 100, 20)
@@ -191,8 +186,6 @@ def test_getVisualLimits():
             set(gcf,'Position',[2.5 2.5 5 5])
             cleanfigure;
         ```
-
-
     """
     x = np.linspace(1, 100, 20)
     y = np.linspace(1, 100, 20)
@@ -243,10 +236,10 @@ def test_simplifyLine():
     """octave code
         ```octave
             addpath ("../matlab2tikz/src")
-    
+
             x = linspace(1, 100, 20);
             y1 = linspace(1, 100, 20);
-    
+
             figure
             plot(x, y1)
             xlim([20, 80])
@@ -312,10 +305,10 @@ def test_limitPrecision():
     """octave code
         ```octave
             addpath ("../matlab2tikz/src")
-    
+
             x = linspace(1, 100, 20);
             y1 = linspace(1, 100, 20);
-    
+
             figure
             plot(x, y1)
             xlim([20, 80])
@@ -345,14 +338,14 @@ def test_limitPrecision():
 
 def test_opheimSimplify():
     """test path simplification
-    
+
         octave code
         ```octave
             addpath ("../matlab2tikz/src")
-    
+
             x = linspace(1, 100, 20);
             y1 = linspace(1, 100, 20);
-    
+
             figure
             plot(x, y1)
             xlim([20, 80])
@@ -393,8 +386,8 @@ def test_opheimSimplify():
 def test_is_step(function, result):
     """
 
-    :param function: 
-    :param result: 
+    :param function:
+    :param result:
 
     """
     x = np.linspace(1, 100, 20)
@@ -581,10 +574,10 @@ class Test_plottypes:
             with pytest.warns(Warning):
                 cleanfigure.cleanfigure(fig)
 
-    def test_trisurface3D(Self):
+    def test_trisurface3D(self):
         """
 
-        :param Self: 
+        :param Self:
 
         """
         import matplotlib.pyplot as plt
@@ -643,7 +636,7 @@ class Test_plottypes:
             def cc(arg):
                 """
 
-                :param arg: 
+                :param arg:
 
                 """
                 return mcolors.to_rgba(arg, alpha=0.6)
@@ -883,13 +876,13 @@ class Test_subplots:
 
     def test_subplot(self):
         """octave code
-        
+
         ```octave
             addpath ("../matlab2tikz/src")
-        
+
             x = linspace(1, 100, 20);
             y1 = linspace(1, 100, 20);
-        
+
             figure
             subplot(2, 2, 1)
             plot(x, y1, "-")
@@ -935,12 +928,12 @@ class Test_subplots:
 
 def test_segmentVisible():
     """test against matlab2tikz implementation
-    
+
     octave code to generate baseline results. Note that octave has indexing 1...N, whereas python has indexing 0...N-1.
     ```octave
         x = linspace(1, 100, 20);
         y1 = linspace(1, 100, 20);
-    
+
         figure
         plot(x, y1)
         xlim([20, 80])

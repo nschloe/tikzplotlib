@@ -20,35 +20,36 @@ def cleanfigure(fig=None, targetResolution=600, scalePrecision=1.0):
     """Cleans figure as a preparation for tikz export.
     This will minimize the number of points required for the tikz figure.
     If the figure has subplots, it will recursively clean then up.
-    
+
     Note that this function modifies the figure directly (impure function).
 
     :param fig: Matplotlib figure handle (Default value = None)
-    :param target_resolution: target resolution of final figure in PPI. If a scalar integer is provided, it is assumed to be square in both axis.
-        If a list or an np.array is provided, it is interpreted as [H, W], by default 600
-    :type target_resolution: int, list of int or np.array
-    :param scalePrecision: scalar value indicating precision when scaling down., by default 1
+    :param targetResolution: target resolution of final figure in PPI.
+        If a scalar integer is provided, it is assumed to be square in both axis.
+        If a list or an np.array is provided, it is interpreted as [H, W].
+        By default 600
+    :type targetResolution: int, list or np.array, optional
+    :param scalePrecision: scalar value indicating precision when scaling down.
+        By default 1
     :type scalePrecision: float, optional
-    :param targetResolution:  (Default value = 600)
-
     Examples
     --------
-    
+
         1. 2D lineplot
         ```python
             x = np.linspace(1, 100, 20)
             y = np.linspace(1, 100, 20)
-    
+
             with plt.rc_context(rc=RC_PARAMS):
                 fig, ax = plt.subplots(1, 1, figsize=(5, 5))
                 ax.plot(x, y)
                 ax.set_ylim([20, 80])
                 ax.set_xlim([20, 80])
                 raw = get_tikz_code()
-    
+
                 cleanfigure.cleanfigure(fig, ax)
                 clean = get_tikz_code()
-    
+
                 # Use number of lines to test if it worked.
                 # the baseline (raw) should have 20 points
                 # the clean version (clean) should have 2 points
@@ -57,10 +58,32 @@ def cleanfigure(fig=None, targetResolution=600, scalePrecision=1.0):
                 numLinesClean = clean.count("\n")
                 print("number of tikz lines saved", numLinesRaw - numLinesClean)
         ```
-    
+
         2. 3D lineplot
         ```python
-    
+            theta = np.linspace(-4 * np.pi, 4 * np.pi, 100)
+            z = np.linspace(-2, 2, 100)
+            r = z ** 2 + 1
+            x = r * np.sin(theta)
+            y = r * np.cos(theta)
+
+            with plt.rc_context(rc=RC_PARAMS):
+                fig = plt.figure()
+                ax = fig.add_subplot(111, projection="3d")
+                ax.plot(x, y, z)
+                ax.set_xlim([-2, 2])
+                ax.set_ylim([-2, 2])
+                ax.set_zlim([-2, 2])
+                ax.view_init(30, 30)
+                raw = get_tikz_code(fig)
+
+                cleanfigure.cleanfigure(fig)
+                clean = get_tikz_code()
+
+                # Use number of lines to test if it worked.
+                numLinesRaw = raw.count("\n")
+                numLinesClean = clean.count("\n")
+                assert numLinesRaw - numLinesClean == 14
         ```
     """
     if fig is None:
@@ -73,12 +96,17 @@ def cleanfigure(fig=None, targetResolution=600, scalePrecision=1.0):
 
 
 def _recursive_cleanfigure(obj, targetResolution=600, scalePrecision=1.0):
-    """
+    """Recursively visit child objects and clean them up.
 
-    :param obj: 
-    :param targetResolution:  (Default value = 600)
-    :param scalePrecision:  (Default value = 1.0)
-
+    :param obj: object
+    :param targetResolution: target resolution of final figure in PPI.
+        If a scalar integer is provided, it is assumed to be square in both axis.
+        If a list or an np.array is provided, it is interpreted as [H, W].
+        By default 600
+    :type targetResolution: int, list or np.array, optional
+    :param scalePrecision: scalar value indicating precision when scaling down.
+        By default 1
+    :type scalePrecision: float, optional
     """
     for child in obj.get_children():
         if isinstance(child, mpl.spines.Spine):
@@ -144,10 +172,9 @@ def _recursive_cleanfigure(obj, targetResolution=600, scalePrecision=1.0):
 
 
 def _clean_containers(axes):
-    """Containers are not children of axes. They need to be visited separately
+    """Containers are not children of axes. They need to be visited separately.
 
-    :param axes: 
-
+    :param axes: matplotlib axes object
     """
     for container in axes.containers:
         if isinstance(container, mpl.container.BarContainer):
@@ -159,13 +186,17 @@ def _clean_containers(axes):
 def _cleanline(fighandle, axhandle, linehandle, targetResolution, scalePrecision):
     """Clean a 2D Line plot figure.
 
-    :param fighandle: 
-    :param axhandle: 
-    :param linehandle: 
-    :param targetResolution: 
-    :param scalePrecision: 
-
-    
+    :param fighandle: matplotlib figure object
+    :param axhandle: matplotlib axes object
+    :param linehandle: matplotlib line object (2D or 3D)
+    :param targetResolution: target resolution of final figure in PPI.
+        If a scalar integer is provided, it is assumed to be square in both axis.
+        If a list or an np.array is provided, it is interpreted as [H, W].
+        By default 600
+    :type targetResolution: int, list or np.array, optional
+    :param scalePrecision: scalar value indicating precision when scaling down.
+        By default 1
+    :type scalePrecision: float, optional
     """
     if _isStep(linehandle):
         import warnings
@@ -185,22 +216,20 @@ def _cleanline(fighandle, axhandle, linehandle, targetResolution, scalePrecision
 def _isStep(linehandle):
     """Check if plot is a step plot.
 
-    :param linehandle: 
-
+    :param linehandle: matplotlib line handle object
+    :type linehandle: mpl.lines.Line2D or mpl_toolkits.mplot3d.art3d.Line3D
     """
     return linehandle._drawstyle in STEP_DRAW_STYLES
 
 
 def _getVisualLimits(fighandle, axhandle):
-    """Returns the visual representation of the axis limits (Respecting
-        possible log_scaling and projection into the image plane)
+    """Returns the visual representation of the axis limits,
+    respecting possible log_scaling and projection into the image plane.
 
     :param fighandle: handle to matplotlib figure object
-    :type fighandle: obj
-    :param axhandle: hande to matplotlib axes object
-    :type axhandle: obj
-
-    
+    :type fighandle: mpl.figure.Figure
+    :param axhandle: handle to matplotlib axes object
+    :type axhandle: mpl.axes.Axes or mpl_toolkits.mplot3d.axes3d.Axes3D
     """
     is3D = _axIs3D(axhandle)
 
@@ -240,15 +269,14 @@ def _getVisualLimits(fighandle, axhandle):
 
 
 def _replaceDataWithNan(linehandle, id_replace):
-    """Replaces data at id_replace with NaNs
+    """Replaces data at id_replace with NaNs.
 
     :param data: array of x and y data with shape [N, 2]
     :type data: np.ndarray
     :param id_replace: array with indices to replace. Shape [K,]
     :type id_replace: np.array
-    :param linehandle: 
-
-    
+    :param linehandle: matplotlib line handle object
+    :type linehandle: object
     """
     if _elements(id_replace) == 0:
         return
@@ -284,9 +312,8 @@ def _removeData(linehandle, id_remove):
     :type data: np.ndarray
     :param id_remove: array of x and y data with shape [N, 2]
     :type id_remove: np.array
-    :param linehandle: 
-
-    
+    :param linehandle: matplotlib linehandle object
+    :type linehandle: object
     """
     if _elements(id_remove) == 0:
         return
@@ -317,10 +344,10 @@ def _diff(x, *args, **kwargs):
     - If x is empty, return np.array([False])
     - else: return np.diff(x, *args, **kwargs)
 
-    :param x: 
-    :param *args: 
-    :param **kwargs: 
-
+    :param x: array to diff
+    :type x: np.ndarray
+    :param *args: additional arguments passed to `np.diff`
+    :param **kwargs: additional keyword arguments passed to `np.diff`
     """
     if _isempty(x):
         return np.array([False])
@@ -331,13 +358,8 @@ def _diff(x, *args, **kwargs):
 def _removeNaNs(linehandle):
     """Removes superflous NaNs in the data, i.e. those at the end/beginning of the data and consecutive ones.
 
-    :param data: array of x and y data with shape [N, 2]
-    :type data: np.ndarray
-    :param linehandle: 
-
-    
+    :param linehandle: matplotlib linehandle object
     """
-
     is3D = _lineIs3D(linehandle)
     if is3D:
         xData, yData, zData = linehandle.get_data_3d()
@@ -382,11 +404,12 @@ def _removeNaNs(linehandle):
 def _isInBox(data, xLim, yLim):
     """Returns a mask that indicates, whether a data point is within the limits.
 
-    :param data: 
-    :param xLim: 
-    :param yLim: 
-
-    
+    :param data: data to check
+    :type data: np.ndarray
+    :param xLim: x axes limits
+    :type xLim: list or np.array
+    :param yLim: y axes limits
+    :type xLim: list or np.array
     """
     maskX = np.logical_and(data[:, 0] > xLim[0], data[:, 0] < xLim[1])
     maskY = np.logical_and(data[:, 1] > yLim[0], data[:, 1] < yLim[1])
@@ -395,32 +418,30 @@ def _isInBox(data, xLim, yLim):
 
 
 def _lineIs3D(linehandle):
-    """
-
-    :param linehandle: 
-
+    """Check if given line object is a 3D plot.
+    :param linehandle: matplotlib linehandle object
+    :type linehandle: mpl.axes.Axes or mpl_toolkits.mplot3d.axes3d.Axes3D
     """
     return isinstance(linehandle, mpl_toolkits.mplot3d.art3d.Line3D)
 
 
 def _axIs3D(axhandle):
-    """
+    """Check if given axes handle object is a 3D plot.
 
-    :param axhandle: 
-
+    :param axhandle: matplotlib axes handle object
+    :type axhandle: mpl.axes.Axes or mpl_toolkits.mplot3d.axes3d.Axes3D
     """
     return hasattr(axhandle, "get_zlim")
 
 
 def _getVisualData(axhandle, linehandle):
-    """Returns the visual representation of the data (Respecting possible log_scaling and projection into the image plane).
+    """Returns the visual representation of the data,
+    respecting possible log_scaling and projection into the image plane.
 
     :param axhandle: handle for matplotlib axis object
-    :type axhandle: obj
+    :type axhandle: object
     :param linehandle: handle for matplotlib line2D object
-    :type linehandle: obj
-
-    
+    :type linehandle: object
     """
     is3D = _lineIs3D(linehandle)
     if is3D:
@@ -457,8 +478,8 @@ def _elements(array):
     """check if array has elements.
     https://stackoverflow.com/questions/11295609/how-can-i-check-whether-the-numpy-array-is-empty-or-not
 
-    :param array: 
-
+    :param array: array to check if it has any elements
+    :type array: np.ndarray
     """
     return array.ndim and array.size
 
@@ -466,15 +487,15 @@ def _elements(array):
 def _isempty(array):
     """proxy for matlab / octave isempty function
 
-    :param array: 
-
+    :param array: array to check if it is empty
+    :type array: np.ndarray
     """
     return _elements(array) == 0
 
 
 def _pruneOutsideBox(fighandle, axhandle, linehandle):
     """Some sections of the line may sit outside of the visible box. Cut those off.
-    
+
     This method is not pure because it updates the linehandle object's data.
 
     :param fighandle: matplotlib figure handle object
@@ -483,8 +504,6 @@ def _pruneOutsideBox(fighandle, axhandle, linehandle):
     :type axhandle: obj
     :param linehandle: matplotlib line2D handle object
     :type linehandle: obj
-
-    
     """
     xData, yData = _getVisualData(axhandle, linehandle)
 
@@ -540,10 +559,10 @@ def _movePointscloser(fighandle, axhandle, linehandle):
     to the boundary of that box and make sure that lines in the visible
     box are preserved. This typically involves replacing one point by
     two new ones and a NaN.
-    
+
     TODO: 3D simplification of frontal 2D projection. This requires the
     full transformation rather than the projection, as we have to calculate
-    the inverse transformation to project back into 3D
+    the inverse transformation to project back into 3D.
 
     :param fighandle: matplotlib figure handle object
     :type fighandle: obj
@@ -551,8 +570,6 @@ def _movePointscloser(fighandle, axhandle, linehandle):
     :type axhandle: obj
     :param linehandle: matplotlib line handle object
     :type linehandle: obj
-
-    
     """
     is3D = _lineIs3D(linehandle)
     if is3D:
@@ -684,17 +701,20 @@ def _movePointscloser(fighandle, axhandle, linehandle):
 
 
 def _moveToBox(x, xRef, xLim, yLim):
-    """Takes a box defined by xlim, ylim, a vector of points x and a vector of
+    """Takes a box defined by xLim, yLim, a vector of points x and a vector of
     reference points xRef.
     Returns the vector of points xNew that sits on the line segment between
     x and xRef *and* on the box. If several such points exist, take the
     closest one to x.
 
-    :param x: 
-    :param xRef: 
-    :param xLim: 
-    :param yLim: 
-
+    :param x:
+    :type x: np.ndarray
+    :param xRef:
+    :type xRef:
+    :param xLim:
+    :type xLim: np.ndarray
+    :param yLim:
+    :type yLim: np.ndarray
     """
     # n = size(x, 1);
 
@@ -734,8 +754,6 @@ def _insertData(fighandle, linehandle, id_insert, dataInsert):
     :type id_insert: np.ndarray
     :param dataInsert: array of data to insert.  Shape [N, 2]
     :type dataInsert: np.ndarray
-
-    
     """
     if _isempty(id_insert):
         return
@@ -745,11 +763,11 @@ def _insertData(fighandle, linehandle, id_insert, dataInsert):
 
 def _simplifyLine(fighandle, axhandle, linehandle, target_resolution):
     """Reduce the number of data points in the line 'handle'.
-    
+
     Applies a path-simplification algorithm if there are no markers or
     pixelization otherwise. Changes are visually negligible at the target
     resolution.
-    
+
     The target resolution is either specificed as the number of PPI or as
     the [Width, Height] of the figure in pixels.
     A scalar value of INF or 0 disables path simplification.
@@ -761,11 +779,10 @@ def _simplifyLine(fighandle, axhandle, linehandle, target_resolution):
     :type axhandle: obj
     :param linehandle: matplotlib line handle object
     :type linehandle: obj
-    :param target_resolution: target resolution of final figure in PPI. If a scalar integer is provided, it is assumed to be square in both axis.
+    :param target_resolution: target resolution of final figure in PPI.
+        If a scalar integer is provided, it is assumed to be square in both axis.
         If a list or an np.array is provided, it is interpreted as [H, W]
     :type target_resolution: int, list of int or np.array
-
-    
     """
     if type(target_resolution) not in [list, np.ndarray, np.array]:
         if np.isinf(target_resolution) or target_resolution == 0:
@@ -845,18 +862,18 @@ def _simplifyLine(fighandle, axhandle, linehandle, target_resolution):
 
 
 def _simplifyStairs(fighandle, axhandle, linehandle):
-    """
+    """Simplify step plot (matlab's stairs plot).
 
-    :param fighandle: 
-    :param axhandle: 
-    :param linehandle: 
-
+    :param fighandle: matplotlib figure handle object
+    :type fighandle: mpl.figure.Figure
+    :param axhandle: matplotlib axes handle object
+    :type axhandle: mpl.axes.Axes or mpl_toolkits.mplot3d.axes3d.Axes3D
+    :param linehandle: matplotlib line handle object
+    :type linehandle: mpl.lines.Line2D or mpl_toolkits.mplot3d.art3d.Line3D
     """
     # TODO: it looks like matlab changes the data to be plotted when using `stairs` command, whereas matplotlib stores the same data but displays it as a step.
-
     xData = linehandle.get_xdata()
     yData = linehandle.get_ydata()
-    data = np.stack([xData, yData], 1)
     if _isempty(xData) or _isempty(yData):
         return
 
@@ -884,25 +901,22 @@ def _simplifyStairs(fighandle, axhandle, linehandle):
     yRemove = np.logical_and(yNoDiff, xIsMonotone)
 
     id_remove = np.argwhere(xRemove or yRemove)
-    new_data = _removeData(data, id_remove)
-    linehandle.set_xdata(new_data[:, 0])
-    linehandle.set_ydata(new_data[:, 1])
+    _removeData(linehandle, id_remove)
 
 
 def _pixelate(x, y, xToPix, yToPix):
     """Rough reduction of data points at a multiple of the target resolution.
     The resolution is lost only beyond the multiplier magnification.
 
-    :param x: [description]
-    :type x: [type]
-    :param y: [description]
-    :type y: [type]
-    :param xToPix: [description]
-    :type xToPix: [type]
-    :param yToPix: [description]
-    :type yToPix: [type]
+    :param x: x coordinates of data points. Shape [N, ]
+    :type x: np.ndarray
+    :param y: y coordinates of data points. Shape [N, ]
+    :type y: np.ndarray
+    :param xToPix: scalar converting x measure to pixel measure in x direction
+    :type xToPix: float
+    :param yToPix: scalar converting x measure to pixel measure in y direction
+    :type yToPix: float
 
-    
     """
     mult = 2
     dataPixel = np.round(np.stack([x * xToPix * mult, y * yToPix * mult], axis=1))
@@ -932,7 +946,6 @@ def _getWidthHeightInPixels(fighandle, target_resolution):
     :param target_resolution: Target resolution in PPI/ DPI. If target_resolution is a scalar, calculate final pixels based on figure width and height.
     :type target_resolution: scalar or list or np.array
 
-    
     """
     if np.isscalar(target_resolution):
         # in matplotlib, the figsize units are always in inches
@@ -947,8 +960,8 @@ def _getWidthHeightInPixels(fighandle, target_resolution):
 
 
 def _opheimSimplify(x, y, tol):
-    """Opheim path simplification algorithm
-    
+    """Opheim path simplification algorithm.
+
      Given a path of vertices V and a tolerance TOL, the algorithm:
        1. selects the first vertex as the KEY;
        2. finds the first vertex farther than TOL from the KEY and links
@@ -957,19 +970,19 @@ def _opheimSimplify(x, y, tol):
           LINE and sets it to be the LAST vertex. Removes all points in
           between the KEY and the LAST vertex;
        4. sets the KEY to the LAST vertex and restarts from step 2.
-    
+
      The Opheim algorithm can produce unexpected results if the path
      returns back on itself while remaining within TOL from the LINE.
      This behaviour can be seen in the following example:
-    
+
        x   = [1,2,2,2,3];
        y   = [1,1,2,1,1];
        tol < 1
-    
+
      The algorithm undesirably removes the second last point. See
      https://github.com/matlab2tikz/matlab2tikz/pull/585#issuecomment-89397577
      for additional details.
-    
+
      To rectify this issues, step 3 is modified to find the LAST vertex as
      follows:
        3*. finds the last vertex from KEY which stays within TOL from the
@@ -983,7 +996,7 @@ def _opheimSimplify(x, y, tol):
     :type y: np.ndarray
     :param tol: scalar float specifiying the tolerance for path simplification
     :type tol: float
-    :returns: boolean array of shape [N, ] that masks out elements that need not be drawn.
+    :returns: boolean array of shape [N, ] that masks out elements that need not be drawn
     :rtype: np.ndarray
 
     References
@@ -1046,8 +1059,6 @@ def _updateAlpha(X1, X2, X3, X4, minAlpha):
     :type minAlpha: [type]
     :returns: [description]
     :rtype: [type]
-
-    
     """
     # TODO implement this
     raise NotImplementedError
@@ -1065,8 +1076,6 @@ def _limitPrecision(fighandle, axhandle, linehandle, alpha):
     :type linehandle: obj
     :param alpha: scalar value indicating precision when scaling down. By default 1
     :type alpha: float
-
-    
     """
     if alpha <= 0:
         return
@@ -1120,10 +1129,9 @@ def _limitPrecision(fighandle, axhandle, linehandle, alpha):
 def _pruneOutsideText(fighandle, axhandle, linehandle):
     """
 
-    :param fighandle: 
-    :param axhandle: 
-    :param linehandle: 
-
+    :param fighandle:
+    :param axhandle:
+    :param linehandle:
     """
     # TODO implement this
     raise NotImplementedError
@@ -1136,12 +1144,14 @@ def _segmentVisible(data, dataIsInBox, xLim, yLim):
     1: One of the data points is within the limits
     2: The line segments between the datapoints crosses the bounding box
 
-    :param data: 
-    :param dataIsInBox: 
-    :param xLim: 
-    :param yLim: 
-
-    
+    :param data: array of data points. Shape [N, 2]
+    :type data: np.ndarray
+    :param dataIsInBox: boolen mask that specifies if data point lies within visual box
+    :type dataIxInBox: np.ndarray
+    :param xLim: x axes limits
+    :type xLim: list, np.array
+    :param yLim: y axes limits
+    :type yLim: list, np.array
     """
     n = np.shape(data)[0]
     mask = np.zeros((n - 1, n)) == 1
@@ -1182,8 +1192,6 @@ def _corners2D(xLim, yLim):
     :type xLim: np.array
     :param yLim: y limits interval. Shape [2, ]
     :type yLim: np.array
-
-    
     """
 
     bottomLeft = np.array([xLim[0], yLim[0]])
@@ -1202,8 +1210,6 @@ def _corners3D(xLim, yLim, zLim):
     :type yLim: list or np.array
     :param zLim: z-axis limits
     :type zLim: list or np.array
-
-    
     """
 
     # Lower square of the cube
@@ -1238,8 +1244,6 @@ def _getProjectionMatrix(axhandle):
 
     :param axhandle: matplotlib axes handle object
     :type axhandle: obj
-
-    
     """
     # TODO: write test
     az = np.deg2rad(axhandle.azim)
@@ -1273,31 +1277,30 @@ def _getProjectionMatrix(axhandle):
 
 
 def _isValidTargetResolution(val):
-    """
+    """Check if given target resolution value is valid.
 
-    :param val: 
-
+    :param val: target resolution value
+    :type val: int, list or np.array
     """
     # TODO: implement this
     raise NotImplementedError
 
 
 def _isValidAxis(val):
-    """
+    """Check if given axes object is a valid axes object.
 
-    :param val: 
-
+    :param val: axes object
+    :type val: object
     """
     # TODO: implement this
     raise NotImplementedError
 
 
 def _normalizeAxis(fighandle, axhandle):
-    """
+    """Normalize Axis.
 
-    :param fighandle: 
-    :param axhandle: 
-
+    :param fighandle: matplotlib figure handle object
+    :param axhandle: matplotlib axes handle object
     """
     # TODO: implement this
     raise NotImplementedError
@@ -1306,16 +1309,14 @@ def _normalizeAxis(fighandle, axhandle):
 def _segmentsIntersect(X1, X2, X3, X4):
     """Checks whether the segments X1--X2 and X3--X4 intersect.
 
-    :param X1: 
+    :param X1: X1
     :type X1: np.ndarray
-    :param X2: 
+    :param X2: X2
     :type X2: np.ndarray
-    :param X3: 
+    :param X3: X3
     :type X3: np.ndarray
-    :param X4: 
+    :param X4: X4
     :type X4: np.ndarray
-
-    
     """
     Lambda = _crossLines(X1, X2, X3, X4)
 
@@ -1329,34 +1330,31 @@ def _segmentsIntersect(X1, X2, X3, X4):
 def _crossLines(X1, X2, X3, X4):
     """Checks whether the segments X1--X2 and X3--X4 intersect.
     See https://en.wikipedia.org/wiki/Line-line_intersection for reference.
-    Given four points X_k=(x_k,y_k), k\in{1,2,3,4}, and the two lines
-    defined by those,
-    
-     L1(lambda) = X1 + lambda (X2 - X1)
-     L2(lambda) = X3 + lambda (X4 - X3)
-    
+    Given four points X_k=(x_k,y_k), k in {1,2,3,4}, and the two lines defined by those,
+
+        L1(lambda) = X1 + lambda (X2 - X1)
+        L2(lambda) = X3 + lambda (X4 - X3)
+
     returns the lambda for which they intersect (and Inf if they are parallel).
     Technically, one needs to solve the 2x2 equation system
-    
-      x1 + lambda1 (x2-x1)  =  x3 + lambda2 (x4-x3)
-      y1 + lambda1 (y2-y1)  =  y3 + lambda2 (y4-y3)
-    
+
+        x1 + lambda1 (x2-x1)  =  x3 + lambda2 (x4-x3)
+        y1 + lambda1 (y2-y1)  =  y3 + lambda2 (y4-y3)
+
     for lambda1 and lambda2.
-    
+
     Now X1 is a vector of all data points X1 and X2 is a vector of all
     consecutive data points X2
     n is the number of segments (not points in the plot!)
 
-    :param X1: 
+    :param X1: X1
     :type X1: np.ndarray
-    :param X2: 
+    :param X2: X2
     :type X2: np.ndarray
-    :param X3: 
+    :param X3: X3
     :type X3: np.ndarray
-    :param X4: 
+    :param X4: X4
     :type X4: np.ndarray
-
-    
     """
     n = X2.shape[0]
     Lambda = np.zeros((n, 2))
