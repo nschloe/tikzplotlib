@@ -2,7 +2,9 @@ import numpy as np
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 import mpl_toolkits
-
+from mpl_toolkits.mplot3d.axes3d import Axes3D
+from mpl_toolkits.mplot3d.art3d import Line3DCollection, Poly3DCollection
+from matplotlib.collections import LineCollection, PathCollection
 
 # TODO: see which test cases the matlab2tikz guys used [!!!]
 # TODO: find suitable test cases for remaining functions. [!!]
