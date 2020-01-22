@@ -4,7 +4,9 @@ from matplotlib import pyplot as plt
 import mpl_toolkits
 from mpl_toolkits import mplot3d
 
+# TODO: increase coverage or remove unused functions [!!!]
 # TODO: see which test cases the matlab2tikz guys used [!!!]
+# TODO: refactoring: consistently use camel_case or _
 # TODO: find suitable test cases for remaining functions. [!!]
 # TODO: implement remaining functions [!!]
 # - simplify stair : plt.step
@@ -12,11 +14,10 @@ from mpl_toolkits import mplot3d
 # - there is still a missing code block in movePointsCloser. Maybe find suitable axes limits to get this code block to work
 # TODO: make grid of plot types which are working and which not. 2D and 3D
 
-
 STEP_DRAW_STYLES = ["steps-pre", "steps-post", "steps-mid"]
 
 
-def cleanfigure(fig=None, targetResolution=600, scalePrecision=1.0):
+def clean_figure(fig=None, target_resolution=600, scale_precision=1.0):
     """Cleans figure as a preparation for tikz export.
     This will minimize the number of points required for the tikz figure.
     If the figure has subplots, it will recursively clean then up.
@@ -24,11 +25,11 @@ def cleanfigure(fig=None, targetResolution=600, scalePrecision=1.0):
     Note that this function modifies the figure directly (impure function).
 
     :param fig: Matplotlib figure handle (Default value = None)
-    :param targetResolution: target resolution of final figure in PPI.
+    :param target_resolution: target resolution of final figure in PPI.
         If a scalar integer is provided, it is assumed to be square in both axis.
         If a list or an np.array is provided, it is interpreted as [H, W].
         By default 600
-    :type targetResolution: int, list or np.array, optional
+    :type target_resolution: int, list or np.array, optional
     :param scalePrecision: scalar value indicating precision when scaling down.
         By default 1
     :type scalePrecision: float, optional
@@ -37,6 +38,8 @@ def cleanfigure(fig=None, targetResolution=600, scalePrecision=1.0):
 
         1. 2D lineplot
         ```python
+            from tikzplotlib import get_tikz_code, cleanfigure
+
             x = np.linspace(1, 100, 20)
             y = np.linspace(1, 100, 20)
 
@@ -47,7 +50,7 @@ def cleanfigure(fig=None, targetResolution=600, scalePrecision=1.0):
                 ax.set_xlim([20, 80])
                 raw = get_tikz_code()
 
-                cleanfigure.cleanfigure(fig, ax)
+                clean_figure(fig)
                 clean = get_tikz_code()
 
                 # Use number of lines to test if it worked.
@@ -61,6 +64,8 @@ def cleanfigure(fig=None, targetResolution=600, scalePrecision=1.0):
 
         2. 3D lineplot
         ```python
+            from tikzplotlib import get_tikz_code, cleanfigure
+
             theta = np.linspace(-4 * np.pi, 4 * np.pi, 100)
             z = np.linspace(-2, 2, 100)
             r = z ** 2 + 1
@@ -77,7 +82,7 @@ def cleanfigure(fig=None, targetResolution=600, scalePrecision=1.0):
                 ax.view_init(30, 30)
                 raw = get_tikz_code(fig)
 
-                cleanfigure.cleanfigure(fig)
+                clean_figure(fig)
                 clean = get_tikz_code()
 
                 # Use number of lines to test if it worked.
@@ -91,19 +96,19 @@ def cleanfigure(fig=None, targetResolution=600, scalePrecision=1.0):
     elif fig == "gcf":  # tikzplotlib syntax
         fig = plt.gcf()
     _recursive_cleanfigure(
-        fig, targetResolution=targetResolution, scalePrecision=scalePrecision
+        fig, target_resolution=target_resolution, scale_precision=scale_precision
     )
 
 
-def _recursive_cleanfigure(obj, targetResolution=600, scalePrecision=1.0):
+def _recursive_cleanfigure(obj, target_resolution=600, scale_precision=1.0):
     """Recursively visit child objects and clean them up.
 
     :param obj: object
-    :param targetResolution: target resolution of final figure in PPI.
+    :param target_resolution: target resolution of final figure in PPI.
         If a scalar integer is provided, it is assumed to be square in both axis.
         If a list or an np.array is provided, it is interpreted as [H, W].
         By default 600
-    :type targetResolution: int, list or np.array, optional
+    :type target_resolution: int, list or np.array, optional
     :param scalePrecision: scalar value indicating precision when scaling down.
         By default 1
     :type scalePrecision: float, optional
@@ -116,12 +121,16 @@ def _recursive_cleanfigure(obj, targetResolution=600, scalePrecision=1.0):
             # This is a problem because a bar plot creates a Barcontainer.
             _clean_containers(child)
             _recursive_cleanfigure(
-                child, targetResolution=targetResolution, scalePrecision=scalePrecision
+                child,
+                target_resolution=target_resolution,
+                scale_precision=scale_precision,
             )
         elif isinstance(child, mpl_toolkits.mplot3d.axes3d.Axes3D):
             _clean_containers(child)
             _recursive_cleanfigure(
-                child, targetResolution=targetResolution, scalePrecision=scalePrecision
+                child,
+                target_resolution=target_resolution,
+                scale_precision=scale_precision,
             )
         elif isinstance(child, mpl.lines.Line2D):
             ax = child.axes
@@ -130,8 +139,8 @@ def _recursive_cleanfigure(obj, targetResolution=600, scalePrecision=1.0):
                 fig,
                 ax,
                 linehandle=child,
-                targetResolution=targetResolution,
-                scalePrecision=scalePrecision,
+                target_resolution=target_resolution,
+                scale_precision=scale_precision,
             )
         elif isinstance(child, mplot3d.art3d.Line3D):
             ax = child.axes
@@ -140,8 +149,8 @@ def _recursive_cleanfigure(obj, targetResolution=600, scalePrecision=1.0):
                 fig,
                 ax,
                 linehandle=child,
-                targetResolution=targetResolution,
-                scalePrecision=scalePrecision,
+                target_resolution=target_resolution,
+                scale_precision=scale_precision,
             )
         elif isinstance(child, mpl.image.AxesImage):
             pass
@@ -183,17 +192,17 @@ def _clean_containers(axes):
             warnings.warn("Cleaning Bar Container (bar plot) is not supported yet.")
 
 
-def _cleanline(fighandle, axhandle, linehandle, targetResolution, scalePrecision):
+def _cleanline(fighandle, axhandle, linehandle, target_resolution, scale_precision):
     """Clean a 2D Line plot figure.
 
     :param fighandle: matplotlib figure object
     :param axhandle: matplotlib axes object
     :param linehandle: matplotlib line object (2D or 3D)
-    :param targetResolution: target resolution of final figure in PPI.
+    :param target_resolution: target resolution of final figure in PPI.
         If a scalar integer is provided, it is assumed to be square in both axis.
         If a list or an np.array is provided, it is interpreted as [H, W].
         By default 600
-    :type targetResolution: int, list or np.array, optional
+    :type target_resolution: int, list or np.array, optional
     :param scalePrecision: scalar value indicating precision when scaling down.
         By default 1
     :type scalePrecision: float, optional
@@ -207,10 +216,10 @@ def _cleanline(fighandle, axhandle, linehandle, targetResolution, scalePrecision
         # simplifyStairs(fighandle, axhandle, linehandle)
         # limitPrecision(fighandle, axhandle, linehandle, scalePrecision)
     else:
-        _pruneOutsideBox(fighandle, axhandle, linehandle)
-        _movePointscloser(fighandle, axhandle, linehandle)
-        _simplifyLine(fighandle, axhandle, linehandle, targetResolution)
-        _limitPrecision(fighandle, axhandle, linehandle, scalePrecision)
+        _prune_outside_box(fighandle, axhandle, linehandle)
+        _move_points_closer(fighandle, axhandle, linehandle)
+        _simplify_line(fighandle, axhandle, linehandle, target_resolution)
+        _limit_precision(fighandle, axhandle, linehandle, scale_precision)
 
 
 def _isStep(linehandle):
@@ -222,7 +231,7 @@ def _isStep(linehandle):
     return linehandle._drawstyle in STEP_DRAW_STYLES
 
 
-def _getVisualLimits(fighandle, axhandle):
+def _get_visual_limits(fighandle, axhandle):
     """Returns the visual representation of the axis limits,
     respecting possible log_scaling and projection into the image plane.
 
@@ -251,7 +260,7 @@ def _getVisualLimits(fighandle, axhandle):
             zLim = np.log10(zLim)
 
     if is3D:
-        P = _getProjectionMatrix(axhandle)
+        P = _get_projection_matrix(axhandle)
 
         corners = _corners3D(xLim, yLim, zLim)
 
@@ -268,7 +277,7 @@ def _getVisualLimits(fighandle, axhandle):
     return xLim, yLim
 
 
-def _replaceDataWithNan(linehandle, id_replace):
+def _replace_data_with_NaN(linehandle, id_replace):
     """Replaces data at id_replace with NaNs.
 
     :param data: array of x and y data with shape [N, 2]
@@ -305,7 +314,7 @@ def _replaceDataWithNan(linehandle, id_replace):
         linehandle.set_ydata(yData)
 
 
-def _removeData(linehandle, id_remove):
+def _remove_data(linehandle, id_remove):
     """remove data at id_remove
 
     :param data: array of x and y data with shape [N, 2]
@@ -355,7 +364,7 @@ def _diff(x, *args, **kwargs):
         return np.diff(x, *args, **kwargs)
 
 
-def _removeNaNs(linehandle):
+def _remove_NaNs(linehandle):
     """Removes superflous NaNs in the data, i.e. those at the end/beginning of the data and consecutive ones.
 
     :param linehandle: matplotlib linehandle object
@@ -434,7 +443,7 @@ def _axIs3D(axhandle):
     return hasattr(axhandle, "get_zlim")
 
 
-def _getVisualData(axhandle, linehandle):
+def _get_visual_data(axhandle, linehandle):
     """Returns the visual representation of the data,
     respecting possible log_scaling and projection into the image plane.
 
@@ -462,7 +471,7 @@ def _getVisualData(axhandle, linehandle):
             zData = np.log10(zData)
 
     if is3D:
-        P = _getProjectionMatrix(axhandle)
+        P = _get_projection_matrix(axhandle)
 
         data = np.stack([xData, yData, zData, np.ones_like(zData)], axis=1)
         dataProjected = P @ data.T
@@ -493,7 +502,7 @@ def _isempty(array):
     return _elements(array) == 0
 
 
-def _pruneOutsideBox(fighandle, axhandle, linehandle):
+def _prune_outside_box(fighandle, axhandle, linehandle):
     """Some sections of the line may sit outside of the visible box. Cut those off.
 
     This method is not pure because it updates the linehandle object's data.
@@ -505,7 +514,7 @@ def _pruneOutsideBox(fighandle, axhandle, linehandle):
     :param linehandle: matplotlib line2D handle object
     :type linehandle: obj
     """
-    xData, yData = _getVisualData(axhandle, linehandle)
+    xData, yData = _get_visual_data(axhandle, linehandle)
 
     data = np.stack([xData, yData], axis=1)
 
@@ -516,7 +525,7 @@ def _pruneOutsideBox(fighandle, axhandle, linehandle):
         linehandle.get_linewidth() > 0.0
     )
 
-    xLim, yLim = _getVisualLimits(fighandle, axhandle)
+    xLim, yLim = _get_visual_limits(fighandle, axhandle)
 
     tol = 1.0e-10
     relaxedXLim = xLim + np.array([-tol, tol])
@@ -526,7 +535,7 @@ def _pruneOutsideBox(fighandle, axhandle, linehandle):
 
     shouldPlot = dataIsInBox
     if hasLines:
-        segvis = _segmentVisible(data, dataIsInBox, xLim, yLim)
+        segvis = _segment_visible(data, dataIsInBox, xLim, yLim)
         shouldPlot = np.logical_or(
             shouldPlot, np.concatenate([np.array([False]).reshape((-1,)), segvis])
         )
@@ -549,12 +558,12 @@ def _pruneOutsideBox(fighandle, axhandle, linehandle):
 
         id_replace = id_remove[idx]
         id_remove = id_remove[np.logical_not(idx)]
-    _replaceDataWithNan(linehandle, id_replace)
-    _removeData(linehandle, id_remove)
-    _removeNaNs(linehandle)
+    _replace_data_with_NaN(linehandle, id_replace)
+    _remove_data(linehandle, id_remove)
+    _remove_NaNs(linehandle)
 
 
-def _movePointscloser(fighandle, axhandle, linehandle):
+def _move_points_closer(fighandle, axhandle, linehandle):
     """Move all points outside a box much larger than the visible one
     to the boundary of that box and make sure that lines in the visible
     box are preserved. This typically involves replacing one point by
@@ -574,8 +583,8 @@ def _movePointscloser(fighandle, axhandle, linehandle):
     is3D = _lineIs3D(linehandle)
     if is3D:
         return
-    xData, yData = _getVisualData(axhandle, linehandle)
-    xLim, yLim = _getVisualLimits(fighandle, axhandle)
+    xData, yData = _get_visual_data(axhandle, linehandle)
+    xLim, yLim = _get_visual_limits(fighandle, axhandle)
 
     # Calculate the extension of the extended box
     xWidth = xLim[1] - xLim[0]
@@ -596,154 +605,15 @@ def _movePointscloser(fighandle, axhandle, linehandle):
 
     dataInsert = np.array([[]])
     if not _isempty(id_replace):
-        # Get the indices of those points, that are the first point in a
-        # segment. The last data point at size(data, 1) cannot be the first
-        # point in a segment.
-        id_first = id_replace[id_replace < (data.shape[0])]
-
-        # Get the indices of those points, that are the second point in a
-        # segment. Similarly the first data point cannot be the second data
-        # point in a segment.
-        id_second = id_replace[id_replace > 1]
-
-        # Define the vectors of data points for the segments X1--X2
-        X1_first = data[id_first, :]
-        X2_first = data[id_first + 1, :]
-        X1_second = data[id_second, :]
-        X2_second = data[id_second - 1, :]
-
-        newData_first = _moveToBox(X1_first, X2_first, largeXlim, largeYlim)
-        newData_second = _moveToBox(X1_second, X2_second, largeXlim, largeYlim)
-
-        isXlog = linehandle.get_xscale() == "log"
-        if isXlog:
-            newData_first[:, 0] = 10.0 ** newData_first[:, 0]
-            newData_second[:, 0] = 10.0 ** newData_second[:, 0]
-
-        isYlog = linehandle.get_yscale() == "log"
-        if isYlog:
-            newData_first[:, 1] = 10.0 ** newData_first[:, 1]
-            newData_second[:, 1] = 10.0 ** newData_second[:, 1]
-
-        isInfinite_first = np.any(np.logical_not(np.isfinite(newData_first)), axis=1)
-        isInfinite_second = np.any(np.logical_not(np.isfinite(newData_second)), axis=1)
-
-        #
-        newData_first[isInfinite_first, :] = np.zeros((sum(isInfinite_first), 2)).fill(
-            np.NaN
-        )
-        newData_second[isInfinite_second, :] = np.zeros(
-            (sum(isInfinite_second), 2)
-        ).fill(np.Nan)
-
-        # rest of code
-        #     % If a point is part of two segments, that cross the border, we need to
-        #     % insert a NaN to prevent an additional line segment
-        #     [trash, trash, id_conflict] = intersect(id_first (~isInfinite_first), ...
-        #         id_second(~isInfinite_second));
-
-        #     % Cut the data into length(id_replace)+1 segments.
-        #     % Calculate the length of the segments
-        #     length_segments = [id_replace(1);
-        #         diff(id_replace);
-        #         size(data, 1)-id_replace(end)];
-
-        #     % Create an empty cell array for inserting NaNs and fill it at the
-        #     % conflict sites
-        #     dataInsert_NaN              = cell(length(length_segments),1);
-        #     dataInsert_NaN(id_conflict) = mat2cell(NaN(length(id_conflict), 2),...
-        #         ones(size(id_conflict)), 2);
-
-        #     % Create a cell array for the moved points
-        #     dataInsert_first  = mat2cell(newData_first,  ones(size(id_first)),  2);
-        #     dataInsert_second = mat2cell(newData_second, ones(size(id_second)), 2);
-
-        #     % Add an empty cell at the end of the last segment, as we do not
-        #     % insert something *after* the data
-        #     dataInsert_first  = [dataInsert_first;  cell(1)];
-        #     dataInsert_second = [dataInsert_second; cell(1)];
-
-        #     % If the first or the last point would have been replaced add an empty
-        #     % cell at the beginning/end. This is because the last data point
-        #     % cannot be the first data point of a line segment and vice versa.
-        #     if(id_replace(end) == size(data, 1))
-        #         dataInsert_first  = [dataInsert_first; cell(1)];
-        #     end
-        #     if(id_replace(1) == 1)
-        #         dataInsert_second = [cell(1); dataInsert_second];
-        #     end
-
-        #     % Put the cells together, right points first, then the possible NaN
-        #     % and then the left points
-        #     dataInsert = cellfun(@(a,b,c) [a; b; c],...
-        #                         dataInsert_second,...
-        #                         dataInsert_NaN,...
-        #                         dataInsert_first,...
-        #                         'UniformOutput',false);
-        # end
-
-        # TODO: find a test case that enters this code block.
         raise NotImplementedError
-    _insertData(fighandle, linehandle, id_replace, dataInsert)
+    _insert_data(fighandle, linehandle, id_replace, dataInsert)
     if _isempty(id_replace):
         return
     else:
-        # TODO: implement this
-        # numPointsInserted = cellfun(@(x) size(x,1), [cell(1);dataInsert(1:end-2)]);
-        # id_remove = id_replace + cumsum(numPointsInserted);
-
-        # % Remove the data point that should be replaced.
-        # removeData(meta, handle, id_remove);
-
-        # % Remove possible NaN duplications
-        # removeNaNs(meta, handle);
         raise NotImplementedError
 
 
-def _moveToBox(x, xRef, xLim, yLim):
-    """Takes a box defined by xLim, yLim, a vector of points x and a vector of
-    reference points xRef.
-    Returns the vector of points xNew that sits on the line segment between
-    x and xRef *and* on the box. If several such points exist, take the
-    closest one to x.
-
-    :param x:
-    :type x: np.ndarray
-    :param xRef:
-    :type xRef:
-    :param xLim:
-    :type xLim: np.ndarray
-    :param yLim:
-    :type yLim: np.ndarray
-    """
-    # n = size(x, 1);
-
-    # #% Find out with which border the line x---xRef intersects, and determine
-    # #% the smallest parameter alpha such that x + alpha*(xRef-x)
-    # #% sits on the boundary. Otherwise set Alpha to inf.
-    # minAlpha = inf(n, 1);
-
-    # #% Get the corner points
-    # [bottomLeft, topLeft, bottomRight, topRight] = corners2D(xLim, yLim);
-
-    # #% left boundary:
-    # minAlpha = updateAlpha(x, xRef, bottomLeft, topLeft, minAlpha);
-
-    # #% bottom boundary:
-    # minAlpha = updateAlpha(x, xRef, bottomLeft, bottomRight, minAlpha);
-
-    # #% right boundary:
-    # minAlpha = updateAlpha(x, xRef, bottomRight, topRight, minAlpha);
-
-    # #% top boundary:
-    # minAlpha = updateAlpha(x, xRef, topLeft, topRight, minAlpha);
-
-    # #% Create the new point
-    # xNew = x + bsxfun(@times ,minAlpha, (xRef-x));
-    raise NotImplementedError
-
-
-def _insertData(fighandle, linehandle, id_insert, dataInsert):
+def _insert_data(fighandle, linehandle, id_insert, dataInsert):
     """Inserts the elements of the cell array dataInsert at position id_insert.
 
     :param fighandle: matplotlib figure handle object
@@ -761,7 +631,7 @@ def _insertData(fighandle, linehandle, id_insert, dataInsert):
     raise NotImplementedError
 
 
-def _simplifyLine(fighandle, axhandle, linehandle, target_resolution):
+def _simplify_line(fighandle, axhandle, linehandle, target_resolution):
     """Reduce the number of data points in the line 'handle'.
 
     Applies a path-simplification algorithm if there are no markers or
@@ -789,13 +659,13 @@ def _simplifyLine(fighandle, axhandle, linehandle, target_resolution):
             return
     elif any(np.logical_or(np.isinf(target_resolution), target_resolution == 0)):
         return
-    W, H = _getWidthHeightInPixels(fighandle, target_resolution)
-    xData, yData = _getVisualData(axhandle, linehandle)
+    W, H = _get_width_height_in_pixels(fighandle, target_resolution)
+    xData, yData = _get_visual_data(axhandle, linehandle)
     # Only simplify if there are more than 2 points
     if np.size(xData) <= 2 or np.size(yData) <= 2:
         return
 
-    xLim, yLim = _getVisualLimits(fighandle, axhandle)
+    xLim, yLim = _get_visual_limits(fighandle, axhandle)
 
     # Automatically guess a tol based on the area of the figure and
     # the area and resolution of the output
@@ -851,57 +721,14 @@ def _simplifyLine(fighandle, axhandle, linehandle, target_resolution):
 
             # Line simplification
             if np.size(x) > 2:
-                mask = _opheimSimplify(x, y, tol)
+                mask = _opheim_simplify(x, y, tol)
                 id_remove[ii] = np.argwhere(mask == 0).reshape((-1,)) + lineStart[ii]
         # Merge the indices of the line segments
         # original code : id_remove = cat(1, id_remove{:})
         id_remove = np.concatenate(id_remove)
 
     # remove the data points
-    _removeData(linehandle, id_remove)
-
-
-def _simplifyStairs(fighandle, axhandle, linehandle):
-    """Simplify step plot (matlab's stairs plot).
-
-    :param fighandle: matplotlib figure handle object
-    :type fighandle: mpl.figure.Figure
-    :param axhandle: matplotlib axes handle object
-    :type axhandle: mpl.axes.Axes or mpl_toolkits.mplot3d.axes3d.Axes3D
-    :param linehandle: matplotlib line handle object
-    :type linehandle: mpl.lines.Line2D or mpl_toolkits.mplot3d.art3d.Line3D
-    """
-    # TODO: it looks like matlab changes the data to be plotted when using `stairs` command, whereas matplotlib stores the same data but displays it as a step.
-    xData = linehandle.get_xdata()
-    yData = linehandle.get_ydata()
-    if _isempty(xData) or _isempty(yData):
-        return
-
-    xNoDiff = np.concatenate([np.array([False]).reshape((-1,)), _diff(xData) == 0])
-    yNoDiff = np.concatenate([np.array([False]).reshape((-1,)), _diff(yData) == 0])
-
-    xNoDiff[-1] = False
-    yNoDiff[-1] = False
-
-    xIsMonotone = np.concatenate(
-        [
-            np.array([True]).reshape((-1,)),
-            _diff(np.sign(_diff(xData))) == 0,
-            np.array([True]).reshape((-1,)),
-        ]
-    )
-    yIsMonotone = np.concatenate(
-        [
-            np.array([True]).reshape((-1,)),
-            _diff(np.sign(_diff(yData))) == 0,
-            np.array([True]).reshape((-1,)),
-        ]
-    )
-    xRemove = np.logical_and(xNoDiff, yIsMonotone)
-    yRemove = np.logical_and(yNoDiff, xIsMonotone)
-
-    id_remove = np.argwhere(xRemove or yRemove)
-    _removeData(linehandle, id_remove)
+    _remove_data(linehandle, id_remove)
 
 
 def _pixelate(x, y, xToPix, yToPix):
@@ -938,7 +765,7 @@ def _pixelate(x, y, xToPix, yToPix):
     return mask
 
 
-def _getWidthHeightInPixels(fighandle, target_resolution):
+def _get_width_height_in_pixels(fighandle, target_resolution):
     """Target resolution as ppi / dpi. Return width and height in pixels
 
     :param fighandle: matplotlib figure object handle
@@ -959,7 +786,7 @@ def _getWidthHeightInPixels(fighandle, target_resolution):
     return W, H
 
 
-def _opheimSimplify(x, y, tol):
+def _opheim_simplify(x, y, tol):
     """Opheim path simplification algorithm.
 
      Given a path of vertices V and a tolerance TOL, the algorithm:
@@ -1044,28 +871,7 @@ def _opheimSimplify(x, y, tol):
     return mask
 
 
-def _updateAlpha(X1, X2, X3, X4, minAlpha):
-    """Checks whether the segments X1--X2 and X3--X4 intersect.
-
-    :param X1: [description]
-    :type X1: [type]
-    :param X2: [description]
-    :type X2: [type]
-    :param X3: [description]
-    :type X3: [type]
-    :param X4: [description]
-    :type X4: [type]
-    :param minAlpha: [description]
-    :type minAlpha: [type]
-    :returns: [description]
-    :rtype: [type]
-    """
-    # TODO implement this
-    raise NotImplementedError
-    return minAlpha
-
-
-def _limitPrecision(fighandle, axhandle, linehandle, alpha):
+def _limit_precision(fighandle, axhandle, linehandle, alpha):
     """Limit the precision of the given data. If alpha is 0 or negative do nothing.
 
     :param fighandle: matplotlib figure handle object
@@ -1126,18 +932,7 @@ def _limitPrecision(fighandle, axhandle, linehandle, alpha):
         linehandle.set_ydata(data[:, 1])
 
 
-def _pruneOutsideText(fighandle, axhandle, linehandle):
-    """
-
-    :param fighandle:
-    :param axhandle:
-    :param linehandle:
-    """
-    # TODO implement this
-    raise NotImplementedError
-
-
-def _segmentVisible(data, dataIsInBox, xLim, yLim):
+def _segment_visible(data, dataIsInBox, xLim, yLim):
     """Given a bounding box {x,y}Lim, determine whether the line between all
     pairs of subsequent data points [data(idx,:)<-->data(idx+1,:)] is visible.
     There are two possible cases:
@@ -1169,10 +964,10 @@ def _segmentVisible(data, dataIsInBox, xLim, yLim):
 
         bottomLeft, topLeft, bottomRight, topRight = _corners2D(xLim, yLim)
 
-        left = _segmentsIntersect(X1, X2, bottomLeft, topLeft)
-        right = _segmentsIntersect(X1, X2, bottomRight, topRight)
-        bottom = _segmentsIntersect(X1, X2, bottomLeft, bottomRight)
-        top = _segmentsIntersect(X1, X2, topLeft, topRight)
+        left = _segments_intersect(X1, X2, bottomLeft, topLeft)
+        right = _segments_intersect(X1, X2, bottomRight, topRight)
+        bottom = _segments_intersect(X1, X2, bottomLeft, bottomRight)
+        top = _segments_intersect(X1, X2, topLeft, topRight)
 
         # Check the result
         mask1 = np.logical_or(thisVisible, nextVisible)
@@ -1239,7 +1034,7 @@ def _corners3D(xLim, yLim, zLim):
     return corners
 
 
-def _getProjectionMatrix(axhandle):
+def _get_projection_matrix(axhandle):
     """Get Projection matrix that projects 3D points into 2D image plane.
 
     :param axhandle: matplotlib axes handle object
@@ -1276,37 +1071,7 @@ def _getProjectionMatrix(axhandle):
     return P
 
 
-def _isValidTargetResolution(val):
-    """Check if given target resolution value is valid.
-
-    :param val: target resolution value
-    :type val: int, list or np.array
-    """
-    # TODO: implement this
-    raise NotImplementedError
-
-
-def _isValidAxis(val):
-    """Check if given axes object is a valid axes object.
-
-    :param val: axes object
-    :type val: object
-    """
-    # TODO: implement this
-    raise NotImplementedError
-
-
-def _normalizeAxis(fighandle, axhandle):
-    """Normalize Axis.
-
-    :param fighandle: matplotlib figure handle object
-    :param axhandle: matplotlib axes handle object
-    """
-    # TODO: implement this
-    raise NotImplementedError
-
-
-def _segmentsIntersect(X1, X2, X3, X4):
+def _segments_intersect(X1, X2, X3, X4):
     """Checks whether the segments X1--X2 and X3--X4 intersect.
 
     :param X1: X1
@@ -1318,7 +1083,7 @@ def _segmentsIntersect(X1, X2, X3, X4):
     :param X4: X4
     :type X4: np.ndarray
     """
-    Lambda = _crossLines(X1, X2, X3, X4)
+    Lambda = _cross_lines(X1, X2, X3, X4)
 
     # Check whether lambda is in bound
     mask1 = np.logical_and(0.0 < Lambda[:, 0], Lambda[:, 0] < 1.0)
@@ -1327,7 +1092,7 @@ def _segmentsIntersect(X1, X2, X3, X4):
     return mask
 
 
-def _crossLines(X1, X2, X3, X4):
+def _cross_lines(X1, X2, X3, X4):
     """Checks whether the segments X1--X2 and X3--X4 intersect.
     See https://en.wikipedia.org/wiki/Line-line_intersection for reference.
     Given four points X_k=(x_k,y_k), k in {1,2,3,4}, and the two lines defined by those,

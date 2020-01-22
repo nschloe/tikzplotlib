@@ -2,7 +2,8 @@ import numpy as np
 import pytest
 from matplotlib import pyplot as plt
 
-from tikzplotlib import cleanfigure, get_tikz_code
+from tikzplotlib import get_tikz_code
+from tikzplotlib import _cleanfigure as cleanfigure
 
 RC_PARAMS = {"figure.figsize": [5, 5], "figure.dpi": 220, "pgf.rcfonts": False}
 
@@ -45,7 +46,7 @@ def test_pruneOutsideBox():
         (l,) = ax.plot(x, y)
         ax.set_ylim([20, 80])
         ax.set_xlim([20, 80])
-        cleanfigure._pruneOutsideBox(fig, ax, l)
+        cleanfigure._prune_outside_box(fig, ax, l)
         assert l.get_xdata().shape == (14,)
     plt.close("all")
 
@@ -75,7 +76,7 @@ def test_replaceDataWithNaN():
         fig, ax = plt.subplots(1, 1, figsize=(5, 5))
         (l,) = ax.plot(xData, yData)
 
-        cleanfigure._replaceDataWithNan(l, id_replace)
+        cleanfigure._replace_data_with_NaN(l, id_replace)
 
         newdata = np.stack(l.get_data(), axis=1)
         assert newdata.shape == data.shape
@@ -107,7 +108,7 @@ def test_removeData():
         fig, ax = plt.subplots(1, 1, figsize=(5, 5))
         (l,) = ax.plot(xData, yData)
 
-    cleanfigure._removeData(l, id_remove)
+    cleanfigure._remove_data(l, id_remove)
     newdata = np.stack(l.get_data(), axis=1)
     assert newdata.shape == (14, 2)
     plt.close("all")
@@ -136,9 +137,9 @@ def test_removeNaNs():
     with plt.rc_context(rc=RC_PARAMS):
         fig, ax = plt.subplots(1, 1, figsize=(5, 5))
         (l,) = ax.plot(xData, yData)
-        cleanfigure._replaceDataWithNan(l, id_replace)
-        cleanfigure._removeData(l, id_remove)
-        cleanfigure._removeNaNs(l)
+        cleanfigure._replace_data_with_NaN(l, id_replace)
+        cleanfigure._remove_data(l, id_remove)
+        cleanfigure._remove_NaNs(l)
         newdata = np.stack(l.get_data(), axis=1)
         assert not np.any(np.isnan(newdata))
         assert newdata.shape == (12, 2)
@@ -194,7 +195,7 @@ def test_getVisualLimits():
         (l,) = ax.plot(x, y)
         ax.set_xlim([20, 80])
         ax.set_ylim([20, 80])
-        xLim, yLim = cleanfigure._getVisualLimits(fig, ax)
+        xLim, yLim = cleanfigure._get_visual_limits(fig, ax)
         assert np.allclose(xLim, np.array([20, 80]))
         assert np.allclose(yLim, np.array([20, 80]))
     plt.close("all")
@@ -227,8 +228,8 @@ def test_movePointsCloser():
         (l,) = ax.plot(x, y)
         ax.set_ylim([20, 80])
         ax.set_xlim([20, 80])
-        cleanfigure._pruneOutsideBox(fig, ax, l)
-        cleanfigure._movePointscloser(fig, ax, l)
+        cleanfigure._prune_outside_box(fig, ax, l)
+        cleanfigure._move_points_closer(fig, ax, l)
         assert l.get_xdata().shape == (14,)
     plt.close("all")
 
@@ -260,47 +261,12 @@ def test_simplifyLine():
         (l,) = ax.plot(x, y)
         ax.set_ylim([20, 80])
         ax.set_xlim([20, 80])
-        cleanfigure._pruneOutsideBox(fig, ax, l)
-        cleanfigure._movePointscloser(fig, ax, l)
-        cleanfigure._simplifyLine(fig, ax, l, 600)
+        cleanfigure._prune_outside_box(fig, ax, l)
+        cleanfigure._move_points_closer(fig, ax, l)
+        cleanfigure._simplify_line(fig, ax, l, 600)
         assert l.get_xdata().shape == (2,)
         assert l.get_ydata().shape == (2,)
     plt.close("all")
-
-
-# def test_simplifyStairs():
-#     """octave code
-
-#     ```octave
-#         %% example 4
-
-#         addpath ("../matlab2tikz/src")
-
-#         x = linspace(1, 100, 20);
-#         y1 = linspace(1, 100, 20);
-
-#         figure
-#         stairs(x, y1)
-#         xlim([20, 80])
-#         ylim([20, 80])
-#         set(gcf,'Units','Inches');
-#         set(gcf,'Position',[2.5 2.5 5 5])
-#         cleanfigure;
-#     ```
-#     """
-#     # TODO: it looks like matlab changes the data to be plotted when using `stairs` command,
-#     # whereas matplotlib stores the same data but displays it as a step.
-#     x = np.linspace(1, 100, 20)
-#     y = np.linspace(1, 100, 20)
-
-#     with plt.rc_context(rc=RC_PARAMS):
-#         fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-#         (l,) = ax.step(x, y, where="post")
-#         ax.set_ylim([20, 80])
-#         ax.set_xlim([20, 80])
-#         cleanfigure.pruneOutsideBox(fig, ax, l)
-#         cleanfigure.movePointscloser(fig, ax, l)
-#         cleanfigure.simplifyStairs(fig, ax, l)
 
 
 def test_limitPrecision():
@@ -330,10 +296,10 @@ def test_limitPrecision():
         (l,) = ax.plot(x, y)
         ax.set_ylim([20, 80])
         ax.set_xlim([20, 80])
-        cleanfigure._pruneOutsideBox(fig, ax, l)
-        cleanfigure._movePointscloser(fig, ax, l)
-        cleanfigure._simplifyLine(fig, ax, l, 600)
-        cleanfigure._limitPrecision(fig, ax, l, 1)
+        cleanfigure._prune_outside_box(fig, ax, l)
+        cleanfigure._move_points_closer(fig, ax, l)
+        cleanfigure._simplify_line(fig, ax, l, 600)
+        cleanfigure._limit_precision(fig, ax, l, 1)
         assert l.get_xdata().shape == (2,)
         assert l.get_ydata().shape == (2,)
     plt.close("all")
@@ -378,7 +344,7 @@ def test_opheimSimplify():
     )
     y = x.copy()
     tol = 0.02
-    mask = cleanfigure._opheimSimplify(x, y, tol)
+    mask = cleanfigure._opheim_simplify(x, y, tol)
     assert mask.shape == (12,)
     assert np.allclose(mask * 1, np.array([1] + [0] * 10 + [1]))
 
@@ -422,7 +388,7 @@ class Test_plottypes:
             ax.set_xlim([20, 80])
             raw = get_tikz_code()
 
-            cleanfigure.cleanfigure(fig)
+            cleanfigure.clean_figure(fig)
             clean = get_tikz_code()
 
             # Use number of lines to test if it worked.
@@ -446,7 +412,7 @@ class Test_plottypes:
             ax.set_ylim([20, 80])
             ax.set_xlim([20, 80])
             with pytest.warns(Warning):
-                cleanfigure.cleanfigure(fig)
+                cleanfigure.clean_figure(fig)
         plt.close("all")
 
     def test_scatter(self):
@@ -461,7 +427,7 @@ class Test_plottypes:
             ax.set_ylim([20, 80])
             ax.set_xlim([20, 80])
             with pytest.warns(Warning):
-                cleanfigure.cleanfigure(fig)
+                cleanfigure.clean_figure(fig)
         plt.close("all")
 
     def test_bar(self):
@@ -475,7 +441,7 @@ class Test_plottypes:
             ax.set_ylim([20, 80])
             ax.set_xlim([20, 80])
             with pytest.warns(Warning):
-                cleanfigure.cleanfigure(fig)
+                cleanfigure.clean_figure(fig)
         plt.close("all")
 
     def test_hist(self):
@@ -489,7 +455,7 @@ class Test_plottypes:
             ax.set_ylim([20, 80])
             ax.set_xlim([20, 80])
             with pytest.warns(Warning):
-                cleanfigure.cleanfigure(fig)
+                cleanfigure.clean_figure(fig)
         plt.close("all")
 
     def test_plot3d(self):
@@ -511,7 +477,7 @@ class Test_plottypes:
             ax.view_init(30, 30)
             raw = get_tikz_code(fig)
 
-            cleanfigure.cleanfigure(fig)
+            cleanfigure.clean_figure(fig)
             clean = get_tikz_code()
 
             # Use number of lines to test if it worked.
@@ -534,7 +500,7 @@ class Test_plottypes:
             ax.set_ylim([20, 80])
             ax.set_zlim([0, 80])
             with pytest.warns(Warning):
-                cleanfigure.cleanfigure(fig)
+                cleanfigure.clean_figure(fig)
         plt.close("all")
 
     def test_wireframe3D(self):
@@ -551,7 +517,7 @@ class Test_plottypes:
             # Plot a basic wireframe.
             ax.plot_wireframe(X, Y, Z, rstride=10, cstride=10)
             with pytest.warns(Warning):
-                cleanfigure.cleanfigure(fig)
+                cleanfigure.clean_figure(fig)
         plt.close("all")
 
     def test_surface3D(self):
@@ -584,7 +550,7 @@ class Test_plottypes:
             fig.colorbar(surf, shrink=0.5, aspect=5)
 
             with pytest.warns(Warning):
-                cleanfigure.cleanfigure(fig)
+                cleanfigure.clean_figure(fig)
         plt.close("all")
 
     def test_trisurface3D(self):
@@ -620,7 +586,7 @@ class Test_plottypes:
 
             ax.plot_trisurf(x, y, z, linewidth=0.2, antialiased=True)
             with pytest.warns(Warning):
-                cleanfigure.cleanfigure(fig)
+                cleanfigure.clean_figure(fig)
         plt.close("all")
 
     def test_contour3D(self):
@@ -636,7 +602,7 @@ class Test_plottypes:
             cset = ax.contour(X, Y, Z, cmap=cm.coolwarm)
             ax.clabel(cset, fontsize=9, inline=1)
             with pytest.warns(Warning):
-                cleanfigure.cleanfigure(fig)
+                cleanfigure.clean_figure(fig)
         plt.close("all")
 
     def test_polygon3D(self):
@@ -677,7 +643,7 @@ class Test_plottypes:
             ax.set_zlabel("Z")
             ax.set_zlim3d(0, 1)
             with pytest.warns(Warning):
-                cleanfigure.cleanfigure(fig)
+                cleanfigure.clean_figure(fig)
         plt.close("all")
 
     def test_bar3D(self):
@@ -702,7 +668,7 @@ class Test_plottypes:
             ax.set_ylabel("Y")
             ax.set_zlabel("Z")
             with pytest.warns(Warning):
-                cleanfigure.cleanfigure(fig)
+                cleanfigure.clean_figure(fig)
         plt.close("all")
 
     def test_quiver3D(self):
@@ -733,7 +699,7 @@ class Test_plottypes:
 
             ax.quiver(x, y, z, u, v, w, length=0.1, normalize=True)
             with pytest.warns(Warning):
-                cleanfigure.cleanfigure(fig)
+                cleanfigure.clean_figure(fig)
         plt.close("all")
 
     def test_2D_in_3D(self):
@@ -774,7 +740,7 @@ class Test_plottypes:
             # on the plane y=0
             ax.view_init(elev=20.0, azim=-35)
             with pytest.warns(Warning):
-                cleanfigure.cleanfigure(fig)
+                cleanfigure.clean_figure(fig)
         plt.close("all")
 
 
@@ -798,7 +764,7 @@ class Test_lineplot:
             ax.set_xlim([20, 80])
             raw = get_tikz_code()
 
-            cleanfigure.cleanfigure(fig)
+            cleanfigure.clean_figure(fig)
             clean = get_tikz_code()
 
             # Use number of lines to test if it worked.
@@ -827,7 +793,7 @@ class Test_lineplot:
             ax.set_xlim([20, 80])
             raw = get_tikz_code()
 
-            cleanfigure.cleanfigure(fig)
+            cleanfigure.clean_figure(fig)
             clean = get_tikz_code()
 
             # Use number of lines to test if it worked.
@@ -856,7 +822,7 @@ class Test_lineplot:
             ax.set_xlim([20, 80])
             raw = get_tikz_code()
 
-            cleanfigure.cleanfigure(fig)
+            cleanfigure.clean_figure(fig)
             clean = get_tikz_code()
 
             # Use number of lines to test if it worked.
@@ -881,7 +847,7 @@ class Test_lineplot:
             ax.set_ylim([-1, 1])
             raw = get_tikz_code()
 
-            cleanfigure.cleanfigure(fig)
+            cleanfigure.clean_figure(fig)
             clean = get_tikz_code()
 
             # Use number of lines to test if it worked.
@@ -937,7 +903,7 @@ class Test_subplots:
                 ax.set_xlim([20, 80])
             raw = get_tikz_code()
 
-            cleanfigure.cleanfigure(fig)
+            cleanfigure.clean_figure(fig)
             clean = get_tikz_code()
 
             # Use number of lines to test if it worked.
@@ -974,7 +940,7 @@ def test_segmentVisible():
     dataIsInBox = np.array([0] * 4 + [1] * 12 + [0] * 4) == 1
     xLim = np.array([20, 80])
     yLim = np.array([20, 80])
-    mask = cleanfigure._segmentVisible(data, dataIsInBox, xLim, yLim)
+    mask = cleanfigure._segment_visible(data, dataIsInBox, xLim, yLim)
     assert np.allclose(mask * 1, np.array([0] * 3 + [1] * 13 + [0] * 3))
 
 
@@ -987,7 +953,7 @@ def test_crossLines():
     X2 = data[1:, :]
     X3 = np.array([80, 20])
     X4 = np.array([80, 80])
-    Lambda = cleanfigure._crossLines(X1, X2, X3, X4)
+    Lambda = cleanfigure._cross_lines(X1, X2, X3, X4)
 
     expected_result = np.array(
         [
@@ -1024,7 +990,7 @@ def test_segmentsIntersect():
     X2 = data[1:, :]
     X3 = np.array([80, 20])
     X4 = np.array([80, 80])
-    mask = cleanfigure._segmentsIntersect(X1, X2, X3, X4)
+    mask = cleanfigure._segments_intersect(X1, X2, X3, X4)
     assert np.allclose(mask * 1, np.zeros_like(mask))
 
 
@@ -1061,3 +1027,23 @@ def test_corners3D():
 
     assert corners.shape == (8, 3)
     assert np.sum(corners) == 0
+
+
+def test_corners2D():
+    xLim = np.array([20, 80])
+    yLim = np.array([20, 80])
+    corners = cleanfigure._corners2D(xLim, yLim)
+
+    import itertools
+
+    expected_output = tuple(np.array(t) for t in itertools.product([20, 80], [20, 80]))
+    assert np.allclose(corners, expected_output)
+
+
+def test_getHeightWidthInPixels():
+    with plt.rc_context(rc=RC_PARAMS):
+        fig, axes = plt.subplots(1, 1, figsize=(5, 5))
+        w, h = cleanfigure._get_width_height_in_pixels(fig, [600, 400])
+        assert w == 600 and h == 400
+        w, h = cleanfigure._get_width_height_in_pixels(fig, 600)
+        assert w == h
