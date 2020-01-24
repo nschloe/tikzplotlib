@@ -949,7 +949,7 @@ def _segment_visible(data, dataIsInBox, xLim, yLim):
     :type yLim: list, np.array
     """
     n = np.shape(data)[0]
-    mask = np.zeros((n - 1, n)) == 1
+    mask = np.zeros((n - 1, 1)) == 1
 
     # Only check if there is more than 1 point
     if n > 1:

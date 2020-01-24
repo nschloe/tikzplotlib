@@ -1047,3 +1047,12 @@ def test_getHeightWidthInPixels():
         assert w == 600 and h == 400
         w, h = cleanfigure._get_width_height_in_pixels(fig, 600)
         assert w == h
+
+
+def test_memory():
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import tikzplotlib
+
+    plt.plot(np.arange(100000))
+    tikzplotlib.clean_figure()
