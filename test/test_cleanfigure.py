@@ -8,8 +8,7 @@ from tikzplotlib import _cleanfigure as cleanfigure
 RC_PARAMS = {"figure.figsize": [5, 5], "figure.dpi": 220, "pgf.rcfonts": False}
 
 
-def test_recursive_cleanfigure():
-    """ """
+def test_clean_figure():
     x = np.linspace(1, 100, 20)
     y = np.linspace(1, 100, 20)
 
@@ -18,7 +17,7 @@ def test_recursive_cleanfigure():
         (l,) = ax.plot(x, y)
         ax.set_ylim([20, 80])
         ax.set_xlim([20, 80])
-        cleanfigure._recursive_cleanfigure(fig)
+        cleanfigure.clean_figure(fig)
     plt.close("all")
 
 
@@ -217,8 +216,6 @@ def test_movePointsCloser():
             set(gcf,'Position',[2.5 2.5 5 5])
             cleanfigure;
         ```
-
-
     """
     x = np.linspace(1, 100, 20)
     y = np.linspace(1, 100, 20)
@@ -250,8 +247,6 @@ def test_simplifyLine():
             set(gcf,'Position',[2.5 2.5 5 5])
             cleanfigure;
         ```
-
-
     """
     x = np.linspace(1, 100, 20)
     y = np.linspace(1, 100, 20)
@@ -285,8 +280,6 @@ def test_limitPrecision():
             set(gcf,'Position',[2.5 2.5 5 5])
             cleanfigure;
         ```
-
-
     """
     x = np.linspace(1, 100, 20)
     y = np.linspace(1, 100, 20)
@@ -323,8 +316,6 @@ def test_opheimSimplify():
             set(gcf,'Position',[2.5 2.5 5 5])
             cleanfigure;
         ```
-
-
     """
     x = np.array(
         [
@@ -353,12 +344,6 @@ def test_opheimSimplify():
     "function, result", [("plot", False), ("step", True)],
 )
 def test_is_step(function, result):
-    """
-
-    :param function:
-    :param result:
-
-    """
     x = np.linspace(1, 100, 20)
     y = np.linspace(1, 100, 20)
 
@@ -376,8 +361,6 @@ class Test_plottypes:
     """Testing plot types found here https://matplotlib.org/3.1.1/tutorials/introductory/sample_plots.html"""
 
     def test_plot(self):
-        """ """
-
         x = np.linspace(1, 100, 20)
         y = np.linspace(1, 100, 20)
 
@@ -401,8 +384,6 @@ class Test_plottypes:
         plt.close("all")
 
     def test_step(self):
-        """ """
-
         x = np.linspace(1, 100, 20)
         y = np.linspace(1, 100, 20)
 
@@ -416,9 +397,7 @@ class Test_plottypes:
         plt.close("all")
 
     def test_scatter(self):
-        """ """
         # TODO: scatter plots are represented through axes.collections. Currently, this is simply ignored and nothing is done.
-
         x = np.linspace(1, 100, 20)
         y = np.linspace(1, 100, 20)
         with plt.rc_context(rc=RC_PARAMS):
@@ -431,8 +410,6 @@ class Test_plottypes:
         plt.close("all")
 
     def test_bar(self):
-        """ """
-
         x = np.linspace(1, 100, 20)
         y = np.linspace(1, 100, 20)
         with plt.rc_context(rc=RC_PARAMS):
@@ -446,7 +423,6 @@ class Test_plottypes:
 
     def test_hist(self):
         """creates same test case as bar"""
-
         x = np.linspace(1, 100, 20)
         y = np.linspace(1, 100, 20)
         with plt.rc_context(rc=RC_PARAMS):
@@ -459,8 +435,6 @@ class Test_plottypes:
         plt.close("all")
 
     def test_plot3d(self):
-        """ """
-
         theta = np.linspace(-4 * np.pi, 4 * np.pi, 100)
         z = np.linspace(-2, 2, 100)
         r = z ** 2 + 1
@@ -487,8 +461,6 @@ class Test_plottypes:
         plt.close("all")
 
     def test_scatter3d(self):
-        """ """
-
         x, y = np.meshgrid(np.linspace(1, 100, 20), np.linspace(1, 100, 20))
         z = np.abs(x - 50) + np.abs(y - 50)
 
@@ -521,7 +493,6 @@ class Test_plottypes:
         plt.close("all")
 
     def test_surface3D(self):
-        """ """
         from matplotlib import cm
         from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
@@ -554,10 +525,7 @@ class Test_plottypes:
         plt.close("all")
 
     def test_trisurface3D(self):
-        """
-
-        :param Self:
-
+        """:param Self:
         """
         import matplotlib.pyplot as plt
         import numpy as np
@@ -590,7 +558,6 @@ class Test_plottypes:
         plt.close("all")
 
     def test_contour3D(self):
-        """ """
         from mpl_toolkits.mplot3d import axes3d
         import matplotlib.pyplot as plt
         from matplotlib import cm
@@ -606,7 +573,6 @@ class Test_plottypes:
         plt.close("all")
 
     def test_polygon3D(self):
-        """ """
         from matplotlib.collections import PolyCollection
         from matplotlib import colors as mcolors
 
@@ -647,7 +613,6 @@ class Test_plottypes:
         plt.close("all")
 
     def test_bar3D(self):
-        """ """
         import matplotlib.pyplot as plt
         import numpy as np
 
@@ -672,7 +637,6 @@ class Test_plottypes:
         plt.close("all")
 
     def test_quiver3D(self):
-        """ """
         import matplotlib.pyplot as plt
         import numpy as np
 
@@ -703,7 +667,6 @@ class Test_plottypes:
         plt.close("all")
 
     def test_2D_in_3D(self):
-        """ """
         import numpy as np
         import matplotlib.pyplot as plt
 
@@ -750,10 +713,7 @@ class Test_lineplot:
     def test_line_no_markers(self):
         """test high-level usage for simple example.
         Test is successfull if generated tikz code saves correct amount of lines
-
-
         """
-
         x = np.linspace(1, 100, 20)
         y = np.linspace(1, 100, 20)
 
@@ -779,8 +739,6 @@ class Test_lineplot:
     def test_no_line_markers(self):
         """test high-level usage for simple example.
         Test is successfull if generated tikz code saves correct amount of lines
-
-
         """
 
         x = np.linspace(1, 100, 20)
@@ -808,10 +766,7 @@ class Test_lineplot:
     def test_line_markers(self):
         """test high-level usage for simple example.
         Test is successfull if generated tikz code saves correct amount of lines
-
-
         """
-
         x = np.linspace(1, 100, 20)
         y = np.linspace(1, 100, 20)
 
@@ -835,8 +790,6 @@ class Test_lineplot:
         plt.close("all")
 
     def test_sine(self):
-        """ """
-
         x = np.linspace(1, 2 * np.pi, 100)
         y = np.sin(8 * x)
 
@@ -1047,6 +1000,7 @@ def test_getHeightWidthInPixels():
         assert w == 600 and h == 400
         w, h = cleanfigure._get_width_height_in_pixels(fig, 600)
         assert w == h
+        plt.close("all")
 
 
 def test_memory():
@@ -1056,3 +1010,4 @@ def test_memory():
 
     plt.plot(np.arange(100000))
     tikzplotlib.clean_figure()
+    plt.close("all")
