@@ -405,8 +405,18 @@ class Test_plottypes:
             ax.scatter(x, y)
             ax.set_ylim([20, 80])
             ax.set_xlim([20, 80])
-            with pytest.warns(Warning):
-                cleanfigure.clean_figure(fig)
+            raw = get_tikz_code()
+
+            cleanfigure.clean_figure()
+            clean = get_tikz_code()
+
+            # Use number of lines to test if it worked.
+            # the baseline (raw) should have 20 points
+            # the clean version (clean) should have 2 points
+            # the difference in line numbers should therefore be 2
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 6
         plt.close("all")
 
     def test_bar(self):
