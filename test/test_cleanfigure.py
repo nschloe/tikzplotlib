@@ -708,8 +708,6 @@ class Test_plottypes:
 
 
 class Test_lineplot:
-    """ """
-
     def test_line_no_markers(self):
         """test high-level usage for simple example.
         Test is successfull if generated tikz code saves correct amount of lines
@@ -740,7 +738,6 @@ class Test_lineplot:
         """test high-level usage for simple example.
         Test is successfull if generated tikz code saves correct amount of lines
         """
-
         x = np.linspace(1, 100, 20)
         y = np.linspace(1, 100, 20)
 
@@ -814,11 +811,8 @@ class Test_lineplot:
 
 
 class Test_subplots:
-    """ """
-
     def test_subplot(self):
         """octave code
-
         ```octave
             addpath ("../matlab2tikz/src")
 
@@ -840,8 +834,6 @@ class Test_subplots:
             set(gcf,'Position',[2.5 2.5 5 5])
             cleanfigure;
         ```
-
-
         """
 
         x = np.linspace(1, 100, 20)
@@ -883,8 +875,6 @@ def test_segmentVisible():
         ylim([20, 80])
         cleanfigure;
     ```
-
-
     """
 
     y = np.linspace(1, 100, 20)
@@ -948,7 +938,6 @@ def test_segmentsIntersect():
 
 
 def test_pixelate():
-    """ """
     xToPix = 49.952
     yToPix = 49.952
     xData = np.array(
@@ -974,7 +963,6 @@ def test_pixelate():
 
 
 def test_corners3D():
-    """ """
     xlim = ylim = zlim = np.array([-5, 5])
     corners = cleanfigure._corners3D(xlim, ylim, zlim)
 
