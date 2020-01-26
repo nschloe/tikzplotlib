@@ -277,7 +277,7 @@ def _get_visual_limits(fighandle, axhandle):
     return xLim, yLim
 
 
-def _replace_data_with_NaN(linehandle, id_replace):
+def _replace_data_with_NaN(data, id_replace, is3D):
     """Replaces data at id_replace with NaNs.
 
     :param data: array of x and y data with shape [N, 2]
@@ -287,17 +287,21 @@ def _replace_data_with_NaN(linehandle, id_replace):
     :param linehandle: matplotlib line handle object
     :type linehandle: object
     """
-    if _elements(id_replace) == 0:
-        return
+    if _isempty(data):
+        return data
 
-    is3D = _lineIs3D(linehandle)
+    # is3D = _lineIs3D(linehandle)
 
+    # if is3D:
+    #     xData, yData, zData = linehandle.get_data_3d()
+    #     zData = zData.copy()
+    # else:
+    #     xData = linehandle.get_xdata().astype(np.float32)
+    #     yData = linehandle.get_ydata().astype(np.float32)
     if is3D:
-        xData, yData, zData = linehandle.get_data_3d()
-        zData = zData.copy()
+        xData, yData, zData = _split_data_3D(data)
     else:
-        xData = linehandle.get_xdata().astype(np.float32)
-        yData = linehandle.get_ydata().astype(np.float32)
+        xData, yData = _split_data_2D(data)
 
     xData[id_replace] = np.NaN
     yData[id_replace] = np.NaN
@@ -305,16 +309,22 @@ def _replace_data_with_NaN(linehandle, id_replace):
         zData = zData.copy()
         zData[id_replace] = np.NaN
 
+    # if is3D:
+    #     # TODO: I don't understand why I need to set both to get tikz code reduction to work
+    #     linehandle.set_data_3d(xData, yData, zData)
+    #     linehandle.set_data(xData, yData)
+    # else:
+    #     linehandle.set_xdata(xData)
+    #     linehandle.set_ydata(yData)
+
     if is3D:
-        # TODO: I don't understand why I need to set both to get tikz code reduction to work
-        linehandle.set_data_3d(xData, yData, zData)
-        linehandle.set_data(xData, yData)
+        new_data = _stack_data_3D(xData, yData, zData)
     else:
-        linehandle.set_xdata(xData)
-        linehandle.set_ydata(yData)
+        new_data = _stack_data_2D(xData, yData)
+    return new_data
 
 
-def _remove_data(linehandle, id_remove):
+def _remove_data(data, id_remove, is3D):
     """remove data at id_remove
 
     :param data: array of x and y data with shape [N, 2]
@@ -324,15 +334,13 @@ def _remove_data(linehandle, id_remove):
     :param linehandle: matplotlib linehandle object
     :type linehandle: object
     """
-    if _elements(id_remove) == 0:
-        return
+    if _isempty(data):
+        return data
 
-    is3D = _lineIs3D(linehandle)
     if is3D:
-        xData, yData, zData = linehandle.get_data_3d()
+        xData, yData, zData = _split_data_3D(data)
     else:
-        xData = linehandle.get_xdata().astype(np.float32)
-        yData = linehandle.get_ydata().astype(np.float32)
+        xData, yData = _split_data_2D(data)
 
     xData = np.delete(xData, id_remove, axis=0)
     yData = np.delete(yData, id_remove, axis=0)
@@ -340,12 +348,37 @@ def _remove_data(linehandle, id_remove):
         zData = np.delete(zData, id_remove, axis=0)
 
     if is3D:
+        newdata = _stack_data_3D(xData, yData, zData)
+    else:
+        newdata = _stack_data_2D(xData, yData)
+    return newdata
+
         # TODO: I don't understand why I need to set both to get tikz code reduction to work
         linehandle.set_data_3d(xData, yData, zData)
         linehandle.set_data(xData, yData)
     else:
         linehandle.set_xdata(xData)
         linehandle.set_ydata(yData)
+
+
+def _split_data_2D(data):
+    xData, yData = np.split(data, 2, axis=1)
+    return xData.reshape((-1,)), yData.reshape((-1,))
+
+
+def _stack_data_2D(xData, yData):
+    data = np.stack([xData, yData], axis=1)
+    return data
+
+
+def _split_data_3D(data):
+    xData, yData, zData = np.split(data, 3, axis=1)
+    return yData.reshape((-1,)), yData.reshape((-1,)), zData.reshape((-1,))
+
+
+def _stack_data_3D(xData, yData, zData):
+    data = np.stack([xData, yData, zData], axis=1)
+    return data
 
 
 def _diff(x, *args, **kwargs):
@@ -364,20 +397,11 @@ def _diff(x, *args, **kwargs):
         return np.diff(x, *args, **kwargs)
 
 
-def _remove_NaNs(linehandle):
+def _remove_NaNs(data):
     """Removes superflous NaNs in the data, i.e. those at the end/beginning of the data and consecutive ones.
 
     :param linehandle: matplotlib linehandle object
     """
-    is3D = _lineIs3D(linehandle)
-    if is3D:
-        xData, yData, zData = linehandle.get_data_3d()
-        data = np.stack([xData, yData, zData], axis=1)
-    else:
-        xData = linehandle.get_xdata().astype(np.float32)
-        yData = linehandle.get_ydata().astype(np.float32)
-        data = np.stack([xData, yData], axis=1)
-
     id_nan = np.any(np.isnan(data), axis=1)
     id_remove = np.argwhere(id_nan).reshape((-1,))
     if _isempty(id_remove):
@@ -394,20 +418,13 @@ def _remove_NaNs(linehandle):
 
     if _isempty(id_first):
         # remove entire data
-        id_remove = np.arange(len(xData))
+        id_remove = np.arange(len(data))
     else:
         id_remove = np.concatenate(
-            [np.arange(0, id_first), id_remove, np.arange(id_last + 1, len(xData))]
+            [np.arange(0, id_first), id_remove, np.arange(id_last + 1, len(data))]
         )
     data = np.delete(data, id_remove, axis=0)
-
-    if is3D:
-        # TODO: I don't understand why I need to set both to get tikz code reduction to work
-        linehandle.set_data_3d(data[:, 0], data[:, 1], data[:, 2])
-        linehandle.set_data(xData, yData)
-    else:
-        linehandle.set_xdata(data[:, 0])
-        linehandle.set_ydata(data[:, 1])
+    return data
 
 
 def _isInBox(data, xLim, yLim):
@@ -441,6 +458,18 @@ def _axIs3D(axhandle):
     :type axhandle: mpl.axes.Axes or mpl_toolkits.mplot3d.axes3d.Axes3D
     """
     return hasattr(axhandle, "get_zlim")
+
+
+def _get_data(linehandle):
+    is3D = _lineIs3D(linehandle)
+    if is3D:
+        xData, yData, zData = linehandle.get_data_3d()
+        data = _stack_data_3D(xData, yData, zData)
+    else:
+        xData = linehandle.get_xdata().astype(np.float32)
+        yData = linehandle.get_ydata().astype(np.float32)
+        data = _stack_data_2D(xData, yData)
+    return data
 
 
 def _get_visual_data(axhandle, linehandle):
@@ -502,7 +531,14 @@ def _isempty(array):
     return _elements(array) == 0
 
 
-def _prune_outside_box(fighandle, axhandle, linehandle):
+def _line_has_lines(linehandle):
+    hasLines = (linehandle.get_linestyle() is not None) and (
+        linehandle.get_linewidth() > 0.0
+    )
+    return hasLines
+
+
+def _prune_outside_box(xLim, yLim, data, visual_data, is3D, hasLines):
     """Some sections of the line may sit outside of the visible box. Cut those off.
 
     This method is not pure because it updates the linehandle object's data.
@@ -514,28 +550,28 @@ def _prune_outside_box(fighandle, axhandle, linehandle):
     :param linehandle: matplotlib line2D handle object
     :type linehandle: obj
     """
-    xData, yData = _get_visual_data(axhandle, linehandle)
+    # xData, yData = _get_visual_data(axhandle, linehandle)
 
-    data = np.stack([xData, yData], axis=1)
+    # data = np.stack([xData, yData], axis=1)
 
-    if _elements(data) == 0:
-        return
+    if _elements(visual_data) == 0:
+        return data
 
-    hasLines = (linehandle.get_linestyle() is not None) and (
-        linehandle.get_linewidth() > 0.0
-    )
+    # hasLines = (linehandle.get_linestyle() is not None) and (
+    #     linehandle.get_linewidth() > 0.0
+    # )
 
-    xLim, yLim = _get_visual_limits(fighandle, axhandle)
+    # xLim, yLim = _get_visual_limits(fighandle, axhandle)
 
     tol = 1.0e-10
     relaxedXLim = xLim + np.array([-tol, tol])
     relaxedYLim = yLim + np.array([-tol, tol])
 
-    dataIsInBox = _isInBox(data, relaxedXLim, relaxedYLim)
+    dataIsInBox = _isInBox(visual_data, relaxedXLim, relaxedYLim)
 
     shouldPlot = dataIsInBox
     if hasLines:
-        segvis = _segment_visible(data, dataIsInBox, xLim, yLim)
+        segvis = _segment_visible(visual_data, dataIsInBox, xLim, yLim)
         shouldPlot = np.logical_or(
             shouldPlot, np.concatenate([np.array([False]).reshape((-1,)), segvis])
         )
@@ -558,9 +594,11 @@ def _prune_outside_box(fighandle, axhandle, linehandle):
 
         id_replace = id_remove[idx]
         id_remove = id_remove[np.logical_not(idx)]
-    _replace_data_with_NaN(linehandle, id_replace)
-    _remove_data(linehandle, id_remove)
-    _remove_NaNs(linehandle)
+
+    data = _replace_data_with_NaN(data, id_replace, is3D)
+    data = _remove_data(data, id_remove, is3D)
+    data = _remove_NaNs(data)
+    return data
 
 
 def _move_points_closer(fighandle, axhandle, linehandle):
