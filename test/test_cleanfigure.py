@@ -45,9 +45,21 @@ def test_pruneOutsideBox():
         (l,) = ax.plot(x, y)
         ax.set_ylim([20, 80])
         ax.set_xlim([20, 80])
-        cleanfigure._prune_outside_box(fig, ax, l)
-        assert l.get_xdata().shape == (14,)
-    plt.close("all")
+        axhandle = ax
+        linehandle = l
+        fighandle = fig
+        xData, yData = cleanfigure._get_visual_data(axhandle, linehandle)
+        visual_data = cleanfigure._stack_data_2D(xData, yData)
+        data = cleanfigure._get_data(linehandle)
+        xLim, yLim = cleanfigure._get_visual_limits(fighandle, axhandle)
+        is3D = cleanfigure._lineIs3D(linehandle)
+        hasLines = cleanfigure._line_has_lines(linehandle)
+
+        data = cleanfigure._prune_outside_box(
+            xLim, yLim, data, visual_data, is3D, hasLines
+        )
+        assert data.shape == (14, 2)
+
 
 
 def test_replaceDataWithNaN():
@@ -71,16 +83,9 @@ def test_replaceDataWithNaN():
     yData = xData.copy()
     data = np.stack([xData, yData], axis=1)
 
-    with plt.rc_context(rc=RC_PARAMS):
-        fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-        (l,) = ax.plot(xData, yData)
-
-        cleanfigure._replace_data_with_NaN(l, id_replace)
-
-        newdata = np.stack(l.get_data(), axis=1)
+    newdata = cleanfigure._replace_data_with_NaN(data, id_replace, False)
         assert newdata.shape == data.shape
         assert np.any(np.isnan(newdata))
-    plt.close("all")
 
 
 def test_removeData():
@@ -102,15 +107,10 @@ def test_removeData():
     id_remove = np.array([1, 2, 3, 17, 18, 19])
     xData = np.linspace(1, 100, 20)
     yData = xData.copy()
+    data = np.stack([xData, yData], axis=1)
 
-    with plt.rc_context(rc=RC_PARAMS):
-        fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-        (l,) = ax.plot(xData, yData)
-
-    cleanfigure._remove_data(l, id_remove)
-    newdata = np.stack(l.get_data(), axis=1)
+    newdata = cleanfigure._remove_data(data, id_remove, False)
     assert newdata.shape == (14, 2)
-    plt.close("all")
 
 
 def test_removeNaNs():
