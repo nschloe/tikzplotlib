@@ -157,16 +157,30 @@ def _recursive_cleanfigure(obj, target_resolution=600, scale_precision=1.0):
         elif isinstance(child, mpl.patches.Patch):
             pass
         elif isinstance(child, mpl.collections.PathCollection):
-            import warnings
-
-            warnings.warn(
-                "Cleaning Path Collections (scatter plot) is not supported yet."
+            ax = child.axes
+            fig = ax.figure
+            _clean_collections(
+                fig,
+                ax,
+                child,
+                target_resolution=target_resolution,
+                scale_precision=scale_precision,
             )
         elif isinstance(child, mpl.collections.LineCollection):
             import warnings
 
             warnings.warn(
                 "Cleaning Line Collections (scatter plot) is not supported yet."
+            )
+        elif isinstance(child, mplot3d.art3d.Path3DCollection):
+            ax = child.axes
+            fig = ax.figure
+            _clean_collections(
+                fig,
+                ax,
+                child,
+                target_resolution=target_resolution,
+                scale_precision=scale_precision,
             )
         elif isinstance(child, mplot3d.art3d.Line3DCollection):
             import warnings
@@ -216,10 +230,74 @@ def _cleanline(fighandle, axhandle, linehandle, target_resolution, scale_precisi
         # simplifyStairs(fighandle, axhandle, linehandle)
         # limitPrecision(fighandle, axhandle, linehandle, scalePrecision)
     else:
-        _prune_outside_box(fighandle, axhandle, linehandle)
-        _move_points_closer(fighandle, axhandle, linehandle)
-        _simplify_line(fighandle, axhandle, linehandle, target_resolution)
-        _limit_precision(fighandle, axhandle, linehandle, scale_precision)
+        data, is3D = _get_line_data(linehandle)
+        xLim, yLim = _get_visual_limits(fighandle, axhandle)
+        visual_data = _get_visual_data(axhandle, data, is3D)
+        hasLines = _line_has_lines(linehandle)
+
+        data = _prune_outside_box(xLim, yLim, data, visual_data, is3D, hasLines)
+        visual_data = _get_visual_data(axhandle, data, is3D)
+
+        if not is3D:
+            data = _move_points_closer(xLim, yLim, data)
+            visual_data = _get_visual_data(axhandle, data, is3D)
+
+        hasMarkers = not linehandle.get_marker() == "None"
+        hasLines = not linehandle.get_linestyle() == "None"
+        data = _simplify_line(
+            xLim,
+            yLim,
+            fighandle,
+            target_resolution,
+            visual_data,
+            data,
+            is3D,
+            hasMarkers,
+            hasLines,
+        )
+        data = _limit_precision(axhandle, data, is3D, scale_precision)
+        _update_line_data(linehandle, data)
+
+
+def _clean_collections(
+    fighandle, axhandle, collection, target_resolution, scale_precision
+):
+    import warnings
+
+    warnings.warn("Cleaning Path Collections (scatter plot) is not supported yet.")
+    data, is3D = _get_collection_data(collection)
+    xLim, yLim = _get_visual_limits(fighandle, axhandle)
+    visual_data = _get_visual_data(axhandle, data, is3D)
+
+    # TODO: not sure if it should be true or false.
+    hasLines = True
+
+    data = _prune_outside_box(xLim, yLim, data, visual_data, is3D, hasLines)
+    visual_data = _get_visual_data(axhandle, data, is3D)
+
+    if not is3D:
+        data = _move_points_closer(xLim, yLim, data)
+        visual_data = _get_visual_data(axhandle, data, is3D)
+
+    hasMarkers = True
+    hasLines = False
+    data = _simplify_line(
+        xLim,
+        yLim,
+        fighandle,
+        target_resolution,
+        visual_data,
+        data,
+        is3D,
+        hasMarkers,
+        hasLines,
+    )
+    data = _limit_precision(axhandle, data, is3D, scale_precision)
+    _update_collection_data(collection, data)
+
+
+def _update_collection_data(collection, data):
+    collection.set_offsets(data)
 
 
 def _isStep(linehandle):
@@ -287,7 +365,7 @@ def _replace_data_with_NaN(data, id_replace, is3D):
     :param linehandle: matplotlib line handle object
     :type linehandle: object
     """
-    if _isempty(data):
+    if _isempty(id_replace):
         return data
 
     # is3D = _lineIs3D(linehandle)
@@ -334,7 +412,7 @@ def _remove_data(data, id_remove, is3D):
     :param linehandle: matplotlib linehandle object
     :type linehandle: object
     """
-    if _isempty(data):
+    if _isempty(id_remove):
         return data
 
     if is3D:
@@ -353,10 +431,16 @@ def _remove_data(data, id_remove, is3D):
         newdata = _stack_data_2D(xData, yData)
     return newdata
 
+
+def _update_line_data(linehandle, data):
+    is3D = _lineIs3D(linehandle)
+    if is3D:
+        xData, yData, zData = _split_data_3D(data)
         # TODO: I don't understand why I need to set both to get tikz code reduction to work
         linehandle.set_data_3d(xData, yData, zData)
         linehandle.set_data(xData, yData)
     else:
+        xData, yData = _split_data_2D(data)
         linehandle.set_xdata(xData)
         linehandle.set_ydata(yData)
 
@@ -373,7 +457,7 @@ def _stack_data_2D(xData, yData):
 
 def _split_data_3D(data):
     xData, yData, zData = np.split(data, 3, axis=1)
-    return yData.reshape((-1,)), yData.reshape((-1,)), zData.reshape((-1,))
+    return xData.reshape((-1,)), yData.reshape((-1,)), zData.reshape((-1,))
 
 
 def _stack_data_3D(xData, yData, zData):
@@ -460,7 +544,7 @@ def _axIs3D(axhandle):
     return hasattr(axhandle, "get_zlim")
 
 
-def _get_data(linehandle):
+def _get_line_data(linehandle):
     is3D = _lineIs3D(linehandle)
     if is3D:
         xData, yData, zData = linehandle.get_data_3d()
@@ -469,10 +553,27 @@ def _get_data(linehandle):
         xData = linehandle.get_xdata().astype(np.float32)
         yData = linehandle.get_ydata().astype(np.float32)
         data = _stack_data_2D(xData, yData)
-    return data
+    return data, is3D
 
 
-def _get_visual_data(axhandle, linehandle):
+def _collectionIs3D(collection):
+    return isinstance(collection, mpl_toolkits.mplot3d.art3d.Path3DCollection)
+
+
+def _get_collection_data(collection):
+    is3D = _collectionIs3D(collection)
+    if is3D:
+        # https://stackoverflow.com/questions/51716696/extracting-data-from-a-3d-scatter-plot-in-matplotlib
+        offsets = collection._offsets3d
+        xData, yData, zData = [o.data for o in offsets]
+        data = _stack_data_3D(xData, yData, zData)
+    else:
+        offsets = collection.get_offsets()
+        data = offsets.data
+    return data, is3D
+
+
+def _get_visual_data(axhandle, data, is3D):
     """Returns the visual representation of the data,
     respecting possible log_scaling and projection into the image plane.
 
@@ -481,12 +582,10 @@ def _get_visual_data(axhandle, linehandle):
     :param linehandle: handle for matplotlib line2D object
     :type linehandle: object
     """
-    is3D = _lineIs3D(linehandle)
     if is3D:
-        xData, yData, zData = linehandle.get_data_3d()
+        xData, yData, zData = _split_data_3D(data)
     else:
-        xData = linehandle.get_xdata()
-        yData = linehandle.get_ydata()
+        xData, yData = _split_data_2D(data)
 
     isXlog = axhandle.get_xscale() == "log"
     if isXlog:
@@ -502,14 +601,15 @@ def _get_visual_data(axhandle, linehandle):
     if is3D:
         P = _get_projection_matrix(axhandle)
 
-        data = np.stack([xData, yData, zData, np.ones_like(zData)], axis=1)
-        dataProjected = P @ data.T
+        points = np.stack([xData, yData, zData, np.ones_like(zData)], axis=1)
+        dataProjected = P @ points.T
         xData = dataProjected[0, :] / dataProjected[-1, :]
         yData = dataProjected[1, :] / dataProjected[-1, :]
 
     xData = np.reshape(xData, (-1,))
     yData = np.reshape(yData, (-1,))
-    return xData, yData
+    visualData = _stack_data_2D(xData, yData)
+    return visualData
 
 
 def _elements(array):
@@ -557,12 +657,6 @@ def _prune_outside_box(xLim, yLim, data, visual_data, is3D, hasLines):
     if _elements(visual_data) == 0:
         return data
 
-    # hasLines = (linehandle.get_linestyle() is not None) and (
-    #     linehandle.get_linewidth() > 0.0
-    # )
-
-    # xLim, yLim = _get_visual_limits(fighandle, axhandle)
-
     tol = 1.0e-10
     relaxedXLim = xLim + np.array([-tol, tol])
     relaxedYLim = yLim + np.array([-tol, tol])
@@ -601,7 +695,7 @@ def _prune_outside_box(xLim, yLim, data, visual_data, is3D, hasLines):
     return data
 
 
-def _move_points_closer(fighandle, axhandle, linehandle):
+def _move_points_closer(xLim, yLim, data):
     """Move all points outside a box much larger than the visible one
     to the boundary of that box and make sure that lines in the visible
     box are preserved. This typically involves replacing one point by
@@ -618,12 +712,6 @@ def _move_points_closer(fighandle, axhandle, linehandle):
     :param linehandle: matplotlib line handle object
     :type linehandle: obj
     """
-    is3D = _lineIs3D(linehandle)
-    if is3D:
-        return
-    xData, yData = _get_visual_data(axhandle, linehandle)
-    xLim, yLim = _get_visual_limits(fighandle, axhandle)
-
     # Calculate the extension of the extended box
     xWidth = xLim[1] - xLim[0]
     yWidth = yLim[1] - yLim[0]
@@ -634,7 +722,6 @@ def _move_points_closer(fighandle, axhandle, linehandle):
     largeXlim = xLim + extendedFactor * np.array([-xWidth, xWidth])
     largeYlim = yLim + extendedFactor * np.array([-yWidth, yWidth])
 
-    data = np.stack([xData, yData], axis=1)
     dataIsInLargeBox = _isInBox(data, largeXlim, largeYlim)
 
     dataIsInLargeBox = np.logical_or(dataIsInLargeBox, np.any(np.isnan(data), axis=1))
@@ -644,14 +731,14 @@ def _move_points_closer(fighandle, axhandle, linehandle):
     dataInsert = np.array([[]])
     if not _isempty(id_replace):
         raise NotImplementedError
-    _insert_data(fighandle, linehandle, id_replace, dataInsert)
+    data = _insert_data(data, id_replace, dataInsert)
     if _isempty(id_replace):
-        return
+        return data
     else:
         raise NotImplementedError
 
 
-def _insert_data(fighandle, linehandle, id_insert, dataInsert):
+def _insert_data(data, id_insert, dataInsert):
     """Inserts the elements of the cell array dataInsert at position id_insert.
 
     :param fighandle: matplotlib figure handle object
@@ -664,12 +751,22 @@ def _insert_data(fighandle, linehandle, id_insert, dataInsert):
     :type dataInsert: np.ndarray
     """
     if _isempty(id_insert):
-        return
+        return data
     # TODO: actually implement rest of function
     raise NotImplementedError
 
 
-def _simplify_line(fighandle, axhandle, linehandle, target_resolution):
+def _simplify_line(
+    xLim,
+    yLim,
+    fighandle,
+    target_resolution,
+    visual_data,
+    data,
+    is3D,
+    hasMarkers,
+    hasLines,
+):
     """Reduce the number of data points in the line 'handle'.
 
     Applies a path-simplification algorithm if there are no markers or
@@ -694,16 +791,16 @@ def _simplify_line(fighandle, axhandle, linehandle, target_resolution):
     """
     if type(target_resolution) not in [list, np.ndarray, np.array]:
         if np.isinf(target_resolution) or target_resolution == 0:
-            return
+            return data
     elif any(np.logical_or(np.isinf(target_resolution), target_resolution == 0)):
-        return
+        return data
     W, H = _get_width_height_in_pixels(fighandle, target_resolution)
-    xData, yData = _get_visual_data(axhandle, linehandle)
+    xDataVis, yDataVis = _split_data_2D(visual_data)
     # Only simplify if there are more than 2 points
-    if np.size(xData) <= 2 or np.size(yData) <= 2:
-        return
+    if np.size(xDataVis) <= 2 or np.size(yDataVis) <= 2:
+        return data
 
-    xLim, yLim = _get_visual_limits(fighandle, axhandle)
+    # xLim, yLim = _get_visual_limits(fighandle, axhandle)
 
     # Automatically guess a tol based on the area of the figure and
     # the area and resolution of the output
@@ -716,11 +813,9 @@ def _simplify_line(fighandle, axhandle, linehandle, target_resolution):
 
     id_remove = np.array([])
     # If the path has markers, perform pixelation instead of simplification
-    hasMarkers = not linehandle.get_marker() == "None"
-    hasLines = not linehandle.get_linestyle() == "None"
     if hasMarkers and not hasLines:
         # Pixelate data at the zoom multiplier
-        mask = _pixelate(xData, yData, xToPix, yToPix)
+        mask = _pixelate(xDataVis, yDataVis, xToPix, yToPix)
         id_remove = np.argwhere(mask * 1 == 0)
     elif hasLines and not hasMarkers:
         # Get the width of a pixel
@@ -729,7 +824,7 @@ def _simplify_line(fighandle, axhandle, linehandle, target_resolution):
         tol = min(xPixelWidth, yPixelWidth)
 
         # Split up lines which are seperated by NaNs
-        id_nan = np.logical_or(np.isnan(xData), np.isnan(yData))
+        id_nan = np.logical_or(np.isnan(xDataVis), np.isnan(yDataVis))
 
         # If lines were separated by a NaN, diff(~id_nan) would give 1 for
         # the start of a line and -1 for the index after the end of
@@ -754,8 +849,8 @@ def _simplify_line(fighandle, axhandle, linehandle, target_resolution):
         # Simplify the line segments
         for ii in np.arange(numLines):
             # Actual data that inherits the simplifications
-            x = xData[lineStart[ii] : lineEnd[ii] + 1]
-            y = yData[lineStart[ii] : lineEnd[ii] + 1]
+            x = xDataVis[lineStart[ii] : lineEnd[ii] + 1]
+            y = yDataVis[lineStart[ii] : lineEnd[ii] + 1]
 
             # Line simplification
             if np.size(x) > 2:
@@ -766,7 +861,8 @@ def _simplify_line(fighandle, axhandle, linehandle, target_resolution):
         id_remove = np.concatenate(id_remove)
 
     # remove the data points
-    _remove_data(linehandle, id_remove)
+    data = _remove_data(data, id_remove, is3D)
+    return data
 
 
 def _pixelate(x, y, xToPix, yToPix):
@@ -909,7 +1005,7 @@ def _opheim_simplify(x, y, tol):
     return mask
 
 
-def _limit_precision(fighandle, axhandle, linehandle, alpha):
+def _limit_precision(axhandle, data, is3D, alpha):
     """Limit the precision of the given data. If alpha is 0 or negative do nothing.
 
     :param fighandle: matplotlib figure handle object
@@ -922,14 +1018,19 @@ def _limit_precision(fighandle, axhandle, linehandle, alpha):
     :type alpha: float
     """
     if alpha <= 0:
-        return
+        return data
 
-    is3D = _lineIs3D(linehandle)
+    # is3D = _lineIs3D(linehandle)
+    # if is3D:
+    #     xData, yData, zData = linehandle.get_data_3d()
+    # else:
+    #     xData = linehandle.get_xdata().astype(np.float32)
+    #     yData = linehandle.get_ydata().astype(np.float32)
+
     if is3D:
-        xData, yData, zData = linehandle.get_data_3d()
+        xData, yData, zData = _split_data_3D(data)
     else:
-        xData = linehandle.get_xdata().astype(np.float32)
-        yData = linehandle.get_ydata().astype(np.float32)
+        xData, yData = _split_data_2D(data)
 
     isXlog = axhandle.get_xscale() == "log"
     isYlog = axhandle.get_yscale() == "log"
@@ -946,7 +1047,7 @@ def _limit_precision(fighandle, axhandle, linehandle, alpha):
 
     # Only do something if the data is not empty
     if _isempty(data) or np.isinf(data).all():
-        return
+        return data
 
     # Scale to visual coordinates
     data[:, isLog] = np.log10(data[:, isLog])
@@ -960,14 +1061,7 @@ def _limit_precision(fighandle, axhandle, linehandle, alpha):
 
     data = np.round(data / leastSignificantBit) * leastSignificantBit
     data[:, isLog] = 10.0 ** data[:, isLog]
-
-    if is3D:
-        # TODO: I don't understand why I need to set both to get tikz code reduction to work
-        linehandle.set_data_3d(data[:, 0], data[:, 1], data[:, 2])
-        linehandle.set_data(data[:, 0], data[:, 1])
-    else:
-        linehandle.set_xdata(data[:, 0])
-        linehandle.set_ydata(data[:, 1])
+    return data
 
 
 def _segment_visible(data, dataIsInBox, xLim, yLim):

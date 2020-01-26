@@ -8,58 +8,73 @@ from tikzplotlib import _cleanfigure as cleanfigure
 RC_PARAMS = {"figure.figsize": [5, 5], "figure.dpi": 220, "pgf.rcfonts": False}
 
 
-def test_clean_figure():
-    x = np.linspace(1, 100, 20)
-    y = np.linspace(1, 100, 20)
+class Test_pruneOutsideBox:
+    def test_pruneOutsideBox2D(self):
+        """test against matlab2tikz implementation
 
-    with plt.rc_context(rc=RC_PARAMS):
-        fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-        (l,) = ax.plot(x, y)
-        ax.set_ylim([20, 80])
-        ax.set_xlim([20, 80])
-        cleanfigure.clean_figure(fig)
-    plt.close("all")
+        octave code to generate baseline results.
+        Note that octave has indexing 1...N, whereas python has indexing 0...N-1.
+        ```octave
+            x = linspace(1, 100, 20);
+            y1 = linspace(1, 100, 20);
 
+            figure
+            plot(x, y1)
+            xlim([20, 80])
+            ylim([20, 80])
+            cleanfigure;
+        ```
+        """
+        x = np.linspace(1, 100, 20)
+        y = np.linspace(1, 100, 20)
 
-def test_pruneOutsideBox():
-    """test against matlab2tikz implementation
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+            (l,) = ax.plot(x, y)
+            ax.set_ylim([20, 80])
+            ax.set_xlim([20, 80])
+            axhandle = ax
+            linehandle = l
+            fighandle = fig
+            data, is3D = cleanfigure._get_line_data(linehandle)
+            xLim, yLim = cleanfigure._get_visual_limits(fighandle, axhandle)
+            visual_data = cleanfigure._get_visual_data(axhandle, data, is3D)
+            hasLines = cleanfigure._line_has_lines(linehandle)
 
-    octave code to generate baseline results.
-    Note that octave has indexing 1...N, whereas python has indexing 0...N-1.
-    ```octave
-        x = linspace(1, 100, 20);
-        y1 = linspace(1, 100, 20);
+            data = cleanfigure._prune_outside_box(
+                xLim, yLim, data, visual_data, is3D, hasLines
+            )
+            assert data.shape == (14, 2)
 
-        figure
-        plot(x, y1)
-        xlim([20, 80])
-        ylim([20, 80])
-        cleanfigure;
-    ```
-    """
-    x = np.linspace(1, 100, 20)
-    y = np.linspace(1, 100, 20)
+    def test_pruneOutsideBox3D(self):
+        theta = np.linspace(-4 * np.pi, 4 * np.pi, 100)
+        z = np.linspace(-2, 2, 100)
+        r = z ** 2 + 1
+        x = r * np.sin(theta)
+        y = r * np.cos(theta)
 
-    with plt.rc_context(rc=RC_PARAMS):
-        fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-        (l,) = ax.plot(x, y)
-        ax.set_ylim([20, 80])
-        ax.set_xlim([20, 80])
-        axhandle = ax
-        linehandle = l
-        fighandle = fig
-        xData, yData = cleanfigure._get_visual_data(axhandle, linehandle)
-        visual_data = cleanfigure._stack_data_2D(xData, yData)
-        data = cleanfigure._get_data(linehandle)
-        xLim, yLim = cleanfigure._get_visual_limits(fighandle, axhandle)
-        is3D = cleanfigure._lineIs3D(linehandle)
-        hasLines = cleanfigure._line_has_lines(linehandle)
+        with plt.rc_context(rc=RC_PARAMS):
+            fig = plt.figure()
+            ax = fig.add_subplot(111, projection="3d")
+            (l,) = ax.plot(x, y, z)
+            ax.set_xlim([-2, 2])
+            ax.set_ylim([-2, 2])
+            ax.set_zlim([-2, 2])
+            ax.view_init(30, 30)
 
-        data = cleanfigure._prune_outside_box(
-            xLim, yLim, data, visual_data, is3D, hasLines
-        )
-        assert data.shape == (14, 2)
+            axhandle = ax
+            linehandle = l
+            fighandle = fig
+            data, is3D = cleanfigure._get_line_data(linehandle)
+            xLim, yLim = cleanfigure._get_visual_limits(fighandle, axhandle)
+            visual_data = cleanfigure._get_visual_data(axhandle, data, is3D)
+            hasLines = cleanfigure._line_has_lines(linehandle)
 
+            data = cleanfigure._prune_outside_box(
+                xLim, yLim, data, visual_data, is3D, hasLines
+            )
+            assert data.shape == (86, 3)
+        plt.close("all")
 
 
 def test_replaceDataWithNaN():
@@ -84,8 +99,8 @@ def test_replaceDataWithNaN():
     data = np.stack([xData, yData], axis=1)
 
     newdata = cleanfigure._replace_data_with_NaN(data, id_replace, False)
-        assert newdata.shape == data.shape
-        assert np.any(np.isnan(newdata))
+    assert newdata.shape == data.shape
+    assert np.any(np.isnan(newdata))
 
 
 def test_removeData():
@@ -132,17 +147,13 @@ def test_removeNaNs():
     id_remove = np.array([1, 2, 3, 17, 18, 19])
     xData = np.linspace(1, 100, 20)
     yData = xData.copy()
+    data = cleanfigure._stack_data_2D(xData, yData)
 
-    with plt.rc_context(rc=RC_PARAMS):
-        fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-        (l,) = ax.plot(xData, yData)
-        cleanfigure._replace_data_with_NaN(l, id_replace)
-        cleanfigure._remove_data(l, id_remove)
-        cleanfigure._remove_NaNs(l)
-        newdata = np.stack(l.get_data(), axis=1)
-        assert not np.any(np.isnan(newdata))
-        assert newdata.shape == (12, 2)
-    plt.close("all")
+    data = cleanfigure._replace_data_with_NaN(data, id_replace, False)
+    data = cleanfigure._remove_data(data, id_remove, False)
+    data = cleanfigure._remove_NaNs(data)
+    assert not np.any(np.isnan(data))
+    assert data.shape == (12, 2)
 
 
 def test_isInBox():
@@ -197,104 +208,6 @@ def test_getVisualLimits():
         xLim, yLim = cleanfigure._get_visual_limits(fig, ax)
         assert np.allclose(xLim, np.array([20, 80]))
         assert np.allclose(yLim, np.array([20, 80]))
-    plt.close("all")
-
-
-def test_movePointsCloser():
-    """octave code
-        ```octave
-            addpath ("../matlab2tikz/src")
-
-            x = linspace(1, 100, 20);
-            y1 = linspace(1, 100, 20);
-
-            figure
-            plot(x, y1)
-            xlim([20, 80])
-            ylim([20, 80])
-            set(gcf,'Units','Inches');
-            set(gcf,'Position',[2.5 2.5 5 5])
-            cleanfigure;
-        ```
-    """
-    x = np.linspace(1, 100, 20)
-    y = np.linspace(1, 100, 20)
-
-    with plt.rc_context(rc=RC_PARAMS):
-        fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-        (l,) = ax.plot(x, y)
-        ax.set_ylim([20, 80])
-        ax.set_xlim([20, 80])
-        cleanfigure._prune_outside_box(fig, ax, l)
-        cleanfigure._move_points_closer(fig, ax, l)
-        assert l.get_xdata().shape == (14,)
-    plt.close("all")
-
-
-def test_simplifyLine():
-    """octave code
-        ```octave
-            addpath ("../matlab2tikz/src")
-
-            x = linspace(1, 100, 20);
-            y1 = linspace(1, 100, 20);
-
-            figure
-            plot(x, y1)
-            xlim([20, 80])
-            ylim([20, 80])
-            set(gcf,'Units','Inches');
-            set(gcf,'Position',[2.5 2.5 5 5])
-            cleanfigure;
-        ```
-    """
-    x = np.linspace(1, 100, 20)
-    y = np.linspace(1, 100, 20)
-
-    with plt.rc_context(rc=RC_PARAMS):
-        fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-        (l,) = ax.plot(x, y)
-        ax.set_ylim([20, 80])
-        ax.set_xlim([20, 80])
-        cleanfigure._prune_outside_box(fig, ax, l)
-        cleanfigure._move_points_closer(fig, ax, l)
-        cleanfigure._simplify_line(fig, ax, l, 600)
-        assert l.get_xdata().shape == (2,)
-        assert l.get_ydata().shape == (2,)
-    plt.close("all")
-
-
-def test_limitPrecision():
-    """octave code
-        ```octave
-            addpath ("../matlab2tikz/src")
-
-            x = linspace(1, 100, 20);
-            y1 = linspace(1, 100, 20);
-
-            figure
-            plot(x, y1)
-            xlim([20, 80])
-            ylim([20, 80])
-            set(gcf,'Units','Inches');
-            set(gcf,'Position',[2.5 2.5 5 5])
-            cleanfigure;
-        ```
-    """
-    x = np.linspace(1, 100, 20)
-    y = np.linspace(1, 100, 20)
-
-    with plt.rc_context(rc=RC_PARAMS):
-        fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-        (l,) = ax.plot(x, y)
-        ax.set_ylim([20, 80])
-        ax.set_xlim([20, 80])
-        cleanfigure._prune_outside_box(fig, ax, l)
-        cleanfigure._move_points_closer(fig, ax, l)
-        cleanfigure._simplify_line(fig, ax, l, 600)
-        cleanfigure._limit_precision(fig, ax, l, 1)
-        assert l.get_xdata().shape == (2,)
-        assert l.get_ydata().shape == (2,)
     plt.close("all")
 
 
@@ -467,22 +380,35 @@ class Test_plottypes:
             # Use number of lines to test if it worked.
             numLinesRaw = raw.count("\n")
             numLinesClean = clean.count("\n")
+
             assert numLinesRaw - numLinesClean == 14
         plt.close("all")
 
     def test_scatter3d(self):
-        x, y = np.meshgrid(np.linspace(1, 100, 20), np.linspace(1, 100, 20))
-        z = np.abs(x - 50) + np.abs(y - 50)
+        theta = np.linspace(-4 * np.pi, 4 * np.pi, 100)
+        z = np.linspace(-2, 2, 100)
+        r = z ** 2 + 1
+        x = r * np.sin(theta)
+        y = r * np.cos(theta)
 
         with plt.rc_context(rc=RC_PARAMS):
             fig = plt.figure()
             ax = fig.add_subplot(111, projection="3d")
             ax.scatter(x, y, z)
-            ax.set_xlim([20, 80])
-            ax.set_ylim([20, 80])
-            ax.set_zlim([0, 80])
-            with pytest.warns(Warning):
-                cleanfigure.clean_figure(fig)
+            ax.set_xlim([-2, 2])
+            ax.set_ylim([-2, 2])
+            ax.set_zlim([-2, 2])
+            ax.view_init(30, 30)
+            raw = get_tikz_code(fig)
+
+            cleanfigure.clean_figure(fig)
+            clean = get_tikz_code()
+
+            # Use number of lines to test if it worked.
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+
+            assert numLinesRaw - numLinesClean == 14
         plt.close("all")
 
     def test_wireframe3D(self):
@@ -717,7 +643,7 @@ class Test_plottypes:
         plt.close("all")
 
 
-class Test_lineplot:
+class Test_lineplot_markers:
     def test_line_no_markers(self):
         """test high-level usage for simple example.
         Test is successfull if generated tikz code saves correct amount of lines
