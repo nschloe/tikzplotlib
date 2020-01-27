@@ -530,7 +530,6 @@ class Test_subplots:
 def test_memory():
     import matplotlib.pyplot as plt
     import numpy as np
-    import tikzplotlib
 
     plt.plot(np.arange(100000))
     clean_figure()
