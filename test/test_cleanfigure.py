@@ -227,7 +227,6 @@ class Test_plottypes:
 
     def test_contour3D(self):
         from mpl_toolkits.mplot3d import axes3d
-        import matplotlib.pyplot as plt
         from matplotlib import cm
 
         with plt.rc_context(rc=RC_PARAMS):
@@ -281,9 +280,6 @@ class Test_plottypes:
         plt.close("all")
 
     def test_bar3D(self):
-        import matplotlib.pyplot as plt
-        import numpy as np
-
         with plt.rc_context(rc=RC_PARAMS):
             fig = plt.figure()
             ax = fig.add_subplot(111, projection="3d")
@@ -305,9 +301,6 @@ class Test_plottypes:
         plt.close("all")
 
     def test_quiver3D(self):
-        import matplotlib.pyplot as plt
-        import numpy as np
-
         with plt.rc_context(rc=RC_PARAMS):
             fig = plt.figure()
             ax = fig.gca(projection="3d")
@@ -335,9 +328,6 @@ class Test_plottypes:
         plt.close("all")
 
     def test_2D_in_3D(self):
-        import numpy as np
-        import matplotlib.pyplot as plt
-
         with plt.rc_context(rc=RC_PARAMS):
             fig = plt.figure()
             ax = fig.gca(projection="3d")
@@ -528,9 +518,6 @@ class Test_subplots:
 
 
 def test_memory():
-    import matplotlib.pyplot as plt
-    import numpy as np
-
     plt.plot(np.arange(100000))
     clean_figure()
     plt.close("all")
