@@ -538,5 +538,5 @@ def test_memory():
     import tikzplotlib
 
     plt.plot(np.arange(100000))
-    tikzplotlib.clean_figure()
+    clean_figure()
     plt.close("all")
