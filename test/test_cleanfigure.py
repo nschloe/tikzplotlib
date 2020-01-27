@@ -47,7 +47,6 @@ class Test_plottypes:
         plt.close("all")
 
     def test_scatter(self):
-        # TODO: scatter plots are represented through axes.collections. Currently, this is simply ignored and nothing is done.
         x = np.linspace(1, 100, 20)
         y = np.linspace(1, 100, 20)
         with plt.rc_context(rc=RC_PARAMS):
@@ -82,7 +81,6 @@ class Test_plottypes:
         plt.close("all")
 
     def test_hist(self):
-        """creates same test case as bar"""
         x = np.linspace(1, 100, 20)
         y = np.linspace(1, 100, 20)
         with plt.rc_context(rc=RC_PARAMS):
@@ -149,7 +147,6 @@ class Test_plottypes:
         plt.close("all")
 
     def test_wireframe3D(self):
-        """ """
         from mpl_toolkits.mplot3d import axes3d
 
         # Grab some test data.
@@ -198,8 +195,6 @@ class Test_plottypes:
         plt.close("all")
 
     def test_trisurface3D(self):
-        """:param Self:
-        """
         import matplotlib.pyplot as plt
         import numpy as np
 
