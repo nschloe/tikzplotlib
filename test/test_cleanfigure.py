@@ -445,8 +445,6 @@ class Test_plottypes:
             # Customize the view angle so it's easier to see that the scatter points lie
             # on the plane y=0
             ax.view_init(elev=20.0, azim=-35)
-            with pytest.warns(Warning):
-                cleanfigure.clean_figure(fig)
         plt.close("all")
 
 
