@@ -545,9 +545,9 @@ def _axIs3D(axhandle):
 
 def _get_line_data(linehandle):
     """Retrieve 2D or 3D data from line object.
-    
+
     :param linehandle: matplotlib linehandle object
-    
+
     :returns : (data, is3D)
     """
     is3D = _lineIs3D(linehandle)
