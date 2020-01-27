@@ -1,9 +1,8 @@
-import numpy as np
 import matplotlib as mpl
-from matplotlib import pyplot as plt
 import mpl_toolkits
+import numpy as np
+from matplotlib import pyplot as plt
 from mpl_toolkits import mplot3d
-
 
 STEP_DRAW_STYLES = ["steps-pre", "steps-post", "steps-mid"]
 

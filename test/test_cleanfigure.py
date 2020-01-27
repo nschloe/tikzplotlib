@@ -2,79 +2,9 @@ import numpy as np
 import pytest
 from matplotlib import pyplot as plt
 
-from tikzplotlib import get_tikz_code
-from tikzplotlib import _cleanfigure as cleanfigure
+from tikzplotlib import clean_figure, get_tikz_code
 
 RC_PARAMS = {"figure.figsize": [5, 5], "figure.dpi": 220, "pgf.rcfonts": False}
-
-
-class Test_pruneOutsideBox:
-    def test_pruneOutsideBox2D(self):
-        """test against matlab2tikz implementation
-
-        octave code to generate baseline results.
-        Note that octave has indexing 1...N, whereas python has indexing 0...N-1.
-        ```octave
-            x = linspace(1, 100, 20);
-            y1 = linspace(1, 100, 20);
-
-            figure
-            plot(x, y1)
-            xlim([20, 80])
-            ylim([20, 80])
-            cleanfigure;
-        ```
-        """
-        x = np.linspace(1, 100, 20)
-        y = np.linspace(1, 100, 20)
-
-        with plt.rc_context(rc=RC_PARAMS):
-            fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-            (l,) = ax.plot(x, y)
-            ax.set_ylim([20, 80])
-            ax.set_xlim([20, 80])
-            axhandle = ax
-            linehandle = l
-            fighandle = fig
-            data, is3D = cleanfigure._get_line_data(linehandle)
-            xLim, yLim = cleanfigure._get_visual_limits(fighandle, axhandle)
-            visual_data = cleanfigure._get_visual_data(axhandle, data, is3D)
-            hasLines = cleanfigure._line_has_lines(linehandle)
-
-            data = cleanfigure._prune_outside_box(
-                xLim, yLim, data, visual_data, is3D, hasLines
-            )
-            assert data.shape == (14, 2)
-
-    def test_pruneOutsideBox3D(self):
-        theta = np.linspace(-4 * np.pi, 4 * np.pi, 100)
-        z = np.linspace(-2, 2, 100)
-        r = z ** 2 + 1
-        x = r * np.sin(theta)
-        y = r * np.cos(theta)
-
-        with plt.rc_context(rc=RC_PARAMS):
-            fig = plt.figure()
-            ax = fig.add_subplot(111, projection="3d")
-            (l,) = ax.plot(x, y, z)
-            ax.set_xlim([-2, 2])
-            ax.set_ylim([-2, 2])
-            ax.set_zlim([-2, 2])
-            ax.view_init(30, 30)
-
-            axhandle = ax
-            linehandle = l
-            fighandle = fig
-            data, is3D = cleanfigure._get_line_data(linehandle)
-            xLim, yLim = cleanfigure._get_visual_limits(fighandle, axhandle)
-            visual_data = cleanfigure._get_visual_data(axhandle, data, is3D)
-            hasLines = cleanfigure._line_has_lines(linehandle)
-
-            data = cleanfigure._prune_outside_box(
-                xLim, yLim, data, visual_data, is3D, hasLines
-            )
-            assert data.shape == (86, 3)
-        plt.close("all")
 
 
 class Test_plottypes:
@@ -91,7 +21,7 @@ class Test_plottypes:
             ax.set_xlim([20, 80])
             raw = get_tikz_code()
 
-            cleanfigure.clean_figure(fig)
+            clean_figure(fig)
             clean = get_tikz_code()
 
             # Use number of lines to test if it worked.
@@ -113,7 +43,7 @@ class Test_plottypes:
             ax.set_ylim([20, 80])
             ax.set_xlim([20, 80])
             with pytest.warns(Warning):
-                cleanfigure.clean_figure(fig)
+                clean_figure(fig)
         plt.close("all")
 
     def test_scatter(self):
@@ -127,7 +57,7 @@ class Test_plottypes:
             ax.set_xlim([20, 80])
             raw = get_tikz_code()
 
-            cleanfigure.clean_figure()
+            clean_figure()
             clean = get_tikz_code()
 
             # Use number of lines to test if it worked.
@@ -148,7 +78,7 @@ class Test_plottypes:
             ax.set_ylim([20, 80])
             ax.set_xlim([20, 80])
             with pytest.warns(Warning):
-                cleanfigure.clean_figure(fig)
+                clean_figure(fig)
         plt.close("all")
 
     def test_hist(self):
@@ -161,7 +91,7 @@ class Test_plottypes:
             ax.set_ylim([20, 80])
             ax.set_xlim([20, 80])
             with pytest.warns(Warning):
-                cleanfigure.clean_figure(fig)
+                clean_figure(fig)
         plt.close("all")
 
     def test_plot3d(self):
@@ -181,7 +111,7 @@ class Test_plottypes:
             ax.view_init(30, 30)
             raw = get_tikz_code(fig)
 
-            cleanfigure.clean_figure(fig)
+            clean_figure(fig)
             clean = get_tikz_code()
 
             # Use number of lines to test if it worked.
@@ -208,7 +138,7 @@ class Test_plottypes:
             ax.view_init(30, 30)
             raw = get_tikz_code(fig)
 
-            cleanfigure.clean_figure(fig)
+            clean_figure(fig)
             clean = get_tikz_code()
 
             # Use number of lines to test if it worked.
@@ -232,7 +162,7 @@ class Test_plottypes:
             # Plot a basic wireframe.
             ax.plot_wireframe(X, Y, Z, rstride=10, cstride=10)
             with pytest.warns(Warning):
-                cleanfigure.clean_figure(fig)
+                clean_figure(fig)
         plt.close("all")
 
     def test_surface3D(self):
@@ -264,7 +194,7 @@ class Test_plottypes:
             fig.colorbar(surf, shrink=0.5, aspect=5)
 
             with pytest.warns(Warning):
-                cleanfigure.clean_figure(fig)
+                clean_figure(fig)
         plt.close("all")
 
     def test_trisurface3D(self):
@@ -297,7 +227,7 @@ class Test_plottypes:
 
             ax.plot_trisurf(x, y, z, linewidth=0.2, antialiased=True)
             with pytest.warns(Warning):
-                cleanfigure.clean_figure(fig)
+                clean_figure(fig)
         plt.close("all")
 
     def test_contour3D(self):
@@ -312,7 +242,7 @@ class Test_plottypes:
             cset = ax.contour(X, Y, Z, cmap=cm.coolwarm)
             ax.clabel(cset, fontsize=9, inline=1)
             with pytest.warns(Warning):
-                cleanfigure.clean_figure(fig)
+                clean_figure(fig)
         plt.close("all")
 
     def test_polygon3D(self):
@@ -352,7 +282,7 @@ class Test_plottypes:
             ax.set_zlabel("Z")
             ax.set_zlim3d(0, 1)
             with pytest.warns(Warning):
-                cleanfigure.clean_figure(fig)
+                clean_figure(fig)
         plt.close("all")
 
     def test_bar3D(self):
@@ -376,7 +306,7 @@ class Test_plottypes:
             ax.set_ylabel("Y")
             ax.set_zlabel("Z")
             with pytest.warns(Warning):
-                cleanfigure.clean_figure(fig)
+                clean_figure(fig)
         plt.close("all")
 
     def test_quiver3D(self):
@@ -406,7 +336,7 @@ class Test_plottypes:
 
             ax.quiver(x, y, z, u, v, w, length=0.1, normalize=True)
             with pytest.warns(Warning):
-                cleanfigure.clean_figure(fig)
+                clean_figure(fig)
         plt.close("all")
 
     def test_2D_in_3D(self):
@@ -463,7 +393,7 @@ class Test_lineplot_markers:
             ax.set_xlim([20, 80])
             raw = get_tikz_code()
 
-            cleanfigure.clean_figure(fig)
+            clean_figure(fig)
             clean = get_tikz_code()
 
             # Use number of lines to test if it worked.
@@ -489,7 +419,7 @@ class Test_lineplot_markers:
             ax.set_xlim([20, 80])
             raw = get_tikz_code()
 
-            cleanfigure.clean_figure(fig)
+            clean_figure(fig)
             clean = get_tikz_code()
 
             # Use number of lines to test if it worked.
@@ -515,7 +445,7 @@ class Test_lineplot_markers:
             ax.set_xlim([20, 80])
             raw = get_tikz_code()
 
-            cleanfigure.clean_figure(fig)
+            clean_figure(fig)
             clean = get_tikz_code()
 
             # Use number of lines to test if it worked.
@@ -538,7 +468,7 @@ class Test_lineplot_markers:
             ax.set_ylim([-1, 1])
             raw = get_tikz_code()
 
-            cleanfigure.clean_figure(fig)
+            clean_figure(fig)
             clean = get_tikz_code()
 
             # Use number of lines to test if it worked.
@@ -589,7 +519,7 @@ class Test_subplots:
                 ax.set_xlim([20, 80])
             raw = get_tikz_code()
 
-            cleanfigure.clean_figure(fig)
+            clean_figure(fig)
             clean = get_tikz_code()
 
             # Use number of lines to test if it worked.
