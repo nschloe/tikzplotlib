@@ -77,23 +77,6 @@ class Test_pruneOutsideBox:
         plt.close("all")
 
 
-@pytest.mark.parametrize(
-    "function, result", [("plot", False), ("step", True)],
-)
-def test_is_step(function, result):
-    x = np.linspace(1, 100, 20)
-    y = np.linspace(1, 100, 20)
-
-    with plt.rc_context(rc=RC_PARAMS):
-        fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-        if function == "plot":
-            (l,) = ax.plot(x, y)
-        elif function == "step":
-            (l,) = ax.step(x, y)
-        assert cleanfigure._isStep(l) == result
-    plt.close("all")
-
-
 class Test_plottypes:
     """Testing plot types found here https://matplotlib.org/3.1.1/tutorials/introductory/sample_plots.html"""
 

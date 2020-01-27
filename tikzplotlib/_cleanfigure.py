@@ -4,15 +4,6 @@ from matplotlib import pyplot as plt
 import mpl_toolkits
 from mpl_toolkits import mplot3d
 
-# TODO: increase coverage or remove unused functions [!!!]
-# TODO: see which test cases the matlab2tikz guys used [!!!]
-# TODO: refactoring: consistently use camel_case or _
-# TODO: find suitable test cases for remaining functions. [!!]
-# TODO: implement remaining functions [!!]
-# - simplify stair : plt.step
-# -- looks like matlabs stairs plot and matplotlibs plt.step is implemented differently. The data representation is different.
-# - there is still a missing code block in movePointsCloser. Maybe find suitable axes limits to get this code block to work
-# TODO: make grid of plot types which are working and which not. 2D and 3D
 
 STEP_DRAW_STYLES = ["steps-pre", "steps-post", "steps-mid"]
 
@@ -207,7 +198,7 @@ def _clean_containers(axes):
 
 
 def _cleanline(fighandle, axhandle, linehandle, target_resolution, scale_precision):
-    """Clean a 2D Line plot figure.
+    """Clean a 2D or 3D Line plot figure.
 
     :param fighandle: matplotlib figure object
     :param axhandle: matplotlib axes object
@@ -262,14 +253,24 @@ def _cleanline(fighandle, axhandle, linehandle, target_resolution, scale_precisi
 def _clean_collections(
     fighandle, axhandle, collection, target_resolution, scale_precision
 ):
-    import warnings
+    """Clean a 2D or 3D collection, i.e. scatter plot.
 
-    warnings.warn("Cleaning Path Collections (scatter plot) is not supported yet.")
+    :param fighandle: matplotlib figure object
+    :param axhandle: matplotlib axes object
+    :param linehandle: mplot3d.art3d.Path3DCollection or mpl.collections.PathCollection
+    :param target_resolution: target resolution of final figure in PPI.
+        If a scalar integer is provided, it is assumed to be square in both axis.
+        If a list or an np.array is provided, it is interpreted as [H, W].
+        By default 600
+    :type target_resolution: int, list or np.array, optional
+    :param scalePrecision: scalar value indicating precision when scaling down.
+        By default 1
+    :type scalePrecision: float, optional
+    """
     data, is3D = _get_collection_data(collection)
     xLim, yLim = _get_visual_limits(fighandle, axhandle)
     visual_data = _get_visual_data(axhandle, data, is3D)
 
-    # TODO: not sure if it should be true or false.
     hasLines = True
 
     data = _prune_outside_box(xLim, yLim, data, visual_data, is3D, hasLines)
@@ -317,6 +318,8 @@ def _get_visual_limits(fighandle, axhandle):
     :type fighandle: mpl.figure.Figure
     :param axhandle: handle to matplotlib axes object
     :type axhandle: mpl.axes.Axes or mpl_toolkits.mplot3d.axes3d.Axes3D
+
+    :returns: (xLim, yLim)
     """
     is3D = _axIs3D(axhandle)
 
@@ -364,18 +367,12 @@ def _replace_data_with_NaN(data, id_replace, is3D):
     :type id_replace: np.array
     :param linehandle: matplotlib line handle object
     :type linehandle: object
+
+    :returns: new_data
     """
     if _isempty(id_replace):
         return data
 
-    # is3D = _lineIs3D(linehandle)
-
-    # if is3D:
-    #     xData, yData, zData = linehandle.get_data_3d()
-    #     zData = zData.copy()
-    # else:
-    #     xData = linehandle.get_xdata().astype(np.float32)
-    #     yData = linehandle.get_ydata().astype(np.float32)
     if is3D:
         xData, yData, zData = _split_data_3D(data)
     else:
@@ -386,14 +383,6 @@ def _replace_data_with_NaN(data, id_replace, is3D):
     if is3D:
         zData = zData.copy()
         zData[id_replace] = np.NaN
-
-    # if is3D:
-    #     # TODO: I don't understand why I need to set both to get tikz code reduction to work
-    #     linehandle.set_data_3d(xData, yData, zData)
-    #     linehandle.set_data(xData, yData)
-    # else:
-    #     linehandle.set_xdata(xData)
-    #     linehandle.set_ydata(yData)
 
     if is3D:
         new_data = _stack_data_3D(xData, yData, zData)
@@ -411,6 +400,8 @@ def _remove_data(data, id_remove, is3D):
     :type id_remove: np.array
     :param linehandle: matplotlib linehandle object
     :type linehandle: object
+
+    :returns: new_data
     """
     if _isempty(id_remove):
         return data
@@ -446,21 +437,25 @@ def _update_line_data(linehandle, data):
 
 
 def _split_data_2D(data):
+    """ data --> xData, yData """
     xData, yData = np.split(data, 2, axis=1)
     return xData.reshape((-1,)), yData.reshape((-1,))
 
 
 def _stack_data_2D(xData, yData):
+    """ xData, yData --> data """
     data = np.stack([xData, yData], axis=1)
     return data
 
 
 def _split_data_3D(data):
+    """ data --> xData, yData, zData """
     xData, yData, zData = np.split(data, 3, axis=1)
     return xData.reshape((-1,)), yData.reshape((-1,)), zData.reshape((-1,))
 
 
 def _stack_data_3D(xData, yData, zData):
+    """ xData, yData, zData --> data """
     data = np.stack([xData, yData, zData], axis=1)
     return data
 
@@ -485,6 +480,8 @@ def _remove_NaNs(data):
     """Removes superflous NaNs in the data, i.e. those at the end/beginning of the data and consecutive ones.
 
     :param linehandle: matplotlib linehandle object
+
+    :returns: data without NaNs
     """
     id_nan = np.any(np.isnan(data), axis=1)
     id_remove = np.argwhere(id_nan).reshape((-1,))
@@ -520,6 +517,8 @@ def _isInBox(data, xLim, yLim):
     :type xLim: list or np.array
     :param yLim: y axes limits
     :type xLim: list or np.array
+
+    :returns: mask
     """
     maskX = np.logical_and(data[:, 0] > xLim[0], data[:, 0] < xLim[1])
     maskY = np.logical_and(data[:, 1] > yLim[0], data[:, 1] < yLim[1])
@@ -545,6 +544,12 @@ def _axIs3D(axhandle):
 
 
 def _get_line_data(linehandle):
+    """Retrieve 2D or 3D data from line object.
+    
+    :param linehandle: matplotlib linehandle object
+    
+    :returns : (data, is3D)
+    """
     is3D = _lineIs3D(linehandle)
     if is3D:
         xData, yData, zData = linehandle.get_data_3d()
@@ -581,6 +586,8 @@ def _get_visual_data(axhandle, data, is3D):
     :type axhandle: object
     :param linehandle: handle for matplotlib line2D object
     :type linehandle: object
+
+    :returns : visualData
     """
     if is3D:
         xData, yData, zData = _split_data_3D(data)
@@ -632,6 +639,7 @@ def _isempty(array):
 
 
 def _line_has_lines(linehandle):
+    """ check if linestyle is not None and linewidth is larger than 0 """
     hasLines = (linehandle.get_linestyle() is not None) and (
         linehandle.get_linewidth() > 0.0
     )
@@ -649,11 +657,9 @@ def _prune_outside_box(xLim, yLim, data, visual_data, is3D, hasLines):
     :type axhandle: obj
     :param linehandle: matplotlib line2D handle object
     :type linehandle: obj
+
+    :returns: data.
     """
-    # xData, yData = _get_visual_data(axhandle, linehandle)
-
-    # data = np.stack([xData, yData], axis=1)
-
     if _elements(visual_data) == 0:
         return data
 
@@ -711,6 +717,8 @@ def _move_points_closer(xLim, yLim, data):
     :type axhandle: obj
     :param linehandle: matplotlib line handle object
     :type linehandle: obj
+
+    :returns: data.
     """
     # Calculate the extension of the extended box
     xWidth = xLim[1] - xLim[0]
@@ -749,6 +757,8 @@ def _insert_data(data, id_insert, dataInsert):
     :type id_insert: np.ndarray
     :param dataInsert: array of data to insert.  Shape [N, 2]
     :type dataInsert: np.ndarray
+
+    :returns: data.
     """
     if _isempty(id_insert):
         return data
@@ -788,6 +798,8 @@ def _simplify_line(
         If a scalar integer is provided, it is assumed to be square in both axis.
         If a list or an np.array is provided, it is interpreted as [H, W]
     :type target_resolution: int, list of int or np.array
+
+    :returns: data.
     """
     if type(target_resolution) not in [list, np.ndarray, np.array]:
         if np.isinf(target_resolution) or target_resolution == 0:
@@ -799,8 +811,6 @@ def _simplify_line(
     # Only simplify if there are more than 2 points
     if np.size(xDataVis) <= 2 or np.size(yDataVis) <= 2:
         return data
-
-    # xLim, yLim = _get_visual_limits(fighandle, axhandle)
 
     # Automatically guess a tol based on the area of the figure and
     # the area and resolution of the output
@@ -878,6 +888,7 @@ def _pixelate(x, y, xToPix, yToPix):
     :param yToPix: scalar converting x measure to pixel measure in y direction
     :type yToPix: float
 
+    :returns: mask
     """
     mult = 2
     dataPixel = np.round(np.stack([x * xToPix * mult, y * yToPix * mult], axis=1))
@@ -907,6 +918,7 @@ def _get_width_height_in_pixels(fighandle, target_resolution):
     :param target_resolution: Target resolution in PPI/ DPI. If target_resolution is a scalar, calculate final pixels based on figure width and height.
     :type target_resolution: scalar or list or np.array
 
+    :returns : H, W
     """
     if np.isscalar(target_resolution):
         # in matplotlib, the figsize units are always in inches
@@ -1016,16 +1028,11 @@ def _limit_precision(axhandle, data, is3D, alpha):
     :type linehandle: obj
     :param alpha: scalar value indicating precision when scaling down. By default 1
     :type alpha: float
+
+    :returns : data
     """
     if alpha <= 0:
         return data
-
-    # is3D = _lineIs3D(linehandle)
-    # if is3D:
-    #     xData, yData, zData = linehandle.get_data_3d()
-    # else:
-    #     xData = linehandle.get_xdata().astype(np.float32)
-    #     yData = linehandle.get_ydata().astype(np.float32)
 
     if is3D:
         xData, yData, zData = _split_data_3D(data)
@@ -1079,6 +1086,8 @@ def _segment_visible(data, dataIsInBox, xLim, yLim):
     :type xLim: list, np.array
     :param yLim: y axes limits
     :type yLim: list, np.array
+
+    :returns : mask
     """
     n = np.shape(data)[0]
     mask = np.zeros((n - 1, 1)) == 1
@@ -1120,7 +1129,6 @@ def _corners2D(xLim, yLim):
     :param yLim: y limits interval. Shape [2, ]
     :type yLim: np.array
     """
-
     bottomLeft = np.array([xLim[0], yLim[0]])
     topLeft = np.array([xLim[0], yLim[1]])
     bottomRight = np.array([xLim[1], yLim[0]])
@@ -1171,8 +1179,10 @@ def _get_projection_matrix(axhandle):
 
     :param axhandle: matplotlib axes handle object
     :type axhandle: obj
+
+    :returns: Projection matrix P
+    :rtype: np.array
     """
-    # TODO: write test
     az = np.deg2rad(axhandle.azim)
     el = np.deg2rad(axhandle.elev)
     rotationZ = np.array(
@@ -1214,6 +1224,9 @@ def _segments_intersect(X1, X2, X3, X4):
     :type X3: np.ndarray
     :param X4: X4
     :type X4: np.ndarray
+
+    :returns: mask
+    :rtype: boolean np.ndarray
     """
     Lambda = _cross_lines(X1, X2, X3, X4)
 
