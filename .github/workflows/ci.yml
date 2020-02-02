@@ -1,6 +1,6 @@
 name: ci
 
-on: [pull-request]
+on: [pull_request]
 
 jobs:
   lint:
