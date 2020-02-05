@@ -31,11 +31,14 @@ def _unidiff_output(expected, actual):
 
 
 def assert_equality(
-    plot, filename, assert_compilation=True, **extra_get_tikz_code_args
+    plot, filename, assert_compilation=True, flavor="latex", **extra_get_tikz_code_args
 ):
     plot()
     code = tikzplotlib.get_tikz_code(
-        include_disclaimer=False, float_format=".8g", **extra_get_tikz_code_args
+        include_disclaimer=False,
+        float_format=".8g",
+        flavor=flavor,
+        **extra_get_tikz_code_args
     )
     plt.close()
 
@@ -47,13 +50,16 @@ def assert_equality(
     if assert_compilation:
         plot()
         code = tikzplotlib.get_tikz_code(
-            include_disclaimer=False, standalone=True, **extra_get_tikz_code_args
+            include_disclaimer=False,
+            standalone=True,
+            flavor=flavor,
+            **extra_get_tikz_code_args
         )
         plt.close()
-        assert _compile(code) is not None, code
+        assert _compile(code, flavor) is not None, code
 
 
-def _compile(code):
+def _compile(code, flavor):
     _, tmp_base = tempfile.mkstemp()
 
     tex_file = tmp_base + ".tex"
@@ -64,11 +70,12 @@ def _compile(code):
     os.chdir(os.path.dirname(tex_file))
 
     # compile the output to pdf
+    cmds = dict(
+        latex=["pdflatex", "--interaction=nonstopmode"],
+        context=["context", "--nonstopmode"],
+    )
     try:
-        subprocess.check_output(
-            ["pdflatex", "--interaction=nonstopmode", tex_file],
-            stderr=subprocess.STDOUT,
-        )
+        subprocess.check_output(cmds[flavor] + [tex_file], stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
         print("pdflatex output:")
         print("=" * 70)
@@ -81,7 +88,7 @@ def _compile(code):
     return output_pdf
 
 
-def compare_mpl_latex(plot):
+def compare_mpl_tex(plot, flavor="latex"):
     plot()
     code = tikzplotlib.get_tikz_code(standalone=True)
     directory = os.getcwd()
@@ -89,7 +96,7 @@ def compare_mpl_latex(plot):
     plt.savefig(filename)
     plt.close()
 
-    pdf_file = _compile(code)
+    pdf_file = _compile(code, flavor)
     pdf_dirname = os.path.dirname(pdf_file)
 
     # Convert PDF to PNG.

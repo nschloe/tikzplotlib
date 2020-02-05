@@ -146,7 +146,7 @@ class Axes:
         if self.is_subplot:
             self.content.append("\n\\nextgroupplot")
         else:
-            self.content.append("\\begin{axis}")
+            self.content.append(data["flavor"].start("axis"))
 
     def get_begin_code(self):
         content = self.content
@@ -158,10 +158,10 @@ class Axes:
 
     def get_end_code(self, data):
         if not self.is_subplot:
-            return "\\end{axis}\n\n"
+            return data["flavor"].end("axis") + "\n\n"
         elif self.is_subplot and self.nsubplots == self.subplot_index:
             data["is_in_groupplot_env"] = False
-            return "\\end{groupplot}\n\n"
+            return data["flavor"].end("groupplot") + "\n\n"
 
         return ""
 
@@ -419,7 +419,7 @@ class Axes:
                     group_style.extend(data["extra groupstyle options [base]"])
                     options = ["group style={{{}}}".format(", ".join(group_style))]
                     self.content.append(
-                        "\\begin{{groupplot}}[{}]".format(", ".join(options))
+                        data["flavor"].start("groupplot") + f"[{', '.join(options)}]"
                     )
                     data["is_in_groupplot_env"] = True
                     data["pgfplots libs"].add("groupplots")
