@@ -1,4 +1,5 @@
 import codecs
+import enum
 import os
 import tempfile
 import warnings
@@ -35,6 +36,7 @@ def get_tikz_code(
     standalone=False,
     float_format=".15g",
     table_row_sep="\n",
+    flavor="latex",
 ):
     """Main function. Here, the recursion into the image starts and the
     contents are picked up. The actual file gets written in this routine.
@@ -83,12 +85,14 @@ def get_tikz_code(
                    ticks.
     :type strict: bool
 
-    :param wrap: Whether ``'\\begin{tikzpicture}'`` and ``'\\end{tikzpicture}'`` will be
+    :param wrap: Whether ``'\\begin{tikzpicture}'``/``'\\starttikzpicture'`` and
+                 ``'\\end{tikzpicture}'``/``'\\stoptikzpicture'`` will be
                  written. One might need to provide custom arguments to the environment
                  (eg. scale= etc.).  Default is ``True``.
     :type wrap: bool
 
-    :param add_axis_environment: Whether ``'\\begin{axis}[...]'`` and ``'\\end{axis}'``
+    :param add_axis_environment: Whether ``'\\begin{axis}[...]'``/`'\\startaxis[...]'`
+                                 and ``'\\end{axis}'``/``'\\stopaxis'``
                                  will be written. One needs to set the environment in
                                  the document. If ``False`` additionally sets
                                  ``wrap=False``. Default is ``True``.
@@ -123,6 +127,11 @@ def get_tikz_code(
 
     :param table_row_sep: Row separator for table data. Default is ```"\\n"```.
     :type table_row_sep: str
+
+    :param flavor: TeX flavor of the output code.
+                   Supported are ``"latex"`` and``"context"``.
+                   Default is ``"latex"``.
+    :type flavor: str
 
     :returns: None
 
@@ -182,6 +191,14 @@ def get_tikz_code(
     data["float format"] = float_format
     data["table_row_sep"] = table_row_sep
 
+    try:
+        data["flavor"] = Flavors[flavor.lower()]
+    except KeyError:
+        raise ValueError(
+            f"Unsupported TeX flavor {flavor!r}. "
+            f"Please choose from {', '.join(map(repr, Flavors))}"
+        )
+
     # print message about necessary pgfplot libs to command line
     if show_info:
         _print_pgfplot_libs_message(data)
@@ -192,7 +209,7 @@ def get_tikz_code(
     # Check if there is still an open groupplot environment. This occurs if not
     # all of the group plot slots are used.
     if "is_in_groupplot_env" in data and data["is_in_groupplot_env"]:
-        content.extend("\\end{groupplot}\n\n")
+        content.extend(data["flavor"].end("groupplot") + "\n\n")
 
     # write disclaimer to the file header
     code = """"""
@@ -203,7 +220,7 @@ def get_tikz_code(
 
     # write the contents
     if wrap and add_axis_environment:
-        code += "\\begin{tikzpicture}"
+        code += data["flavor"].start("tikzpicture")
         if extra_tikzpicture_parameters:
             code += "[\n" + ",\n".join(extra_tikzpicture_parameters) + "\n]"
         code += "\n\n"
@@ -215,22 +232,11 @@ def get_tikz_code(
     code += "".join(content)
 
     if wrap and add_axis_environment:
-        code += "\\end{tikzpicture}\n"
+        code += data["flavor"].end("tikzpicture") + "\n"
 
     if standalone:
         # When using pdflatex, \\DeclareUnicodeCharacter is necessary.
-        code = f"""\\documentclass{{standalone}}
-\\usepackage[utf8]{{inputenc}}
-\\usepackage{{pgfplots}}
-\\DeclareUnicodeCharacter{{2212}}{{−}}
-\\usepgfplotslibrary{{groupplots}}
-\\usepgfplotslibrary{{dateplot}}
-\\usetikzlibrary{{patterns}}
-\\usetikzlibrary{{shapes.arrows}}
-\\pgfplotsset{{compat=newest}}
-\\begin{{document}}
-{code}
-\\end{{document}}\n"""
+        code = data["flavor"].standalone(code)
     return code
 
 
@@ -273,18 +279,10 @@ def _get_color_definitions(data):
 def _print_pgfplot_libs_message(data):
     """Prints message to screen indicating the use of PGFPlots and its
     libraries."""
-    pgfplotslibs = ",".join(list(data["pgfplots libs"]))
-    tikzlibs = ",".join(list(data["tikz libs"]))
 
     print(70 * "=")
     print("Please add the following lines to your LaTeX preamble:\n")
-    print("\\usepackage[utf8]{inputenc}")
-    print("\\usepackage{fontspec}  % This line only for XeLaTeX and LuaLaTeX")
-    print("\\usepackage{pgfplots}")
-    if tikzlibs:
-        print("\\usetikzlibrary{" + tikzlibs + "}")
-    if pgfplotslibs:
-        print("\\usepgfplotslibrary{" + pgfplotslibs + "}")
+    print(data["flavor"].preamble(data))
     print(70 * "=")
     return
 
@@ -391,3 +389,56 @@ def _recurse(data, obj):
                 "tikzplotlib: Don't know how to handle object {}.".format(type(child))
             )
     return data, content.flatten()
+
+
+class Flavors(enum.Enum):
+    latex = (
+        r"\begin{{{}}}",
+        r"\end{{{}}}",
+        "document",
+        """\
+\\documentclass{{standalone}}
+\\usepackage[utf8]{{inputenc}}
+\\usepackage{{pgfplots}}
+\\DeclareUnicodeCharacter{{2212}}{{−}}
+\\usepgfplotslibrary{{{pgfplotslibs}}}
+\\usetikzlibrary{{{tikzlibs}}}
+\\pgfplotsset{{compat=newest}}
+""",
+    )
+    context = (
+        r"\start{}",
+        r"\stop{}",
+        "text",
+        """\
+\\setupcolors[state=start]
+\\usemodule[tikz]
+\\usemodule[pgfplots]
+\\usepgfplotslibrary[{pgfplotslibs}]
+\\usetikzlibrary[{tikzlibs}]
+\\pgfplotsset{{compat=newest}}
+% groupplot doesn’t define ConTeXt stuff
+\\unexpanded\\def\\startgroupplot{{\\groupplot}}
+\\unexpanded\\def\\stopgroupplot{{\\endgroupplot}}
+""",
+    )
+
+    def start(self, what):
+        return self.value[0].format(what)
+
+    def end(self, what):
+        return self.value[1].format(what)
+
+    def preamble(self, data=None):
+        if data is None:
+            data = {
+                "pgfplots libs": ("groupplots", "dateplot"),
+                "tikz libs": ("patterns", "shapes.arrows"),
+            }
+        pgfplotslibs = ",".join(data["pgfplots libs"])
+        tikzlibs = ",".join(data["tikz libs"])
+        return self.value[3].format(pgfplotslibs=pgfplotslibs, tikzlibs=tikzlibs)
+
+    def standalone(self, code):
+        docenv = self.value[2]
+        return f"{self.preamble()}{self.start(docenv)}\n{code}\n{self.end(docenv)}"

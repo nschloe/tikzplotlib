@@ -17,7 +17,7 @@ jobs:
       - run: sudo apt update
       # <https://stackoverflow.com/a/44333806/353337>
       - run: DEBIAN_FRONTEND=noninteractive sudo apt install tzdata
-      - run: sudo apt install -y texlive-latex-base texlive-latex-extra
+      - run: sudo apt install -y texlive-latex-base texlive-latex-extra context
       - run: pip3 install -U pytest pytest-cov excode --user
       - checkout
       - run: excode README.md test/zzz_readme_test.py --filter python,test

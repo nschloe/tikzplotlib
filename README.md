@@ -18,10 +18,10 @@ figures like
 
 ![](https://nschloe.github.io/tikzplotlib/example.png)
 
-for native inclusion into LaTeX documents.
+for native inclusion into LaTeX or ConTeXt documents.
 
 The output of tikzplotlib is in
-[PGFPlots](http://pgfplots.sourceforge.net/pgfplots.pdf), a LaTeX library that sits on
+[PGFPlots](http://pgfplots.sourceforge.net/pgfplots.pdf), a TeX library that sits on
 top of [PGF/TikZ](https://en.wikipedia.org/wiki/PGF/TikZ) and describes graphs in terms
 of axes, data etc. Consequently, the output of tikzplotlib
 
@@ -95,7 +95,7 @@ table {%
 ```
 (Use `get_tikz_code()` instead of `save()` if you want the code as a string.)
 
-Tweaking the plot is straightforward and can be done as part of your LaTeX work flow.
+Tweaking the plot is straightforward and can be done as part of your TeX work flow.
 [The fantastic PGFPlots manual](http://pgfplots.sourceforge.net/pgfplots.pdf) contains
 great examples of how to make your plot look even better.
 
@@ -120,10 +120,12 @@ to install/update.
     ```python
     import tikzplotlib
     tikzplotlib.save("mytikz.tex")
+    # or
+    tikzplotlib.save("mytikz.tex", flavor="context")
     ```
    to store the TikZ file as `mytikz.tex`.
 
-3. Add the contents of `mytikz.tex` into your LaTeX source code. A convenient way of
+3. Add the contents of `mytikz.tex` into your TeX source code. A convenient way of
    doing so is via
     ```latex
     \input{/path/to/mytikz.tex}
@@ -132,11 +134,29 @@ to install/update.
    included in the header of your document:
     ```latex
     \usepackage[utf8]{inputenc}
-    \usepackage{fontspec}  % optional
     \usepackage{pgfplots}
+    \DeclareUnicodeCharacter{2212}{−}
+    \usepgfplotslibrary{groupplots,dateplot}
+    \usetikzlibrary{patterns,shapes.arrows}
     \pgfplotsset{compat=newest}
-    \usepgfplotslibrary{groupplots}
-    \usepgfplotslibrary{dateplot}
+    ```
+   or:
+    ```latex
+    \setupcolors[state=start]
+    \usemodule[tikz]
+    \usemodule[pgfplots]
+    \usepgfplotslibrary[groupplots,dateplot]
+    \usetikzlibrary[patterns,shapes.arrows]
+    \pgfplotsset{compat=newest}
+    \unexpanded\def\startgroupplot{\groupplot}
+    \unexpanded\def\stopgroupplot{\endgroupplot}
+    ```
+   You can also get the code via:
+    ```python
+    import tikzplotlib
+    tikzplotlib.Flavors.latex.preamble()
+    # or
+    tikzplotlib.Flavors.context.preamble()
     ```
 
 4. Optional: clean up the figure before exporting to tikz using the `clean_figure` command.

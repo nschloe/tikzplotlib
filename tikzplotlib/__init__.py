@@ -8,8 +8,8 @@ from .__about__ import (
     __status__,
     __version__,
 )
-from ._save import get_tikz_code, save
 from ._cleanfigure import clean_figure
+from ._save import Flavors, get_tikz_code, save
 
 __all__ = [
     "__author__",
@@ -21,4 +21,5 @@ __all__ = [
     "get_tikz_code",
     "save",
     "clean_figure",
+    "Flavors",
 ]

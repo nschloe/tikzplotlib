@@ -1,0 +1,16 @@
+\starttikzpicture
+
+\startaxis[
+tick align=outside,
+tick pos=left,
+x grid style={white!69.019608!black},
+xmin=0, xmax=1,
+xtick style={color=black},
+y grid style={white!69.019608!black},
+ymin=0, ymax=1,
+ytick style={color=black}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=0, xmax=1, ymin=0, ymax=1] {tmp-000.png};
+\stopaxis
+
+\stoptikzpicture

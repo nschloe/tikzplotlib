@@ -90,5 +90,5 @@ def test():
 if __name__ == "__main__":
     import helpers
 
-    helpers.compare_mpl_latex(plot)
+    helpers.compare_mpl_tex(plot)
     # helpers.print_tree(plot())
