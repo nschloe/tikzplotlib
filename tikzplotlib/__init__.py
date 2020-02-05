@@ -21,4 +21,5 @@ __all__ = [
     "get_tikz_code",
     "save",
     "clean_figure",
+    "Flavors",
 ]
