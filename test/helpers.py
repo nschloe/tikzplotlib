@@ -38,7 +38,7 @@ def assert_equality(
         include_disclaimer=False,
         float_format=".8g",
         flavor=flavor,
-        **extra_get_tikz_code_args
+        **extra_get_tikz_code_args,
     )
     plt.close()
 
@@ -53,7 +53,7 @@ def assert_equality(
             include_disclaimer=False,
             standalone=True,
             flavor=flavor,
-            **extra_get_tikz_code_args
+            **extra_get_tikz_code_args,
         )
         plt.close()
         assert _compile(code, flavor) is not None, code
@@ -70,14 +70,14 @@ def _compile(code, flavor):
     os.chdir(os.path.dirname(tex_file))
 
     # compile the output to pdf
-    cmds = dict(
+    cmdline = dict(
         latex=["pdflatex", "--interaction=nonstopmode"],
         context=["context", "--nonstopmode"],
-    )
+    )[flavor]
     try:
-        subprocess.check_output(cmds[flavor] + [tex_file], stderr=subprocess.STDOUT)
+        subprocess.check_output(cmdline + [tex_file], stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        print("pdflatex output:")
+        print(f"{cmdline[0]} output:")
         print("=" * 70)
         print(e.output.decode("utf-8"))
         print("=" * 70)

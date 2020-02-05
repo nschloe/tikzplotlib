@@ -131,7 +131,27 @@ to install/update.
     \input{/path/to/mytikz.tex}
     ```
    Also make sure that the packages for PGFPlots and proper Unicode support and are
-   included in the header of your document. Get the code via:
+   included in the header of your document:
+    ```latex
+    \usepackage[utf8]{inputenc}
+    \usepackage{pgfplots}
+    \DeclareUnicodeCharacter{2212}{−}
+    \usepgfplotslibrary{groupplots,dateplot}
+    \usetikzlibrary{patterns,shapes.arrows}
+    \pgfplotsset{compat=newest}
+    ```
+   or:
+    ```latex
+    \setupcolors[state=start]
+    \usemodule[tikz]
+    \usemodule[pgfplots]
+    \usepgfplotslibrary[groupplots,dateplot]
+    \usetikzlibrary[patterns,shapes.arrows]
+    \pgfplotsset{compat=newest}
+    \unexpanded\def\startgroupplot{\groupplot}
+    \unexpanded\def\stopgroupplot{\endgroupplot}
+    ```
+   You can also get the code via:
     ```python
     import tikzplotlib
     tikzplotlib.Flavors.latex.preamble()
