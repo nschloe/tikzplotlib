@@ -1,7 +1,8 @@
-*.pyc
+*.py[co]
 *.swp
 *.png
 *.pdf
+/tikzplotlib/__about__.py
 doc/_build/
 MANIFEST
 dist/

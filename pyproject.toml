@@ -1,0 +1,7 @@
+[build-system]
+requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=3.4"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+write_to = "tikzplotlib/__about__.py"
+write_to_template = "__copyright__ = f\"Copyright (c) 2010-2020, <see package metadata for the author and his email>\"\n__version__ = \"{version}\""
