@@ -28,7 +28,7 @@ jobs:
         python-version: "3.x"
     - uses: actions/checkout@v1
     - name: Install dependencies
-      run: sudo apt-get install -y texlive-latex-base texlive-latex-extra context python3-tk python3-scipy
+      run: sudo apt-get install -y texlive-latex-base texlive-latex-extra context python3-tk
     - name: Install package
       run: |
         pip install --upgrade pip
