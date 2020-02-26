@@ -105,11 +105,11 @@ Notably, [3D plots don't work](https://github.com/matplotlib/matplotlib/issues/7
 ### Installation
 
 tikzplotlib is [available from the Python Package
-Index](https://pypi.org/project/tikzplotlib/), so simply type
+Index](https://pypi.org/project/tikzplotlib/), so simply do
 ```
-pip3 install tikzplotlib --user
+pip install tikzplotlib
 ```
-to install/update.
+to install.
 
 
 ### Usage
