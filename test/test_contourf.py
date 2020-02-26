@@ -1,13 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.stats import multivariate_normal
 
 from helpers import assert_equality
 
 
 def plot():
-    mean = np.array([1, 1])
-    cov = np.eye(2)
     nbins = 5
 
     fig = plt.figure()
@@ -22,7 +19,7 @@ def plot():
     pos = np.empty(xi.shape + (2,))
     pos[:, :, 0] = xi
     pos[:, :, 1] = yi
-    zi = multivariate_normal(mean, cov, allow_singular=True, seed=0).pdf(pos)
+    zi = 2 - (xi - 1) ** 2 - (yi - 1) ** 2
     ax.contourf(xi, yi, zi, 250)
 
     ax.set_xlim(x_min, x_max)
@@ -36,7 +33,9 @@ def test():
 
 
 if __name__ == "__main__":
-    import helpers
+    plot()
+    plt.show()
+    # import helpers
 
-    helpers.compare_mpl_tex(plot)
+    # helpers.compare_mpl_tex(plot)
     # helpers.print_tree(plot())

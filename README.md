@@ -1,5 +1,6 @@
 <p align="center">
-  <img alt="tikzplotlib" src="https://nschloe.github.io/tikzplotlib/logo-tikzplotlib.svg" width="60%">
+  <a href="https://github.com/nschloe/tikzplotlib"><img alt="tikzplotlib" src="https://nschloe.github.io/tikzplotlib/logo-tikzplotlib.svg" width="60%"></a>
+  <p align="center">The artist formerly known as _matplotlib2tikz._</p>
 </p>
 
 [![CircleCI](https://img.shields.io/circleci/project/github/nschloe/tikzplotlib/master.svg?style=flat-square)](https://circleci.com/gh/nschloe/tikzplotlib/tree/master)
@@ -7,6 +8,7 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/psf/black)
 [![Documentation Status](https://readthedocs.org/projects/tikzplotlib/badge/?version=latest&style=flat-square)](https://readthedocs.org/projects/tikzplotlib/?badge=latest)
 [![awesome](https://img.shields.io/badge/awesome-yes-brightgreen.svg?style=flat-square)](https://github.com/nschloe/tikzplotlib)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/tikzplotlib.svg?style=flat-square)](https://pypi.org/pypi/tikzplotlib/)
 [![PyPi Version](https://img.shields.io/pypi/v/tikzplotlib.svg?style=flat-square)](https://pypi.org/project/tikzplotlib)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1173089.svg?style=flat-square)](https://doi.org/10.5281/zenodo.1173089)
 [![GitHub stars](https://img.shields.io/github/stars/nschloe/tikzplotlib.svg?style=flat-square&logo=github&label=Stars&logoColor=white)](https://github.com/nschloe/tikzplotlib)
@@ -105,11 +107,11 @@ Notably, [3D plots don't work](https://github.com/matplotlib/matplotlib/issues/7
 ### Installation
 
 tikzplotlib is [available from the Python Package
-Index](https://pypi.org/project/tikzplotlib/), so simply type
+Index](https://pypi.org/project/tikzplotlib/), so simply do
 ```
-pip3 install tikzplotlib --user
+pip install tikzplotlib
 ```
-to install/update.
+to install.
 
 
 ### Usage
