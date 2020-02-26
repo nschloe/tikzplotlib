@@ -1,5 +1,6 @@
 <p align="center">
-  <img alt="tikzplotlib" src="https://nschloe.github.io/tikzplotlib/logo-tikzplotlib.svg" width="60%">
+  <a href="https://github.com/nschloe/tikzplotlib"><img alt="tikzplotlib" src="https://nschloe.github.io/tikzplotlib/logo-tikzplotlib.svg" width="60%"></a>
+  <p align="center">The artist formerly known as _matplotlib2tikz._</p>
 </p>
 
 [![CircleCI](https://img.shields.io/circleci/project/github/nschloe/tikzplotlib/master.svg?style=flat-square)](https://circleci.com/gh/nschloe/tikzplotlib/tree/master)
