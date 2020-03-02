@@ -36,6 +36,8 @@ jobs:
         pip install excode
         excode README.md test/zzz_readme_test.py --filter python,test
     - name: Test with tox
-      run: tox
+      run: |
+        pip install tox
+        tox
     # - name: Submit to codecov
     #   run: bash <(curl -s https://codecov.io/bash)

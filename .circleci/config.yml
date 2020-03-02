@@ -22,7 +22,9 @@ jobs:
       - checkout
       - run: excode README.md test/zzz_readme_test.py --filter python,test
       # The actual test
-      - run: tox
+      - run: |
+          pip install tox
+          tox
       # submit to codecov
       - run: bash <(curl -s https://codecov.io/bash)
 
