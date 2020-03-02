@@ -31,17 +31,11 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install dependencies
       run: sudo apt-get install -y texlive-latex-base texlive-latex-extra context python3-tk
-    - name: Install package
-      run: |
-        pip install .
     - name: Extract tests from README
       run: |
         pip install excode
         excode README.md test/zzz_readme_test.py --filter python,test
-    - name: Test with pytest
-      run: |
-        pip install pytest pytest-cov
-        pip install -r test_requirements.txt
-        cd test/ && MPLBACKEND=Agg pytest --cov tikzplotlib
+    - name: Test with tox
+      run: tox
     # - name: Submit to codecov
     #   run: bash <(curl -s https://codecov.io/bash)
