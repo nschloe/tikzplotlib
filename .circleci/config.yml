@@ -6,7 +6,7 @@ jobs:
       - image: circleci/python:3.7
     steps:
       - checkout
-      - run: pip3 install -U black flake8 --user
+      - run: pip install black flake8
       - run: black --check .
       - run: flake8 .
   build:
@@ -18,18 +18,13 @@ jobs:
       # <https://stackoverflow.com/a/44333806/353337>
       - run: DEBIAN_FRONTEND=noninteractive sudo apt install tzdata
       - run: sudo apt install -y texlive-latex-base texlive-latex-extra context
-      - run: pip3 install -U pytest pytest-cov excode --user
+      - run: pip install excode
       - checkout
       - run: excode README.md test/zzz_readme_test.py --filter python,test
-      - run: pip3 install -r test_requirements.txt --user
-      - run: pip3 install .[all] --user
-      - run: pip3 check
       # The actual test
-      - run:
-          command: pytest --cov tikzplotlib
-          working_directory: test/
-          environment:
-            MPLBACKEND: Agg
+      - run: |
+          pip install tox
+          tox
       # submit to codecov
       - run: bash <(curl -s https://codecov.io/bash)
 
