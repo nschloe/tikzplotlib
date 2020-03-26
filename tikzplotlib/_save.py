@@ -268,7 +268,6 @@ def save(filepath, *args, encoding=None, **kwargs):
     return
 
 
-
 def _tex_comment(comment):
     """Prepends each line in string with the LaTeX comment key, '%'.
     """
