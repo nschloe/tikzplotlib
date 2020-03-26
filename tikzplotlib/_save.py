@@ -3,6 +3,7 @@ import enum
 import os
 import tempfile
 import warnings
+import re
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -37,6 +38,7 @@ def get_tikz_code(
     float_format=".15g",
     table_row_sep="\n",
     flavor="latex",
+    escape_pct_latex=False,
 ):
     """Main function. Here, the recursion into the image starts and the
     contents are picked up. The actual file gets written in this routine.
@@ -132,6 +134,11 @@ def get_tikz_code(
                    Supported are ``"latex"`` and``"context"``.
                    Default is ``"latex"``.
     :type flavor: str
+
+    :param escape_pct_latex: Boolean to escape % sign inside
+                             the TikZ figure
+                             Default is ``False`
+    :type escape_pct_latex: bool
 
     :returns: None
 
@@ -237,6 +244,10 @@ def get_tikz_code(
     if standalone:
         # When using pdflatex, \\DeclareUnicodeCharacter is necessary.
         code = data["flavor"].standalone(code)
+
+    if escape_pct_latex:
+        code = _escape_percentage_character(code)
+
     return code
 
 
@@ -257,10 +268,17 @@ def save(filepath, *args, encoding=None, **kwargs):
     return
 
 
+
 def _tex_comment(comment):
     """Prepends each line in string with the LaTeX comment key, '%'.
     """
     return "% " + str.replace(comment, "\n", "\n% ") + "\n"
+
+
+def _escape_percentage_character(tikz_code):
+    """returns the string with escaped % sign in latex so it will show
+    as normal sign in the document"""
+    return re.sub(r"\S\s*(%)", r"\\\1", tikz_code)
 
 
 def _get_color_definitions(data):
