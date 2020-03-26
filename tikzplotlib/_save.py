@@ -1,9 +1,9 @@
 import codecs
 import enum
 import os
+import re
 import tempfile
 import warnings
-import re
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
