@@ -329,7 +329,7 @@ class Axes:
             self.axis_options.append("colorbar horizontal")
 
             colorbar_ticks = colorbar.ax.get_xticks()
-            colorbar_ticks_minor = colorbar.ax.get_xticks("minor")
+            colorbar_ticks_minor = colorbar.ax.get_xticks(minor=True)
             axis_limits = colorbar.ax.get_xlim()
 
             # In matplotlib, the colorbar color limits are determined by get_clim(), and
@@ -345,7 +345,7 @@ class Axes:
             # Getting the labels via get_* might not actually be suitable:
             # they might not reflect the current state.
             colorbar_ticklabels = colorbar.ax.get_xticklabels()
-            colorbar_ticklabels_minor = colorbar.ax.get_xticklabels("minor")
+            colorbar_ticklabels_minor = colorbar.ax.get_xticklabels(minor=True)
 
             colorbar_styles.extend(
                 _get_ticks(data, "x", colorbar_ticks, colorbar_ticklabels)
@@ -361,7 +361,7 @@ class Axes:
 
             self.axis_options.append("colorbar")
             colorbar_ticks = colorbar.ax.get_yticks()
-            colorbar_ticks_minor = colorbar.ax.get_yticks("minor")
+            colorbar_ticks_minor = colorbar.ax.get_yticks(minor=True)
             axis_limits = colorbar.ax.get_ylim()
 
             # In matplotlib, the colorbar color limits are determined by get_clim(), and
@@ -379,7 +379,7 @@ class Axes:
             # they might not reflect the current state.
             colorbar_ticklabels = colorbar.ax.get_yticklabels()
             colorbar_ylabel = colorbar.ax.get_ylabel()
-            colorbar_ticklabels_minor = colorbar.ax.get_yticklabels("minor")
+            colorbar_ticklabels_minor = colorbar.ax.get_yticklabels(minor=True)
             colorbar_styles.extend(
                 _get_ticks(data, "y", colorbar_ticks, colorbar_ticklabels)
             )
