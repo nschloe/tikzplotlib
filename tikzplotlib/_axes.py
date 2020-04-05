@@ -208,12 +208,18 @@ class Axes:
         )
         self.axis_options.extend(
             _get_ticks(
-                data, "minor x", obj.get_xticks("minor"), obj.get_xticklabels("minor")
+                data,
+                "minor x",
+                obj.get_xticks(minor=True),
+                obj.get_xticklabels(minor=True),
             )
         )
         self.axis_options.extend(
             _get_ticks(
-                data, "minor y", obj.get_yticks("minor"), obj.get_yticklabels("minor")
+                data,
+                "minor y",
+                obj.get_yticks(minor=True),
+                obj.get_yticklabels(minor=True),
             )
         )
 
