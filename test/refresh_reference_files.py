@@ -26,7 +26,7 @@ def _main():
     test_modules.remove("test_rotated_labels")
     test_modules.remove("test_deterministic_output")
     test_modules.remove("test_cleanfigure")
-    test_modules.remove("test_context_reference")
+    test_modules.remove("test_context")
 
     for mod in test_modules:
         module = importlib.import_module(mod)
