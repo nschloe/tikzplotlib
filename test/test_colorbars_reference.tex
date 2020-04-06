@@ -37,32 +37,32 @@ tick align=outside,
 tick pos=left,
 x grid style={white!69.019608!black},
 xlabel={Discrete intervals, some other units},
-xmin=-0.05, xmax=1.05,
+xmin=0.65, xmax=8.35,
 xtick style={color=black},
-xtick={0,0.14285714,0.42857143,0.85714286,1},
+xtick={1,2,4,7,8},
 xticklabels={1,2,4,7,8},
-ymin=0, ymax=1
+ymin=1, ymax=8
 ]
 \path [draw=white, fill=white, line width=0.004pt]
-(axis cs:-0.05,0.5)
---(axis cs:0,0)
---(axis cs:1,0)
---(axis cs:1.05,0.5)
---(axis cs:1.05,0.5)
+(axis cs:0.65,4.5)
 --(axis cs:1,1)
---(axis cs:0,1)
---(axis cs:-0.05,0.5)
+--(axis cs:8,1)
+--(axis cs:8.35,4.5)
+--(axis cs:8.35,4.5)
+--(axis cs:8,8)
+--(axis cs:1,8)
+--(axis cs:0.65,4.5)
 --cycle;
-\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.05, xmax=1.05, ymin=0, ymax=1] {tmp-001.png};
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=0.65, xmax=8.35, ymin=1, ymax=8] {tmp-001.png};
 \path [draw=black, line width=0.32pt]
-(axis cs:-0.05,0.5)
---(axis cs:0,0)
---(axis cs:1,0)
---(axis cs:1.05,0.5)
---(axis cs:1.05,0.5)
+(axis cs:0.65,4.5)
 --(axis cs:1,1)
---(axis cs:0,1)
---(axis cs:-0.05,0.5)
+--(axis cs:8,1)
+--(axis cs:8.35,4.5)
+--(axis cs:8.35,4.5)
+--(axis cs:8,8)
+--(axis cs:1,8)
+--(axis cs:0.65,4.5)
 --cycle;
 
 \nextgroupplot[
@@ -70,32 +70,30 @@ tick align=outside,
 tick pos=left,
 x grid style={white!69.019608!black},
 xlabel={Custom extension lengths, some other units},
-xmin=-0.25, xmax=1.25,
+xmin=-1.5, xmax=1.5,
 xtick style={color=black},
-xtick={0,0.25,0.5,0.75,1},
-xticklabels={−1.0,−0.5,0.0,0.5,1.0},
-ymin=0, ymax=1
+ymin=-1, ymax=1
 ]
 \path [draw=white, fill=white, line width=0.004pt]
-(axis cs:-0.25,0.5)
---(axis cs:0,0)
---(axis cs:1,0)
---(axis cs:1.25,0.5)
---(axis cs:1.25,0.5)
+(axis cs:-1.5,0)
+--(axis cs:-1,-1)
+--(axis cs:1,-1)
+--(axis cs:1.5,0)
+--(axis cs:1.5,0)
 --(axis cs:1,1)
---(axis cs:0,1)
---(axis cs:-0.25,0.5)
+--(axis cs:-1,1)
+--(axis cs:-1.5,0)
 --cycle;
-\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.25, xmax=1.25, ymin=0, ymax=1] {tmp-002.png};
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-1.5, xmax=1.5, ymin=-1, ymax=1] {tmp-002.png};
 \path [draw=black, line width=0.32pt]
-(axis cs:-0.25,0.5)
---(axis cs:0,0)
---(axis cs:1,0)
---(axis cs:1.25,0.5)
---(axis cs:1.25,0.5)
+(axis cs:-1.5,0)
+--(axis cs:-1,-1)
+--(axis cs:1,-1)
+--(axis cs:1.5,0)
+--(axis cs:1.5,0)
 --(axis cs:1,1)
---(axis cs:0,1)
---(axis cs:-0.25,0.5)
+--(axis cs:-1,1)
+--(axis cs:-1.5,0)
 --cycle;
 \end{groupplot}
 

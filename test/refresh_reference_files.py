@@ -8,28 +8,36 @@ import tikzplotlib as tpl
 
 
 def _main():
-    parser = argparse.ArgumentParser(description="Refresh the reference TeX files.")
-    parser.add_argument("files", nargs="+", help="Files to refresh")
-    args = parser.parse_args()
+    parser = argparse.ArgumentParser(description="Refresh all reference TeX files.")
+    parser.parse_args()
 
     this_dir = os.path.dirname(os.path.abspath(__file__))
-    exclude_list = ["test_rotated_labels.py", "test_deterministic_output.py"]
 
-    for filename in args.files:
-        if filename in exclude_list:
-            continue
-        if filename.startswith("test_") and filename.endswith(".py"):
-            spec = importlib.util.spec_from_file_location("plot", filename)
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-            module.plot()
+    test_files = [
+        f
+        for f in os.listdir(this_dir)
+        if os.path.isfile(os.path.join(this_dir, f))
+        and f[:5] == "test_"
+        and f[-3:] == ".py"
+    ]
+    test_modules = [f[:-3] for f in test_files]
 
-            code = tpl.get_tikz_code(include_disclaimer=False, float_format=".8g")
-            plt.close()
+    # remove some edge cases
+    test_modules.remove("test_rotated_labels")
+    test_modules.remove("test_deterministic_output")
+    test_modules.remove("test_cleanfigure")
+    test_modules.remove("test_context")
 
-            tex_filename = filename[:-3] + "_reference.tex"
-            with open(os.path.join(this_dir, tex_filename), "w", encoding="utf8") as f:
-                f.write(code)
+    for mod in test_modules:
+        module = importlib.import_module(mod)
+        module.plot()
+
+        code = tpl.get_tikz_code(include_disclaimer=False, float_format=".8g")
+        plt.close()
+
+        tex_filename = mod + "_reference.tex"
+        with open(os.path.join(this_dir, tex_filename), "w", encoding="utf8") as f:
+            f.write(code)
 
 
 if __name__ == "__main__":
