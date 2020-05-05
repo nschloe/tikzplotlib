@@ -149,7 +149,7 @@ def _draw_rectangle(data, obj, draw_options):
 
     if label != "_nolegend_" and label not in data["rectangle_legends"]:
         data["rectangle_legends"].add(label)
-        cont += "\\addlegendimage{{ybar,ybar legend,{}}};\n".format(
+        cont += "\\addlegendimage{{area legend,{}}};\n".format(
             ",".join(draw_options)
         )
         cont += f"\\addlegendentry{{{label}}}\n\n"
