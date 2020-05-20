@@ -246,6 +246,7 @@ def _bbox(bbox, data, properties, scaling):
     properties.append(f"line width={line_width:{ff}}pt")
     inner_sep = bbox_style.pad * data["font size"]
     properties.append(f"inner sep={inner_sep:{ff}}pt")
+    properties.append("fill opacity={}".format(bbox.get_alpha()))
     # Rounded boxes
     if isinstance(bbox_style, mpl.patches.BoxStyle.Round):
         properties.append("rounded corners")
