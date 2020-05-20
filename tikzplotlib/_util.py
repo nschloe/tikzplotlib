@@ -13,8 +13,8 @@ def get_legend_text(obj):
     if leg is None:
         return None
 
-    keys = [l.get_label() for l in leg.legendHandles if l is not None]
-    values = [l.get_text() for l in leg.texts]
+    keys = [h.get_label() for h in leg.legendHandles if h is not None]
+    values = [t.get_text() for t in leg.texts]
 
     label = obj.get_label()
     d = dict(zip(keys, values))

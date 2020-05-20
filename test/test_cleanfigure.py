@@ -1,7 +1,7 @@
 import numpy as np
-import pytest
 from matplotlib import pyplot as plt
 
+import pytest
 from tikzplotlib import clean_figure, get_tikz_code
 
 RC_PARAMS = {"figure.figsize": [5, 5], "figure.dpi": 220, "pgf.rcfonts": False}

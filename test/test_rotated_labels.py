@@ -1,9 +1,9 @@
 import os
 import tempfile
 
-import pytest
 from matplotlib import pyplot as plt
 
+import pytest
 import tikzplotlib
 
 
