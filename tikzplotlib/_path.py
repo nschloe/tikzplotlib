@@ -5,7 +5,7 @@ from matplotlib.markers import MarkerStyle
 
 from . import _color
 from ._axes import _mpl_cmap2pgf_cmap
-from ._hatches import _mpl_hatch2pgfp_pattern
+from ._hatches import _mpl_hatch2pgfp_pattern, _MP_HATCH2PGF_PATTERN
 from ._markers import _mpl_marker2pgfp_marker
 from ._util import get_legend_text, has_legend
 
@@ -283,7 +283,7 @@ def get_draw_options(data, obj, ec, fc, ls, lw, hatch=None):
         if ls_ is not None and ls_ != "solid":
             draw_options.append(ls_)
 
-    if hatch is not None:
+    if hatch is in _MP_HATCH2PGF_PATTERN:
         # In matplotlib hatches are rendered with edge color and linewidth
         # In PGFPlots patterns are rendered in 'pattern color' which defaults to
         # black and according to opacity fill.
