@@ -91,7 +91,7 @@ def _mpl_hatch2pgfp_pattern(data, hatch, color_name, color_rgba):
     """
     hatch = __validate_hatch(hatch)
     try:
-        pgfplots_pattern = _MP_HATCH2PGF_PATTERN.get(hatch)
+        pgfplots_pattern = _MP_HATCH2PGF_PATTERN[hatch]
     except KeyError:
         warnings.warn("tikzplotlib: The hatch", hatch, "is ignored.")
         return data, []
