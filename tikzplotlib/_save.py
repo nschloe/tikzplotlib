@@ -248,9 +248,21 @@ def save(filepath, *args, encoding=None, **kwargs):
 
     :param encoding: Sets the text encoding of the output file, e.g. 'utf-8'.
                      For supported values: see ``codecs`` module.
+                     If `standalone=True` and, UTF-8 encoding is
+                     enforced.
     :returns: None
     """
     code = get_tikz_code(*args, filepath=filepath, **kwargs)
+	
+    # standalone latex file required UTF-8 encoding
+    if kwargs.get('standalone') and \
+        (kwargs.get('flavor') is None or kwargs['flavor'].lower() =='latex'):
+        if encoding is not None:
+            warnings.warn(f'tikzplotlib: Changing from {encoding} to utf-8,'
+                          'since it is the only support encoding for '
+                          'standalone files')
+        encoding='utf-8'
+	
     file_handle = codecs.open(filepath, "w", encoding)
     file_handle.write(code)
     file_handle.close()
