@@ -325,17 +325,17 @@ def _get_visual_limits(fighandle, axhandle):
     xLim = np.array(axhandle.get_xlim())
     yLim = np.array(axhandle.get_ylim())
     if is3D:
-        zLim = np.array(axhandle.get_ylim())
+        zLim = np.array(axhandle.get_zlim())
 
     # Check for logarithmic scales
-    isXlog = axhandle.get_xscale() == "log"
+    isXlog = _axIsXLog(axhandle)
     if isXlog:
         xLim = np.log10(xLim)
-    isYLog = axhandle.get_yscale() == "log"
+    isYLog = _axIsYLog(axhandle)
     if isYLog:
         yLim = np.log10(yLim)
     if is3D:
-        isZLog = axhandle.get_zscale() == "log"
+        isZLog = _axIsZLog(axhandle)
         if isZLog:
             zLim = np.log10(zLim)
 
@@ -540,6 +540,18 @@ def _axIs3D(axhandle):
     :type axhandle: mpl.axes.Axes or mpl_toolkits.mplot3d.axes3d.Axes3D
     """
     return hasattr(axhandle, "get_zlim")
+
+
+def _axIsXLog(axhandle):
+    return axhandle.get_xscale() == "log"
+
+
+def _axIsYLog(axhandle):
+    return axhandle.get_yscale() == "log"
+
+
+def _axIsZLog(axhandle3D):
+    return axhandle3D.get_zscale() == "log"
 
 
 def _get_line_data(linehandle):
