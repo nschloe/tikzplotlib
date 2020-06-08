@@ -229,8 +229,8 @@ def _cleanline(fighandle, axhandle, linehandle, target_resolution, scale_precisi
         visual_data = _get_visual_data(axhandle, data, is3D)
 
         if not is3D:
-            data = _move_points_closer(xLim, yLim, data)
-            visual_data = _get_visual_data(axhandle, data, is3D)
+            visual_data = _move_points_closer(xLim, yLim, visual_data)
+            visual_data = _get_visual_data(axhandle, visual_data, is3D)
 
         hasMarkers = not linehandle.get_marker() == "None"
         hasLines = not linehandle.get_linestyle() == "None"
@@ -276,8 +276,8 @@ def _clean_collections(
     visual_data = _get_visual_data(axhandle, data, is3D)
 
     if not is3D:
-        data = _move_points_closer(xLim, yLim, data)
-        visual_data = _get_visual_data(axhandle, data, is3D)
+        visual_data = _move_points_closer(xLim, yLim, visual_data)
+        visual_data = _get_visual_data(axhandle, visual_data, is3D)
 
     hasMarkers = True
     hasLines = False
