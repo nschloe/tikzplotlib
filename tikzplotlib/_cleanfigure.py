@@ -911,7 +911,7 @@ def _pixelate(x, y, xToPix, yToPix):
     )
     mask_sorted = np.concatenate([np.array([True]).reshape((-1,)), m], axis=0)
 
-    mask = np.ones((x.shape)) == 0
+    mask = np.ones(x.shape) == 0
     mask[id_orig] = mask_sorted
     mask[0] = True
     mask[-1] = True

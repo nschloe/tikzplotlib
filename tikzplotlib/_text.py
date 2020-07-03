@@ -63,7 +63,7 @@ def draw_text(data, obj):
         properties.append(anchor)
     data, col, _ = _color.mpl_color2xcolor(data, converter.to_rgb(obj.get_color()))
     properties.append(f"text={col}")
-    properties.append("rotate={:.1f}".format(obj.get_rotation()))
+    properties.append(f"rotate={obj.get_rotation():.1f}")
 
     if obj.get_style() == "italic":
         style.append("\\itshape")
@@ -247,7 +247,7 @@ def _bbox(bbox, data, properties, scaling):
     inner_sep = bbox_style.pad * data["font size"]
     properties.append(f"inner sep={inner_sep:{ff}}pt")
     if bbox.get_alpha():
-        properties.append("fill opacity={}".format(bbox.get_alpha()))
+        properties.append(f"fill opacity={bbox.get_alpha()}")
     # Rounded boxes
     if isinstance(bbox_style, mpl.patches.BoxStyle.Round):
         properties.append("rounded corners")
