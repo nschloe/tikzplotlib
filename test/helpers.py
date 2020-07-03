@@ -12,7 +12,7 @@ def print_tree(obj, indent=""):
     """Recursively prints the tree structure of the matplotlib object.
     """
     if isinstance(obj, matplotlib.text.Text):
-        print(indent, type(obj).__name__, '("{}")'.format(obj.get_text()))
+        print(indent, type(obj).__name__, f'("{obj.get_text()}")')
     else:
         print(indent, type(obj).__name__)
 
@@ -43,7 +43,7 @@ def assert_equality(
     plt.close()
 
     this_dir = os.path.dirname(os.path.abspath(__file__))
-    with open(os.path.join(this_dir, filename), "r", encoding="utf-8") as f:
+    with open(os.path.join(this_dir, filename), encoding="utf-8") as f:
         reference = f.read()
     assert reference == code, _unidiff_output(code, reference)
 

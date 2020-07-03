@@ -11,8 +11,8 @@ def draw_legend(data, obj):
     texts = []
     children_alignment = []
     for text in obj.texts:
-        texts.append("{}".format(text.get_text()))
-        children_alignment.append("{}".format(text.get_horizontalalignment()))
+        texts.append(f"{text.get_text()}")
+        children_alignment.append(f"{text.get_horizontalalignment()}")
 
     # Get the location.
     # http://matplotlib.org/api/legend_api.html
@@ -39,7 +39,7 @@ def draw_legend(data, obj):
 
     legend_style = [
         # https://github.com/matplotlib/matplotlib/issues/15764#issuecomment-557823370
-        "fill opacity={}".format(obj.get_frame().get_alpha()),
+        f"fill opacity={obj.get_frame().get_alpha()}",
         "draw opacity=1",
         "text opacity=1",
     ]
