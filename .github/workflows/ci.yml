@@ -31,10 +31,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install system dependencies
       run: sudo apt-get install -y texlive-latex-base texlive-latex-extra context python3-tk
-    - name: Extract tests from README
-      run: |
-        pip install excode
-        excode README.md test/zzz_readme_test.py --filter python,test
     - name: Test with tox
       run: |
         pip install tox

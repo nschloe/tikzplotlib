@@ -3,7 +3,7 @@
   <p align="center">The artist formerly known as *matplotlib2tikz.*</p>
 </p>
 
-[![CircleCI](https://img.shields.io/circleci/project/github/nschloe/tikzplotlib/master.svg?style=flat-square)](https://circleci.com/gh/nschloe/tikzplotlib/tree/master)
+[![gh-actions](https://img.shields.io/github/workflow/status/nschloe/tikzplotlib/ci?style=flat-square)](https://github.com/nschloe/tikzplotlib/actions?query=workflow%3Aci)
 [![codecov](https://img.shields.io/codecov/c/github/nschloe/tikzplotlib.svg?style=flat-square)](https://codecov.io/gh/nschloe/tikzplotlib)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/psf/black)
 [![Documentation Status](https://readthedocs.org/projects/tikzplotlib/badge/?version=latest&style=flat-square)](https://readthedocs.org/projects/tikzplotlib/?badge=latest)
@@ -33,7 +33,7 @@ of axes, data etc. Consequently, the output of tikzplotlib
 
 than [raw TikZ output](https://matplotlib.org/users/whats_new.html#pgf-tikz-backend).
 For example, the matplotlib figure
-```python,test
+```python
 import matplotlib.pyplot as plt
 import numpy as np
 
