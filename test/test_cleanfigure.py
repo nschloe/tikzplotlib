@@ -1,7 +1,7 @@
 import numpy as np
+import pytest
 from matplotlib import pyplot as plt
 
-import pytest
 from tikzplotlib import clean_figure, get_tikz_code
 
 RC_PARAMS = {"figure.figsize": [5, 5], "figure.dpi": 220, "pgf.rcfonts": False}
@@ -31,6 +31,45 @@ class Test_plottypes:
             numLinesRaw = raw.count("\n")
             numLinesClean = clean.count("\n")
             assert numLinesRaw - numLinesClean == 18
+        plt.close("all")
+
+    def test_logplot(self):
+        x = np.logspace(-3, 3, 20)
+        y = np.logspace(-3, 3, 20)
+
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+            ax.plot(x, y)
+            ax.set_xscale("log")
+            ax.set_yscale("log")
+            ax.set_ylim([10 ** (-2), 10 ** (2)])
+            ax.set_xlim([10 ** (-2), 10 ** (2)])
+            raw = get_tikz_code()
+
+            clean_figure(fig)
+            clean = get_tikz_code()
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 11
+        plt.close("all")
+
+    def test_semilogplot(self):
+        x = np.logspace(-3, 3, 20)
+        y = np.linspace(1, 100, 20)
+
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+            ax.plot(x, y)
+            ax.set_xscale("log")
+            ax.set_xlim([10 ** (-2), 10 ** (2)])
+            ax.set_ylim([20, 80])
+            raw = get_tikz_code()
+
+            clean_figure(fig)
+            clean = get_tikz_code()
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 6
         plt.close("all")
 
     def test_step(self):

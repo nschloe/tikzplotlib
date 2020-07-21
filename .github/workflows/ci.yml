@@ -27,17 +27,14 @@ jobs:
     steps:
     - uses: actions/setup-python@v1
       with:
-        python-version: "3.x"
+        python-version: ${{ matrix.python-version }}
     - uses: actions/checkout@v2
-    - name: Install dependencies
+    - name: Install system dependencies
       run: sudo apt-get install -y texlive-latex-base texlive-latex-extra context python3-tk
-    - name: Extract tests from README
-      run: |
-        pip install excode
-        excode README.md test/zzz_readme_test.py --filter python,test
     - name: Test with tox
       run: |
         pip install tox
         tox
-    # - name: Submit to codecov
-    #   run: bash <(curl -s https://codecov.io/bash)
+    - name: Submit to codecov
+      if: ${{ matrix.python-version == '3.8' }}
+      run: bash <(curl -s https://codecov.io/bash)
