@@ -36,7 +36,7 @@ def draw_image(data, obj):
         # Convert mpl image to PIL
         if img_array.dtype != numpy.uint8:
             img_array = numpy.uint8(img_array * 255)
-        image = PIL.Image.fromarray(numpy.uint8(img_array * 255))
+        image = PIL.Image.fromarray(img_array)
 
         # If the input image is PIL:
         # image = PIL.Image.fromarray(img_array)
