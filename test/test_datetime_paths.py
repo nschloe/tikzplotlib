@@ -1,9 +1,8 @@
 import datetime as date
 
 import matplotlib.pyplot as plt
-from matplotlib import dates
-
 from helpers import assert_equality
+from matplotlib import dates
 
 
 def plot():

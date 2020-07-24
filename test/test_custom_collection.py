@@ -6,7 +6,6 @@ as a base class to be rendered.
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-
 from helpers import assert_equality
 
 

@@ -5,9 +5,10 @@ import matplotlib.pyplot as plt
 
 
 def plot():
-    from matplotlib import rcParams
-    import matplotlib.image as mpimg
     import os
+
+    import matplotlib.image as mpimg
+    from matplotlib import rcParams
 
     this_dir = os.path.dirname(os.path.realpath(__file__))
     img = mpimg.imread(os.path.join(this_dir, "lena.png"))

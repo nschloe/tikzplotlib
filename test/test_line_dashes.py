@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-
 from helpers import assert_equality
 
 
