@@ -203,7 +203,7 @@ class Test_plottypes:
 
     def test_surface3D(self):
         from matplotlib import cm
-        from matplotlib.ticker import LinearLocator, FormatStrFormatter
+        from matplotlib.ticker import FormatStrFormatter, LinearLocator
 
         # Make data.
         X = np.arange(-5, 5, 0.25)
@@ -265,8 +265,8 @@ class Test_plottypes:
         plt.close("all")
 
     def test_contour3D(self):
-        from mpl_toolkits.mplot3d import axes3d
         from matplotlib import cm
+        from mpl_toolkits.mplot3d import axes3d
 
         with plt.rc_context(rc=RC_PARAMS):
             fig = plt.figure()
@@ -279,8 +279,8 @@ class Test_plottypes:
         plt.close("all")
 
     def test_polygon3D(self):
-        from matplotlib.collections import PolyCollection
         from matplotlib import colors as mcolors
+        from matplotlib.collections import PolyCollection
 
         with plt.rc_context(rc=RC_PARAMS):
             fig = plt.figure()

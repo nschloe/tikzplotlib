@@ -2,8 +2,8 @@ from helpers import assert_equality
 
 
 def plot():
-    from matplotlib import pyplot as plt
     import numpy as np
+    from matplotlib import pyplot as plt
 
     x = np.linspace(0 * np.pi, 2 * np.pi, 128)
     y = np.linspace(0 * np.pi, 2 * np.pi, 128)

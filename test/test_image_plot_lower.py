@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-
 from helpers import assert_equality
 
 # the picture 'lena.png' with origin='lower' is flipped upside-down.
@@ -7,9 +6,10 @@ from helpers import assert_equality
 
 
 def plot():
-    from matplotlib import rcParams
-    import matplotlib.image as mpimg
     import os
+
+    import matplotlib.image as mpimg
+    from matplotlib import rcParams
 
     this_dir = os.path.dirname(os.path.realpath(__file__))
     img = mpimg.imread(os.path.join(this_dir, "lena.png"))

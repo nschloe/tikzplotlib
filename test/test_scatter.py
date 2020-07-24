@@ -2,8 +2,8 @@ from helpers import assert_equality
 
 
 def plot():
-    from matplotlib import pyplot as plt
     import numpy as np
+    from matplotlib import pyplot as plt
 
     fig = plt.figure()
     with plt.style.context("fivethirtyeight"):
