@@ -366,7 +366,7 @@ def mpl_linestyle2pgfplots_linestyle(data, line_style, line=None):
     # dashdot: (0, (3.0, 5.0, 1.0, 5.0))
     ff = data["float format"]
     if isinstance(line_style, tuple):
-        if line_style[0] is None:
+        if line_style[0] is None or line_style[1] is None:
             return None
 
         if len(line_style[1]) == 2:
