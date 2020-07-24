@@ -2,19 +2,19 @@ from helpers import assert_equality
 
 
 def plot():
+    import matplotlib as mpl
+    import numpy as np
+    from matplotlib import pyplot as plt
+    from matplotlib.collections import PatchCollection
     from matplotlib.patches import (
         Circle,
         Ellipse,
+        FancyArrowPatch,
         Polygon,
         Rectangle,
         Wedge,
-        FancyArrowPatch,
     )
-    from matplotlib.collections import PatchCollection
     from matplotlib.path import Path
-    from matplotlib import pyplot as plt
-    import numpy as np
-    import matplotlib as mpl
 
     np.random.seed(123)
 

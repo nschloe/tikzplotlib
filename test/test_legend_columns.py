@@ -2,8 +2,8 @@ from helpers import assert_equality
 
 
 def plot():
-    import numpy as np
     import matplotlib.pyplot as plt
+    import numpy as np
 
     fig, ax = plt.subplots(figsize=(17, 6))
     ax.plot(np.array([1, 5]), label="Test 1")

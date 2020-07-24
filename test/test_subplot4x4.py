@@ -2,8 +2,8 @@ from helpers import assert_equality
 
 
 def plot():
-    from matplotlib import pyplot as pp
     import numpy as np
+    from matplotlib import pyplot as pp
 
     fig = pp.figure()
 
