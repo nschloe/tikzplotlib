@@ -2,8 +2,8 @@ from helpers import assert_equality
 
 
 def plot():
-    from matplotlib import pyplot as plt
     import numpy as np
+    from matplotlib import pyplot as plt
 
     fig, ax = plt.subplots(3, 3, sharex="col", sharey="row")
     axes = [ax[i][j] for i in range(len(ax)) for j in range(len(ax[i]))]

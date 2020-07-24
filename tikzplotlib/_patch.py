@@ -89,10 +89,9 @@ def draw_patchcollection(data, obj):
 
     paths = obj.get_paths()
     for path, ec, fc, ls, w, t, off in zip_modulo(paths, ecs, fcs, lss, ws, ts, offs):
-        if t is None:
-            t = mpl.transforms.IdentityTransform()
+        if t is not None:
+            path = path.transformed(mpl.transforms.Affine2D(t).translate(*off))
 
-        path = path.transformed(mpl.transforms.Affine2D(t).translate(*off))
         data, draw_options = mypath.get_draw_options(data, obj, ec, fc, ls, w)
         data, cont, draw_options, is_area = mypath.draw_path(
             data, path, draw_options=draw_options

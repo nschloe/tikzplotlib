@@ -1,6 +1,6 @@
 def plot():
-    from matplotlib import pyplot as plt
     import numpy as np
+    from matplotlib import pyplot as plt
 
     data = np.zeros((3, 3))
     data[:2, :2] = 1.0

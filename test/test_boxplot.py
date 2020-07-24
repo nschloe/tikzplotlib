@@ -6,7 +6,6 @@ external data in the file '' or '.tex')
 See: https://github.com/nschloe/tikzplotlib/pull/134
 """
 import matplotlib.pyplot as plt
-
 from helpers import assert_equality
 
 

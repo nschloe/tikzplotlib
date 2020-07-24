@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
-from matplotlib.collections import PolyCollection
-
 from helpers import assert_equality
+from matplotlib.collections import PolyCollection
 
 
 def plot():
