@@ -10,7 +10,7 @@ def plot():
     z = x ** 2 - y ** 2
 
     fig = plt.figure()
-    plt.pcolormesh(x, y, z, cmap=cm.viridis)
+    plt.pcolormesh(x, y, z, cmap=cm.viridis, shading="gouraud")
 
     return fig
 

@@ -20,8 +20,8 @@ def plot():
         return -np.cos(x) * np.sin(y) * F(t)
 
     fig, axs = plt.subplots(2, figsize=(8, 12))
-    axs[0].pcolormesh(X, Y, u(X, Y, 0))
-    axs[1].pcolormesh(X, Y, v(X, Y, 0))
+    axs[0].pcolormesh(X, Y, u(X, Y, 0), shading="gouraud")
+    axs[1].pcolormesh(X, Y, v(X, Y, 0), shading="gouraud")
     for ax in axs:
         ax.set_xlim(x[0], x[-1])
         ax.set_ylim(y[0], y[-1])
