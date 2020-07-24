@@ -366,7 +366,14 @@ def mpl_linestyle2pgfplots_linestyle(data, line_style, line=None):
     # dashdot: (0, (3.0, 5.0, 1.0, 5.0))
     ff = data["float format"]
     if isinstance(line_style, tuple):
+
+        # offset setting None (for matplotlib <= 3.2.2)
+        # https://matplotlib.org/3.3.0/api/api_changes.html#passing-the-dash-offset-as-none
         if line_style[0] is None:
+            return None
+
+        # offset setting for matplotlib >= 3.3.0
+        if line_style[0] == 0.0 and line_style[1] is None:
             return None
 
         if len(line_style[1]) == 2:
