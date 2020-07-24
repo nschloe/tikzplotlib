@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/nschloe/tikzplotlib"><img alt="tikzplotlib" src="https://nschloe.github.io/tikzplotlib/logo-tikzplotlib.svg" width="60%"></a>
-  <p align="center">The artist formerly known as <emph>matplotlib2tikz.</emph></p>
+  <p align="center">The artist formerly known as <em>matplotlib2tikz.</em></p>
 </p>
 
 [![gh-actions](https://img.shields.io/github/workflow/status/nschloe/tikzplotlib/ci?style=flat-square)](https://github.com/nschloe/tikzplotlib/actions?query=workflow%3Aci)
