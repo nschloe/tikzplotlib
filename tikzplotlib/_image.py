@@ -6,8 +6,7 @@ from . import _files
 
 
 def draw_image(data, obj):
-    """Returns the PGFPlots code for an image environment.
-    """
+    """Returns the PGFPlots code for an image environment."""
     content = []
 
     filename, rel_filepath = _files.new_filename(data, "img", ".png")

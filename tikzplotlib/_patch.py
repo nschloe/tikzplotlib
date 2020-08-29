@@ -5,8 +5,7 @@ from ._text import _get_arrow_style
 
 
 def draw_patch(data, obj):
-    """Return the PGFPlots code for patches.
-    """
+    """Return the PGFPlots code for patches."""
     if isinstance(obj, mpl.patches.FancyArrowPatch):
         data, draw_options = mypath.get_draw_options(
             data,
@@ -70,8 +69,7 @@ def zip_modulo(*seqs):
 
 
 def draw_patchcollection(data, obj):
-    """Returns PGFPlots code for a number of patch objects.
-    """
+    """Returns PGFPlots code for a number of patch objects."""
     content = []
 
     # recompute the face colors
@@ -116,8 +114,7 @@ def _draw_polygon(data, obj, draw_options):
 
 
 def _draw_rectangle(data, obj, draw_options):
-    """Return the PGFPlots code for rectangles.
-    """
+    """Return the PGFPlots code for rectangles."""
     # Objects with labels are plot objects (from bar charts, etc).  Even those without
     # labels explicitly set have a label of "_nolegend_".  Everything else should be
     # skipped because they likely correspong to axis/legend objects which are handled by
@@ -156,8 +153,7 @@ def _draw_rectangle(data, obj, draw_options):
 
 
 def _draw_ellipse(data, obj, draw_options):
-    """Return the PGFPlots code for ellipses.
-    """
+    """Return the PGFPlots code for ellipses."""
     if isinstance(obj, mpl.patches.Circle):
         # circle specialization
         return _draw_circle(data, obj, draw_options)
@@ -180,8 +176,7 @@ def _draw_ellipse(data, obj, draw_options):
 
 
 def _draw_circle(data, obj, draw_options):
-    """Return the PGFPlots code for circles.
-    """
+    """Return the PGFPlots code for circles."""
     x, y = obj.center
     ff = data["float format"]
     do = ",".join(draw_options)

@@ -7,8 +7,7 @@ def has_legend(axes):
 
 
 def get_legend_text(obj):
-    """Check if line is in legend.
-    """
+    """Check if line is in legend."""
     leg = obj.axes.get_legend()
     if leg is None:
         return None

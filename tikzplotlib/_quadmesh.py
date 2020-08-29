@@ -5,7 +5,7 @@ from . import _files
 
 def draw_quadmesh(data, obj):
     """Returns the PGFPlots code for an graphics environment holding a
-       rendering of the object.
+    rendering of the object.
     """
     content = []
 
