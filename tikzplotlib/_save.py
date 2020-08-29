@@ -258,14 +258,12 @@ def save(filepath, *args, encoding=None, **kwargs):
 
 
 def _tex_comment(comment):
-    """Prepends each line in string with the LaTeX comment key, '%'.
-    """
+    """Prepends each line in string with the LaTeX comment key, '%'."""
     return "% " + str.replace(comment, "\n", "\n% ") + "\n"
 
 
 def _get_color_definitions(data):
-    """Returns the list of custom color definitions for the TikZ file.
-    """
+    """Returns the list of custom color definitions for the TikZ file."""
     definitions = []
     ff = data["float format"]
     for name, rgb in data["custom colors"].items():
@@ -298,8 +296,7 @@ class _ContentManager:
         self._content = dict()
 
     def extend(self, content, zorder):
-        """ Extends with a list and a z-order
-        """
+        """Extends with a list and a z-order"""
         if zorder not in self._content:
             self._content[zorder] = []
         self._content[zorder].extend(content)

@@ -35,27 +35,27 @@ _MP_HATCH2PGF_PATTERN = {
 
 def add_custom_pattern(mpl_hatch, pattern_name, pattern_definition=None):
     """
-        The patterns of tikzpgf are quite simple, and cannot be customized but for the
-        color. A solution is to expose a function like this one to allow the user to
-        populate _MP_HATCH2PGF_PATTERN with custom (hatch, pattern) pairs. mpl does no
-        validation of the hatch string, it just ignores it if it does not recognize it,
-        so it is possible to have <any> string be a mpl_hatch.
+    The patterns of tikzpgf are quite simple, and cannot be customized but for the
+    color. A solution is to expose a function like this one to allow the user to
+    populate _MP_HATCH2PGF_PATTERN with custom (hatch, pattern) pairs. mpl does no
+    validation of the hatch string, it just ignores it if it does not recognize it, so
+    it is possible to have <any> string be a mpl_hatch.
 
-        If the pattern definition is passed, it could be added at the start of the code
-        in a similar fashion to
-        > data["custom colors"] = {}
-        in get_tikz_code(). tikzplotlib pattern definitions would mend the bad
-        correspondence between the mpl hatches and tikz patterns, with custom patterns
-        for the mpl hatches 'o' and 'O'
+    If the pattern definition is passed, it could be added at the start of the code in a
+    similar fashion to
+    > data["custom colors"] = {}
+    in get_tikz_code(). tikzplotlib pattern definitions would mend the bad
+    correspondence between the mpl hatches and tikz patterns, with custom patterns for
+    the mpl hatches 'o' and 'O'.
 
-        Want some opinions on this before I implement it..
+    Want some opinions on this before I implement it..
 
-        From https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.patches.Patch.html:
-        > Letters can be combined, in which case all the specified hatchings are done.
-        > If same letter repeats, it increases the density of hatching of that pattern.
-        To achieve something like this, custom patterns must be created
-        https://tex.stackexchange.com/questions/29359/pgfplots-how-to-fill-the-area-
-        under-a-curve-with-oblique-lines-hatching-as-a/29367#29367
+    From https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.patches.Patch.html:
+    > Letters can be combined, in which case all the specified hatchings are done.
+    > If same letter repeats, it increases the density of hatching of that pattern.
+    To achieve something like this, custom patterns must be created
+    https://tex.stackexchange.com/questions/29359/pgfplots-how-to-fill-the-area-
+    under-a-curve-with-oblique-lines-hatching-as-a/29367#29367
     """
 
 
@@ -80,14 +80,14 @@ def __validate_hatch(hatch):
 
 def _mpl_hatch2pgfp_pattern(data, hatch, color_name, color_rgba):
     r"""
-        Translates a hatch from matplotlib to the corresponding patten in PGFPlots.
+    Translates a hatch from matplotlib to the corresponding patten in PGFPlots.
 
-        Input:
-            hatch - str, like {'/', '\', '|', '-', '+', 'x', 'o', 'O', '.', '*'}
-            color_name - str, xcolor or custom color name
-            color_rgba - np.array, the rgba value of the color
-        Output:
-            draw_options - list, empty or with a post action string
+    Input:
+        hatch - str, like {'/', '\', '|', '-', '+', 'x', 'o', 'O', '.', '*'}
+        color_name - str, xcolor or custom color name
+        color_rgba - np.array, the rgba value of the color
+    Output:
+        draw_options - list, empty or with a post action string
     """
     hatch = __validate_hatch(hatch)
     try:

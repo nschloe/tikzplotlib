@@ -3,8 +3,7 @@ import numpy
 
 
 def mpl_color2xcolor(data, matplotlib_color):
-    """Translates a matplotlib color specification into a proper LaTeX xcolor.
-    """
+    """Translates a matplotlib color specification into a proper LaTeX xcolor."""
     # Convert it to RGBA.
     my_col = numpy.array(mpl.colors.ColorConverter().to_rgba(matplotlib_color))
 

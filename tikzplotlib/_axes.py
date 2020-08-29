@@ -14,8 +14,7 @@ def _common_texification(string):
 
 class Axes:
     def __init__(self, data, obj):  # noqa: C901
-        """Returns the PGFPlots code for an axis environment.
-        """
+        """Returns the PGFPlots code for an axis environment."""
         self.content = []
 
         # Are we dealing with an axis that hosts a colorbar? Skip then, those are
@@ -270,14 +269,14 @@ class Axes:
                     self.axis_options.append("tick align=center")
 
         # Set each rotation for every label
-        x_tick_rotation_and_horizontal_alignment = self._get_label_rotation_and_horizontal_alignment(
-            obj, data, "x"
+        x_tick_rotation_and_horizontal_alignment = (
+            self._get_label_rotation_and_horizontal_alignment(obj, data, "x")
         )
         if x_tick_rotation_and_horizontal_alignment:
             self.axis_options.append(x_tick_rotation_and_horizontal_alignment)
 
-        y_tick_rotation_and_horizontal_alignment = self._get_label_rotation_and_horizontal_alignment(
-            obj, data, "y"
+        y_tick_rotation_and_horizontal_alignment = (
+            self._get_label_rotation_and_horizontal_alignment(obj, data, "y")
         )
         if y_tick_rotation_and_horizontal_alignment:
             self.axis_options.append(y_tick_rotation_and_horizontal_alignment)
@@ -431,11 +430,6 @@ class Axes:
                     data["pgfplots libs"].add("groupplots")
 
     def _get_label_rotation_and_horizontal_alignment(self, obj, data, x_or_y):
-        tick_label_text_width = None
-        tick_label_text_width_identifier = f"{x_or_y} tick label text width"
-        if tick_label_text_width_identifier in self.axis_options:
-            self.axis_options.remove(tick_label_text_width_identifier)
-
         label_style = ""
 
         major_tick_labels = (
@@ -446,6 +440,10 @@ class Axes:
 
         if not major_tick_labels:
             return None
+
+        tick_label_text_width_identifier = f"{x_or_y} tick label text width"
+        if tick_label_text_width_identifier in self.axis_options:
+            self.axis_options.remove(tick_label_text_width_identifier)
 
         tick_labels_rotation = [label.get_rotation() for label in major_tick_labels]
         tick_labels_rotation_same_value = len(set(tick_labels_rotation)) == 1
@@ -468,9 +466,10 @@ class Axes:
 
             # Horizontal alignment will be ignored if no 'x/y tick label text width' has
             # been passed in the 'extra' parameter
-            if tick_label_text_width:
-                values.append(f"align={tick_labels_horizontal_alignment[0]}")
-                values.append(f"text width={tick_label_text_width}")
+            # tick_label_text_width = None
+            # if tick_label_text_width:
+            #     values.append(f"align={tick_labels_horizontal_alignment[0]}")
+            #     values.append(f"text width={tick_label_text_width}")
 
             if values:
                 label_style = "{}ticklabel style = {{{}}}".format(
@@ -490,18 +489,18 @@ class Axes:
 
             # Ignore horizontal alignment if no '{x,y} tick label text width' has been
             # passed in the 'extra' parameter
-            if tick_label_text_width:
-                if tick_labels_horizontal_alignment_same_value:
-                    values.append(f"align={tick_labels_horizontal_alignment[0]}")
-                    values.append(f"text width={tick_label_text_width}")
-                else:
-                    for idx, x in enumerate(tick_labels_horizontal_alignment):
-                        label_style += f"{x_or_y}_tick_label_ha_{idx}/.initial = {x}"
+            # if tick_label_text_width:
+            #     if tick_labels_horizontal_alignment_same_value:
+            #         values.append(f"align={tick_labels_horizontal_alignment[0]}")
+            #         values.append(f"text width={tick_label_text_width}")
+            #     else:
+            #         for idx, x in enumerate(tick_labels_horizontal_alignment):
+            #             label_style += f"{x_or_y}_tick_label_ha_{idx}/.initial = {x}"
 
-                    values.append(
-                        f"align=\\pgfkeysvalueof{{/pgfplots/{x_or_y}_tick_label_ha_\\ticknum}}"
-                    )
-                    values.append(f"text width={tick_label_text_width}")
+            #         values.append(
+            #             f"align=\\pgfkeysvalueof{{/pgfplots/{x_or_y}_tick_label_ha_\\ticknum}}"
+            #         )
+            #         values.append(f"text width={tick_label_text_width}")
 
             label_style = (
                 "every {} tick label/.style = {{\n"
@@ -600,8 +599,7 @@ def _get_ticks(data, xy, ticks, ticklabels):
 
 
 def _is_colorbar_heuristic(obj):
-    """Find out if the object is in fact a color bar.
-    """
+    """Find out if the object is in fact a color bar."""
     # TODO come up with something more accurate here
     # Might help:
     # TODO Are the colorbars exactly the l.collections.PolyCollection's?
@@ -664,7 +662,6 @@ def _handle_linear_segmented_color_map(cmap, data):
     k_red = 0
     k_green = 0
     k_blue = 0
-    x = 0.0
     colors = []
     X = []
     while True:
@@ -782,8 +779,7 @@ def _handle_listed_color_map(cmap, data):
 
 
 def _scale_to_int(X, max_val):
-    """Scales the array X such that it contains only integers.
-    """
+    """Scales the array X such that it contains only integers."""
     # if max_val is None:
     #     X = X / _gcd_array(X)
     X = X / max(1 / max_val, _gcd_array(X))
@@ -817,8 +813,7 @@ def _gcd(a, b):
 
 
 def _linear_interpolation(x, X, Y):
-    """Given two data points [X,Y], linearly interpolate those at x.
-    """
+    """Given two data points [X,Y], linearly interpolate those at x."""
     return (Y[1] * (x - X[0]) + Y[0] * (X[1] - x)) / (X[1] - X[0])
 
 

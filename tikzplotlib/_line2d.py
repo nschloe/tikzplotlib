@@ -11,8 +11,7 @@ from ._util import get_legend_text, has_legend, transform_to_data_coordinates
 
 
 def draw_line2d(data, obj):
-    """Returns the PGFPlots code for an Line2D environment.
-    """
+    """Returns the PGFPlots code for an Line2D environment."""
     content = []
     addplot_options = []
 
@@ -101,8 +100,7 @@ def draw_line2d(data, obj):
 
 
 def draw_linecollection(data, obj):
-    """Returns Pgfplots code for a number of patch objects.
-    """
+    """Returns Pgfplots code for a number of patch objects."""
     content = []
 
     edgecolors = obj.get_edgecolors()

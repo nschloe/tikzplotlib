@@ -9,8 +9,7 @@ import tikzplotlib
 
 
 def print_tree(obj, indent=""):
-    """Recursively prints the tree structure of the matplotlib object.
-    """
+    """Recursively prints the tree structure of the matplotlib object."""
     if isinstance(obj, matplotlib.text.Text):
         print(indent, type(obj).__name__, f'("{obj.get_text()}")')
     else:
