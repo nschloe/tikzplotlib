@@ -6,8 +6,7 @@ from . import _color as mycol
 
 
 def draw_legend(data, obj):
-    """Adds legend code.
-    """
+    """Adds legend code."""
     texts = []
     children_alignment = []
     for text in obj.texts:

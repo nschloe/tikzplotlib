@@ -11,8 +11,7 @@ from ._util import get_legend_text, has_legend
 
 
 def draw_path(data, path, draw_options=None, simplify=None):
-    """Adds code for drawing an ordinary path in PGFPlots (TikZ).
-    """
+    """Adds code for drawing an ordinary path in PGFPlots (TikZ)."""
     # For some reasons, matplotlib sometimes adds void paths which consist of
     # only one point and have 0 fill opacity. To not let those clutter the
     # output TeX file, bail out here.
@@ -112,8 +111,7 @@ def draw_path(data, path, draw_options=None, simplify=None):
 
 
 def draw_pathcollection(data, obj):
-    """Returns PGFPlots code for a number of patch objects.
-    """
+    """Returns PGFPlots code for a number of patch objects."""
     content = []
     # gather data
     assert obj.get_offsets() is not None
@@ -203,9 +201,9 @@ def draw_pathcollection(data, obj):
             draw_options.extend(
                 [
                     "visualization depends on="
-                    "{\\thisrow{sizedata} \\as\\perpointmarksize}",
+                    + "{\\thisrow{sizedata} \\as\\perpointmarksize}",
                     "scatter/@pre marker code/.append style="
-                    "{/tikz/mark size=\\perpointmarksize}",
+                    + "{/tikz/mark size=\\perpointmarksize}",
                 ]
             )
 
@@ -230,18 +228,18 @@ def draw_pathcollection(data, obj):
 
 def get_draw_options(data, obj, ec, fc, ls, lw, hatch=None):
     """Get the draw options for a given (patch) object.
-        Get the draw options for a given (patch) object.
-        Input:
-            data -
-            obj -
-            ec - edge color
-            fc - face color
-            ls - linestyle
-            lw - linewidth
-            hatch=None - hatch, i.e., pattern within closed path
-        Output:
-            draw_options - list, to be ",".join(draw_options) to produce the
-                           draw options passed to PGF
+    Get the draw options for a given (patch) object.
+    Input:
+        data -
+        obj -
+        ec - edge color
+        fc - face color
+        ls - linestyle
+        lw - linewidth
+        hatch=None - hatch, i.e., pattern within closed path
+    Output:
+        draw_options - list, to be ",".join(draw_options) to produce the
+                       draw options passed to PGF
     """
     draw_options = []
 

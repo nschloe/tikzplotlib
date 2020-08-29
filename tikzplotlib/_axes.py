@@ -14,8 +14,7 @@ def _common_texification(string):
 
 class Axes:
     def __init__(self, data, obj):  # noqa: C901
-        """Returns the PGFPlots code for an axis environment.
-        """
+        """Returns the PGFPlots code for an axis environment."""
         self.content = []
 
         # Are we dealing with an axis that hosts a colorbar? Skip then, those are
@@ -270,14 +269,14 @@ class Axes:
                     self.axis_options.append("tick align=center")
 
         # Set each rotation for every label
-        x_tick_rotation_and_horizontal_alignment = self._get_label_rotation_and_horizontal_alignment(
-            obj, data, "x"
+        x_tick_rotation_and_horizontal_alignment = (
+            self._get_label_rotation_and_horizontal_alignment(obj, data, "x")
         )
         if x_tick_rotation_and_horizontal_alignment:
             self.axis_options.append(x_tick_rotation_and_horizontal_alignment)
 
-        y_tick_rotation_and_horizontal_alignment = self._get_label_rotation_and_horizontal_alignment(
-            obj, data, "y"
+        y_tick_rotation_and_horizontal_alignment = (
+            self._get_label_rotation_and_horizontal_alignment(obj, data, "y")
         )
         if y_tick_rotation_and_horizontal_alignment:
             self.axis_options.append(y_tick_rotation_and_horizontal_alignment)
@@ -600,8 +599,7 @@ def _get_ticks(data, xy, ticks, ticklabels):
 
 
 def _is_colorbar_heuristic(obj):
-    """Find out if the object is in fact a color bar.
-    """
+    """Find out if the object is in fact a color bar."""
     # TODO come up with something more accurate here
     # Might help:
     # TODO Are the colorbars exactly the l.collections.PolyCollection's?
@@ -781,8 +779,7 @@ def _handle_listed_color_map(cmap, data):
 
 
 def _scale_to_int(X, max_val):
-    """Scales the array X such that it contains only integers.
-    """
+    """Scales the array X such that it contains only integers."""
     # if max_val is None:
     #     X = X / _gcd_array(X)
     X = X / max(1 / max_val, _gcd_array(X))
@@ -816,8 +813,7 @@ def _gcd(a, b):
 
 
 def _linear_interpolation(x, X, Y):
-    """Given two data points [X,Y], linearly interpolate those at x.
-    """
+    """Given two data points [X,Y], linearly interpolate those at x."""
     return (Y[1] * (x - X[0]) + Y[0] * (X[1] - x)) / (X[1] - X[0])
 
 

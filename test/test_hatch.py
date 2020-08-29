@@ -3,10 +3,10 @@ from helpers import assert_equality
 
 def plot():
     """
-        Hatch demo code from
-        https://matplotlib.org/3.1.1/gallery/shapes_and_collections/hatch_demo.html
+    Hatch demo code from
+    https://matplotlib.org/3.1.1/gallery/shapes_and_collections/hatch_demo.html
 
-        Slightly modified to test more aspects of the hatch implementation
+    Slightly modified to test more aspects of the hatch implementation
     """
     import matplotlib.pyplot as plt
     from matplotlib.patches import Ellipse, Polygon
