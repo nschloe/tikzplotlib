@@ -23,7 +23,7 @@ figures like
 for native inclusion into LaTeX or ConTeXt documents.
 
 The output of tikzplotlib is in
-[PGFPlots](http://pgfplots.sourceforge.net/pgfplots.pdf), a TeX library that sits on
+[PGFPlots](https://github.com/pgf-tikz/pgfplots/), a TeX library that sits on
 top of [PGF/TikZ](https://en.wikipedia.org/wiki/PGF/TikZ) and describes graphs in terms
 of axes, data etc. Consequently, the output of tikzplotlib
 
