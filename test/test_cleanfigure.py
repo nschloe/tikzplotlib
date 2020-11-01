@@ -556,6 +556,115 @@ class Test_subplots:
         plt.close("all")
 
 
+class Test_logscale:
+    def test_ylog(self):
+        x = np.linspace(0, 3, 100)
+        y = np.exp(x)
+
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1)
+            ax.plot(x, y)
+            ax.set_yscale("log")
+            raw = get_tikz_code()
+            clean_figure()
+
+            clean = get_tikz_code()
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 98
+            assert numLinesClean == 25
+        plt.close("all")
+
+    def test_xlog(self):
+        y = np.linspace(0, 3, 100)
+        x = np.exp(y)
+
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1)
+            ax.plot(x, y)
+            ax.set_xscale("log")
+            raw = get_tikz_code()
+            clean_figure()
+
+            clean = get_tikz_code()
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 98
+            assert numLinesClean == 25
+        plt.close("all")
+
+    def test_loglog(self):
+        x = np.exp(np.logspace(0, 5, 100))
+        y = np.exp(np.logspace(0, 5, 100))
+
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1)
+            ax.plot(x, y)
+            ax.set_xscale("log")
+            ax.set_yscale("log")
+            raw = get_tikz_code()
+            clean_figure()
+
+            clean = get_tikz_code()
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 98
+            assert numLinesClean == 27
+        plt.close("all")
+
+    def test_ylog_2(self):
+        x = np.arange(1, 100)
+        y = np.arange(1, 100)
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1)
+            ax.plot(x, y)
+            ax.set_yscale("log")
+            raw = get_tikz_code()
+            clean_figure()
+
+            clean = get_tikz_code()
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 51
+            assert numLinesClean == 71
+        plt.close("all")
+
+    def test_xlog_2(self):
+        x = np.arange(1, 100)
+        y = np.arange(1, 100)
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1)
+            ax.plot(x, y)
+            ax.set_xscale("log")
+            raw = get_tikz_code()
+            clean_figure()
+
+            clean = get_tikz_code()
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 51
+            assert numLinesClean == 71
+        plt.close("all")
+
+    def test_loglog_2(self):
+        x = np.arange(1, 100)
+        y = np.arange(1, 100)
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1)
+            ax.plot(x, y)
+            ax.set_xscale("log")
+            ax.set_yscale("log")
+            raw = get_tikz_code()
+            clean_figure()
+
+            clean = get_tikz_code()
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 97
+            assert numLinesClean == 27
+        plt.close("all")
+
+
 def test_memory():
     plt.plot(np.arange(100000))
     clean_figure()
