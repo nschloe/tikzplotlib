@@ -33,45 +33,6 @@ class Test_plottypes:
             assert numLinesRaw - numLinesClean == 18
         plt.close("all")
 
-    def test_logplot(self):
-        x = np.logspace(-3, 3, 20)
-        y = np.logspace(-3, 3, 20)
-
-        with plt.rc_context(rc=RC_PARAMS):
-            fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-            ax.plot(x, y)
-            ax.set_xscale("log")
-            ax.set_yscale("log")
-            ax.set_ylim([10 ** (-2), 10 ** (2)])
-            ax.set_xlim([10 ** (-2), 10 ** (2)])
-            raw = get_tikz_code()
-
-            clean_figure(fig)
-            clean = get_tikz_code()
-            numLinesRaw = raw.count("\n")
-            numLinesClean = clean.count("\n")
-            assert numLinesRaw - numLinesClean == 11
-        plt.close("all")
-
-    def test_semilogplot(self):
-        x = np.logspace(-3, 3, 20)
-        y = np.linspace(1, 100, 20)
-
-        with plt.rc_context(rc=RC_PARAMS):
-            fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-            ax.plot(x, y)
-            ax.set_xscale("log")
-            ax.set_xlim([10 ** (-2), 10 ** (2)])
-            ax.set_ylim([20, 80])
-            raw = get_tikz_code()
-
-            clean_figure(fig)
-            clean = get_tikz_code()
-            numLinesRaw = raw.count("\n")
-            numLinesClean = clean.count("\n")
-            assert numLinesRaw - numLinesClean == 6
-        plt.close("all")
-
     def test_step(self):
         x = np.linspace(1, 100, 20)
         y = np.linspace(1, 100, 20)
@@ -553,6 +514,154 @@ class Test_subplots:
             numLinesRaw = raw.count("\n")
             numLinesClean = clean.count("\n")
             assert numLinesRaw - numLinesClean == 36
+        plt.close("all")
+
+
+class Test_logscale:
+    def test_ylog(self):
+        x = np.linspace(0, 3, 100)
+        y = np.exp(x)
+
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1)
+            ax.plot(x, y)
+            ax.set_yscale("log")
+            raw = get_tikz_code()
+            clean_figure()
+
+            clean = get_tikz_code()
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 98
+            assert numLinesClean == 25
+        plt.close("all")
+
+    def test_xlog(self):
+        y = np.linspace(0, 3, 100)
+        x = np.exp(y)
+
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1)
+            ax.plot(x, y)
+            ax.set_xscale("log")
+            raw = get_tikz_code()
+            clean_figure()
+
+            clean = get_tikz_code()
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 98
+            assert numLinesClean == 25
+        plt.close("all")
+
+    def test_loglog(self):
+        x = np.exp(np.logspace(0, 5, 100))
+        y = np.exp(np.logspace(0, 5, 100))
+
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1)
+            ax.plot(x, y)
+            ax.set_xscale("log")
+            ax.set_yscale("log")
+            raw = get_tikz_code()
+            clean_figure()
+
+            clean = get_tikz_code()
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 98
+            assert numLinesClean == 27
+        plt.close("all")
+
+    def test_ylog_2(self):
+        x = np.arange(1, 100)
+        y = np.arange(1, 100)
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1)
+            ax.plot(x, y)
+            ax.set_yscale("log")
+            raw = get_tikz_code()
+            clean_figure()
+
+            clean = get_tikz_code()
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 51
+            assert numLinesClean == 71
+        plt.close("all")
+
+    def test_xlog_2(self):
+        x = np.arange(1, 100)
+        y = np.arange(1, 100)
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1)
+            ax.plot(x, y)
+            ax.set_xscale("log")
+            raw = get_tikz_code()
+            clean_figure()
+
+            clean = get_tikz_code()
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 51
+            assert numLinesClean == 71
+        plt.close("all")
+
+    def test_loglog_2(self):
+        x = np.arange(1, 100)
+        y = np.arange(1, 100)
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1)
+            ax.plot(x, y)
+            ax.set_xscale("log")
+            ax.set_yscale("log")
+            raw = get_tikz_code()
+            clean_figure()
+
+            clean = get_tikz_code()
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 97
+            assert numLinesClean == 27
+        plt.close("all")
+
+    def test_loglog_3(self):
+        x = np.logspace(-3, 3, 20)
+        y = np.logspace(-3, 3, 20)
+
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+            ax.plot(x, y)
+            ax.set_xscale("log")
+            ax.set_yscale("log")
+            ax.set_ylim([10 ** (-2), 10 ** (2)])
+            ax.set_xlim([10 ** (-2), 10 ** (2)])
+            raw = get_tikz_code()
+
+            clean_figure(fig)
+            clean = get_tikz_code()
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 18
+        plt.close("all")
+
+    def test_xlog_3(self):
+        x = np.logspace(-3, 3, 20)
+        y = np.linspace(1, 100, 20)
+
+        with plt.rc_context(rc=RC_PARAMS):
+            fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+            ax.plot(x, y)
+            ax.set_xscale("log")
+            ax.set_xlim([10 ** (-2), 10 ** (2)])
+            ax.set_ylim([20, 80])
+            raw = get_tikz_code()
+
+            clean_figure(fig)
+            clean = get_tikz_code()
+            numLinesRaw = raw.count("\n")
+            numLinesClean = clean.count("\n")
+            assert numLinesRaw - numLinesClean == 18
         plt.close("all")
 
 
