@@ -4,6 +4,7 @@
 </p>
 
 [![PyPi Version](https://img.shields.io/pypi/v/tikzplotlib.svg?style=flat-square)](https://pypi.org/project/tikzplotlib)
+[![Packaging status](https://repology.org/badge/tiny-repos/python:tikzplotlib.svg)](https://repology.org/project/python:tikzplotlib/versions)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/tikzplotlib.svg?style=flat-square)](https://pypi.org/pypi/tikzplotlib/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1173089.svg?style=flat-square)](https://doi.org/10.5281/zenodo.1173089)
 [![GitHub stars](https://img.shields.io/github/stars/nschloe/tikzplotlib.svg?style=flat-square&logo=github&label=Stars&logoColor=white)](https://github.com/nschloe/tikzplotlib)
