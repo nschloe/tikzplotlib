@@ -230,7 +230,6 @@ def _cleanline(fighandle, axhandle, linehandle, target_resolution, scale_precisi
 
         if not is3D:
             visual_data = _move_points_closer(xLim, yLim, visual_data)
-            visual_data = _get_visual_data(axhandle, visual_data, is3D)
 
         hasMarkers = not linehandle.get_marker() == "None"
         hasLines = not linehandle.get_linestyle() == "None"
