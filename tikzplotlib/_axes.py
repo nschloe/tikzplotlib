@@ -295,9 +295,23 @@ class Axes:
         # Don't use get_{x,y}gridlines for gridlines; see discussion on
         # <http://sourceforge.net/p/matplotlib/mailman/message/25169234/> Coordinate of
         # the lines are entirely meaningless, but styles (colors,...) are respected.
-        if obj.xaxis._gridOnMajor:
+
+        try:
+            # mpl 3.3.3+
+            # <https://github.com/matplotlib/matplotlib/pull/18769>
+            has_major_xgrid = obj.xaxis._major_tick_kw["gridOn"]
+            has_minor_xgrid = obj.xaxis._minor_tick_kw["gridOn"]
+            has_major_ygrid = obj.yaxis._major_tick_kw["gridOn"]
+            has_minor_ygrid = obj.yaxis._minor_tick_kw["gridOn"]
+        except KeyError:
+            has_major_xgrid = obj.xaxis._gridOnMajor
+            has_minor_xgrid = obj.xaxis._gridOnMinor
+            has_major_ygrid = obj.yaxis._gridOnMajor
+            has_minor_ygrid = obj.yaxis._gridOnMinor
+
+        if has_major_xgrid:
             self.axis_options.append("xmajorgrids")
-        if obj.xaxis._gridOnMinor:
+        if has_minor_xgrid:
             self.axis_options.append("xminorgrids")
 
         xlines = obj.get_xgridlines()
@@ -307,9 +321,9 @@ class Axes:
             if col != "black":
                 self.axis_options.append(f"x grid style={{{col}}}")
 
-        if obj.yaxis._gridOnMajor:
+        if has_major_ygrid:
             self.axis_options.append("ymajorgrids")
-        if obj.yaxis._gridOnMinor:
+        if has_minor_ygrid:
             self.axis_options.append("yminorgrids")
 
         ylines = obj.get_ygridlines()
