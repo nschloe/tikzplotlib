@@ -44,7 +44,7 @@ def assert_equality(
     this_dir = os.path.dirname(os.path.abspath(__file__))
     with open(os.path.join(this_dir, filename), encoding="utf-8") as f:
         reference = f.read()
-    assert reference == code, _unidiff_output(reference, code)
+    assert reference == code, filename + "\n" + _unidiff_output(reference, code)
 
     if assert_compilation:
         plot()
