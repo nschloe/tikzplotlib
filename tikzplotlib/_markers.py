@@ -1,24 +1,30 @@
-# for matplotlib markers, see: http://matplotlib.org/api/markers_api.html
+# for matplotlib markers, see https://matplotlib.org/api/markers_api.html
 _MP_MARKER2PGF_MARKER = {
     ".": "*",  # point
+    # ",": # pixel
     "o": "o",  # circle
     "+": "+",  # plus
+    "P": "+",  # actually plus filled
     "x": "x",  # x
+    "X": "x",  # actually x filled
     "None": None,
     " ": None,
     "": None,
 }
 
 # the following markers are only available with PGF's plotmarks library
+# See
+# <https://mirror.clientvps.com/CTAN/graphics/pgf/contrib/pgfplots/doc/pgfplots.pdf>,
+# chapter 4.7, page 183 ff.
 _MP_MARKER2PLOTMARKS = {
     "v": ("triangle", ["rotate=180"]),  # triangle down
-    "1": ("triangle", ["rotate=180"]),
     "^": ("triangle", []),  # triangle up
-    "2": ("triangle", []),
     "<": ("triangle", ["rotate=270"]),  # triangle left
-    "3": ("triangle", ["rotate=270"]),
     ">": ("triangle", ["rotate=90"]),  # triangle right
-    "4": ("triangle", ["rotate=90"]),
+    "1": ("Mercedes star flipped", []),
+    "2": ("Mercedes star", []),
+    "3": ("Mercedes star", ["rotate=90"]),
+    "4": ("Mercedes star", ["rotate=270"]),
     "s": ("square", []),
     "p": ("pentagon", []),
     "*": ("asterisk", []),
