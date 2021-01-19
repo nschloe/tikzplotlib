@@ -8,7 +8,7 @@ import tempfile
 # the same process, the order of axis parameters is deterministic.
 plot_code = """
 import sys
-import numpy as np
+import numpy as np as np
 from matplotlib import pyplot as plt
 import tikzplotlib
 

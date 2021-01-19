@@ -1,5 +1,5 @@
 import matplotlib as mpl
-import numpy
+import numpy as np
 import PIL
 
 from . import _files
@@ -30,11 +30,11 @@ def draw_image(data, obj):
         assert len(dims) == 3 and dims[2] in [3, 4]
         # convert to PIL image
         if obj.origin == "lower":
-            img_array = numpy.flipud(img_array)
+            img_array = np.flipud(img_array)
 
         # Convert mpl image to PIL
-        if img_array.dtype != numpy.uint8:
-            img_array = numpy.uint8(img_array * 255)
+        if img_array.dtype != np.uint8:
+            img_array = np.uint8(img_array * 255)
         image = PIL.Image.fromarray(img_array)
 
         # If the input image is PIL:
