@@ -10,7 +10,7 @@ def draw_quadmesh(data, obj):
     content = []
 
     # Generate file name for current object
-    filename, rel_filepath = _files.new_filename(data, "img", ".png")
+    filepath, rel_filepath = _files.new_filepath(data, "img", ".png")
 
     # Get the dpi for rendering and store the original dpi of the figure
     dpi = data["dpi"]
@@ -42,7 +42,7 @@ def draw_quadmesh(data, obj):
         int(round(cbox.extents[3] - cbox.extents[1])),
     )
     cropped = image.crop(box)
-    cropped.save(filename)
+    cropped.save(filepath)
 
     # Restore the original dpi of the figure
     obj.figure.set_dpi(fig_dpi)

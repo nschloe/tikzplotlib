@@ -1,4 +1,5 @@
 import os
+import pathlib
 import subprocess
 import tempfile
 
@@ -30,7 +31,7 @@ def _unidiff_output(expected, actual):
 
 
 def assert_equality(
-    plot, filename, assert_compilation=True, flavor="latex", **extra_get_tikz_code_args
+    plot, filename, assert_compilation=False, flavor="latex", **extra_get_tikz_code_args
 ):
     plot()
     code = tikzplotlib.get_tikz_code(
@@ -41,8 +42,8 @@ def assert_equality(
     )
     plt.close()
 
-    this_dir = os.path.dirname(os.path.abspath(__file__))
-    with open(os.path.join(this_dir, filename), encoding="utf-8") as f:
+    this_dir = pathlib.Path(__file__).resolve().parent
+    with open(this_dir / filename, encoding="utf-8") as f:
         reference = f.read()
     assert reference == code, filename + "\n" + _unidiff_output(reference, code)
 

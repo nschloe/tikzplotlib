@@ -1,11 +1,11 @@
 import matplotlib as mpl
-import numpy
+import numpy as np
 
 
 def mpl_color2xcolor(data, matplotlib_color):
     """Translates a matplotlib color specification into a proper LaTeX xcolor."""
     # Convert it to RGBA.
-    my_col = numpy.array(mpl.colors.ColorConverter().to_rgba(matplotlib_color))
+    my_col = np.array(mpl.colors.ColorConverter().to_rgba(matplotlib_color))
 
     # If the alpha channel is exactly 0, then the color is really 'none'
     # regardless of the RGB channels.
@@ -18,22 +18,22 @@ def mpl_color2xcolor(data, matplotlib_color):
         # List white first such that for gray values, the combination
         # white!<x>!black is preferred over, e.g., gray!<y>!black. Note that
         # the order of the dictionary is respected from Python 3.6 on.
-        "white": numpy.array([1, 1, 1]),
-        "lightgray": numpy.array([0.75, 0.75, 0.75]),
-        "gray": numpy.array([0.5, 0.5, 0.5]),
-        "darkgray": numpy.array([0.25, 0.25, 0.25]),
-        "black": numpy.array([0, 0, 0]),
+        "white": np.array([1, 1, 1]),
+        "lightgray": np.array([0.75, 0.75, 0.75]),
+        "gray": np.array([0.5, 0.5, 0.5]),
+        "darkgray": np.array([0.25, 0.25, 0.25]),
+        "black": np.array([0, 0, 0]),
         #
-        "red": numpy.array([1, 0, 0]),
-        "green": numpy.array([0, 1, 0]),
-        "blue": numpy.array([0, 0, 1]),
-        "brown": numpy.array([0.75, 0.5, 0.25]),
-        "lime": numpy.array([0.75, 1, 0]),
-        "orange": numpy.array([1, 0.5, 0]),
-        "pink": numpy.array([1, 0.75, 0.75]),
-        "purple": numpy.array([0.75, 0, 0.25]),
-        "teal": numpy.array([0, 0.5, 0.5]),
-        "violet": numpy.array([0.5, 0, 0.5]),
+        "red": np.array([1, 0, 0]),
+        "green": np.array([0, 1, 0]),
+        "blue": np.array([0, 0, 1]),
+        "brown": np.array([0.75, 0.5, 0.25]),
+        "lime": np.array([0.75, 1, 0]),
+        "orange": np.array([1, 0.5, 0]),
+        "pink": np.array([1, 0.75, 0.75]),
+        "purple": np.array([0.75, 0, 0.25]),
+        "teal": np.array([0, 0.5, 0.5]),
+        "violet": np.array([0.5, 0, 0.5]),
         # The colors cyan, magenta, yellow, and olive are also
         # predefined by xcolor, but their RGB approximation of the
         # native CMYK values is not very good. Don't use them here.

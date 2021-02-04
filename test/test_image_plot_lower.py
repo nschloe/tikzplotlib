@@ -1,3 +1,5 @@
+import pathlib
+
 import matplotlib.pyplot as plt
 from helpers import assert_equality
 
@@ -6,13 +8,11 @@ from helpers import assert_equality
 
 
 def plot():
-    import os
-
     import matplotlib.image as mpimg
     from matplotlib import rcParams
 
-    this_dir = os.path.dirname(os.path.realpath(__file__))
-    img = mpimg.imread(os.path.join(this_dir, "lena.png"))
+    this_dir = pathlib.Path(__file__).resolve().parent
+    img = mpimg.imread(this_dir / "lena.png")
 
     dpi = rcParams["figure.dpi"]
     figsize = img.shape[0] / dpi, img.shape[1] / dpi

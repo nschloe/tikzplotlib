@@ -1,5 +1,5 @@
 import matplotlib as mpl
-import numpy
+import numpy as np
 from matplotlib.dates import DateConverter, num2date
 from matplotlib.markers import MarkerStyle
 
@@ -32,7 +32,7 @@ def draw_path(data, path, draw_options=None, simplify=None):
         #   The transform call yields warnings and it is unclear why. Perhaps
         #   the input data is not suitable? Anyhow, this should not happen.
         #   Comment out for now.
-        # vert = numpy.asarray(
+        # vert = np.asarray(
         #         _transform_to_data_coordinates(obj, [vert[0]], [vert[1]])
         #         )
         # For path codes see: http://matplotlib.org/api/path_api.html
@@ -123,7 +123,7 @@ def draw_pathcollection(data, obj):
 
     if obj.get_array() is not None:
         draw_options.append("scatter")
-        dd = numpy.column_stack([dd, obj.get_array()])
+        dd = np.column_stack([dd, obj.get_array()])
         labels.append("colordata" + 13 * " ")
         draw_options.append("scatter src=explicit")
         table_options.extend(["x=x", "y=y", "meta=colordata"])
@@ -159,9 +159,9 @@ def draw_pathcollection(data, obj):
         marker0 = None
         for marker, path in paths.items():
             if (
-                numpy.array_equal(path.codes, p.codes)
+                np.array_equal(path.codes, p.codes)
                 and (path.vertices.shape == p.vertices.shape)
-                and numpy.max(numpy.abs(path.vertices - p.vertices)) < 1.0e-10
+                and np.max(np.abs(path.vertices - p.vertices)) < 1.0e-10
             ):
                 marker0 = marker
                 break
@@ -197,8 +197,8 @@ def draw_pathcollection(data, obj):
         if len(obj.get_sizes()) == len(dd):
             # See Pgfplots manual, chapter 4.25.
             # In Pgfplots, \mark size specifies raddi, in matplotlib circle areas.
-            radii = numpy.sqrt(obj.get_sizes() / numpy.pi)
-            dd = numpy.column_stack([dd, radii])
+            radii = np.sqrt(obj.get_sizes() / np.pi)
+            dd = np.column_stack([dd, radii])
             labels.append("sizedata" + 14 * " ")
             draw_options.extend(
                 [
@@ -298,7 +298,7 @@ def get_draw_options(data, obj, ec, fc, ls, lw, hatch=None):
             if ec is None or ec_rgba[3] == 0.0:
                 # Assuming that a hatch marker indicates that hatches are wanted, also
                 # when the edge color is (0, 0, 0, 0), i.e., the edge is invisible
-                h_col, h_rgba = "black", numpy.array([0, 0, 0, 1])
+                h_col, h_rgba = "black", np.array([0, 0, 0, 1])
             else:
                 h_col, h_rgba = ec_col, ec_rgba
         else:

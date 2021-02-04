@@ -1,6 +1,6 @@
 import datetime
 
-import numpy
+import numpy as np
 from matplotlib.dates import num2date
 
 from . import _color as mycol
@@ -45,9 +45,10 @@ def draw_line2d(data, obj):
             style = "const plot mark mid"
         elif drawstyle in ["steps-pre", "steps"]:
             style = "const plot mark right"
-        elif drawstyle == "steps-post":
+        else:
+            assert drawstyle == "steps-post"
             style = "const plot mark left"
-        addplot_options.append(f"{style}")
+        addplot_options.append(style)
 
     alpha = obj.get_alpha()
     if alpha is not None:
@@ -222,7 +223,7 @@ def _table(obj, data):  # noqa: C901
     except AttributeError:
         ydata_mask = []
     else:
-        if isinstance(ydata_mask, numpy.bool_) and not ydata_mask:
+        if isinstance(ydata_mask, np.bool_) and not ydata_mask:
             ydata_mask = []
         elif callable(ydata_mask):
             # pandas.Series have the method mask
@@ -268,7 +269,7 @@ def _table(obj, data):  # noqa: C901
 
     plot_table = []
     table_row_sep = data["table_row_sep"]
-    ydata[ydata_mask] = numpy.nan
+    ydata[ydata_mask] = np.nan
     if any(ydata_mask):
         # matplotlib jumps at masked images, while PGFPlots by default interpolates.
         # Hence, if we have a masked plot, make sure that PGFPlots jumps as well.
@@ -279,8 +280,8 @@ def _table(obj, data):  # noqa: C901
         plot_table.append(f"{x:{xformat}}{col_sep}{y:{ff}}{table_row_sep}")
 
     if data["externalize tables"]:
-        filename, rel_filepath = _files.new_filename(data, "table", ".tsv")
-        with open(filename, "w") as f:
+        filepath, rel_filepath = _files.new_filepath(data, "table", ".tsv")
+        with open(filepath, "w") as f:
             # No encoding handling required: plot_table is only ASCII
             f.write("".join(plot_table))
         content.append(rel_filepath)

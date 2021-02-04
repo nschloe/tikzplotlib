@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
-import numpy
+import numpy as np
 from helpers import assert_equality
 
 
 def plot():
     fig = plt.figure()
 
-    xxx = numpy.linspace(0, 5)
+    xxx = np.linspace(0, 5)
     yyy = xxx ** 2
     plt.text(
         1,

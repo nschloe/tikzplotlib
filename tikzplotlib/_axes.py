@@ -1,5 +1,5 @@
 import matplotlib as mpl
-import numpy
+import numpy as np
 from matplotlib.backends.backend_pgf import (
     common_texification as mpl_common_texification,
 )
@@ -731,7 +731,7 @@ def _handle_linear_segmented_color_map(cmap, data):
     # dimension errors or memory errors in latex)
     # 0-1000 is the internal granularity of PGFplots.
     # 16300 was the maximum value for pgfplots<=1.13
-    X = _scale_to_int(numpy.array(X), 1000)
+    X = _scale_to_int(np.array(X), 1000)
 
     color_changes = []
     ff = data["float format"]

@@ -1,14 +1,13 @@
-import os
-import posixpath
+import pathlib
 
 
-def _gen_filename(data, nb_key, ext):
+def _gen_filepath(data, nb_key, ext):
     name = data["base name"] + f"-{data[nb_key]:03d}{ext}"
-    return os.path.join(data["output dir"], name), name
+    return pathlib.Path(data["output dir"]) / name
 
 
-def new_filename(data, file_kind, ext):
-    """Returns an available filename.
+def new_filepath(data, file_kind, ext):
+    """Returns an available filepath.
 
     :param file_kind: Name under which numbering is recorded, such as 'img' or
                       'table'.
@@ -17,7 +16,7 @@ def new_filename(data, file_kind, ext):
     :param ext: Filename extension.
     :type ext: str
 
-    :returns: (filename, rel_filepath) where filename is a path in the
+    :returns: (filepath, rel_filepath) where filepath is a path in the
               filesystem and rel_filepath is the path to be used in the tex
               code.
     """
@@ -26,20 +25,19 @@ def new_filename(data, file_kind, ext):
     if nb_key not in data.keys():
         data[nb_key] = -1
 
+    data[nb_key] = data[nb_key] + 1
+    filepath = _gen_filepath(data, nb_key, ext)
     if not data["override externals"]:
         # Make sure not to overwrite anything.
-        file_exists = True
+        file_exists = filepath.is_file()
         while file_exists:
             data[nb_key] = data[nb_key] + 1
-            filename, name = _gen_filename(data, nb_key, ext)
-            file_exists = os.path.isfile(filename)
-    else:
-        data[nb_key] = data[nb_key] + 1
-        filename, name = _gen_filename(data, nb_key, ext)
+            filepath = _gen_filepath(data, nb_key, ext)
+            file_exists = filepath.is_file()
 
     if data["rel data path"]:
-        rel_filepath = posixpath.join(data["rel data path"], name)
+        rel_filepath = pathlib.Path(data["rel data path"]) / filepath
     else:
-        rel_filepath = name
+        rel_filepath = filepath.name
 
-    return filename, rel_filepath
+    return filepath, rel_filepath

@@ -1,6 +1,6 @@
 import argparse
 import importlib.util
-import os
+import pathlib
 
 import matplotlib.pyplot as plt
 
@@ -11,16 +11,14 @@ def _main():
     parser = argparse.ArgumentParser(description="Refresh all reference TeX files.")
     parser.parse_args()
 
-    this_dir = os.path.dirname(os.path.abspath(__file__))
+    this_dir = pathlib.Path(__file__).resolve().parent
 
     test_files = [
         f
-        for f in os.listdir(this_dir)
-        if os.path.isfile(os.path.join(this_dir, f))
-        and f[:5] == "test_"
-        and f[-3:] == ".py"
+        for f in this_dir.iterdir()
+        if (this_dir / f).is_file() and f.name[:5] == "test_" and f.name[-3:] == ".py"
     ]
-    test_modules = [f[:-3] for f in test_files]
+    test_modules = [f.name[:-3] for f in test_files]
 
     # remove some edge cases
     test_modules.remove("test_rotated_labels")
@@ -36,7 +34,7 @@ def _main():
         plt.close()
 
         tex_filename = mod + "_reference.tex"
-        with open(os.path.join(this_dir, tex_filename), "w", encoding="utf8") as f:
+        with open(this_dir / tex_filename, "w", encoding="utf8") as f:
             f.write(code)
 
 
