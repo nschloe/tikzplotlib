@@ -17,6 +17,9 @@ import pathlib
 # sys.path.insert(0, os.path.abspath('.'))
 from configparser import ConfigParser
 
+# Sphinx 1.* compat (for readthedocs)
+master_doc = "index"
+
 # -- Project information -----------------------------------------------------
 project = "tikzplotlib"
 copyright = "2010-2021, Nico Schlömer"
