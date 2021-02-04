@@ -45,9 +45,10 @@ def draw_line2d(data, obj):
             style = "const plot mark mid"
         elif drawstyle in ["steps-pre", "steps"]:
             style = "const plot mark right"
-        elif drawstyle == "steps-post":
+        else:
+            assert drawstyle == "steps-post"
             style = "const plot mark left"
-        addplot_options.append(f"{style}")
+        addplot_options.append(style)
 
     alpha = obj.get_alpha()
     if alpha is not None:
@@ -279,8 +280,8 @@ def _table(obj, data):  # noqa: C901
         plot_table.append(f"{x:{xformat}}{col_sep}{y:{ff}}{table_row_sep}")
 
     if data["externalize tables"]:
-        filename, rel_filepath = _files.new_filename(data, "table", ".tsv")
-        with open(filename, "w") as f:
+        filepath, rel_filepath = _files.new_filepath(data, "table", ".tsv")
+        with open(filepath, "w") as f:
             # No encoding handling required: plot_table is only ASCII
             f.write("".join(plot_table))
         content.append(rel_filepath)

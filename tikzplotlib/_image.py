@@ -1,4 +1,4 @@
-import matplotlib as mpl
+import matplotlib.pyplot as plt
 import numpy as np
 import PIL
 
@@ -9,7 +9,7 @@ def draw_image(data, obj):
     """Returns the PGFPlots code for an image environment."""
     content = []
 
-    filename, rel_filepath = _files.new_filename(data, "img", ".png")
+    filepath, rel_filepath = _files.new_filepath(data, "img", ".png")
 
     # store the image as in a file
     img_array = obj.get_array()
@@ -17,8 +17,8 @@ def draw_image(data, obj):
     dims = img_array.shape
     if len(dims) == 2:  # the values are given as one real number: look at cmap
         clims = obj.get_clim()
-        mpl.pyplot.imsave(
-            fname=filename,
+        plt.imsave(
+            fname=filepath,
             arr=img_array,
             cmap=obj.get_cmap(),
             vmin=clims[0],
@@ -40,7 +40,7 @@ def draw_image(data, obj):
         # If the input image is PIL:
         # image = PIL.Image.fromarray(img_array)
 
-        image.save(filename, origin=obj.origin)
+        image.save(filepath, origin=obj.origin)
 
     # write the corresponding information to the TikZ file
     extent = obj.get_extent()
