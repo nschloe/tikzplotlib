@@ -1,4 +1,5 @@
 import os
+import pathlib
 import subprocess
 import tempfile
 
@@ -41,8 +42,8 @@ def assert_equality(
     )
     plt.close()
 
-    this_dir = os.path.dirname(os.path.abspath(__file__))
-    with open(os.path.join(this_dir, filename), encoding="utf-8") as f:
+    this_dir = pathlib.Path(__file__).resolve().parent
+    with open(this_dir / filename, encoding="utf-8") as f:
         reference = f.read()
     assert reference == code, filename + "\n" + _unidiff_output(reference, code)
 

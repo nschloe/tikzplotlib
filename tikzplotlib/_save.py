@@ -1,6 +1,6 @@
 import codecs
 import enum
-import os
+import pathlib
 import tempfile
 import warnings
 
@@ -154,14 +154,13 @@ def get_tikz_code(
     data["override externals"] = override_externals
 
     if filepath:
-        data["output dir"] = os.path.dirname(filepath)
+        filepath = pathlib.Path(filepath)
+        data["output dir"] = filepath.parent
     else:
         directory = tempfile.mkdtemp()
-        data["output dir"] = directory
+        data["output dir"] = pathlib.Path(directory)
 
-    data["base name"] = (
-        os.path.splitext(os.path.basename(filepath))[0] if filepath else "tmp"
-    )
+    data["base name"] = filepath.stem if filepath else "tmp"
     data["strict"] = strict
     data["tikz libs"] = set()
     data["pgfplots libs"] = set()
@@ -254,7 +253,6 @@ def save(filepath, *args, encoding=None, **kwargs):
     file_handle = codecs.open(filepath, "w", encoding)
     file_handle.write(code)
     file_handle.close()
-    return
 
 
 def _tex_comment(comment):
@@ -282,7 +280,6 @@ def _print_pgfplot_libs_message(data):
     print("Please add the following lines to your LaTeX preamble:\n")
     print(data["flavor"].preamble(data))
     print(70 * "=")
-    return
 
 
 class _ContentManager:
