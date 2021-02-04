@@ -31,7 +31,7 @@ def _unidiff_output(expected, actual):
 
 
 def assert_equality(
-    plot, filename, assert_compilation=True, flavor="latex", **extra_get_tikz_code_args
+    plot, filename, assert_compilation=False, flavor="latex", **extra_get_tikz_code_args
 ):
     plot()
     code = tikzplotlib.get_tikz_code(

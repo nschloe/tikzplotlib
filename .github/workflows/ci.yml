@@ -35,8 +35,8 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - uses: actions/checkout@v2
-    - name: Install system dependencies
-      run: sudo apt-get install -y texlive-latex-base texlive-latex-extra context python3-tk
+    # - name: Install system dependencies
+    #   run: sudo apt-get install -y texlive-latex-base texlive-latex-extra context python3-tk
     - name: Test with tox
       run: |
         pip install tox
