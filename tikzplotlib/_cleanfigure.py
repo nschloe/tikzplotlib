@@ -7,7 +7,7 @@ from mpl_toolkits import mplot3d
 STEP_DRAW_STYLES = ["steps-pre", "steps-post", "steps-mid"]
 
 
-def clean_figure(fig=None, target_resolution=600, scale_precision=1.0):
+def clean_figure(fig=None, target_resolution: int = 600, scale_precision: float = 1.0):
     """Cleans figure as a preparation for tikz export.
     This will minimize the number of points required for the tikz figure.
     If the figure has subplots, it will recursively clean then up.
@@ -15,14 +15,18 @@ def clean_figure(fig=None, target_resolution=600, scale_precision=1.0):
     Note that this function modifies the figure directly (impure function).
 
     :param fig: Matplotlib figure handle (Default value = None)
+
     :param target_resolution: target resolution of final figure in PPI.
-        If a scalar integer is provided, it is assumed to be square in both axis.
-        If a list or an np.array is provided, it is interpreted as [H, W].
-        By default 600
+                              If a scalar integer is provided, it is assumed to be
+                              square in both axis.  If a list or an np.array is
+                              provided, it is interpreted as [H, W].
+                              By default 600
     :type target_resolution: int, list or np.array, optional
+
     :param scalePrecision: scalar value indicating precision when scaling down.
-        By default 1
+                           By default 1
     :type scalePrecision: float, optional
+
     Examples
     --------
 

@@ -27,3 +27,6 @@ format:
 lint:
 	black --check .
 	flake8 .
+
+doc:
+	sphinx-build -M html doc/ build/

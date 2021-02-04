@@ -3,6 +3,7 @@ import enum
 import pathlib
 import tempfile
 import warnings
+from typing import List, Optional, Set, Union
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -17,26 +18,26 @@ from .__about__ import __version__
 
 def get_tikz_code(
     figure="gcf",
-    filepath=None,
-    axis_width=None,
-    axis_height=None,
-    textsize=10.0,
-    tex_relative_path_to_data=None,
-    externalize_tables=False,
-    override_externals=False,
-    strict=False,
-    wrap=True,
-    add_axis_environment=True,
-    extra_axis_parameters=None,
-    extra_groupstyle_parameters={},
-    extra_tikzpicture_parameters=None,
-    dpi=None,
-    show_info=False,
-    include_disclaimer=True,
-    standalone=False,
-    float_format=".15g",
-    table_row_sep="\n",
-    flavor="latex",
+    filepath: Optional[Union[str, pathlib.Path]] = None,
+    axis_width: Optional[str] = None,
+    axis_height: Optional[str] = None,
+    textsize: float = 10.0,
+    tex_relative_path_to_data: Optional[str] = None,
+    externalize_tables: bool = False,
+    override_externals: bool = False,
+    strict: bool = False,
+    wrap: bool = True,
+    add_axis_environment: bool = True,
+    extra_axis_parameters: Optional[Union[List, Set]] = None,
+    extra_groupstyle_parameters: dict = {},
+    extra_tikzpicture_parameters: Optional[Union[List, Set]] = None,
+    dpi: Optional[int] = None,
+    show_info: bool = False,
+    include_disclaimer: bool = True,
+    standalone: bool = False,
+    float_format: str = ".15g",
+    table_row_sep: str = "\n",
+    flavor: str = "latex",
 ):
     """Main function. Here, the recursion into the image starts and the
     contents are picked up. The actual file gets written in this routine.
@@ -156,11 +157,12 @@ def get_tikz_code(
     if filepath:
         filepath = pathlib.Path(filepath)
         data["output dir"] = filepath.parent
+        data["base name"] = filepath.stem
     else:
         directory = tempfile.mkdtemp()
         data["output dir"] = pathlib.Path(directory)
+        data["base name"] = "tmp"
 
-    data["base name"] = filepath.stem if filepath else "tmp"
     data["strict"] = strict
     data["tikz libs"] = set()
     data["pgfplots libs"] = set()
@@ -239,7 +241,9 @@ def get_tikz_code(
     return code
 
 
-def save(filepath, *args, encoding=None, **kwargs):
+def save(
+    filepath: Union[str, pathlib.Path], *args, encoding: Optional[str] = None, **kwargs
+):
     """Same as `get_tikz_code()`, but actually saves the code to a file.
 
     :param filepath: The file to which the TikZ output will be written.
