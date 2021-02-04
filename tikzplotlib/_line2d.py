@@ -1,6 +1,6 @@
 import datetime
 
-import numpy
+import numpy as np
 from matplotlib.dates import num2date
 
 from . import _color as mycol
@@ -222,7 +222,7 @@ def _table(obj, data):  # noqa: C901
     except AttributeError:
         ydata_mask = []
     else:
-        if isinstance(ydata_mask, numpy.bool_) and not ydata_mask:
+        if isinstance(ydata_mask, np.bool_) and not ydata_mask:
             ydata_mask = []
         elif callable(ydata_mask):
             # pandas.Series have the method mask
@@ -268,7 +268,7 @@ def _table(obj, data):  # noqa: C901
 
     plot_table = []
     table_row_sep = data["table_row_sep"]
-    ydata[ydata_mask] = numpy.nan
+    ydata[ydata_mask] = np.nan
     if any(ydata_mask):
         # matplotlib jumps at masked images, while PGFPlots by default interpolates.
         # Hence, if we have a masked plot, make sure that PGFPlots jumps as well.

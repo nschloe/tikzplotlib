@@ -1,5 +1,5 @@
 import matplotlib.transforms
-import numpy
+import numpy as np
 
 
 def has_legend(axes):
@@ -33,7 +33,7 @@ def transform_to_data_coordinates(obj, xdata, ydata):
       2. from display to data.
     """
     if obj.axes is not None and obj.get_transform() != obj.axes.transData:
-        points = numpy.array([xdata, ydata]).T
+        points = np.array([xdata, ydata]).T
         transform = matplotlib.transforms.composite_transform_factory(
             obj.get_transform(), obj.axes.transData.inverted()
         )
