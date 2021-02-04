@@ -1,3 +1,9 @@
+version: 2
+sphinx:
+  configuration: doc/conf.py
+
+
 python:
   install:
-    - path: .
+    - method: pip
+      path: .
