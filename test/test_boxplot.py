@@ -90,4 +90,8 @@ def plot():
 
 def test():
     assert_equality(plot, "test_boxplot_reference.tex")
-    return
+
+
+if __name__ == "__main__":
+    plot()
+    plt.show()

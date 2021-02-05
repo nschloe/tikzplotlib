@@ -28,13 +28,17 @@ def plot():
 
 def test():
     assert_equality(plot, __file__[:-3] + "_reference.tex")
-    return
 
 
 if __name__ == "__main__":
-    plot()
-    plt.show()
+    # plot()
+    # plt.show()
     # import helpers
-
     # helpers.compare_mpl_tex(plot)
     # helpers.print_tree(plot())
+    plot()
+    # plt.show()
+    # plt.savefig('out.pgf')
+    import tikzplotlib
+
+    tikzplotlib.save("out.tex", standalone=True)

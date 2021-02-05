@@ -6,6 +6,7 @@
 
 # -- Path setup --------------------------------------------------------------
 
+import datetime
 import pathlib
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -20,14 +21,16 @@ from configparser import ConfigParser
 # Sphinx 1.* compat (for readthedocs)
 master_doc = "index"
 
-# -- Project information -----------------------------------------------------
-project = "tikzplotlib"
-copyright = "2010-2021, Nico Schlömer"
-author = "Nico Schlömer"
-
 p = ConfigParser()
 this_dir = pathlib.Path(__file__).resolve().parent
 p.read(this_dir / ".." / "setup.cfg")
+
+# -- Project information -----------------------------------------------------
+project = p["metadata"]["name"]
+year = datetime.datetime.utcnow().year
+author = p["metadata"]["author"]
+copyright = f"2010-{year}, {author}"
+
 release = p["metadata"]["version"]
 
 

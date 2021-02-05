@@ -115,38 +115,99 @@ def draw_pathcollection(data, obj):
     content = []
     # gather data
     assert obj.get_offsets() is not None
-    labels = ["x" + 21 * " ", "y" + 21 * " "]
+    labels = ["x", "y"]
     dd = obj.get_offsets()
 
-    draw_options = ["only marks"]
+    fmt = "{:" + data["float format"] + "}"
+    dd_strings = np.array([[fmt.format(val) for val in row] for row in dd])
+
+    draw_options = ["scatter", "only marks"]
     table_options = []
+
+    is_filled = False
 
     if obj.get_array() is not None:
         draw_options.append("scatter")
-        dd = np.column_stack([dd, obj.get_array()])
-        labels.append("colordata" + 13 * " ")
+        dd_strings = np.column_stack([dd_strings, obj.get_array()])
+        labels.append("colordata")
         draw_options.append("scatter src=explicit")
         table_options.extend(["x=x", "y=y", "meta=colordata"])
         ec = None
         fc = None
         ls = None
         marker0 = None
+        if obj.get_cmap():
+            mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(obj.get_cmap(), data)
+            draw_options.append(
+                "colormap" + ("=" if is_custom_cmap else "/") + mycolormap
+            )
     else:
         # gather the draw options
-        try:
-            ec = obj.get_edgecolors()[0]
-        except (TypeError, IndexError):
-            ec = None
+        add_individual_color_code = False
 
         try:
-            fc = obj.get_facecolors()[0]
-        except (TypeError, IndexError):
+            ec = obj.get_edgecolors()
+        except TypeError:
+            ec = None
+        else:
+            if len(ec) == 0:
+                ec = None
+            elif len(ec) == 1:
+                ec = ec[0]
+            else:
+                assert len(ec) == len(dd)
+                labels.append("draw")
+                ec_strings = [
+                    ",".join(fmt.format(item) for item in row)
+                    for row in ec[:, :3] * 255
+                ]
+                dd_strings = np.column_stack([dd_strings, ec_strings])
+                add_individual_color_code = True
+                ec = None
+
+        try:
+            fc = obj.get_facecolors()
+        except TypeError:
             fc = None
+        else:
+            if len(fc) == 0:
+                fc = None
+            elif len(fc) == 1:
+                fc = fc[0]
+                is_filled = True
+            else:
+                assert len(fc) == len(dd)
+                labels.append("fill")
+                fc_strings = [
+                    ",".join(fmt.format(item) for item in row)
+                    for row in fc[:, :3] * 255
+                ]
+                dd_strings = np.column_stack([dd_strings, fc_strings])
+                add_individual_color_code = True
+                fc = None
+                is_filled = True
 
         try:
             ls = obj.get_linestyle()[0]
         except (TypeError, IndexError):
             ls = None
+
+        if add_individual_color_code:
+            draw_options.extend(
+                [
+                    "scatter",
+                    "visualization depends on={value \\thisrow{draw} \\as \\drawcolor}",
+                    "visualization depends on={value \\thisrow{fill} \\as \\fillcolor}",
+                    "scatter/@pre marker code/.code={%\n"
+                    "  \\expanded{%\n"
+                    "  \\noexpand\\definecolor{thispointdrawcolor}{RGB}{\\drawcolor}%\n"
+                    "  \\noexpand\\definecolor{thispointfillcolor}{RGB}{\\fillcolor}%\n"
+                    "  }%\n"
+                    "  \\scope[draw=thispointdrawcolor, fill=thispointfillcolor]%\n"
+                    "}",
+                    "scatter/@post marker code/.code={%\n" "  \\endscope\n" "}",
+                ]
+            )
 
         # "solution" from
         # <https://github.com/matplotlib/matplotlib/issues/4672#issuecomment-378702670>
@@ -172,7 +233,7 @@ def draw_pathcollection(data, obj):
 
     if marker0 is not None:
         data, pgfplots_marker, marker_options = _mpl_marker2pgfp_marker(
-            data, marker0, fc
+            data, marker0, is_filled
         )
         draw_options += [f"mark={pgfplots_marker}"]
         if marker_options:
@@ -182,10 +243,6 @@ def draw_pathcollection(data, obj):
     data, extra_draw_options = get_draw_options(data, obj, ec, fc, ls, None)
     draw_options += extra_draw_options
 
-    if obj.get_cmap():
-        mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(obj.get_cmap(), data)
-        draw_options.append("colormap" + ("=" if is_custom_cmap else "/") + mycolormap)
-
     legend_text = get_legend_text(obj)
     if legend_text is None and has_legend(obj.axes):
         draw_options.append("forget plot")
@@ -193,13 +250,14 @@ def draw_pathcollection(data, obj):
     for path in obj.get_paths():
         if is_contour:
             dd = path.vertices
+            dd_strings = np.array([[fmt.format(val) for val in row] for row in dd])
 
         if len(obj.get_sizes()) == len(dd):
             # See Pgfplots manual, chapter 4.25.
-            # In Pgfplots, \mark size specifies raddi, in matplotlib circle areas.
+            # In Pgfplots, \mark size specifies radii, in matplotlib circle areas.
             radii = np.sqrt(obj.get_sizes() / np.pi)
-            dd = np.column_stack([dd, radii])
-            labels.append("sizedata" + 14 * " ")
+            dd_strings = np.column_stack([dd_strings, radii])
+            labels.append("sizedata")
             draw_options.extend(
                 [
                     "visualization depends on="
@@ -209,17 +267,21 @@ def draw_pathcollection(data, obj):
                 ]
             )
 
-        do = " [{}]".format(", ".join(draw_options)) if draw_options else ""
+        # remove duplicates
+        draw_options = sorted(list(set(draw_options)))
+
+        len_row = sum(len(item) for item in draw_options)
+        j0, j1 = ("", ", ") if len_row < 80 else ("\n", ",\n")
+        do = f" [{j0}{{}}{j0}]".format(j1.join(draw_options)) if draw_options else ""
         content.append(f"\\addplot{do}\n")
 
         to = " [{}]".format(", ".join(table_options)) if table_options else ""
         content.append(f"table{to}{{%\n")
 
-        content.append((" ".join(labels)).strip() + "\n")
-        ff = data["float format"]
-        fmt = (" ".join(dd.shape[1] * ["{:" + ff + "}"])) + "\n"
-        for d in dd:
-            content.append(fmt.format(*tuple(d)))
+        content.append("  ".join(labels) + "\n")
+
+        for row in dd_strings:
+            content.append(" ".join(row) + "\n")
         content.append("};\n")
 
     if legend_text is not None:
@@ -240,8 +302,7 @@ def get_draw_options(data, obj, ec, fc, ls, lw, hatch=None):
         lw - linewidth
         hatch=None - hatch, i.e., pattern within closed path
     Output:
-        draw_options - list, to be ",".join(draw_options) to produce the
-                       draw options passed to PGF
+        draw_options - list
     """
     draw_options = []
 

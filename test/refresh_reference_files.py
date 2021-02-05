@@ -25,6 +25,7 @@ def _main():
     test_modules.remove("test_deterministic_output")
     test_modules.remove("test_cleanfigure")
     test_modules.remove("test_context")
+    test_modules.remove("test_readme")
 
     for mod in test_modules:
         module = importlib.import_module(mod)

@@ -37,7 +37,7 @@ _MP_MARKER2PLOTMARKS = {
 }
 
 
-def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
+def _mpl_marker2pgfp_marker(data, mpl_marker: str, is_filled: bool):
     """Translates a marker style of matplotlib to the corresponding style
     in PGFPlots.
     """
@@ -47,7 +47,7 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
     except KeyError:
         pass
     else:
-        if (marker_face_color is not None) and pgfplots_marker == "o":
+        if is_filled and pgfplots_marker == "o":
             pgfplots_marker = "*"
             data["tikz libs"].add("plotmarks")
         marker_options = []
@@ -61,14 +61,7 @@ def _mpl_marker2pgfp_marker(data, mpl_marker, marker_face_color):
         # There's no equivalent for the pixel marker (,) in Pgfplots.
         pass
     else:
-        if (
-            marker_face_color is not None
-            and (
-                not isinstance(marker_face_color, str)
-                or marker_face_color.lower() != "none"
-            )
-            and pgfplots_marker not in ["|", "-", "asterisk", "star"]
-        ):
+        if is_filled and pgfplots_marker not in ["|", "-", "asterisk", "star"]:
             pgfplots_marker += "*"
         return data, pgfplots_marker, marker_options
 
