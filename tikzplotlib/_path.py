@@ -124,6 +124,8 @@ def draw_pathcollection(data, obj):
     draw_options = ["scatter", "only marks"]
     table_options = []
 
+    is_filled = False
+
     if obj.get_array() is not None:
         draw_options.append("scatter")
         dd_strings = np.column_stack([dd_strings, obj.get_array()])
@@ -153,7 +155,6 @@ def draw_pathcollection(data, obj):
             elif len(ec) == 1:
                 ec = ec[0]
             else:
-                print(ec)
                 assert len(ec) == len(dd)
                 labels.append("draw")
                 ec_strings = [
@@ -173,6 +174,7 @@ def draw_pathcollection(data, obj):
                 fc = None
             elif len(fc) == 1:
                 fc = fc[0]
+                is_filled = True
             else:
                 assert len(fc) == len(dd)
                 labels.append("fill")
@@ -183,6 +185,7 @@ def draw_pathcollection(data, obj):
                 dd_strings = np.column_stack([dd_strings, fc_strings])
                 add_individual_color_code = True
                 fc = None
+                is_filled = True
 
         try:
             ls = obj.get_linestyle()[0]
@@ -230,7 +233,7 @@ def draw_pathcollection(data, obj):
 
     if marker0 is not None:
         data, pgfplots_marker, marker_options = _mpl_marker2pgfp_marker(
-            data, marker0, fc
+            data, marker0, is_filled
         )
         draw_options += [f"mark={pgfplots_marker}"]
         if marker_options:
