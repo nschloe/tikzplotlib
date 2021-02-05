@@ -32,9 +32,16 @@ def test():
 
 
 if __name__ == "__main__":
-    plot()
-    plt.show()
+    # plot()
+    # plt.show()
     # import helpers
-
     # helpers.compare_mpl_tex(plot)
     # helpers.print_tree(plot())
+    plot()
+    import matplotlib.pyplot as plt
+
+    # plt.show()
+    # plt.savefig('out.pgf')
+    import tikzplotlib
+
+    tikzplotlib.save("out.tex", standalone=True)

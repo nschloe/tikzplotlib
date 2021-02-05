@@ -140,12 +140,15 @@ def draw_pathcollection(data, obj):
 
         try:
             ec = obj.get_edgecolors()
-        except (TypeError, IndexError):
+        except TypeError:
             ec = None
         else:
-            if len(ec) == 1:
+            if len(ec) == 0:
+                ec = None
+            elif len(ec) == 1:
                 ec = ec[0]
             else:
+                print(ec)
                 assert len(ec) == len(dd)
                 labels.append("draw" + 3 * " ")
                 ec_strings = [
@@ -154,13 +157,16 @@ def draw_pathcollection(data, obj):
                 ]
                 dd_strings = np.column_stack([dd_strings, ec_strings])
                 add_individual_color_code = True
+                ec = None
 
         try:
             fc = obj.get_facecolors()
-        except (TypeError, IndexError):
+        except TypeError:
             fc = None
         else:
-            if len(fc) == 1:
+            if len(fc) == 0:
+                fc = None
+            elif len(fc) == 1:
                 fc = fc[0]
             else:
                 assert len(fc) == len(dd)
@@ -171,6 +177,7 @@ def draw_pathcollection(data, obj):
                 ]
                 dd_strings = np.column_stack([dd_strings, fc_strings])
                 add_individual_color_code = True
+                fc = None
 
         try:
             ls = obj.get_linestyle()[0]
@@ -225,14 +232,7 @@ def draw_pathcollection(data, obj):
             draw_options += ["mark options={{{}}}".format(",".join(marker_options))]
 
     # `only mark` plots don't need linewidth
-    data, extra_draw_options = get_draw_options(
-        data,
-        obj,
-        None if ec is None or len(ec) > 1 else ec,
-        None if fc is None or len(fc) > 1 else fc,
-        ls,
-        None,
-    )
+    data, extra_draw_options = get_draw_options(data, obj, ec, fc, ls, None)
     draw_options += extra_draw_options
 
     if obj.get_cmap():
@@ -246,6 +246,7 @@ def draw_pathcollection(data, obj):
     for path in obj.get_paths():
         if is_contour:
             dd = path.vertices
+            dd_strings = np.array([[fmt.format(val) for val in row] for row in dd])
 
         if len(obj.get_sizes()) == len(dd):
             # See Pgfplots manual, chapter 4.25.
@@ -298,8 +299,7 @@ def get_draw_options(data, obj, ec, fc, ls, lw, hatch=None):
         lw - linewidth
         hatch=None - hatch, i.e., pattern within closed path
     Output:
-        draw_options - list, to be ",".join(draw_options) to produce the
-                       draw options passed to PGF
+        draw_options - list
     """
     draw_options = []
 
