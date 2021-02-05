@@ -115,7 +115,7 @@ def draw_pathcollection(data, obj):
     content = []
     # gather data
     assert obj.get_offsets() is not None
-    labels = ["x" + 3 * " ", "y" + 3 * " "]
+    labels = ["x", "y"]
     dd = obj.get_offsets()
 
     fmt = "{:" + data["float format"] + "}"
@@ -126,14 +126,19 @@ def draw_pathcollection(data, obj):
 
     if obj.get_array() is not None:
         draw_options.append("scatter")
-        dd = np.column_stack([dd, obj.get_array()])
-        labels.append("colordata" + 13 * " ")
+        dd_strings = np.column_stack([dd_strings, obj.get_array()])
+        labels.append("colordata")
         draw_options.append("scatter src=explicit")
         table_options.extend(["x=x", "y=y", "meta=colordata"])
         ec = None
         fc = None
         ls = None
         marker0 = None
+        if obj.get_cmap():
+            mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(obj.get_cmap(), data)
+            draw_options.append(
+                "colormap" + ("=" if is_custom_cmap else "/") + mycolormap
+            )
     else:
         # gather the draw options
         add_individual_color_code = False
@@ -150,7 +155,7 @@ def draw_pathcollection(data, obj):
             else:
                 print(ec)
                 assert len(ec) == len(dd)
-                labels.append("draw" + 3 * " ")
+                labels.append("draw")
                 ec_strings = [
                     ",".join(fmt.format(item) for item in row)
                     for row in ec[:, :3] * 255
@@ -170,7 +175,7 @@ def draw_pathcollection(data, obj):
                 fc = fc[0]
             else:
                 assert len(fc) == len(dd)
-                labels.append("fill" + 3 * " ")
+                labels.append("fill")
                 fc_strings = [
                     ",".join(fmt.format(item) for item in row)
                     for row in fc[:, :3] * 255
@@ -235,10 +240,6 @@ def draw_pathcollection(data, obj):
     data, extra_draw_options = get_draw_options(data, obj, ec, fc, ls, None)
     draw_options += extra_draw_options
 
-    if obj.get_cmap():
-        mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(obj.get_cmap(), data)
-        draw_options.append("colormap" + ("=" if is_custom_cmap else "/") + mycolormap)
-
     legend_text = get_legend_text(obj)
     if legend_text is None and has_legend(obj.axes):
         draw_options.append("forget plot")
@@ -252,8 +253,8 @@ def draw_pathcollection(data, obj):
             # See Pgfplots manual, chapter 4.25.
             # In Pgfplots, \mark size specifies radii, in matplotlib circle areas.
             radii = np.sqrt(obj.get_sizes() / np.pi)
-            dd = np.column_stack([dd, radii])
-            labels.append("sizedata" + 14 * " ")
+            dd_strings = np.column_stack([dd_strings, radii])
+            labels.append("sizedata")
             draw_options.extend(
                 [
                     "visualization depends on="
@@ -274,7 +275,7 @@ def draw_pathcollection(data, obj):
         to = " [{}]".format(", ".join(table_options)) if table_options else ""
         content.append(f"table{to}{{%\n")
 
-        content.append((" ".join(labels)).strip() + "\n")
+        content.append("  ".join(labels) + "\n")
         ff = data["float format"]
 
         for row in dd_strings:
