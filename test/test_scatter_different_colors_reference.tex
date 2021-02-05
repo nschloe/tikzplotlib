@@ -1,0 +1,39 @@
+\begin{tikzpicture}
+
+\begin{axis}[
+tick align=outside,
+tick pos=left,
+x grid style={white!69.019608!black},
+xmin=0.20337057, xmax=0.71995007,
+xtick style={color=black},
+y grid style={white!69.019608!black},
+ymin=0.39522357, ymax=1.0086471,
+ytick style={color=black}
+]
+\addplot [
+mark=*,
+only marks,
+scatter,
+scatter/@post marker code/.code={%
+  \endscope
+},
+scatter/@pre marker code/.code={%
+  \expanded{%
+  \noexpand\definecolor{thispointdrawcolor}{RGB}{\drawcolor}%
+  \noexpand\definecolor{thispointfillcolor}{RGB}{\fillcolor}%
+  }%
+  \scope[draw=thispointdrawcolor, fill=thispointfillcolor]%
+},
+visualization depends on={value \thisrow{draw} \as \drawcolor},
+visualization depends on={value \thisrow{fill} \as \fillcolor}
+]
+table{%
+x  y  draw  fill
+0.69646919 0.71946897 0,255,0 255,153,0
+0.28613933 0.42310646 0,0,255 0,255,0
+0.22685145 0.9807642 0,255,255 0,0,255
+0.55131477 0.68482974 255,0,0 0,255,255
+};
+\end{axis}
+
+\end{tikzpicture}
