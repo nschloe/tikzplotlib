@@ -262,7 +262,12 @@ def draw_pathcollection(data, obj):
                 ]
             )
 
-        do = " [{}]".format(", ".join(draw_options)) if draw_options else ""
+        # remove duplicates
+        draw_options = sorted(list(set(draw_options)))
+
+        len_row = sum(len(item) for item in draw_options)
+        j0, j1 = ("", ", ") if len_row < 80 else ("\n", ",\n")
+        do = f" [{j0}{{}}{j0}]".format(j1.join(draw_options)) if draw_options else ""
         content.append(f"\\addplot{do}\n")
 
         to = " [{}]".format(", ".join(table_options)) if table_options else ""
