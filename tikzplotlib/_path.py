@@ -115,10 +115,13 @@ def draw_pathcollection(data, obj):
     content = []
     # gather data
     assert obj.get_offsets() is not None
-    labels = ["x" + 21 * " ", "y" + 21 * " "]
+    labels = ["x" + 3 * " ", "y" + 3 * " "]
     dd = obj.get_offsets()
 
-    draw_options = ["only marks"]
+    fmt = "{:" + data["float format"] + "}"
+    dd_strings = np.array([[fmt.format(val) for val in row] for row in dd])
+
+    draw_options = ["scatter", "only marks"]
     table_options = []
 
     if obj.get_array() is not None:
@@ -133,20 +136,63 @@ def draw_pathcollection(data, obj):
         marker0 = None
     else:
         # gather the draw options
-        try:
-            ec = obj.get_edgecolors()[0]
-        except (TypeError, IndexError):
-            ec = None
+        add_individual_color_code = False
 
         try:
-            fc = obj.get_facecolors()[0]
+            ec = obj.get_edgecolors()
+        except (TypeError, IndexError):
+            ec = None
+        else:
+            if len(ec) == 1:
+                ec = ec[0]
+            else:
+                assert len(ec) == len(dd)
+                labels.append("draw" + 3 * " ")
+                ec_strings = [
+                    ",".join(fmt.format(item) for item in row)
+                    for row in ec[:, :3] * 255
+                ]
+                dd_strings = np.column_stack([dd_strings, ec_strings])
+                add_individual_color_code = True
+
+        try:
+            fc = obj.get_facecolors()
         except (TypeError, IndexError):
             fc = None
+        else:
+            if len(fc) == 1:
+                fc = fc[0]
+            else:
+                assert len(fc) == len(dd)
+                labels.append("fill" + 3 * " ")
+                fc_strings = [
+                    ",".join(fmt.format(item) for item in row)
+                    for row in fc[:, :3] * 255
+                ]
+                dd_strings = np.column_stack([dd_strings, fc_strings])
+                add_individual_color_code = True
 
         try:
             ls = obj.get_linestyle()[0]
         except (TypeError, IndexError):
             ls = None
+
+        if add_individual_color_code:
+            draw_options.extend(
+                [
+                    "scatter",
+                    "visualization depends on={value \\thisrow{draw} \\as \\drawcolor}",
+                    "visualization depends on={value \\thisrow{fill} \\as \\fillcolor}",
+                    "scatter/@pre marker code/.code={%\n"
+                    "  \\expanded{%\n"
+                    "  \\noexpand\\definecolor{thispointdrawcolor}{RGB}{\\drawcolor}%\n"
+                    "  \\noexpand\\definecolor{thispointfillcolor}{RGB}{\\fillcolor}%\n"
+                    "  }%\n"
+                    "  \\scope[draw=thispointdrawcolor, fill=thispointfillcolor]%\n"
+                    "}",
+                    "scatter/@post marker code/.code={%\n" "  \\endscope\n" "}",
+                ]
+            )
 
         # "solution" from
         # <https://github.com/matplotlib/matplotlib/issues/4672#issuecomment-378702670>
@@ -179,7 +225,14 @@ def draw_pathcollection(data, obj):
             draw_options += ["mark options={{{}}}".format(",".join(marker_options))]
 
     # `only mark` plots don't need linewidth
-    data, extra_draw_options = get_draw_options(data, obj, ec, fc, ls, None)
+    data, extra_draw_options = get_draw_options(
+        data,
+        obj,
+        None if ec is None or len(ec) > 1 else ec,
+        None if fc is None or len(fc) > 1 else fc,
+        ls,
+        None,
+    )
     draw_options += extra_draw_options
 
     if obj.get_cmap():
@@ -196,7 +249,7 @@ def draw_pathcollection(data, obj):
 
         if len(obj.get_sizes()) == len(dd):
             # See Pgfplots manual, chapter 4.25.
-            # In Pgfplots, \mark size specifies raddi, in matplotlib circle areas.
+            # In Pgfplots, \mark size specifies radii, in matplotlib circle areas.
             radii = np.sqrt(obj.get_sizes() / np.pi)
             dd = np.column_stack([dd, radii])
             labels.append("sizedata" + 14 * " ")
@@ -217,9 +270,9 @@ def draw_pathcollection(data, obj):
 
         content.append((" ".join(labels)).strip() + "\n")
         ff = data["float format"]
-        fmt = (" ".join(dd.shape[1] * ["{:" + ff + "}"])) + "\n"
-        for d in dd:
-            content.append(fmt.format(*tuple(d)))
+
+        for row in dd_strings:
+            content.append(" ".join(row) + "\n")
         content.append("};\n")
 
     if legend_text is not None:
