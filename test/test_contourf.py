@@ -28,7 +28,6 @@ def plot():
 
 def test():
     assert_equality(plot, __file__[:-3] + "_reference.tex")
-    return
 
 
 if __name__ == "__main__":
@@ -38,8 +37,6 @@ if __name__ == "__main__":
     # helpers.compare_mpl_tex(plot)
     # helpers.print_tree(plot())
     plot()
-    import matplotlib.pyplot as plt
-
     # plt.show()
     # plt.savefig('out.pgf')
     import tikzplotlib

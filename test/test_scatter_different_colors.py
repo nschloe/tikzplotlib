@@ -1,10 +1,9 @@
+import matplotlib.pyplot as plt
+import numpy as np
 from helpers import assert_equality
 
 
 def plot():
-    import numpy as np
-    from matplotlib import pyplot as plt
-
     fig = plt.figure()
     np.random.seed(123)
     n = 4
@@ -40,7 +39,6 @@ if __name__ == "__main__":
     # helpers.compare_mpl_tex(plot)
     # helpers.print_tree(plot())
     plot()
-    import matplotlib.pyplot as plt
 
     # plt.show()
     # plt.savefig('out.pgf')

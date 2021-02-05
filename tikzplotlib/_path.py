@@ -279,7 +279,6 @@ def draw_pathcollection(data, obj):
         content.append(f"table{to}{{%\n")
 
         content.append("  ".join(labels) + "\n")
-        ff = data["float format"]
 
         for row in dd_strings:
             content.append(" ".join(row) + "\n")
