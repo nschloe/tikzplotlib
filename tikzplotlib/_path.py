@@ -261,9 +261,10 @@ def draw_pathcollection(data, obj):
             draw_options.extend(
                 [
                     "visualization depends on="
-                    + "{\\thisrow{sizedata} \\as\\perpointmarksize}",
+                    "{\\thisrow{sizedata} \\as\\perpointmarksize}",
                     "scatter/@pre marker code/.append style="
-                    + "{/tikz/mark size=\\perpointmarksize}",
+                    "{/tikz/mark size=\\perpointmarksize}",
+                    # "scatter/@post marker code/.style={}"
                 ]
             )
 
@@ -271,8 +272,8 @@ def draw_pathcollection(data, obj):
         draw_options = sorted(list(set(draw_options)))
 
         len_row = sum(len(item) for item in draw_options)
-        j0, j1 = ("", ", ") if len_row < 80 else ("\n", ",\n")
-        do = f" [{j0}{{}}{j0}]".format(j1.join(draw_options)) if draw_options else ""
+        j0, j1, j2 = ("", ", ", "") if len_row < 80 else ("\n  ", ",\n  ", "\n")
+        do = f" [{j0}{{}}{j2}]".format(j1.join(draw_options)) if draw_options else ""
         content.append(f"\\addplot{do}\n")
 
         to = " [{}]".format(", ".join(table_options)) if table_options else ""

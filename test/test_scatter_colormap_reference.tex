@@ -11,12 +11,12 @@ ymin=-0.82312696, ymax=2.3501709,
 ytick style={color=black}
 ]
 \addplot [
-colormap/viridis,
-only marks,
-scatter,
-scatter src=explicit,
-scatter/@pre marker code/.append style={/tikz/mark size=\perpointmarksize},
-visualization depends on={\thisrow{sizedata} \as\perpointmarksize}
+  colormap/viridis,
+  only marks,
+  scatter,
+  scatter src=explicit,
+  scatter/@pre marker code/.append style={/tikz/mark size=\perpointmarksize},
+  visualization depends on={\thisrow{sizedata} \as\perpointmarksize}
 ]
 table [x=x, y=y, meta=colordata]{%
 x  y  colordata  sizedata

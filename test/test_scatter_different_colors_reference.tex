@@ -11,21 +11,21 @@ ymin=0.39522357, ymax=1.0086471,
 ytick style={color=black}
 ]
 \addplot [
-mark=*,
-only marks,
-scatter,
-scatter/@post marker code/.code={%
+  mark=*,
+  only marks,
+  scatter,
+  scatter/@post marker code/.code={%
   \endscope
 },
-scatter/@pre marker code/.code={%
+  scatter/@pre marker code/.code={%
   \expanded{%
   \noexpand\definecolor{thispointdrawcolor}{RGB}{\drawcolor}%
   \noexpand\definecolor{thispointfillcolor}{RGB}{\fillcolor}%
   }%
   \scope[draw=thispointdrawcolor, fill=thispointfillcolor]%
 },
-visualization depends on={value \thisrow{draw} \as \drawcolor},
-visualization depends on={value \thisrow{fill} \as \fillcolor}
+  visualization depends on={value \thisrow{draw} \as \drawcolor},
+  visualization depends on={value \thisrow{fill} \as \fillcolor}
 ]
 table{%
 x  y  draw  fill

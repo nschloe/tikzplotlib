@@ -83,7 +83,13 @@ def draw_legend(data, obj):
 
     # Write styles to data
     if legend_style:
-        style = "legend style={{{}}}".format(", ".join(legend_style))
+        j0, j1, j2 = (
+            ("", ", ", "")
+            if sum(len(s) for s in legend_style) < 80
+            else ("\n  ", ",\n  ", "\n")
+        )
+        string = j1.join(legend_style)
+        style = f"legend style={{{j0}{string}{j2}}}"
         data["current axes"].axis_options.append(style)
 
     return data
