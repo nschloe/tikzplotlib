@@ -1,0 +1,29 @@
+\begin{tikzpicture}
+
+\begin{axis}[
+tick align=outside,
+tick pos=left,
+x grid style={white!69.019608!black},
+xmin=0.9, xmax=3.1,
+xtick style={color=black},
+y grid style={white!69.019608!black},
+ymin=0.7, ymax=7.3,
+ytick style={color=black}
+]
+\addplot [
+  draw=black,
+  mark=o,
+  only marks,
+  scatter,
+  scatter/@pre marker code/.append style={/tikz/mark size=\perpointmarksize},
+  visualization depends on={\thisrow{sizedata} \as\perpointmarksize}
+]
+table{%
+x  y  sizedata
+1 5 9.772050238058398
+2 7 9.772050238058398
+3 1 9.772050238058398
+};
+\end{axis}
+
+\end{tikzpicture}

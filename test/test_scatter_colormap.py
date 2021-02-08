@@ -18,4 +18,10 @@ def plot():
 
 def test():
     assert_equality(plot, __file__[:-3] + "_reference.tex")
-    return
+
+
+if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+
+    plot()
+    plt.show()
