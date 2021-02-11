@@ -31,6 +31,7 @@ def get_tikz_code(
     extra_axis_parameters: Optional[Union[List, Set]] = None,
     extra_groupstyle_parameters: dict = {},
     extra_tikzpicture_parameters: Optional[Union[List, Set]] = None,
+    extra_lines_start: Optional[Union[List, Set]] = None,
     dpi: Optional[int] = None,
     show_info: bool = False,
     include_disclaimer: bool = True,
@@ -224,6 +225,9 @@ def get_tikz_code(
         code += data["flavor"].start("tikzpicture")
         if extra_tikzpicture_parameters:
             code += "[\n" + ",\n".join(extra_tikzpicture_parameters) + "\n]"
+        code += "\n"
+        if extra_lines_start:
+            code += "\n".join(extra_lines_start)
         code += "\n\n"
 
     coldefs = _get_color_definitions(data)
