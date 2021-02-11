@@ -459,68 +459,52 @@ class Axes:
         if tick_label_text_width_identifier in self.axis_options:
             self.axis_options.remove(tick_label_text_width_identifier)
 
+        values = []
+
         tick_labels_rotation = [label.get_rotation() for label in major_tick_labels]
-        tick_labels_rotation_same_value = len(set(tick_labels_rotation)) == 1
+        if len(set(tick_labels_rotation)) == 1:
+            if tick_labels_rotation[0] != 0:
+                values.append(f"rotate={tick_labels_rotation[0]}")
+        else:
+            values.append(
+                "rotate={{{},0}}[\\ticknum]".format(
+                    ",".join(str(x) for x in tick_labels_rotation)
+                )
+            )
 
         tick_labels_horizontal_alignment = [
             label.get_horizontalalignment() for label in major_tick_labels
         ]
-        tick_labels_horizontal_alignment_same_value = (
-            len(set(tick_labels_horizontal_alignment)) == 1
-        )
+        if len(set(tick_labels_horizontal_alignment)) == 1:
+            anchor = {"right": "east", "left": "west", "center": "center"}[
+                tick_labels_horizontal_alignment[0]
+            ]
+            if anchor != "center":
+                values.append(f"anchor={anchor}")
 
-        if (
-            tick_labels_rotation_same_value
-            and tick_labels_horizontal_alignment_same_value
-        ):
-            values = []
+        if values:
+            label_style = "{}ticklabel style={{{}}}".format(x_or_y, ",".join(values))
 
-            if any(tick_labels_rotation) != 0:
-                values.append(f"rotate={tick_labels_rotation[0]}")
+        # Ignore horizontal alignment if no '{x,y} tick label text width' has been
+        # passed in the 'extra' parameter
+        # if tick_label_text_width:
+        #     if is_tick_label_alignment_identical:
+        #         values.append(f"align={tick_labels_horizontal_alignment[0]}")
+        #         values.append(f"text width={tick_label_text_width}")
+        #     else:
+        #         for idx, x in enumerate(tick_labels_horizontal_alignment):
+        #             label_style += f"{x_or_y}_tick_label_ha_{idx}/.initial = {x}"
 
-            # Horizontal alignment will be ignored if no 'x/y tick label text width' has
-            # been passed in the 'extra' parameter
-            # tick_label_text_width = None
-            # if tick_label_text_width:
-            #     values.append(f"align={tick_labels_horizontal_alignment[0]}")
-            #     values.append(f"text width={tick_label_text_width}")
+        #         values.append(
+        #             f"align=\\pgfkeysvalueof{{/pgfplots/{x_or_y}_tick_label_ha_\\ticknum}}"
+        #         )
+        #         values.append(f"text width={tick_label_text_width}")
 
-            if values:
-                label_style = "{}ticklabel style = {{{}}}".format(
-                    x_or_y, ",".join(values)
-                )
-        else:
-            values = []
-
-            if tick_labels_rotation_same_value:
-                values.append("rotate={tick_labels_rotation[0]}")
-            else:
-                values.append(
-                    "rotate={{{},0}}[\\ticknum]".format(
-                        ",".join(str(x) for x in tick_labels_rotation)
-                    )
-                )
-
-            # Ignore horizontal alignment if no '{x,y} tick label text width' has been
-            # passed in the 'extra' parameter
-            # if tick_label_text_width:
-            #     if tick_labels_horizontal_alignment_same_value:
-            #         values.append(f"align={tick_labels_horizontal_alignment[0]}")
-            #         values.append(f"text width={tick_label_text_width}")
-            #     else:
-            #         for idx, x in enumerate(tick_labels_horizontal_alignment):
-            #             label_style += f"{x_or_y}_tick_label_ha_{idx}/.initial = {x}"
-
-            #         values.append(
-            #             f"align=\\pgfkeysvalueof{{/pgfplots/{x_or_y}_tick_label_ha_\\ticknum}}"
-            #         )
-            #         values.append(f"text width={tick_label_text_width}")
-
-            label_style = (
-                "every {} tick label/.style = {{\n"
-                "{}\n"
-                "}}".format(x_or_y, ",\n".join(values))
-            )
+        # label_style = (
+        #     "every {} tick label/.style = {{\n"
+        #     "{}\n"
+        #     "}}".format(x_or_y, ",\n".join(values))
+        # )
 
         return label_style
 
@@ -606,9 +590,10 @@ def _get_ticks(data, xy, ticks, ticklabels):
             axis_options.append(f"{xy}tick={val}")
 
         if is_label_required:
-            axis_options.append(
-                "{}ticklabels={{{}}}".format(xy, ",".join(pgfplots_ticklabels))
-            )
+            length = sum(len(label) for label in pgfplots_ticklabels)
+            sep = ("", ",", "") if length < 75 else ("\n  ", ",\n  ", "\n")
+            string = sep[1].join(pgfplots_ticklabels)
+            axis_options.append(f"{xy}ticklabels={{{sep[0]}{string}{sep[2]}}}")
     return axis_options
 
 
