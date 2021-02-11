@@ -479,7 +479,9 @@ class Axes:
             anchor = {"right": "east", "left": "west", "center": "center"}[
                 tick_labels_horizontal_alignment[0]
             ]
-            if anchor != "center":
+            if not (x_or_y == "x" and anchor == "center") and not (
+                x_or_y == "y" and anchor == "east"
+            ):
                 values.append(f"anchor={anchor}")
 
         if values:

@@ -227,8 +227,8 @@ def get_tikz_code(
             code += "[\n" + ",\n".join(extra_tikzpicture_parameters) + "\n]"
         code += "\n"
         if extra_lines_start:
-            code += "\n".join(extra_lines_start)
-        code += "\n\n"
+            code += "\n".join(extra_lines_start) + "\n"
+        code += "\n"
 
     coldefs = _get_color_definitions(data)
     if coldefs:
