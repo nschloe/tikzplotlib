@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pytest
+
 from helpers import assert_equality
 
 
@@ -58,9 +60,10 @@ def plot():
     return fig
 
 
+# TODO find a way to make this robust
+@pytest.mark.skip(reason="'Best' location depends on window size.")
 def test():
     assert_equality(plot, "test_legend_best_location_reference.tex")
-    return
 
 
 if __name__ == "__main__":

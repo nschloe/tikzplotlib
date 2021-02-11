@@ -569,8 +569,8 @@ def _get_line_data(linehandle):
         xData, yData, zData = linehandle.get_data_3d()
         data = _stack_data_3D(xData, yData, zData)
     else:
-        xData = linehandle.get_xdata().astype(np.float32)
-        yData = linehandle.get_ydata().astype(np.float32)
+        xData = np.asarray(linehandle.get_xdata()).astype(np.float32)
+        yData = np.asarray(linehandle.get_ydata()).astype(np.float32)
         data = _stack_data_2D(xData, yData)
     return data, is3D
 
