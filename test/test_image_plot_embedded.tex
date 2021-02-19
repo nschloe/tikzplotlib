@@ -1,0 +1,24 @@
+\begin{tikzpicture}
+
+\begin{axis}[
+hide x axis,
+hide y axis,
+tick align=outside,
+tick pos=left,
+x grid style={white!69.019608!black},
+xmin=-0.5, xmax=3.5,
+xtick style={color=black},
+y dir=reverse,
+y grid style={white!69.019608!black},
+ymin=-0.5, ymax=3.5,
+ytick style={color=black}
+]
+\addplot graphics [includegraphics cmd=\pgfimageembedded,xmin=-0.5, xmax=3.5, ymin=3.5, ymax=-0.5] {
+iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90
+bGliIHZlcnNpb24zLjMuNCwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy8QVMy6AAAACXBIWXMAAA9h
+AAAPYQGoP6dpAAAAJ0lEQVR4nGN0YQz5z4AEmGCMnc8uoAq4Sxkw7Hx2gYEFWZaBgYEBACVJCYDG
+ib9UAAAAAElFTkSuQmCC
+};
+\end{axis}
+
+\end{tikzpicture}

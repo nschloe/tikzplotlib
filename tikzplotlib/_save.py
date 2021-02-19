@@ -39,6 +39,7 @@ def get_tikz_code(
     float_format: str = ".15g",
     table_row_sep: str = "\n",
     flavor: str = "latex",
+    embed_images: bool = False,
 ):
     """Main function. Here, the recursion into the image starts and the
     contents are picked up. The actual file gets written in this routine.
@@ -131,9 +132,14 @@ def get_tikz_code(
     :type table_row_sep: str
 
     :param flavor: TeX flavor of the output code.
-                   Supported are ``"latex"`` and``"context"``.
+                   Supported are ``"latex"``, ``"lualatex"`` and``"context"``.
                    Default is ``"latex"``.
     :type flavor: str
+
+    :param embed_images: Whether images should be embedded as base64-encoded
+                         strings, needs the LuaLaTeX package luaimageembed.
+                         Default is ``False``.
+    :type embed_images: bool
 
     :returns: None
 
@@ -167,11 +173,23 @@ def get_tikz_code(
     data["strict"] = strict
     data["tikz libs"] = set()
     data["pgfplots libs"] = set()
+    data["additional packages"] = set()
     data["font size"] = textsize
     data["custom colors"] = {}
     data["legend colors"] = []
     data["add axis environment"] = add_axis_environment
     data["show_info"] = show_info
+    data["embed_images"] = embed_images
+
+    if data["embed_images"]:
+        if flavor.lower() != "lualatex":
+            warnings.warn(
+                "tikzplotlib: Option embed_images currently only compatible with lualatex flavor. Disabling."
+            )
+            data["embed_images"] = False
+        else:
+            data["additional packages"].add("luaimageembed")
+
     # rectangle_legends is used to keep track of which rectangles have already
     # had \addlegendimage added. There should be only one \addlegenimage per
     # bar chart data series.
@@ -241,7 +259,7 @@ def get_tikz_code(
 
     if standalone:
         # When using pdflatex, \\DeclareUnicodeCharacter is necessary.
-        code = data["flavor"].standalone(code)
+        code = data["flavor"].standalone(code, data)
     return code
 
 
@@ -406,6 +424,20 @@ class Flavors(enum.Enum):
 \\usepgfplotslibrary{{{pgfplotslibs}}}
 \\usetikzlibrary{{{tikzlibs}}}
 \\pgfplotsset{{compat=newest}}
+{additionalpackages}
+""",
+    )
+    lualatex = (
+        r"\begin{{{}}}",
+        r"\end{{{}}}",
+        "document",
+        """\
+\\documentclass{{standalone}}
+\\usepackage{{pgfplots}}
+\\usepgfplotslibrary{{{pgfplotslibs}}}
+\\usetikzlibrary{{{tikzlibs}}}
+\\pgfplotsset{{compat=newest}}
+{additionalpackages}
 """,
     )
     context = (
@@ -422,6 +454,7 @@ class Flavors(enum.Enum):
 % groupplot doesn’t define ConTeXt stuff
 \\unexpanded\\def\\startgroupplot{{\\groupplot}}
 \\unexpanded\\def\\stopgroupplot{{\\endgroupplot}}
+{additionalpackages}
 """,
     )
 
@@ -434,13 +467,34 @@ class Flavors(enum.Enum):
     def preamble(self, data=None):
         if data is None:
             data = {
-                "pgfplots libs": ("groupplots", "dateplot"),
-                "tikz libs": ("patterns", "shapes.arrows"),
+                "pgfplots libs": set(),
+                "tikz libs": set(),
+                "additional packages": set(),
             }
+
+        # add default libraries
+
+        data["tikz libs"] |= {"patterns", "shapes.arrows"}
+        data["pgfplots libs"] |= {"groupplots", "dateplot"}
+
         pgfplotslibs = ",".join(data["pgfplots libs"])
         tikzlibs = ",".join(data["tikz libs"])
-        return self.value[3].format(pgfplotslibs=pgfplotslibs, tikzlibs=tikzlibs)
 
-    def standalone(self, code):
+        if self.name != "context":
+            additionalpackages = "\n".join(
+                f"\\usepackage{{{name}}}" for name in data["additional packages"]
+            )
+        else:
+            additionalpackages = "\n".join(
+                f"\\usemodule[{name}]" for name in data["additional packages"]
+            )
+
+        return self.value[3].format(
+            pgfplotslibs=pgfplotslibs,
+            tikzlibs=tikzlibs,
+            additionalpackages=additionalpackages,
+        )
+
+    def standalone(self, code, data):
         docenv = self.value[2]
-        return f"{self.preamble()}{self.start(docenv)}\n{code}\n{self.end(docenv)}"
+        return f"{self.preamble(data)}{self.start(docenv)}\n{code}\n{self.end(docenv)}"

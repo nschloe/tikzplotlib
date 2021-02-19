@@ -72,6 +72,7 @@ def _compile(code, flavor):
     # compile the output to pdf
     cmdline = dict(
         latex=["pdflatex", "--interaction=nonstopmode"],
+        lualatex=["lualatex", "--interaction=nonstopmode"],
         context=["context", "--nonstopmode"],
     )[flavor]
     try:

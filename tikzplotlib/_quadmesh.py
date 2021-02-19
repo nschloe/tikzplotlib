@@ -1,6 +1,6 @@
 from PIL import Image
 
-from . import _files
+from ._image import prepare_image_addplot, prepare_image_storage
 
 
 def draw_quadmesh(data, obj):
@@ -9,8 +9,7 @@ def draw_quadmesh(data, obj):
     """
     content = []
 
-    # Generate file name for current object
-    filepath, rel_filepath = _files.new_filepath(data, "img", ".png")
+    filepath_or_handle, rel_filepath_or_handle = prepare_image_storage(data)
 
     # Get the dpi for rendering and store the original dpi of the figure
     dpi = data["dpi"]
@@ -42,7 +41,7 @@ def draw_quadmesh(data, obj):
         int(round(cbox.extents[3] - cbox.extents[1])),
     )
     cropped = image.crop(box)
-    cropped.save(filepath)
+    cropped.save(filepath_or_handle, format="PNG")
 
     # Restore the original dpi of the figure
     obj.figure.set_dpi(fig_dpi)
@@ -50,13 +49,6 @@ def draw_quadmesh(data, obj):
     # write the corresponding information to the TikZ file
     extent = obj.axes.get_xlim() + obj.axes.get_ylim()
 
-    # Explicitly use \pgfimage as includegrapics command, as the default
-    # \includegraphics fails unexpectedly in some cases
-    ff = data["float format"]
-    content.append(
-        "\\addplot graphics [includegraphics cmd=\\pgfimage,"
-        f"xmin={extent[0]:{ff}}, xmax={extent[1]:{ff}}, "
-        f"ymin={extent[2]:{ff}}, ymax={extent[3]:{ff}}] {{{rel_filepath}}};\n"
-    )
+    content.append(prepare_image_addplot(data, rel_filepath_or_handle, extent))
 
     return data, content
