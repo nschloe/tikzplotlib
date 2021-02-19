@@ -274,8 +274,8 @@ def _table(obj, data):  # noqa: C901
     plot_table = []
     table_row_sep = data["table_row_sep"]
     ydata[ydata_mask] = np.nan
-    if any(ydata_mask):
-        # matplotlib jumps at masked images, while PGFPlots by default interpolates.
+    if any(ydata_mask) or (~np.isfinite(ydata)).any():
+        # matplotlib jumps at masked or nan values, while PGFPlots by default interpolates.
         # Hence, if we have a masked plot, make sure that PGFPlots jumps as well.
         if "unbounded coords=jump" not in data["current axes"].axis_options:
             data["current axes"].axis_options.append("unbounded coords=jump")
