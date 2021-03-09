@@ -10,6 +10,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/nschloe/tikzplotlib.svg?style=flat-square&logo=github&label=Stars&logoColor=white)](https://github.com/nschloe/tikzplotlib)
 [![PyPi downloads](https://img.shields.io/pypi/dm/tikzplotlib.svg?style=flat-square)](https://pypistats.org/packages/tikzplotlib)
 
+[![Discord](https://img.shields.io/static/v1?logo=discord&label=chat&message=on%20discord&color=7289da&style=flat-square)](https://discord.com/channels/818781969562599434/818781969562599438)
 [![Documentation Status](https://readthedocs.org/projects/tikzplotlib/badge/?version=latest&style=flat-square)](https://readthedocs.org/projects/tikzplotlib/?badge=latest)
 [![awesome](https://img.shields.io/badge/awesome-yes-brightgreen.svg?style=flat-square)](https://github.com/nschloe/tikzplotlib)
 
