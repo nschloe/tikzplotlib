@@ -12,7 +12,7 @@ this_dir = pathlib.Path(__file__).resolve().parent
     "string,lineno",
     exdown.extract(this_dir.parent / "README.md", syntax_filter="python"),
 )
-def test_readme(string, _):
+def test_readme(string, lineno):
     exec(string)
 
     # Close figure and reset defaults
