@@ -288,7 +288,7 @@ def _table(obj, data):  # noqa: C901
         with open(filepath, "w") as f:
             # No encoding handling required: plot_table is only ASCII
             f.write("".join(plot_table))
-        content.append(str(rel_filepath).replace('\\', '/'))
+        content.append(str(rel_filepath).replace("\\", "/"))
     else:
         content.extend(plot_table)
 
