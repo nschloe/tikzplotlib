@@ -56,7 +56,7 @@ def draw_quadmesh(data, obj):
     content.append(
         "\\addplot graphics [includegraphics cmd=\\pgfimage,"
         f"xmin={extent[0]:{ff}}, xmax={extent[1]:{ff}}, "
-        f"ymin={extent[2]:{ff}}, ymax={extent[3]:{ff}}] {{{rel_filepath}}};\n"
+        f"ymin={extent[2]:{ff}}, ymax={extent[3]:{ff}}] {{" + str(rel_filepath).replace('\\', '/') + "};\n"
     )
 
     return data, content
