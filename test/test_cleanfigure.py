@@ -115,8 +115,7 @@ class Test_plottypes:
             # Use number of lines to test if it worked.
             numLinesRaw = raw.count("\n")
             numLinesClean = clean.count("\n")
-
-            assert numLinesRaw - numLinesClean == 14
+            assert numLinesRaw - numLinesClean == 13
         plt.close("all")
 
     def test_scatter3d(self):
@@ -569,7 +568,7 @@ class Test_logscale:
             clean = get_tikz_code()
             numLinesRaw = raw.count("\n")
             numLinesClean = clean.count("\n")
-            assert numLinesRaw - numLinesClean == 98
+            assert numLinesRaw - numLinesClean == 99
             assert numLinesClean == 27
         plt.close("all")
 
