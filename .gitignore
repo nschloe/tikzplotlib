@@ -9,7 +9,3 @@ build/
 .cache/
 *.egg-info/
 .pytest_cache/
-test.tex
-mytikz.tex
-coverage.xml
-.coverage
