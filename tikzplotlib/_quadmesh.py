@@ -10,7 +10,7 @@ def draw_quadmesh(data, obj):
     content = []
 
     # Generate file name for current object
-    filepath, rel_filepath, rel_filepath_str = _files.new_filepath(data, "img", ".png")
+    filepath, rel_filepath_str = _files.new_filepath(data, "img", ".png")
 
     # Get the dpi for rendering and store the original dpi of the figure
     dpi = data["dpi"]

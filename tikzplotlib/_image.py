@@ -9,7 +9,7 @@ def draw_image(data, obj):
     """Returns the PGFPlots code for an image environment."""
     content = []
 
-    filepath, rel_filepath, rel_filepath_str = _files.new_filepath(data, "img", ".png")
+    filepath, rel_filepath_str = _files.new_filepath(data, "img", ".png")
 
     # store the image as in a file
     img_array = obj.get_array()

@@ -42,4 +42,4 @@ def new_filepath(data, file_kind, ext):
 
     rel_filepath_str = str(rel_filepath).replace("\\", "/")
 
-    return filepath, rel_filepath, rel_filepath_str
+    return filepath, rel_filepath_str
