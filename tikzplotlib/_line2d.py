@@ -284,11 +284,13 @@ def _table(obj, data):  # noqa: C901
         plot_table.append(f"{x:{xformat}}{col_sep}{y:{ff}}{table_row_sep}")
 
     if data["externalize tables"]:
-        filepath, rel_filepath = _files.new_filepath(data, "table", ".tsv")
+        filepath, rel_filepath, rel_filepath_str = _files.new_filepath(
+            data, "table", ".tsv"
+        )
         with open(filepath, "w") as f:
             # No encoding handling required: plot_table is only ASCII
             f.write("".join(plot_table))
-        content.append(str(rel_filepath).replace("\\", "/"))
+        content.append(rel_filepath_str)
     else:
         content.extend(plot_table)
 

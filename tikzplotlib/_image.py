@@ -9,7 +9,7 @@ def draw_image(data, obj):
     """Returns the PGFPlots code for an image environment."""
     content = []
 
-    filepath, rel_filepath = _files.new_filepath(data, "img", ".png")
+    filepath, rel_filepath, rel_filepath_str = _files.new_filepath(data, "img", ".png")
 
     # store the image as in a file
     img_array = obj.get_array()
@@ -55,8 +55,6 @@ def draw_image(data, obj):
     content.append(
         "\\addplot graphics [includegraphics cmd=\\pgfimage,"
         f"xmin={extent[0]:{ff}}, xmax={extent[1]:{ff}}, "
-        f"ymin={extent[2]:{ff}}, ymax={extent[3]:{ff}}] {{"
-        + str(rel_filepath).replace("\\", "/")
-        + "};\n"
+        f"ymin={extent[2]:{ff}}, ymax={extent[3]:{ff}}] {{{rel_filepath_str}}};\n"
     )
     return data, content
