@@ -263,7 +263,7 @@ def draw_pathcollection(data, obj):
                         []
                     ]  # Inserts a newline to trigger "move to" in pgfplots
                 dd_strings += [[fmt.format(val) for val in row]]
-            dd_strings = np.array(dd_strings[1:])
+            dd_strings = np.array(dd_strings[1:], dtype=object)
 
         if len(obj.get_sizes()) == len(dd):
             # See Pgfplots manual, chapter 4.25.
