@@ -250,7 +250,20 @@ def draw_pathcollection(data, obj):
     for path in obj.get_paths():
         if is_contour:
             dd = path.vertices
-            dd_strings = np.array([[fmt.format(val) for val in row] for row in dd])
+            # https://matplotlib.org/stable/api/path_api.html
+            codes = (
+                path.codes
+                if path.codes is not None
+                else np.array([1] + [2] * (len(dd) - 1))
+            )
+            dd_strings = []
+            for row, code in zip(dd, codes):
+                if code == 1:  # MOVETO
+                    dd_strings += [
+                        []
+                    ]  # Inserts a newline to trigger "move to" in pgfplots
+                dd_strings += [[fmt.format(val) for val in row]]
+            dd_strings = np.array(dd_strings[1:])
 
         if len(obj.get_sizes()) == len(dd):
             # See Pgfplots manual, chapter 4.25.
