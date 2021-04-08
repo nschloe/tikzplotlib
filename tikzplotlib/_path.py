@@ -211,21 +211,22 @@ def draw_pathcollection(data, obj):
 
         # "solution" from
         # <https://github.com/matplotlib/matplotlib/issues/4672#issuecomment-378702670>
-        p = obj.get_paths()[0]
-        ms = {style: MarkerStyle(style) for style in MarkerStyle.markers}
-        paths = {
-            style: marker.get_path().transformed(marker.get_transform())
-            for style, marker in ms.items()
-        }
         marker0 = None
-        for marker, path in paths.items():
-            if (
-                np.array_equal(path.codes, p.codes)
-                and (path.vertices.shape == p.vertices.shape)
-                and np.max(np.abs(path.vertices - p.vertices)) < 1.0e-10
-            ):
-                marker0 = marker
-                break
+        if obj.get_paths():
+            p = obj.get_paths()[0]
+            ms = {style: MarkerStyle(style) for style in MarkerStyle.markers}
+            paths = {
+                style: marker.get_path().transformed(marker.get_transform())
+                for style, marker in ms.items()
+            }
+            for marker, path in paths.items():
+                if (
+                    np.array_equal(path.codes, p.codes)
+                    and (path.vertices.shape == p.vertices.shape)
+                    and np.max(np.abs(path.vertices - p.vertices)) < 1.0e-10
+                ):
+                    marker0 = marker
+                    break
 
     is_contour = len(dd) == 1
     if is_contour:
