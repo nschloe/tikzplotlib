@@ -259,10 +259,9 @@ def draw_pathcollection(data, obj):
             dd_strings = []
             for row, code in zip(dd, codes):
                 if code == 1:  # MOVETO
-                    dd_strings += [
-                        []
-                    ]  # Inserts a newline to trigger "move to" in pgfplots
-                dd_strings += [[fmt.format(val) for val in row]]
+                    # Inserts a newline to trigger "move to" in pgfplots
+                    dd_strings.append([])
+                dd_strings.append([fmt.format(val) for val in row])
             dd_strings = np.array(dd_strings[1:], dtype=object)
 
         if len(obj.get_sizes()) == len(dd):
