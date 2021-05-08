@@ -125,6 +125,7 @@ to install.
 2. Instead of `pyplot.show()`, invoke tikzplotlib by
     ```python
     import tikzplotlib
+
     tikzplotlib.save("mytikz.tex")
     # or
     tikzplotlib.save("mytikz.tex", flavor="context")
@@ -160,6 +161,7 @@ to install.
    You can also get the code via:
     ```python
     import tikzplotlib
+
     tikzplotlib.Flavors.latex.preamble()
     # or
     tikzplotlib.Flavors.context.preamble()
@@ -170,9 +172,10 @@ to install.
     import matplotlib.pyplot as plt
     import numpy as np
 
-    #... do your plotting
+    # ... do your plotting
 
     import tikzplotlib
+
     tikzplotlib.clean_figure()
     tikzplotlib.save("test.tex")
     ```

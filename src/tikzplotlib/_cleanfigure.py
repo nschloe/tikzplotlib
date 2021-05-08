@@ -439,25 +439,25 @@ def _update_line_data(linehandle, data):
 
 
 def _split_data_2D(data):
-    """ data --> xData, yData """
+    """data --> xData, yData"""
     xData, yData = np.split(data, 2, axis=1)
     return xData.reshape((-1,)), yData.reshape((-1,))
 
 
 def _stack_data_2D(xData, yData):
-    """ xData, yData --> data """
+    """xData, yData --> data"""
     data = np.stack([xData, yData], axis=1)
     return data
 
 
 def _split_data_3D(data):
-    """ data --> xData, yData, zData """
+    """data --> xData, yData, zData"""
     xData, yData, zData = np.split(data, 3, axis=1)
     return xData.reshape((-1,)), yData.reshape((-1,)), zData.reshape((-1,))
 
 
 def _stack_data_3D(xData, yData, zData):
-    """ xData, yData, zData --> data """
+    """xData, yData, zData --> data"""
     data = np.stack([xData, yData, zData], axis=1)
     return data
 
@@ -653,7 +653,7 @@ def _isempty(array):
 
 
 def _line_has_lines(linehandle):
-    """ check if linestyle is not None and linewidth is larger than 0 """
+    """check if linestyle is not None and linewidth is larger than 0"""
     hasLines = (linehandle.get_linestyle() is not None) and (
         linehandle.get_linewidth() > 0.0
     )

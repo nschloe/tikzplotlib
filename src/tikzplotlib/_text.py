@@ -143,7 +143,7 @@ def _transform_positioning(ha, va):
 
 
 def _parse_annotation_coords(ff, coords, xy):
-    """ Convert a coordinate name and xy into a tikz coordinate string """
+    """Convert a coordinate name and xy into a tikz coordinate string"""
     # todo: add support for all the missing ones
     if coords == "data":
         x, y = xy
