@@ -57,6 +57,15 @@ import tikzplotlib
 
 tikzplotlib.save("test.tex")
 ```
+<!--close the figure and reset defaults
+<!--pytest-codeblocks:cont-->
+```python
+import matplotlib as mpl
+
+plt.close()
+mpl.rcParams.update(mpl.rcParamsDefault)
+```
+-->
 (see above) gives
 ```latex
 \begin{tikzpicture}
@@ -125,6 +134,7 @@ to install.
 2. Instead of `pyplot.show()`, invoke tikzplotlib by
     ```python
     import tikzplotlib
+
     tikzplotlib.save("mytikz.tex")
     # or
     tikzplotlib.save("mytikz.tex", flavor="context")
@@ -160,6 +170,7 @@ to install.
    You can also get the code via:
     ```python
     import tikzplotlib
+
     tikzplotlib.Flavors.latex.preamble()
     # or
     tikzplotlib.Flavors.context.preamble()
@@ -170,15 +181,19 @@ to install.
     import matplotlib.pyplot as plt
     import numpy as np
 
-    #... do your plotting
+    # ... do your plotting
 
     import tikzplotlib
+
     tikzplotlib.clean_figure()
     tikzplotlib.save("test.tex")
     ```
-    The command will remove points that are outside the axes limits, simplify curves and reduce point density for the specified target resolution.
+    The command will remove points that are outside the axes limits, simplify curves and
+    reduce point density for the specified target resolution.
     
-    The feature originated from the [matlab2tikz](https://github.com/matlab2tikz/matlab2tikz) project and is adapted to matplotlib.
+    The feature originated from the
+    [matlab2tikz](https://github.com/matlab2tikz/matlab2tikz) project and is adapted to
+    matplotlib.
 
 ### Contributing
 

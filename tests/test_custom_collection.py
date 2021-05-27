@@ -38,7 +38,7 @@ class TransformedEllipseCollection(matplotlib.collections.Collection):
 
 
 def rot(theta):
-    """ Get a stack of rotation matrices """
+    """Get a stack of rotation matrices"""
     return np.stack(
         [
             np.stack([np.cos(theta), -np.sin(theta)], axis=-1),
