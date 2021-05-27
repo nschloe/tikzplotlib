@@ -50,7 +50,7 @@ def _is_in_legend(obj):
 
 
 def _patch_legend(obj, draw_options, legend_type):
-    """ Decorator for handling legend of mpl.Patch """
+    """Decorator for handling legend of mpl.Patch"""
     legend = ""
     if _is_in_legend(obj):
         # Unfortunately, patch legend entries need \addlegendimage in Pgfplots.

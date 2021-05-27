@@ -60,7 +60,7 @@ def add_custom_pattern(mpl_hatch, pattern_name, pattern_definition=None):
 
 
 def __validate_hatch(hatch):
-    """ Warn about the shortcomings of patterns """
+    """Warn about the shortcomings of patterns"""
     if len(hatch) > 1:
         warnings.warn(
             f"tikzplotlib: Hatch '{hatch}' cannot be rendered. "
