@@ -57,6 +57,15 @@ import tikzplotlib
 
 tikzplotlib.save("test.tex")
 ```
+<!--close the figure and reset defaults
+<!--pytest-codeblocks:cont-->
+```python
+import matplotlib as mpl
+
+plt.close()
+mpl.rcParams.update(mpl.rcParamsDefault)
+```
+-->
 (see above) gives
 ```latex
 \begin{tikzpicture}
@@ -179,9 +188,12 @@ to install.
     tikzplotlib.clean_figure()
     tikzplotlib.save("test.tex")
     ```
-    The command will remove points that are outside the axes limits, simplify curves and reduce point density for the specified target resolution.
+    The command will remove points that are outside the axes limits, simplify curves and
+    reduce point density for the specified target resolution.
     
-    The feature originated from the [matlab2tikz](https://github.com/matlab2tikz/matlab2tikz) project and is adapted to matplotlib.
+    The feature originated from the
+    [matlab2tikz](https://github.com/matlab2tikz/matlab2tikz) project and is adapted to
+    matplotlib.
 
 ### Contributing
 
