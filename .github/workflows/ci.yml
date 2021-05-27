@@ -40,6 +40,6 @@ jobs:
     - name: Test with tox
       run: |
         pip install tox
-        tox
+        tox -- --cov tikzplotlib --cov-report xml --cov-report term
     - uses: codecov/codecov-action@v1
-      if: ${{ matrix.python-version == '3.8' }}
+      if: ${{ matrix.python-version == '3.9' }}
