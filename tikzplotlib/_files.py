@@ -42,4 +42,4 @@ def new_filename(data, file_kind, ext):
     else:
         rel_filepath = name
 
-    return filename, rel_filepath
+    return filename, str(rel_filepath.as_posix())
