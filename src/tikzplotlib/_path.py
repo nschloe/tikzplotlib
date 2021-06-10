@@ -112,6 +112,7 @@ def draw_path(data, path, draw_options=None, simplify=None):
 
 def draw_pathcollection(data, obj):
     """Returns PGFPlots code for a number of patch objects."""
+    print("Drawing PathCollection")
     content = []
     # gather data
     assert obj.get_offsets() is not None
@@ -121,13 +122,12 @@ def draw_pathcollection(data, obj):
     fmt = "{:" + data["float format"] + "}"
     dd_strings = np.array([[fmt.format(val) for val in row] for row in dd])
 
-    draw_options = ["scatter", "only marks"]
+    draw_options = ["only marks"]
     table_options = []
 
     is_filled = False
 
     if obj.get_array() is not None:
-        draw_options.append("scatter")
         dd_strings = np.column_stack([dd_strings, obj.get_array()])
         labels.append("colordata")
         draw_options.append("scatter src=explicit")
@@ -138,6 +138,7 @@ def draw_pathcollection(data, obj):
         marker0 = None
         if obj.get_cmap():
             mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(obj.get_cmap(), data)
+            draw_options.append("scatter")
             draw_options.append(
                 "colormap" + ("=" if is_custom_cmap else "/") + mycolormap
             )
@@ -283,6 +284,7 @@ def draw_pathcollection(data, obj):
 
         # remove duplicates
         draw_options = sorted(list(set(draw_options)))
+        print("Draw options: ", draw_options)
 
         len_row = sum(len(item) for item in draw_options)
         j0, j1, j2 = ("", ", ", "") if len_row < 80 else ("\n  ", ",\n  ", "\n")
