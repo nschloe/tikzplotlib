@@ -112,7 +112,6 @@ def draw_path(data, path, draw_options=None, simplify=None):
 
 def draw_pathcollection(data, obj):
     """Returns PGFPlots code for a number of patch objects."""
-    print("Drawing PathCollection")
     content = []
     # gather data
     assert obj.get_offsets() is not None
@@ -194,7 +193,6 @@ def draw_pathcollection(data, obj):
             ls = None
 
         if add_individual_color_code:
-            print("Adding individual color codes")
             draw_options.extend(
                 [
                     "scatter",
@@ -286,7 +284,6 @@ def draw_pathcollection(data, obj):
 
         # remove duplicates
         draw_options = sorted(list(set(draw_options)))
-        print("Draw options: ", draw_options)
 
         len_row = sum(len(item) for item in draw_options)
         j0, j1, j2 = ("", ", ", "") if len_row < 80 else ("\n  ", ",\n  ", "\n")
