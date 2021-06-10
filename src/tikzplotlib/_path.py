@@ -194,6 +194,7 @@ def draw_pathcollection(data, obj):
             ls = None
 
         if add_individual_color_code:
+            print("Adding individual color codes")
             draw_options.extend(
                 [
                     "scatter",
@@ -276,6 +277,7 @@ def draw_pathcollection(data, obj):
                 [
                     "visualization depends on="
                     "{\\thisrow{sizedata} \\as\\perpointmarksize}",
+                    "scatter",
                     "scatter/@pre marker code/.append style="
                     "{/tikz/mark size=\\perpointmarksize}",
                     # "scatter/@post marker code/.style={}"
