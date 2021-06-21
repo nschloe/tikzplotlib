@@ -1,3 +1,4 @@
+import pytest
 from helpers import assert_equality
 
 
@@ -57,7 +58,8 @@ def plot():
 
 
 def test():
-    assert_equality(plot, "test_hatch_reference.tex")
+    with pytest.warns(UserWarning):
+        assert_equality(plot, "test_hatch_reference.tex")
 
 
 if __name__ == "__main__":
