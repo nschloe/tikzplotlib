@@ -28,9 +28,9 @@ class Test_plottypes:
             # the baseline (raw) should have 20 points
             # the clean version (clean) should have 2 points
             # the difference in line numbers should therefore be 2
-            numLinesRaw = raw.count("\n")
-            numLinesClean = clean.count("\n")
-            assert numLinesRaw - numLinesClean == 18
+            num_lines_raw = raw.count("\n")
+            num_lines_clean = clean.count("\n")
+            assert num_lines_raw - num_lines_clean == 18
         plt.close("all")
 
     def test_step(self):
@@ -50,7 +50,7 @@ class Test_plottypes:
         x = np.linspace(1, 100, 20)
         y = np.linspace(1, 100, 20)
         with plt.rc_context(rc=RC_PARAMS):
-            fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+            _, ax = plt.subplots(1, 1, figsize=(5, 5))
             ax.scatter(x, y)
             ax.set_ylim([20, 80])
             ax.set_xlim([20, 80])
@@ -63,9 +63,9 @@ class Test_plottypes:
             # the baseline (raw) should have 20 points
             # the clean version (clean) should have 2 points
             # the difference in line numbers should therefore be 2
-            numLinesRaw = raw.count("\n")
-            numLinesClean = clean.count("\n")
-            assert numLinesRaw - numLinesClean == 6
+            num_lines_raw = raw.count("\n")
+            num_lines_clean = clean.count("\n")
+            assert num_lines_raw - num_lines_clean == 6
         plt.close("all")
 
     def test_bar(self):
@@ -113,9 +113,9 @@ class Test_plottypes:
             clean = get_tikz_code()
 
             # Use number of lines to test if it worked.
-            numLinesRaw = raw.count("\n")
-            numLinesClean = clean.count("\n")
-            assert numLinesRaw - numLinesClean == 13
+            num_lines_raw = raw.count("\n")
+            num_lines_clean = clean.count("\n")
+            assert num_lines_raw - num_lines_clean == 13
         plt.close("all")
 
     def test_scatter3d(self):
@@ -139,10 +139,10 @@ class Test_plottypes:
             clean = get_tikz_code()
 
             # Use number of lines to test if it worked.
-            numLinesRaw = raw.count("\n")
-            numLinesClean = clean.count("\n")
+            num_lines_raw = raw.count("\n")
+            num_lines_clean = clean.count("\n")
 
-            assert numLinesRaw - numLinesClean == 14
+            assert num_lines_raw - num_lines_clean == 14
         plt.close("all")
 
     def test_wireframe3D(self):
@@ -257,7 +257,7 @@ class Test_plottypes:
             xs = np.arange(0, 10, 0.4)
             verts = []
             zs = [0.0, 1.0, 2.0, 3.0]
-            for z in zs:
+            for _ in zs:
                 ys = np.random.rand(len(xs))
                 ys[0], ys[-1] = 0, 0
                 verts.append(list(zip(xs, ys)))
@@ -384,9 +384,9 @@ class Test_lineplot_markers:
             # the baseline (raw) should have 20 points
             # the clean version (clean) should have 2 points
             # the difference in line numbers should therefore be 2
-            numLinesRaw = raw.count("\n")
-            numLinesClean = clean.count("\n")
-            assert numLinesRaw - numLinesClean == 18
+            num_lines_raw = raw.count("\n")
+            num_lines_clean = clean.count("\n")
+            assert num_lines_raw - num_lines_clean == 18
         plt.close("all")
 
     def test_no_line_markers(self):
@@ -410,9 +410,9 @@ class Test_lineplot_markers:
             # the baseline (raw) should have 20 points
             # the clean version (clean) should have 2 points
             # the difference in line numbers should therefore be 2
-            numLinesRaw = raw.count("\n")
-            numLinesClean = clean.count("\n")
-            assert numLinesRaw - numLinesClean == 6
+            num_lines_raw = raw.count("\n")
+            num_lines_clean = clean.count("\n")
+            assert num_lines_raw - num_lines_clean == 6
         plt.close("all")
 
     def test_line_markers(self):
@@ -436,9 +436,9 @@ class Test_lineplot_markers:
             # the baseline (raw) should have 20 points
             # the clean version (clean) should have 2 points
             # the difference in line numbers should therefore be 2
-            numLinesRaw = raw.count("\n")
-            numLinesClean = clean.count("\n")
-            assert numLinesRaw - numLinesClean == 6
+            num_lines_raw = raw.count("\n")
+            num_lines_clean = clean.count("\n")
+            assert num_lines_raw - num_lines_clean == 6
         plt.close("all")
 
     def test_sine(self):
@@ -459,9 +459,9 @@ class Test_lineplot_markers:
             # the baseline (raw) should have 20 points
             # the clean version (clean) should have 2 points
             # the difference in line numbers should therefore be 2
-            numLinesRaw = raw.count("\n")
-            numLinesClean = clean.count("\n")
-            assert numLinesRaw - numLinesClean == 39
+            num_lines_raw = raw.count("\n")
+            num_lines_clean = clean.count("\n")
+            assert num_lines_raw - num_lines_clean == 39
         plt.close("all")
 
 
@@ -510,9 +510,9 @@ class Test_subplots:
             # the baseline (raw) should have 20 points
             # the clean version (clean) should have 2 points
             # the difference in line numbers should therefore be 2
-            numLinesRaw = raw.count("\n")
-            numLinesClean = clean.count("\n")
-            assert numLinesRaw - numLinesClean == 36
+            num_lines_raw = raw.count("\n")
+            num_lines_clean = clean.count("\n")
+            assert num_lines_raw - num_lines_clean == 36
         plt.close("all")
 
 
@@ -522,17 +522,17 @@ class Test_logscale:
         y = np.exp(x)
 
         with plt.rc_context(rc=RC_PARAMS):
-            fig, ax = plt.subplots(1)
+            _, ax = plt.subplots(1)
             ax.plot(x, y)
             ax.set_yscale("log")
             raw = get_tikz_code()
             clean_figure()
 
             clean = get_tikz_code()
-            numLinesRaw = raw.count("\n")
-            numLinesClean = clean.count("\n")
-            assert numLinesRaw - numLinesClean == 98
-            assert numLinesClean == 25
+            num_lines_raw = raw.count("\n")
+            num_lines_clean = clean.count("\n")
+            assert num_lines_raw - num_lines_clean == 98
+            assert num_lines_clean == 25
         plt.close("all")
 
     def test_xlog(self):
@@ -540,25 +540,25 @@ class Test_logscale:
         x = np.exp(y)
 
         with plt.rc_context(rc=RC_PARAMS):
-            fig, ax = plt.subplots(1)
+            _, ax = plt.subplots(1)
             ax.plot(x, y)
             ax.set_xscale("log")
             raw = get_tikz_code()
             clean_figure()
 
             clean = get_tikz_code()
-            numLinesRaw = raw.count("\n")
-            numLinesClean = clean.count("\n")
-            assert numLinesRaw - numLinesClean == 98
-            assert numLinesClean == 25
+            num_lines_raw = raw.count("\n")
+            num_lines_clean = clean.count("\n")
+            assert num_lines_raw - num_lines_clean == 98
+            assert num_lines_clean == 25
         plt.close("all")
 
     def test_loglog(self):
-        x = np.exp(np.logspace(0, 5, 100))
-        y = np.exp(np.logspace(0, 5, 100))
+        x = np.exp(np.logspace(0.0, 2.0, 100))
+        y = np.exp(np.logspace(0.0, 2.0, 100))
 
         with plt.rc_context(rc=RC_PARAMS):
-            fig, ax = plt.subplots(1)
+            _, ax = plt.subplots(1)
             ax.plot(x, y)
             ax.set_xscale("log")
             ax.set_yscale("log")
@@ -566,51 +566,51 @@ class Test_logscale:
             clean_figure()
 
             clean = get_tikz_code()
-            numLinesRaw = raw.count("\n")
-            numLinesClean = clean.count("\n")
-            assert numLinesRaw - numLinesClean == 99
-            assert numLinesClean == 27
+            num_lines_raw = raw.count("\n")
+            num_lines_clean = clean.count("\n")
+            assert num_lines_raw == 125
+            assert num_lines_clean == 27
         plt.close("all")
 
     def test_ylog_2(self):
         x = np.arange(1, 100)
         y = np.arange(1, 100)
         with plt.rc_context(rc=RC_PARAMS):
-            fig, ax = plt.subplots(1)
+            _, ax = plt.subplots(1)
             ax.plot(x, y)
             ax.set_yscale("log")
             raw = get_tikz_code()
             clean_figure()
 
             clean = get_tikz_code()
-            numLinesRaw = raw.count("\n")
-            numLinesClean = clean.count("\n")
-            assert numLinesRaw - numLinesClean == 51
-            assert numLinesClean == 71
+            num_lines_raw = raw.count("\n")
+            num_lines_clean = clean.count("\n")
+            assert num_lines_raw - num_lines_clean == 51
+            assert num_lines_clean == 71
         plt.close("all")
 
     def test_xlog_2(self):
         x = np.arange(1, 100)
         y = np.arange(1, 100)
         with plt.rc_context(rc=RC_PARAMS):
-            fig, ax = plt.subplots(1)
+            _, ax = plt.subplots(1)
             ax.plot(x, y)
             ax.set_xscale("log")
             raw = get_tikz_code()
             clean_figure()
 
             clean = get_tikz_code()
-            numLinesRaw = raw.count("\n")
-            numLinesClean = clean.count("\n")
-            assert numLinesRaw - numLinesClean == 51
-            assert numLinesClean == 71
+            num_lines_raw = raw.count("\n")
+            num_lines_clean = clean.count("\n")
+            assert num_lines_raw - num_lines_clean == 51
+            assert num_lines_clean == 71
         plt.close("all")
 
     def test_loglog_2(self):
         x = np.arange(1, 100)
         y = np.arange(1, 100)
         with plt.rc_context(rc=RC_PARAMS):
-            fig, ax = plt.subplots(1)
+            _, ax = plt.subplots(1)
             ax.plot(x, y)
             ax.set_xscale("log")
             ax.set_yscale("log")
@@ -618,10 +618,10 @@ class Test_logscale:
             clean_figure()
 
             clean = get_tikz_code()
-            numLinesRaw = raw.count("\n")
-            numLinesClean = clean.count("\n")
-            assert numLinesRaw - numLinesClean == 97
-            assert numLinesClean == 27
+            num_lines_raw = raw.count("\n")
+            num_lines_clean = clean.count("\n")
+            assert num_lines_raw - num_lines_clean == 97
+            assert num_lines_clean == 27
         plt.close("all")
 
     def test_loglog_3(self):
@@ -639,9 +639,9 @@ class Test_logscale:
 
             clean_figure(fig)
             clean = get_tikz_code()
-            numLinesRaw = raw.count("\n")
-            numLinesClean = clean.count("\n")
-            assert numLinesRaw - numLinesClean == 18
+            num_lines_raw = raw.count("\n")
+            num_lines_clean = clean.count("\n")
+            assert num_lines_raw - num_lines_clean == 18
         plt.close("all")
 
     def test_xlog_3(self):
@@ -658,9 +658,9 @@ class Test_logscale:
 
             clean_figure(fig)
             clean = get_tikz_code()
-            numLinesRaw = raw.count("\n")
-            numLinesClean = clean.count("\n")
-            assert numLinesRaw - numLinesClean == 18
+            num_lines_raw = raw.count("\n")
+            num_lines_clean = clean.count("\n")
+            assert num_lines_raw - num_lines_clean == 18
         plt.close("all")
 
 
