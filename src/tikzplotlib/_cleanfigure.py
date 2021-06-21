@@ -1280,18 +1280,17 @@ def _cross_lines(X1, X2, X3, X4):
     :param X4: X4
     :type X4: np.ndarray
     """
-    n = X2.shape[0]
-    Lambda = np.zeros((n, 2))
     detA = -(X2[:, 0] - X1[:, 0]) * (X4[1] - X3[1]) + (X2[:, 1] - X1[:, 1]) * (
         X4[0] - X3[0]
     )
 
     id_detA = detA != 0
 
+    n = X2.shape[0]
+    Lambda = np.zeros((n, 2))
     if id_detA.any():
-        rhs = -X1.reshape((-1, 2)) + X3.reshape(
-            (-1, 2)
-        )  # NOTE: watch out for broadcasting
+        # NOTE: watch out for broadcasting
+        rhs = -X1.reshape((-1, 2)) + X3.reshape((-1, 2))
         Rotate = np.array([[0, -1], [1, 0]])
         Lambda[id_detA, 0] = (rhs[id_detA, :] @ Rotate @ (X4 - X3).T) / detA[id_detA]
         Lambda[id_detA, 1] = (
