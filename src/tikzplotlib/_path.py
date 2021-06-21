@@ -122,13 +122,12 @@ def draw_pathcollection(data, obj):
     fmt = "{:" + data["float format"] + "}"
     dd_strings = np.array([[fmt.format(val) for val in row] for row in dd])
 
-    draw_options = ["scatter", "only marks"]
+    draw_options = ["only marks"]
     table_options = []
 
     is_filled = False
 
     if obj.get_array() is not None:
-        draw_options.append("scatter")
         dd_strings = np.column_stack([dd_strings, obj.get_array()])
         labels.append("colordata")
         draw_options.append("scatter src=explicit")
@@ -139,6 +138,7 @@ def draw_pathcollection(data, obj):
         marker0 = None
         if obj.get_cmap():
             mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(obj.get_cmap(), data)
+            draw_options.append("scatter")
             draw_options.append(
                 "colormap" + ("=" if is_custom_cmap else "/") + mycolormap
             )
@@ -276,6 +276,7 @@ def draw_pathcollection(data, obj):
                 [
                     "visualization depends on="
                     + "{\\thisrow{sizedata} \\as\\perpointmarksize}",
+                    "scatter",
                     "scatter/@pre marker code/.append style="
                     + "{/tikz/mark size=\\perpointmarksize}",
                     # "scatter/@post marker code/.style={}"
