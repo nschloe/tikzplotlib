@@ -27,6 +27,7 @@ def draw_path(data, path, draw_options=None, simplify=None):
     ff = data["float format"]
     xformat = "" if x_is_date else ff
     prev = None
+    is_area = None
     for vert, code in path.iter_segments(simplify=simplify):
         # nschloe, Oct 2, 2015:
         #   The transform call yields warnings and it is unclear why. Perhaps
@@ -205,7 +206,7 @@ def draw_pathcollection(data, obj):
                     + "  }%\n"
                     + "  \\scope[draw=thispointdrawcolor, fill=thispointfillcolor]%\n"
                     + "}",
-                    +"scatter/@post marker code/.code={%\n" "  \\endscope\n" "}",
+                    "scatter/@post marker code/.code={%\n" "  \\endscope\n" "}",
                 ]
             )
 
