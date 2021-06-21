@@ -27,6 +27,7 @@ def draw_path(data, path, draw_options=None, simplify=None):
     ff = data["float format"]
     xformat = "" if x_is_date else ff
     prev = None
+    is_area = None
     for vert, code in path.iter_segments(simplify=simplify):
         # nschloe, Oct 2, 2015:
         #   The transform call yields warnings and it is unclear why. Perhaps
@@ -199,12 +200,12 @@ def draw_pathcollection(data, obj):
                     "visualization depends on={value \\thisrow{draw} \\as \\drawcolor}",
                     "visualization depends on={value \\thisrow{fill} \\as \\fillcolor}",
                     "scatter/@pre marker code/.code={%\n"
-                    "  \\expanded{%\n"
-                    "  \\noexpand\\definecolor{thispointdrawcolor}{RGB}{\\drawcolor}%\n"
-                    "  \\noexpand\\definecolor{thispointfillcolor}{RGB}{\\fillcolor}%\n"
-                    "  }%\n"
-                    "  \\scope[draw=thispointdrawcolor, fill=thispointfillcolor]%\n"
-                    "}",
+                    + "  \\expanded{%\n"
+                    + "  \\noexpand\\definecolor{thispointdrawcolor}{RGB}{\\drawcolor}%\n"
+                    + "  \\noexpand\\definecolor{thispointfillcolor}{RGB}{\\fillcolor}%\n"
+                    + "  }%\n"
+                    + "  \\scope[draw=thispointdrawcolor, fill=thispointfillcolor]%\n"
+                    + "}",
                     "scatter/@post marker code/.code={%\n" "  \\endscope\n" "}",
                 ]
             )
@@ -274,10 +275,10 @@ def draw_pathcollection(data, obj):
             draw_options.extend(
                 [
                     "visualization depends on="
-                    "{\\thisrow{sizedata} \\as\\perpointmarksize}",
+                    + "{\\thisrow{sizedata} \\as\\perpointmarksize}",
                     "scatter",
                     "scatter/@pre marker code/.append style="
-                    "{/tikz/mark size=\\perpointmarksize}",
+                    + "{/tikz/mark size=\\perpointmarksize}",
                     # "scatter/@post marker code/.style={}"
                 ]
             )
