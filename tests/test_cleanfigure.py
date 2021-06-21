@@ -554,8 +554,8 @@ class Test_logscale:
         plt.close("all")
 
     def test_loglog(self):
-        x = np.exp(np.logspace(0.0, 2.0, 100))
-        y = np.exp(np.logspace(0.0, 2.0, 100))
+        x = np.exp(np.logspace(0.0, 1.5, 100))
+        y = np.exp(np.logspace(0.0, 1.5, 100))
 
         with plt.rc_context(rc=RC_PARAMS):
             _, ax = plt.subplots(1)
