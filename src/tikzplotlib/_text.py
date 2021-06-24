@@ -118,11 +118,9 @@ def draw_text(data, obj):
         # We might want to remove this here in the future.
         text = text.replace("\n ", "\\\\")
 
-    content.append(
-        "\\draw {pos} node[\n  {props}\n]{{{text}}};\n".format(
-            pos=tikz_pos, props=",\n  ".join(properties), text=" ".join(style + [text])
-        )
-    )
+    props = ",\n  ".join(properties)
+    text = " ".join(style + [text])
+    content.append(f"\\draw {tikz_pos} node[\n  {props}\n]{{{text}}};\n")
     return data, content
 
 
@@ -139,7 +137,8 @@ def _transform_positioning(ha, va):
         "center": "",
         "baseline": "base",
     }
-    return "anchor={} {}".format(va_mpl_to_tikz[va], ha_mpl_to_tikz[ha]).strip()
+    anchor = " ".join([va_mpl_to_tikz[va], ha_mpl_to_tikz[ha]]).strip()
+    return f"anchor={anchor}"
 
 
 def _parse_annotation_coords(ff, coords, xy):
@@ -229,7 +228,7 @@ def _annotation(obj, data, content):
 
     if obj.arrow_patch:
         style = ",".join(_get_arrow_style(obj.arrow_patch, data))
-        the_arrow = ("\\draw[{}] {} -- {};\n").format(style, text_pos, xy_pos)
+        the_arrow = f"\\draw[{style}] {text_pos} -- {xy_pos};\n"
         content.append(the_arrow)
     return text_pos
 
@@ -285,12 +284,11 @@ def _bbox(bbox, data, properties, scaling):
     # pattern from matplotlib instead of hardcoding
     # an approximation?
     elif bbox.get_ls() == "dashdot":
+        s1 = 1.0 / scaling
+        s3 = 3.0 / scaling
+        s6 = 6.0 / scaling
         properties.append(
-            "dash pattern=on {:.3g}pt off {:.3g}pt on {:.3g}pt off {:.3g}pt".format(
-                1.0 / scaling, 3.0 / scaling, 6.0 / scaling, 3.0 / scaling
-            )
+            f"dash pattern=on {s1:.3g}pt off {s3:.3g}pt on {s6:.3g}pt off {s3:.3g}pt"
         )
     else:
         assert bbox.get_ls() == "solid"
-
-    return
