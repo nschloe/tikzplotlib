@@ -93,7 +93,8 @@ def draw_line2d(data, obj):
     # process options
     content.append("\\addplot ")
     if addplot_options:
-        content.append("[{}]\n".format(", ".join(addplot_options)))
+        opts = ", ".join(addplot_options)
+        content.append(f"[{opts}]\n")
 
     c, axis_options = _table(obj, data)
     content += c
@@ -182,9 +183,8 @@ def _marker(
         data, draw_xcolor, _ = mycol.mpl_color2xcolor(data, marker_edge_color)
         if draw_xcolor != line_xcolor:
             mark_options.append("draw=" + draw_xcolor)
-    addplot_options.append("mark options={{{}}}".format(",".join(mark_options)))
-
-    return
+    opts = ",".join(mark_options)
+    addplot_options.append(f"mark options={{{opts}}}")
 
 
 def _table(obj, data):  # noqa: C901
