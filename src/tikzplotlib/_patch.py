@@ -55,9 +55,8 @@ def _patch_legend(obj, draw_options, legend_type):
     if _is_in_legend(obj):
         # Unfortunately, patch legend entries need \addlegendimage in Pgfplots.
         do = ", ".join([legend_type] + draw_options) if draw_options else ""
-        legend += "\\addlegendimage{{{}}}\n\\addlegendentry{{{}}}\n\n".format(
-            do, obj.get_label()
-        )
+        label = obj.get_label()
+        legend += f"\\addlegendimage{{{do}}}\n\\addlegendentry{{{label}}}\n\n"
 
     return legend
 
@@ -145,9 +144,8 @@ def _draw_rectangle(data, obj, draw_options):
 
     if label != "_nolegend_" and label not in data["rectangle_legends"]:
         data["rectangle_legends"].add(label)
-        cont += "\\addlegendimage{{ybar,ybar legend,{}}};\n".format(
-            ",".join(draw_options)
-        )
+        draw_opts = ",".join(draw_options)
+        cont += f"\\addlegendimage{{ybar,ybar legend,{draw_opts}}}\n"
         cont += f"\\addlegendentry{{{label}}}\n\n"
     return data, cont
 
