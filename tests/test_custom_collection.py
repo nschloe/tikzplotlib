@@ -6,7 +6,8 @@ as a base class to be rendered.
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-from helpers import assert_equality
+
+from .helpers import assert_equality
 
 
 class TransformedEllipseCollection(matplotlib.collections.Collection):
@@ -53,7 +54,7 @@ def plot():
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    theta = np.linspace(0, 2 * np.pi, 12, endpoint=False)
+    theta = np.linspace(0, 2 * np.pi, 6, endpoint=False)
     mats = rot(theta) @ np.diag([0.1, 0.2])
     x = np.cos(theta)
     y = np.sin(theta)
@@ -74,4 +75,3 @@ def plot():
 
 def test():
     assert_equality(plot, "test_custom_collection_reference.tex")
-    return
