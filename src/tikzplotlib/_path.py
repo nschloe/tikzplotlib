@@ -297,7 +297,7 @@ def draw_pathcollection(data, obj):
 
         if len(table_options) > 0:
             table_options_str = ", ".join(table_options)
-            content.append(f"table [{table_options_str}] {{")
+            content.append(f"table [{table_options_str}]{{")
         else:
             content.append("table{")
 
