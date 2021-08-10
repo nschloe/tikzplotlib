@@ -29,10 +29,8 @@ def plot():
 
 
 # TODO reintroduce
-pytest.mark.skip("Fails?")
-
-
+@pytest.mark.skip("Fails?")
 def test():
-    from helpers import assert_equality
+    from .helpers import assert_equality
 
     assert_equality(plot, __file__[:-3] + "_reference.tex")
