@@ -24,6 +24,7 @@ def get_tikz_code(
     tex_relative_path_to_data: Optional[str] = None,
     externalize_tables: bool = False,
     override_externals: bool = False,
+    externals_search_path: Optional[str] = None,
     strict: bool = False,
     wrap: bool = True,
     add_axis_environment: bool = True,
@@ -153,6 +154,7 @@ def get_tikz_code(
     data["rel data path"] = tex_relative_path_to_data
     data["externalize tables"] = externalize_tables
     data["override externals"] = override_externals
+    data["externals search path"] = externals_search_path
 
     if filepath:
         filepath = pathlib.Path(filepath)

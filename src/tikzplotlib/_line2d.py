@@ -267,6 +267,10 @@ def _table(obj, data):  # noqa: C901
         # don't want the \n in the table definition, just in the data (below)
         opts.append("row sep=" + data["table_row_sep"].strip())
 
+    if data["externals search path"] is not None:
+        esp = data["externals search path"]
+        opts.append(f"search path={{{esp}}}")
+
     if len(opts) > 0:
         opts_str = ",".join(opts)
         content.append(f"table [{opts_str}] {{")
