@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib.dates import DateConverter, num2date
 from matplotlib.markers import MarkerStyle
 
-from . import _color
+from . import _color, _files
 from ._axes import _mpl_cmap2pgf_cmap
 from ._hatches import _mpl_hatch2pgfp_pattern
 from ._markers import _mpl_marker2pgfp_marker
@@ -291,13 +291,31 @@ def draw_pathcollection(data, obj):
         do = f" [{j0}{{}}{j2}]".format(j1.join(draw_options)) if draw_options else ""
         content.append(f"\\addplot{do}\n")
 
-        to = " [{}]".format(", ".join(table_options)) if table_options else ""
-        content.append(f"table{to}{{%\n")
+        if data["externals search path"] is not None:
+            esp = data["externals search path"]
+            table_options.append(f"search path={{{esp}}}")
 
-        content.append("  ".join(labels) + "\n")
+        if len(table_options) > 0:
+            table_options_str = ", ".join(table_options)
+            content.append(f"table [{table_options_str}] {{")
+        else:
+            content.append("table {")
 
+        plot_table = []
+        plot_table.append("  ".join(labels) + "\n")
         for row in dd_strings:
-            content.append(" ".join(row) + "\n")
+            plot_table.append(" ".join(row) + "\n")
+
+        if data["externalize tables"]:
+            filepath, rel_filepath = _files.new_filepath(data, "table", ".dat")
+            with open(filepath, "w") as f:
+                # No encoding handling required: plot_table is only ASCII
+                f.write("".join(plot_table))
+            content.append(str(rel_filepath))
+        else:
+            content.append("%\n")
+            content.extend(plot_table)
+
         content.append("};\n")
 
     if legend_text is not None:

@@ -201,13 +201,12 @@ def _table(obj, data):  # noqa: C901
 
     if isinstance(xdata_alt[0], datetime.datetime):
         xdata = xdata_alt
-    elif isinstance(xdata_alt[0], str):
-        data["current axes"].axis_options += [
-            "xtick={{{}}}".format(",".join([f"{x:{ff}}" for x in xdata])),
-            "xticklabels={{{}}}".format(",".join(xdata_alt)),
-        ]
-        xdata, ydata = transform_to_data_coordinates(obj, xdata, ydata)
     else:
+        if isinstance(xdata_alt[0], str):
+            data["current axes"].axis_options += [
+                "xtick={{{}}}".format(",".join([f"{x:{ff}}" for x in xdata])),
+                "xticklabels={{{}}}".format(",".join(xdata_alt)),
+            ]
         xdata, ydata = transform_to_data_coordinates(obj, xdata, ydata)
 
     # matplotlib allows plotting of data containing `astropy.units`, but they will break
@@ -252,11 +251,10 @@ def _table(obj, data):  # noqa: C901
             if not option.startswith("xmin")
         ]
         xmin, xmax = data["current mpl axes obj"].get_xlim()
+        mindate = num2date(xmin).strftime("%Y-%m-%d %H:%M")
+        maxdate = num2date(xmax).strftime("%Y-%m-%d %H:%M")
         data["current axes"].axis_options.append(
-            "xmin={}, xmax={}".format(
-                num2date(xmin).strftime("%Y-%m-%d %H:%M"),
-                num2date(xmax).strftime("%Y-%m-%d %H:%M"),
-            )
+            f"xmin={{{mindate}}}, xmax={{{maxdate}}}"
         )
     else:
         opts = []
