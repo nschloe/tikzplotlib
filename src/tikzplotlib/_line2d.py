@@ -266,10 +266,12 @@ def _table(obj, data):  # noqa: C901
     if data["table_row_sep"] != "\n":
         # don't want the \n in the table definition, just in the data (below)
         opts.append("row sep=" + data["table_row_sep"].strip())
+
     if len(opts) > 0:
-        content.append("table [{}] {{%\n".format(",".join(opts)))
+        opts_str = ",".join(opts)
+        content.append(f"table [{opts_str}] {{")
     else:
-        content.append("table {%\n")
+        content.append("table {")
 
     plot_table = []
     table_row_sep = data["table_row_sep"]
@@ -290,6 +292,7 @@ def _table(obj, data):  # noqa: C901
             f.write("".join(plot_table))
         content.append(str(rel_filepath))
     else:
+        content.append("%\n")
         content.extend(plot_table)
 
     content.append("};\n")
