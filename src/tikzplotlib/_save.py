@@ -1,4 +1,3 @@
-import codecs
 import enum
 import pathlib
 import tempfile
@@ -258,9 +257,8 @@ def save(
     :returns: None
     """
     code = get_tikz_code(*args, filepath=filepath, **kwargs)
-    file_handle = codecs.open(filepath, "w", encoding)
-    file_handle.write(code)
-    file_handle.close()
+    with open(filepath, "w", encoding=encoding) as f:
+        f.write(code)
 
 
 def _tex_comment(comment):
