@@ -1,12 +1,12 @@
 r"""
-    Map matplotlib hatches to tikz patterns
+Map matplotlib hatches to tikz patterns
 
-    For matplotlib hatches, see:
-    https://matplotlib.org/3.1.1/gallery/shapes_and_collections/hatch_demo.html
+For matplotlib hatches, see:
+https://matplotlib.org/3.1.1/gallery/shapes_and_collections/hatch_demo.html
 
-    For patterns in tikzpgf:
-    Ch 26 Pattern Lbrary in the manual
-    Requires \usetikzlibrary{patterns}
+For patterns in tikzpgf:
+Ch 26 Pattern Lbrary in the manual
+Requires \usetikzlibrary{patterns}
 """
 
 # These methods exist, and might be relevant (in the future?):
@@ -93,7 +93,7 @@ def _mpl_hatch2pgfp_pattern(data, hatch, color_name, color_rgba):
     try:
         pgfplots_pattern = _MP_HATCH2PGF_PATTERN[hatch]
     except KeyError:
-        warnings.warn("tikzplotlib: The hatch", hatch, "is ignored.")
+        warnings.warn(f"tikzplotlib: The hatch {hatch} is ignored.")
         return data, []
 
     data["tikz libs"].add("patterns")

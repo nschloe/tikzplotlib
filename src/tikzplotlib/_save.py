@@ -268,20 +268,16 @@ def _tex_comment(comment):
 
 def _get_color_definitions(data):
     """Returns the list of custom color definitions for the TikZ file."""
-    definitions = []
     ff = data["float format"]
-    for name, rgb in data["custom colors"].items():
-        definitions.append(
-            f"\\definecolor{{{name}}}{{rgb}}"
-            f"{{{rgb[0]:{ff}},{rgb[1]:{ff}},{rgb[2]:{ff}}}}"
-        )
-    return definitions
+    return [
+        f"\\definecolor{{{name}}}{{rgb}}{{{rgb[0]:{ff}},{rgb[1]:{ff}},{rgb[2]:{ff}}}}"
+        for name, rgb in data["custom colors"].items()
+    ]
 
 
 def _print_pgfplot_libs_message(data):
     """Prints message to screen indicating the use of PGFPlots and its
     libraries."""
-
     print(70 * "=")
     print("Please add the following lines to your LaTeX preamble:\n")
     print(data["flavor"].preamble(data))
