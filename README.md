@@ -31,13 +31,12 @@ The output of tikzplotlib is in
 top of [PGF/TikZ](https://en.wikipedia.org/wiki/PGF/TikZ) and describes graphs in terms
 of axes, data etc. Consequently, the output of tikzplotlib
 
--   retains more information,
--   can be more easily understood, and
--   is more easily editable
+  * retains more information,
+  * can be more easily understood, and
+  * is more easily editable
 
 than [raw TikZ output](https://matplotlib.org/users/whats_new.html#pgf-tikz-backend).
 For example, the matplotlib figure
-
 ```python
 import matplotlib.pyplot as plt
 import numpy as np
@@ -58,20 +57,16 @@ import tikzplotlib
 
 tikzplotlib.save("test.tex")
 ```
-
 <!--close the figure and reset defaults
 <!--pytest-codeblocks:cont-->
-
 ```python
 import matplotlib as mpl
 
 plt.close()
 mpl.rcParams.update(mpl.rcParamsDefault)
 ```
-
 -->
 (see above) gives
-
 ```latex
 \begin{tikzpicture}
 
@@ -113,7 +108,6 @@ table {%
 
 \end{tikzpicture}
 ```
-
 (Use `get_tikz_code()` instead of `save()` if you want the code as a string.)
 
 Tweaking the plot is straightforward and can be done as part of your TeX work flow.
@@ -127,19 +121,17 @@ Notably, [3D plots don't work](https://github.com/matplotlib/matplotlib/issues/7
 
 tikzplotlib is [available from the Python Package
 Index](https://pypi.org/project/tikzplotlib/), so simply do
-
 ```
 pip install tikzplotlib
 ```
-
 to install.
+
 
 ### Usage
 
 1. Generate your matplotlib plot as usual.
 
 2. Instead of `pyplot.show()`, invoke tikzplotlib by
-
     ```python
     import tikzplotlib
 
@@ -147,19 +139,15 @@ to install.
     # or
     tikzplotlib.save("mytikz.tex", flavor="context")
     ```
-
-    to store the TikZ file as `mytikz.tex`.
+   to store the TikZ file as `mytikz.tex`.
 
 3. Add the contents of `mytikz.tex` into your TeX source code. A convenient way of
    doing so is via
-
     ```latex
     \input{/path/to/mytikz.tex}
     ```
-
-    Also make sure that the packages for PGFPlots and proper Unicode support and are
-    included in the header of your document:
-
+   Also make sure that the packages for PGFPlots and proper Unicode support and are
+   included in the header of your document:
     ```latex
     \usepackage[utf8]{inputenc}
     \usepackage{pgfplots}
@@ -168,9 +156,7 @@ to install.
     \usetikzlibrary{patterns,shapes.arrows}
     \pgfplotsset{compat=newest}
     ```
-
-    or:
-
+   or:
     ```latex
     \setupcolors[state=start]
     \usemodule[tikz]
@@ -181,9 +167,7 @@ to install.
     \unexpanded\def\startgroupplot{\groupplot}
     \unexpanded\def\stopgroupplot{\endgroupplot}
     ```
-
-    You can also get the code via:
-
+   You can also get the code via:
     ```python
     import tikzplotlib
 
@@ -193,7 +177,6 @@ to install.
     ```
 
 4. Optional: clean up the figure before exporting to tikz using the `clean_figure` command.
-
     ```python
     import matplotlib.pyplot as plt
     import numpy as np
@@ -205,10 +188,9 @@ to install.
     tikzplotlib.clean_figure()
     tikzplotlib.save("test.tex")
     ```
-
     The command will remove points that are outside the axes limits, simplify curves and
     reduce point density for the specified target resolution.
-
+    
     The feature originated from the
     [matlab2tikz](https://github.com/matlab2tikz/matlab2tikz) project and is adapted to
     matplotlib.
@@ -219,6 +201,7 @@ If you experience bugs, would like to contribute, have nice examples of what
 tikzplotlib can do, or if you are just looking for more information, then please
 visit [tikzplotlib's GitHub page](https://github.com/nschloe/tikzplotlib).
 
+
 ### Testing
 
 tikzplotlib has automatic unit testing to make sure that the software doesn't
@@ -227,7 +210,6 @@ Those run through tikzplotlib and compare the output with a previously stored
 reference TeX file.
 
 To run the tests, just check out this repository and type
-
 ```
 pytest
 ```
