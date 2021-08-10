@@ -201,13 +201,12 @@ def _table(obj, data):  # noqa: C901
 
     if isinstance(xdata_alt[0], datetime.datetime):
         xdata = xdata_alt
-    elif isinstance(xdata_alt[0], str):
-        data["current axes"].axis_options += [
-            "xtick={{{}}}".format(",".join([f"{x:{ff}}" for x in xdata])),
-            "xticklabels={{{}}}".format(",".join(xdata_alt)),
-        ]
-        xdata, ydata = transform_to_data_coordinates(obj, xdata, ydata)
     else:
+        if isinstance(xdata_alt[0], str):
+            data["current axes"].axis_options += [
+                "xtick={{{}}}".format(",".join([f"{x:{ff}}" for x in xdata])),
+                "xticklabels={{{}}}".format(",".join(xdata_alt)),
+            ]
         xdata, ydata = transform_to_data_coordinates(obj, xdata, ydata)
 
     # matplotlib allows plotting of data containing `astropy.units`, but they will break
@@ -252,12 +251,9 @@ def _table(obj, data):  # noqa: C901
             if not option.startswith("xmin")
         ]
         xmin, xmax = data["current mpl axes obj"].get_xlim()
-        data["current axes"].axis_options.append(
-            "xmin={}, xmax={}".format(
-                num2date(xmin).strftime("%Y-%m-%d %H:%M"),
-                num2date(xmax).strftime("%Y-%m-%d %H:%M"),
-            )
-        )
+        mindate = num2date(xmin).strftime("%Y-%m-%d %H:%M")
+        maxdate = num2date(xmax).strftime("%Y-%m-%d %H:%M")
+        data["current axes"].axis_options.append(f"xmin={mindate}, xmax={maxdate}")
     else:
         opts = []
         xformat = ff
@@ -267,7 +263,7 @@ def _table(obj, data):  # noqa: C901
         # don't want the \n in the table definition, just in the data (below)
         opts.append("row sep=" + data["table_row_sep"].strip())
 
-    if data["externals search path"] is not None:
+    if data["externalize tables"] and data["externals search path"] is not None:
         esp = data["externals search path"]
         opts.append(f"search path={{{esp}}}")
 
@@ -280,9 +276,10 @@ def _table(obj, data):  # noqa: C901
     plot_table = []
     table_row_sep = data["table_row_sep"]
     ydata[ydata_mask] = np.nan
-    if any(ydata_mask) or (~np.isfinite(ydata)).any():
-        # matplotlib jumps at masked or nan values, while PGFPlots by default interpolates.
-        # Hence, if we have a masked plot, make sure that PGFPlots jumps as well.
+    if np.any(ydata_mask) or ~np.all(np.isfinite(ydata)):
+        # matplotlib jumps at masked or nan values, while PGFPlots by default
+        # interpolates. Hence, if we have a masked plot, make sure that PGFPlots jumps
+        # as well.
         if "unbounded coords=jump" not in data["current axes"].axis_options:
             data["current axes"].axis_options.append("unbounded coords=jump")
 
