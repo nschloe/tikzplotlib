@@ -19,7 +19,7 @@ def plot():
     pos[:, :, 0] = xi
     pos[:, :, 1] = yi
     zi = 2 - (xi - 1) ** 2 - (yi - 1) ** 2
-    ax.contourf(xi, yi, zi, 250)
+    ax.contourf(xi, yi, zi, levels=5)
 
     ax.set_xlim(x_min, x_max)
     ax.set_ylim(y_min, y_max)
