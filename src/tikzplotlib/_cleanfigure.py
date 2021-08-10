@@ -584,7 +584,7 @@ def _get_collection_data(collection):
     if is3D:
         # https://stackoverflow.com/questions/51716696/extracting-data-from-a-3d-scatter-plot-in-matplotlib
         offsets = collection._offsets3d
-        xData, yData, zData = [o.data for o in offsets]
+        xData, yData, zData = (o.data for o in offsets)
         data = _stack_data_3D(xData, yData, zData)
     else:
         offsets = collection.get_offsets()

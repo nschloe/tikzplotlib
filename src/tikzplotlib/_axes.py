@@ -80,12 +80,12 @@ class Axes:
         if obj.get_xscale() == "log":
             self.axis_options.append("xmode=log")
             self.axis_options.append(
-                "log basis x={{{}}}".format(_try_f2i(obj.xaxis._scale.base))
+                f"log basis x={{{_try_f2i(obj.xaxis._scale.base)}}}"
             )
         if obj.get_yscale() == "log":
             self.axis_options.append("ymode=log")
             self.axis_options.append(
-                "log basis y={{{}}}".format(_try_f2i(obj.yaxis._scale.base))
+                f"log basis y={{{_try_f2i(obj.yaxis._scale.base)}}}"
             )
 
         # Possible values for get_axisbelow():
