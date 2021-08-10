@@ -253,9 +253,7 @@ def _table(obj, data):  # noqa: C901
         xmin, xmax = data["current mpl axes obj"].get_xlim()
         mindate = num2date(xmin).strftime("%Y-%m-%d %H:%M")
         maxdate = num2date(xmax).strftime("%Y-%m-%d %H:%M")
-        data["current axes"].axis_options.append(
-            f"xmin={{{mindate}}}, xmax={{{maxdate}}}"
-        )
+        data["current axes"].axis_options.append(f"xmin={mindate}, xmax={maxdate}")
     else:
         opts = []
         xformat = ff
