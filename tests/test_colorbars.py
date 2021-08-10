@@ -1,8 +1,6 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-from .helpers import assert_equality
-
 
 def plot():
     # Make a figure and axes with dimensions as desired.
@@ -75,4 +73,6 @@ def plot():
 
 
 def test():
+    from .helpers import assert_equality
+
     assert_equality(plot, "test_colorbars_reference.tex", assert_compilation=False)

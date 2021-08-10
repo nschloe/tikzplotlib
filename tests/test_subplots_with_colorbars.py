@@ -1,7 +1,5 @@
 import pytest
 
-from .helpers import assert_equality
-
 
 def plot():
     import numpy as np
@@ -27,4 +25,6 @@ def plot():
 # TODO reintroduce
 @pytest.mark.skip("Fails?")
 def test():
+    from .helpers import assert_equality
+
     assert_equality(plot, __file__[:-3] + "_reference.tex")

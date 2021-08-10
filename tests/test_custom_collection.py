@@ -7,8 +7,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
-from .helpers import assert_equality
-
 
 class TransformedEllipseCollection(matplotlib.collections.Collection):
     """
@@ -74,4 +72,6 @@ def plot():
 
 
 def test():
+    from .helpers import assert_equality
+
     assert_equality(plot, "test_custom_collection_reference.tex")

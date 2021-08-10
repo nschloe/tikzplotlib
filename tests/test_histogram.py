@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from .helpers import assert_equality
-
 
 def plot():
     # Make plot with vertical (default) colorbar
@@ -17,4 +15,6 @@ def plot():
 
 
 def test():
+    from .helpers import assert_equality
+
     assert_equality(plot, "test_histogram_reference.tex")

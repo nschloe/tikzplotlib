@@ -1,7 +1,5 @@
 import matplotlib.pyplot as plt
 
-from .helpers import assert_equality
-
 
 def plot():
     a = [pow(10, i) for i in range(10)]
@@ -15,4 +13,6 @@ def plot():
 
 
 def test():
+    from .helpers import assert_equality
+
     assert_equality(plot, __file__[:-3] + "_reference.tex")

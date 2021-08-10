@@ -3,8 +3,6 @@ import matplotlib.pyplot as plt
 import matplotlib.transforms as mtransforms
 from matplotlib.patches import FancyBboxPatch
 
-from .helpers import assert_equality
-
 # Bbox object around which the fancy box will be drawn.
 bb = mtransforms.Bbox([[0.3, 0.4], [0.7, 0.6]])
 
@@ -197,4 +195,6 @@ def plot():
 
 
 def test():
+    from .helpers import assert_equality
+
     assert_equality(plot, "test_fancybox_reference.tex")

@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from .helpers import assert_equality
-
 
 def plot():
     fig = plt.figure()
@@ -23,4 +21,6 @@ def plot():
 
 
 def test():
+    from .helpers import assert_equality
+
     assert_equality(plot, "test_basic_sin_reference.tex")

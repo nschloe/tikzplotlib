@@ -1,6 +1,7 @@
 import pathlib
 
 import matplotlib.pyplot as plt
+import pytest
 
 # the picture 'lena.png' with origin='lower' is flipped upside-down.
 # So it has to be upside-down in the pdf-file as well.
@@ -28,7 +29,10 @@ def plot():
 
 
 # TODO reintroduce
-# from helpers import assert_equality
-# def test():
-#     assert_equality(plot, __file__[:-3] + "_reference.tex")
-#     return
+pytest.mark.skip("Fails?")
+
+
+def test():
+    from helpers import assert_equality
+
+    assert_equality(plot, __file__[:-3] + "_reference.tex")

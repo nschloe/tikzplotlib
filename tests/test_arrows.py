@@ -66,9 +66,3 @@ def plot():
 #     code = tikzplotlib.get_tikz_code(include_disclaimer=False, standalone=True)
 #     plt.close()
 #     helpers._does_compile(code)
-
-if __name__ == "__main__":
-    import helpers
-
-    helpers.compare_mpl_tex(plot)
-    # helpers.print_tree(plot())

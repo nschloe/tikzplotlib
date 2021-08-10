@@ -7,8 +7,6 @@ See: https://github.com/nschloe/tikzplotlib/pull/134
 """
 import matplotlib.pyplot as plt
 
-from .helpers import assert_equality
-
 
 def plot():
     # plot data
@@ -90,4 +88,6 @@ def plot():
 
 
 def test():
+    from .helpers import assert_equality
+
     assert_equality(plot, "test_boxplot_reference.tex")

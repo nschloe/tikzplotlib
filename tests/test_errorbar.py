@@ -1,7 +1,5 @@
 import matplotlib.pyplot as plt
 
-from .helpers import assert_equality
-
 
 def plot():
     # plot data
@@ -17,4 +15,6 @@ def plot():
 
 
 def test():
+    from .helpers import assert_equality
+
     assert_equality(plot, "test_errorbar_reference.tex")

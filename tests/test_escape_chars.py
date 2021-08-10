@@ -1,8 +1,6 @@
 # https://github.com/nschloe/tikzplotlib/issues/332
 import matplotlib.pyplot as plt
 
-from .helpers import assert_equality
-
 
 def plot():
     fig = plt.figure()
@@ -14,4 +12,6 @@ def plot():
 
 
 def test():
+    from .helpers import assert_equality
+
     assert_equality(plot, "test_escape_chars_reference.tex")

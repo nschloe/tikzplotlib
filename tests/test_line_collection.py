@@ -1,6 +1,3 @@
-from .helpers import assert_equality
-
-
 def plot():
     # Example from
     # <http://matplotlib.org/examples/pylab_examples/line_collection2.html>
@@ -49,4 +46,6 @@ def plot():
 
 
 def test():
+    from .helpers import assert_equality
+
     assert_equality(plot, __file__[:-3] + "_reference.tex")
