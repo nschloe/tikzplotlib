@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from helpers import assert_equality
 
 
 def plot():
@@ -19,11 +18,6 @@ def plot():
 
 
 def test():
+    from .helpers import assert_equality
+
     assert_equality(plot, "test_errorband_reference.tex")
-
-
-if __name__ == "__main__":
-    import helpers
-
-    helpers.compare_mpl_tex(plot)
-    # helpers.print_tree(plot())

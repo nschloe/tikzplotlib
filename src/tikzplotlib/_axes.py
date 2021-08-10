@@ -80,12 +80,12 @@ class Axes:
         if obj.get_xscale() == "log":
             self.axis_options.append("xmode=log")
             self.axis_options.append(
-                "log basis x={{{}}}".format(_try_f2i(obj.xaxis._scale.base))
+                f"log basis x={{{_try_f2i(obj.xaxis._scale.base)}}}"
             )
         if obj.get_yscale() == "log":
             self.axis_options.append("ymode=log")
             self.axis_options.append(
-                "log basis y={{{}}}".format(_try_f2i(obj.yaxis._scale.base))
+                f"log basis y={{{_try_f2i(obj.yaxis._scale.base)}}}"
             )
 
         # Possible values for get_axisbelow():
@@ -771,7 +771,7 @@ def _handle_listed_color_map(cmap, data):
         reps = int(float(cmap.N) / len(cmap.colors) - 0.5) + 1
         repeated_cols = reps * cmap.colors
         colors = [
-            "rgb({k}{unit})=({rgb[0]:{ff}},{rgb[1]:{ff}},{rgb[2]:{ff}})"
+            f"rgb({k}{unit})=({rgb[0]:{ff}},{rgb[1]:{ff}},{rgb[2]:{ff}})"
             for k, rgb in enumerate(repeated_cols[: cmap.N])
         ]
     colormap_string = "{{mymap}}{{[1{}]\n {}\n}}".format(unit, ";\n  ".join(colors))

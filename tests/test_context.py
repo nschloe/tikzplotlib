@@ -1,6 +1,3 @@
-from helpers import assert_equality
-
-
 def plot():
     import matplotlib.cm as cm
     import matplotlib.pyplot as plt
@@ -16,5 +13,6 @@ def plot():
 
 
 def test():
+    from .helpers import assert_equality
+
     assert_equality(plot, __file__[:-3] + "_reference.tex", flavor="context")
-    return

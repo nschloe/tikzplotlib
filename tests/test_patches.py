@@ -1,6 +1,3 @@
-from helpers import assert_equality
-
-
 def plot():
     import matplotlib as mpl
     import numpy as np
@@ -83,12 +80,6 @@ def plot():
 
 
 def test():
+    from .helpers import assert_equality
+
     assert_equality(plot, __file__[:-3] + "_reference.tex")
-    return
-
-
-if __name__ == "__main__":
-    import helpers
-
-    helpers.compare_mpl_tex(plot)
-    # helpers.print_tree(plot())

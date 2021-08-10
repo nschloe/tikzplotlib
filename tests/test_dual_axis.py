@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from helpers import assert_equality
 
 
 def plot():
@@ -15,5 +14,6 @@ def plot():
 
 
 def test():
+    from .helpers import assert_equality
+
     assert_equality(plot, "test_dual_axis_reference.tex")
-    return

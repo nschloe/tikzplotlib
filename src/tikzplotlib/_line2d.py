@@ -266,10 +266,16 @@ def _table(obj, data):  # noqa: C901
     if data["table_row_sep"] != "\n":
         # don't want the \n in the table definition, just in the data (below)
         opts.append("row sep=" + data["table_row_sep"].strip())
+
+    if data["externals search path"] is not None:
+        esp = data["externals search path"]
+        opts.append(f"search path={{{esp}}}")
+
     if len(opts) > 0:
-        content.append("table [{}] {{%\n".format(",".join(opts)))
+        opts_str = ",".join(opts)
+        content.append(f"table [{opts_str}] {{")
     else:
-        content.append("table {%\n")
+        content.append("table {")
 
     plot_table = []
     table_row_sep = data["table_row_sep"]
@@ -284,12 +290,13 @@ def _table(obj, data):  # noqa: C901
         plot_table.append(f"{x:{xformat}}{col_sep}{y:{ff}}{table_row_sep}")
 
     if data["externalize tables"]:
-        filepath, rel_filepath = _files.new_filepath(data, "table", ".tsv")
+        filepath, rel_filepath = _files.new_filepath(data, "table", ".dat")
         with open(filepath, "w") as f:
             # No encoding handling required: plot_table is only ASCII
             f.write("".join(plot_table))
         content.append(str(rel_filepath))
     else:
+        content.append("%\n")
         content.extend(plot_table)
 
     content.append("};\n")

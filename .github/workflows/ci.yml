@@ -3,10 +3,10 @@ name: ci
 on:
   push:
     branches:
-    - main
+      - main
   pull_request:
     branches:
-    - main
+      - main
 
 jobs:
   lint:
@@ -25,15 +25,15 @@ jobs:
       matrix:
         python-version: [3.6, 3.7, 3.8, 3.9]
     steps:
-    - uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - uses: actions/checkout@v2
-    # - name: Install system dependencies
-    #   run: sudo apt-get install -y texlive-latex-base texlive-latex-extra context python3-tk
-    - name: Test with tox
-      run: |
-        pip install tox
-        tox -- --cov tikzplotlib --cov-report xml --cov-report term
-    - uses: codecov/codecov-action@v1
-      if: ${{ matrix.python-version == '3.9' }}
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/checkout@v2
+      # - name: Install system dependencies
+      #   run: sudo apt-get install -y texlive-latex-base texlive-latex-extra context python3-tk
+      - name: Test with tox
+        run: |
+          pip install tox
+          tox -- --cov tikzplotlib --cov-report xml --cov-report term
+      - uses: codecov/codecov-action@v1
+        if: ${{ matrix.python-version == '3.9' }}

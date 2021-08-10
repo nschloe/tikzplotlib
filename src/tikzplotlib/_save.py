@@ -1,4 +1,3 @@
-import codecs
 import enum
 import pathlib
 import tempfile
@@ -25,6 +24,7 @@ def get_tikz_code(
     tex_relative_path_to_data: Optional[str] = None,
     externalize_tables: bool = False,
     override_externals: bool = False,
+    externals_search_path: Optional[str] = None,
     strict: bool = False,
     wrap: bool = True,
     add_axis_environment: bool = True,
@@ -72,12 +72,12 @@ def get_tikz_code(
                                       the LaTeX file to the data.
     :type tex_relative_path_to_data: str
 
-    :param externalize_tables: Whether or not to externalize plot data tables into tsv
+    :param externalize_tables: Whether or not to externalize plot data tables into dat
                                files.
     :type externalize_tables: bool
 
     :param override_externals: Whether or not to override existing external files (such
-                               as tsv or images) with conflicting names (the alternative
+                               as dat or images) with conflicting names (the alternative
                                is to choose other names).
     :type override_externals: bool
 
@@ -154,6 +154,7 @@ def get_tikz_code(
     data["rel data path"] = tex_relative_path_to_data
     data["externalize tables"] = externalize_tables
     data["override externals"] = override_externals
+    data["externals search path"] = externals_search_path
 
     if filepath:
         filepath = pathlib.Path(filepath)
@@ -258,9 +259,8 @@ def save(
     :returns: None
     """
     code = get_tikz_code(*args, filepath=filepath, **kwargs)
-    file_handle = codecs.open(filepath, "w", encoding)
-    file_handle.write(code)
-    file_handle.close()
+    with open(filepath, "w", encoding=encoding) as f:
+        f.write(code)
 
 
 def _tex_comment(comment):
@@ -270,20 +270,16 @@ def _tex_comment(comment):
 
 def _get_color_definitions(data):
     """Returns the list of custom color definitions for the TikZ file."""
-    definitions = []
     ff = data["float format"]
-    for name, rgb in data["custom colors"].items():
-        definitions.append(
-            f"\\definecolor{{{name}}}{{rgb}}"
-            f"{{{rgb[0]:{ff}},{rgb[1]:{ff}},{rgb[2]:{ff}}}}"
-        )
-    return definitions
+    return [
+        f"\\definecolor{{{name}}}{{rgb}}{{{rgb[0]:{ff}},{rgb[1]:{ff}},{rgb[2]:{ff}}}}"
+        for name, rgb in data["custom colors"].items()
+    ]
 
 
 def _print_pgfplot_libs_message(data):
     """Prints message to screen indicating the use of PGFPlots and its
     libraries."""
-
     print(70 * "=")
     print("Please add the following lines to your LaTeX preamble:\n")
     print(data["flavor"].preamble(data))
@@ -388,7 +384,7 @@ def _recurse(data, obj):
             pass
         else:
             warnings.warn(
-                "tikzplotlib: Don't know how to handle object {}.".format(type(child))
+                f"tikzplotlib: Don't know how to handle object {type(child)}."
             )
     return data, content.flatten()
 

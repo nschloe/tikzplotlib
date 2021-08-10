@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from helpers import assert_equality
 
 
 def plot():
@@ -19,7 +18,7 @@ def plot():
     pos[:, :, 0] = xi
     pos[:, :, 1] = yi
     zi = 2 - (xi - 1) ** 2 - (yi - 1) ** 2
-    ax.contourf(xi, yi, zi, 250)
+    ax.contourf(xi, yi, zi, levels=5)
 
     ax.set_xlim(x_min, x_max)
     ax.set_ylim(y_min, y_max)
@@ -27,18 +26,6 @@ def plot():
 
 
 def test():
+    from .helpers import assert_equality
+
     assert_equality(plot, __file__[:-3] + "_reference.tex")
-
-
-if __name__ == "__main__":
-    # plot()
-    # plt.show()
-    # import helpers
-    # helpers.compare_mpl_tex(plot)
-    # helpers.print_tree(plot())
-    plot()
-    # plt.show()
-    # plt.savefig('out.pgf')
-    import tikzplotlib
-
-    tikzplotlib.save("out.tex", standalone=True)

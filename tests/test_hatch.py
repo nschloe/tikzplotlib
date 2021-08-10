@@ -1,5 +1,4 @@
 import pytest
-from helpers import assert_equality
 
 
 def plot():
@@ -58,11 +57,7 @@ def plot():
 
 
 def test():
+    from .helpers import assert_equality
+
     with pytest.warns(UserWarning):
         assert_equality(plot, "test_hatch_reference.tex")
-
-
-if __name__ == "__main__":
-    import helpers
-
-    helpers.compare_mpl_tex(plot)
