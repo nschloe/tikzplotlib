@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pytest
-from helpers import assert_equality
+
+from .helpers import assert_equality
 
 
 def plot():
@@ -63,10 +64,3 @@ def plot():
 @pytest.mark.skip(reason="'Best' location depends on window size.")
 def test():
     assert_equality(plot, "test_legend_best_location_reference.tex")
-
-
-if __name__ == "__main__":
-    import helpers
-
-    helpers.compare_mpl_tex(plot)
-    # helpers.print_tree(plot())

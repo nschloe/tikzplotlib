@@ -1,8 +1,9 @@
 import datetime as date
 
 import matplotlib.pyplot as plt
-from helpers import assert_equality
 from matplotlib import dates
+
+from .helpers import assert_equality
 
 
 def plot():
@@ -19,11 +20,3 @@ def plot():
 
 def test():
     assert_equality(plot, __file__[:-3] + "_reference.tex")
-    return
-
-
-if __name__ == "__main__":
-    import helpers
-
-    helpers.compare_mpl_tex(plot)
-    # helpers.print_tree(plot())

@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
-from helpers import assert_equality
+
+from .helpers import assert_equality
 
 
 def plot():

@@ -1,4 +1,4 @@
-from helpers import assert_equality
+from .helpers import assert_equality
 
 
 def plot():
@@ -23,4 +23,3 @@ def plot():
 
 def test():
     assert_equality(plot, "test_externalize_tables_reference.tex")
-    return

@@ -9,10 +9,12 @@ x grid style={white!69.019608!black},
 xmin=-0.05, xmax=1.05,
 xtick style={color=black},
 xtick={-0.2,0,0.2,0.4,0.6,0.8,1,1.2},
-xticklabels={−0.2,0.0,0.2,0.4,0.6,0.8,1.0,1.2},
+xticklabels={\ensuremath{-}0.2,0.0,0.2,0.4,0.6,0.8,1.0,1.2},
 y grid style={white!69.019608!black},
 ymin=-0.45, ymax=9.45,
-ytick style={color=black}
+ytick style={color=black},
+ytick={-2,0,2,4,6,8,10},
+yticklabels={\ensuremath{-}2,0,2,4,6,8,10}
 ]
 \addplot [semithick, color0, mark=o, mark size=3, mark options={solid,fill opacity=0}]
 table {%

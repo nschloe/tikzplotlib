@@ -19,4 +19,20 @@ ytick style={color=black}
 \addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=2.5, ymin=2.5, ymax=-0.5] {tmp-000.png};
 \end{axis}
 
+\begin{axis}[
+axis y line=right,
+tick align=outside,
+xmin=0, xmax=1,
+xtick pos=left,
+y grid style={white!69.019608!black},
+ymin=0, ymax=1,
+ytick pos=right,
+ytick style={color=black},
+yticklabel style={anchor=west}
+]
+\path [draw=white, fill=white, line width=0.004pt]
+;
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=0, xmax=1, ymin=0, ymax=1] {tmp-001.png};
+\end{axis}
+
 \end{tikzpicture}

@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
-from helpers import assert_equality
+
+from .helpers import assert_equality
 
 
 # https://github.com/nschloe/tikzplotlib/issues/414
 def plot():
-    fig, ax = plt.subplots()
+    _, ax = plt.subplots()
     ax.scatter(
         [1, 2, 3],
         [5, 7, 1],

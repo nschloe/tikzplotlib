@@ -5,7 +5,8 @@ patches that should not be plotted in PGFPlots (e.g. axis, legend)
 """
 import matplotlib.pyplot as plt
 import numpy as np
-from helpers import assert_equality
+
+from .helpers import assert_equality
 
 
 def plot():
@@ -28,4 +29,3 @@ def plot():
 
 def test():
     assert_equality(plot, "test_barchart_reference.tex")
-    return

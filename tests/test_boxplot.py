@@ -6,7 +6,8 @@ external data in the file '' or '.tex')
 See: https://github.com/nschloe/tikzplotlib/pull/134
 """
 import matplotlib.pyplot as plt
-from helpers import assert_equality
+
+from .helpers import assert_equality
 
 
 def plot():
@@ -90,8 +91,3 @@ def plot():
 
 def test():
     assert_equality(plot, "test_boxplot_reference.tex")
-
-
-if __name__ == "__main__":
-    plot()
-    plt.show()

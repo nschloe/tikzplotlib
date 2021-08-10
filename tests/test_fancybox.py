@@ -1,8 +1,9 @@
 # Taken from http://matplotlib.org/examples/pylab_examples/fancybox_demo.html
 import matplotlib.pyplot as plt
 import matplotlib.transforms as mtransforms
-from helpers import assert_equality
 from matplotlib.patches import FancyBboxPatch
+
+from .helpers import assert_equality
 
 # Bbox object around which the fancy box will be drawn.
 bb = mtransforms.Bbox([[0.3, 0.4], [0.7, 0.6]])
@@ -197,11 +198,3 @@ def plot():
 
 def test():
     assert_equality(plot, "test_fancybox_reference.tex")
-    return
-
-
-if __name__ == "__main__":
-    import helpers
-
-    helpers.compare_mpl_tex(plot)
-    # helpers.print_tree(plot())

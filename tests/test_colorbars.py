@@ -1,6 +1,7 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from helpers import assert_equality
+
+from .helpers import assert_equality
 
 
 def plot():
@@ -75,10 +76,3 @@ def plot():
 
 def test():
     assert_equality(plot, "test_colorbars_reference.tex", assert_compilation=False)
-
-
-if __name__ == "__main__":
-    import helpers
-
-    helpers.compare_mpl_tex(plot)
-    # helpers.print_tree(plot())

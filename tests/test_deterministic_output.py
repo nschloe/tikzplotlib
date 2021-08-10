@@ -25,10 +25,10 @@ def test():
     # trade-off between test duration and probability of false negative
     n_tests = 4
     tikzs = []
-    for i in range(n_tests):
+    for _ in range(n_tests):
         tikz_file = tmp_base + "_tikz.tex"
         try:
-            mpltt_out = subprocess.check_output(
+            _ = subprocess.check_output(
                 [sys.executable, "-", tikz_file],
                 input=plot_code.encode(),
                 stderr=subprocess.STDOUT,
@@ -39,7 +39,7 @@ def test():
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
             )
-            (mpltt_out, _) = sp.communicate(plot_code.encode())
+            _, _ = sp.communicate(plot_code.encode())
         except subprocess.CalledProcessError as e:
             print("Command output:")
             print("=" * 70)

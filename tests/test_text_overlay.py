@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from helpers import assert_equality
+
+from .helpers import assert_equality
 
 
 def plot():
@@ -114,4 +115,3 @@ def plot():
 
 def test():
     assert_equality(plot, __file__[:-3] + "_reference.tex")
-    return
