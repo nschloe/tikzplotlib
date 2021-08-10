@@ -299,7 +299,7 @@ def draw_pathcollection(data, obj):
             table_options_str = ", ".join(table_options)
             content.append(f"table [{table_options_str}] {{")
         else:
-            content.append("table {")
+            content.append("table{")
 
         plot_table = []
         plot_table.append("  ".join(labels) + "\n")
