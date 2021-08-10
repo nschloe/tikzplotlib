@@ -72,12 +72,12 @@ def get_tikz_code(
                                       the LaTeX file to the data.
     :type tex_relative_path_to_data: str
 
-    :param externalize_tables: Whether or not to externalize plot data tables into tsv
+    :param externalize_tables: Whether or not to externalize plot data tables into dat
                                files.
     :type externalize_tables: bool
 
     :param override_externals: Whether or not to override existing external files (such
-                               as tsv or images) with conflicting names (the alternative
+                               as dat or images) with conflicting names (the alternative
                                is to choose other names).
     :type override_externals: bool
 
