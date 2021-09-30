@@ -26,10 +26,9 @@ figures like
 
 for native inclusion into LaTeX or ConTeXt documents.
 
-The output of tikzplotlib is in
-[PGFPlots](https://github.com/pgf-tikz/pgfplots/), a TeX library that sits on
-top of [PGF/TikZ](https://en.wikipedia.org/wiki/PGF/TikZ) and describes graphs in terms
-of axes, data etc. Consequently, the output of tikzplotlib
+The output of tikzplotlib is in [PGFPlots](https://github.com/pgf-tikz/pgfplots/), a TeX
+library that sits on top of [PGF/TikZ](https://en.wikipedia.org/wiki/PGF/TikZ) and
+describes graphs in terms of axes, data etc. Consequently, the output of tikzplotlib
 
 -   retains more information,
 -   can be more easily understood, and
@@ -58,14 +57,17 @@ import tikzplotlib
 
 tikzplotlib.save("test.tex")
 ```
+
 <!--close the figure and reset defaults
 <!--pytest-codeblocks:cont-->
+
 ```python
 import matplotlib as mpl
 
 plt.close()
 mpl.rcParams.update(mpl.rcParamsDefault)
 ```
+
 -->
 (see above) gives
 
@@ -147,8 +149,8 @@ to install.
 
     to store the TikZ file as `mytikz.tex`.
 
-3. Add the contents of `mytikz.tex` into your TeX source code. A convenient way of
-   doing so is via
+3. Add the contents of `mytikz.tex` into your TeX source code. A convenient way of doing
+   so is via
 
     ```latex
     \input{/path/to/mytikz.tex}
@@ -189,7 +191,8 @@ to install.
     tikzplotlib.Flavors.context.preamble()
     ```
 
-4. Optional: clean up the figure before exporting to tikz using the `clean_figure` command.
+4. [Optional] Clean up the figure before exporting to tikz using the `clean_figure`
+   command.
 
     ```python
     import matplotlib.pyplot as plt
@@ -212,16 +215,16 @@ to install.
 
 ### Contributing
 
-If you experience bugs, would like to contribute, have nice examples of what
-tikzplotlib can do, or if you are just looking for more information, then please
-visit [tikzplotlib's GitHub page](https://github.com/nschloe/tikzplotlib).
+If you experience bugs, would like to contribute, have nice examples of what tikzplotlib
+can do, or if you are just looking for more information, then please visit
+[tikzplotlib's GitHub page](https://github.com/nschloe/tikzplotlib).
 
 ### Testing
 
 tikzplotlib has automatic unit testing to make sure that the software doesn't
 accidentally get worse over time. In `test/`, a number of test cases are specified.
-Those run through tikzplotlib and compare the output with a previously stored
-reference TeX file.
+Those run through tikzplotlib and compare the output with a previously stored reference
+TeX file.
 
 To run the tests, just check out this repository and type
 
@@ -231,4 +234,5 @@ pytest
 
 ### License
 
-tikzplotlib is published under the [MIT license](https://en.wikipedia.org/wiki/MIT_License).
+tikzplotlib is published under the [MIT
+license](https://en.wikipedia.org/wiki/MIT_License).
