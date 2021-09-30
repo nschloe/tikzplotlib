@@ -752,7 +752,9 @@ def _move_points_closer(xLim, yLim, data):
 
     dataInsert = np.array([[]])
     if not _isempty(id_replace):
-        raise NotImplementedError("There is data outside of the box. Don't know how to handle during cleaning. Please check if x/ylim is to tight")
+        raise NotImplementedError(
+            "There is data outside of the box. Don't know how to handle during cleaning. Please check if x/ylim is to tight"
+        )
     data = _insert_data(data, id_replace, dataInsert)
     if _isempty(id_replace):
         return data
