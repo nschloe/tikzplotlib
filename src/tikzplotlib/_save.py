@@ -1,8 +1,9 @@
+from __future__ import annotations
+
 import enum
 import pathlib
 import tempfile
 import warnings
-from typing import List, Optional, Set, Union
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -17,22 +18,22 @@ from .__about__ import __version__
 
 def get_tikz_code(
     figure="gcf",
-    filepath: Optional[Union[str, pathlib.Path]] = None,
-    axis_width: Optional[str] = None,
-    axis_height: Optional[str] = None,
+    filepath: str | pathlib.Path | None = None,
+    axis_width: str | None = None,
+    axis_height: str | None = None,
     textsize: float = 10.0,
-    tex_relative_path_to_data: Optional[str] = None,
+    tex_relative_path_to_data: str | None = None,
     externalize_tables: bool = False,
     override_externals: bool = False,
-    externals_search_path: Optional[str] = None,
+    externals_search_path: str | None = None,
     strict: bool = False,
     wrap: bool = True,
     add_axis_environment: bool = True,
-    extra_axis_parameters: Optional[Union[List, Set]] = None,
+    extra_axis_parameters: list | set | None = None,
     extra_groupstyle_parameters: dict = {},
-    extra_tikzpicture_parameters: Optional[Union[List, Set]] = None,
-    extra_lines_start: Optional[Union[List, Set]] = None,
-    dpi: Optional[int] = None,
+    extra_tikzpicture_parameters: list | set | None = None,
+    extra_lines_start: list | set | None = None,
+    dpi: int | None = None,
     show_info: bool = False,
     include_disclaimer: bool = True,
     standalone: bool = False,
@@ -246,9 +247,7 @@ def get_tikz_code(
     return code
 
 
-def save(
-    filepath: Union[str, pathlib.Path], *args, encoding: Optional[str] = None, **kwargs
-):
+def save(filepath: str | pathlib.Path, *args, encoding: str | None = None, **kwargs):
     """Same as `get_tikz_code()`, but actually saves the code to a file.
 
     :param filepath: The file to which the TikZ output will be written.
