@@ -49,14 +49,30 @@ class Axes:
         xlabel = obj.get_xlabel()
         if xlabel:
             xlabel = _common_texification(xlabel)
-            self.axis_options.append(f"xlabel={{{xlabel}}}")
+
+            labelcolor = obj.xaxis.label.get_c()
+
+            if labelcolor != "black":
+                data, col, _ = _color.mpl_color2xcolor(data, labelcolor)
+                self.axis_options.append(f"xlabel=\\textcolor{{{col}}}{{{xlabel}}}")
+            else:
+                self.axis_options.append(f"xlabel={{{xlabel}}}")
+
             xrotation = obj.xaxis.get_label().get_rotation()
             if xrotation != 0:
                 self.axis_options.append(f"xlabel style={{rotate={xrotation - 90}}}")
+
         ylabel = obj.get_ylabel()
         if ylabel:
             ylabel = _common_texification(ylabel)
-            self.axis_options.append(f"ylabel={{{ylabel}}}")
+
+            labelcolor = obj.yaxis.label.get_c()
+            if labelcolor != "black":
+                data, col, _ = _color.mpl_color2xcolor(data, labelcolor)
+                self.axis_options.append(f"ylabel=\\textcolor{{{col}}}{{{ylabel}}}")
+            else:
+                self.axis_options.append(f"ylabel={{{ylabel}}}")
+
             yrotation = obj.yaxis.get_label().get_rotation()
             if yrotation != 90:
                 self.axis_options.append(f"ylabel style={{rotate={yrotation - 90}}}")
