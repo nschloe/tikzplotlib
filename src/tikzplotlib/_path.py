@@ -407,44 +407,27 @@ def get_draw_options(data, obj, ec, fc, ls, lw, hatch=None):
 
 
 def mpl_linewidth2pgfp_linewidth(data, line_width):
-    if data["strict"]:
-        # Takes the matplotlib linewidths, and just translate them into PGFPlots.
-        try:
-            return {
-                0.1: "ultra thin",
-                0.2: "very thin",
-                0.4: "thin",
-                0.6: "semithick",
-                0.8: "thick",
-                1.2: "very thick",
-                1.6: "ultra thick",
-            }[line_width]
-        except KeyError:
-            # explicit line width
-            ff = data["float format"]
-            return f"line width={line_width:{ff}}pt"
-
-    # The following is an alternative approach to line widths.
-    # The default line width in matplotlib is 1.0pt, in PGFPlots 0.4pt
-    # ('thin').
-    # Match the two defaults, and scale for the rest.
-    scaled_line_width = line_width / 1.0  # scale by default line width
+    # PGFplots gives line widths in pt, matplotlib in axes space. Translate.
+    # Scale such that the default mpl line width (1.5) is mapped to the PGFplots
+    # line with semithick, 0.6. From a visual comparison, semithick or even thick
+    # matches best with the default mpl style.
+    # Keep the line with in units of decipoint to make sure we stay in integers.
+    line_width_decipoint = line_width * 4  # 4 = 10 * 0.6 / 1.5
     try:
-        out = {
-            0.25: "ultra thin",
-            0.5: "very thin",
-            1.0: None,  # default, 'thin'
-            1.5: "semithick",
-            2: "thick",
-            3: "very thick",
-            4: "ultra thick",
-        }[scaled_line_width]
+        # https://github.com/pgf-tikz/pgf/blob/e9c22dc9fe48f975b7fdb32181f03090b3747499/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex#L1574
+        return {
+            1: "ultra thin",
+            2: "very thin",
+            4: None,  # "thin",
+            6: "semithick",
+            8: "thick",
+            12: "very thick",
+            16: "ultra thick",
+        }[line_width_decipoint]
     except KeyError:
         # explicit line width
         ff = data["float format"]
-        out = f"line width={0.4 * line_width:{ff}}pt"
-
-    return out
+        return f"line width={line_width_decipoint / 10:{ff}}pt"
 
 
 def mpl_linestyle2pgfplots_linestyle(data, line_style, line=None):
