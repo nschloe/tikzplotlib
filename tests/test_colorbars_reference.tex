@@ -19,18 +19,9 @@ ymin=-5, ymax=10
 --(axis cs:9.9414062,10)
 --(axis cs:-4.9414062,10)
 --(axis cs:-5,10)
---cycle;
-\addplot graphics [includegraphics cmd=\pgfimage,xmin=-5, xmax=10, ymin=-5, ymax=10] {tmp-000.png};
-\path [draw=black, line width=0.32pt]
-(axis cs:-5,-5)
---(axis cs:-4.9414062,-5)
---(axis cs:9.9414062,-5)
---(axis cs:10,-5)
---(axis cs:10,10)
---(axis cs:9.9414062,10)
---(axis cs:-4.9414062,10)
 --(axis cs:-5,10)
 --cycle;
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-5, xmax=10, ymin=-5, ymax=10] {tmp-000.png};
 
 \nextgroupplot[
 tick align=outside,
@@ -52,16 +43,6 @@ ymin=1, ymax=8
 --(axis cs:0.65,4.5)
 --cycle;
 \addplot graphics [includegraphics cmd=\pgfimage,xmin=0.65, xmax=8.35, ymin=1, ymax=8] {tmp-001.png};
-\path [draw=black, line width=0.32pt]
-(axis cs:0.65,4.5)
---(axis cs:1,1)
---(axis cs:8,1)
---(axis cs:8.35,4.5)
---(axis cs:8.35,4.5)
---(axis cs:8,8)
---(axis cs:1,8)
---(axis cs:0.65,4.5)
---cycle;
 
 \nextgroupplot[
 tick align=outside,
@@ -83,16 +64,6 @@ ymin=-1, ymax=1
 --(axis cs:-1.5,0)
 --cycle;
 \addplot graphics [includegraphics cmd=\pgfimage,xmin=-1.5, xmax=1.5, ymin=-1, ymax=1] {tmp-002.png};
-\path [draw=black, line width=0.32pt]
-(axis cs:-1.5,0)
---(axis cs:-1,-1)
---(axis cs:1,-1)
---(axis cs:1.5,0)
---(axis cs:1.5,0)
---(axis cs:1,1)
---(axis cs:-1,1)
---(axis cs:-1.5,0)
---cycle;
 \end{groupplot}
 
 \end{tikzpicture}
