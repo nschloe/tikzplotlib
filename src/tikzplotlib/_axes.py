@@ -570,19 +570,25 @@ def _get_ticks(data, xy, ticks, ticklabels):
         label = ticklabel.get_text()
         if "," in label:
             label = "{" + label + "}"
+
         if ticklabel.get_visible():
-            label = _common_texification(label)
-            pgfplots_ticklabels.append(label)
+            pgfplots_ticklabels.append(_common_texification(label))
         else:
             is_label_required = True
+
         # Check if the label is necessary. If one of the labels is, then all of them
         # must appear in the TikZ plot.
         if label:
             try:
                 label_float = float(label.replace("\N{MINUS SIGN}", "-"))
-                is_label_required = is_label_required or (label and label_float != tick)
             except ValueError:
                 is_label_required = True
+            else:
+                is_label_required = is_label_required or (
+                    label and abs(label_float - tick) > 1.0e-10 + 1.0e-10 * abs(tick)
+                )
+                print(label_float, tick, label_float - tick, is_label_required)
+
     # note: ticks may be present even if labels are not, keep them for grid lines
     for tick in ticks:
         pgfplots_ticks.append(tick)
