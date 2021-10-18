@@ -587,7 +587,6 @@ def _get_ticks(data, xy, ticks, ticklabels):
                 is_label_required = is_label_required or (
                     label and abs(label_float - tick) > 1.0e-10 + 1.0e-10 * abs(tick)
                 )
-                print(label_float, tick, label_float - tick, is_label_required)
 
     # note: ticks may be present even if labels are not, keep them for grid lines
     for tick in ticks:
