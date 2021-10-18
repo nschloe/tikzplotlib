@@ -174,7 +174,7 @@ class Test_plottypes:
 
         with plt.rc_context(rc=RC_PARAMS):
             fig = plt.figure()
-            ax = fig.gca(projection="3d")
+            ax = plt.axes(projection="3d")
 
             # Plot the surface.
             surf = ax.plot_surface(
@@ -217,7 +217,7 @@ class Test_plottypes:
 
         with plt.rc_context(rc=RC_PARAMS):
             fig = plt.figure()
-            ax = fig.gca(projection="3d")
+            ax = plt.axes(projection="3d")
 
             ax.plot_trisurf(x, y, z, linewidth=0.2, antialiased=True)
             with pytest.warns(Warning):
@@ -244,7 +244,7 @@ class Test_plottypes:
 
         with plt.rc_context(rc=RC_PARAMS):
             fig = plt.figure()
-            ax = fig.gca(projection="3d")
+            ax = plt.axes(projection="3d")
 
             def cc(arg):
                 """
@@ -302,7 +302,7 @@ class Test_plottypes:
     def test_quiver3D(self):
         with plt.rc_context(rc=RC_PARAMS):
             fig = plt.figure()
-            ax = fig.gca(projection="3d")
+            ax = plt.axes(projection="3d")
 
             # Make the grid
             x, y, z = np.meshgrid(
@@ -328,8 +328,7 @@ class Test_plottypes:
 
     def test_2D_in_3D(self):
         with plt.rc_context(rc=RC_PARAMS):
-            fig = plt.figure()
-            ax = fig.gca(projection="3d")
+            ax = plt.axes(projection="3d")
 
             # Plot a sin curve using the x and y axes.
             x = np.linspace(0, 1, 100)

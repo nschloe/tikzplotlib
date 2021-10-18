@@ -541,6 +541,7 @@ def _get_tick_position(obj, axes_obj):
     if len(set(major_ticks_top)) == 1 and major_ticks_top[0] is True:
         major_ticks_top_show_all = True
 
+    position_string = None
     major_ticks_position = None
     if not major_ticks_bottom_show_all and not major_ticks_top_show_all:
         position_string = f"{axes_obj}majorticks=false"
@@ -562,27 +563,39 @@ def _get_ticks(data, xy, ticks, ticklabels):
     necessary axis options for the given configuration.
     """
     axis_options = []
-    pgfplots_ticks = []
-    pgfplots_ticklabels = []
+
+    # Check if the label is necessary. If one of the labels is, then all of them must
+    # appear in the TikZ plot.
     is_label_required = False
     for tick, ticklabel in zip(ticks, ticklabels):
         # store the label anyway
         label = ticklabel.get_text()
+
+        if not ticklabel.get_visible():
+            is_label_required = True
+            break
+
+        if not label:
+            continue
+
+        try:
+            label_float = float(label.replace("\N{MINUS SIGN}", "-"))
+        except ValueError:
+            is_label_required = True
+            break
+        else:
+            if abs(label_float - tick) > 1.0e-10 + 1.0e-10 * abs(tick):
+                is_label_required = True
+                break
+
+    pgfplots_ticks = []
+    pgfplots_ticklabels = []
+    for tick, ticklabel in zip(ticks, ticklabels):
+        label = ticklabel.get_text()
         if "," in label:
             label = "{" + label + "}"
-        if ticklabel.get_visible():
-            label = _common_texification(label)
-            pgfplots_ticklabels.append(label)
-        else:
-            is_label_required = True
-        # Check if the label is necessary. If one of the labels is, then all of them
-        # must appear in the TikZ plot.
-        if label:
-            try:
-                label_float = float(label.replace("\N{MINUS SIGN}", "-"))
-                is_label_required = is_label_required or (label and label_float != tick)
-            except ValueError:
-                is_label_required = True
+        pgfplots_ticklabels.append(_common_texification(label))
+
     # note: ticks may be present even if labels are not, keep them for grid lines
     for tick in ticks:
         pgfplots_ticks.append(tick)

@@ -30,9 +30,9 @@ The output of tikzplotlib is in [PGFPlots](https://github.com/pgf-tikz/pgfplots/
 library that sits on top of [PGF/TikZ](https://en.wikipedia.org/wiki/PGF/TikZ) and
 describes graphs in terms of axes, data etc. Consequently, the output of tikzplotlib
 
--   retains more information,
--   can be more easily understood, and
--   is more easily editable
+- retains more information,
+- can be more easily understood, and
+- is more easily editable
 
 than [raw TikZ output](https://matplotlib.org/users/whats_new.html#pgf-tikz-backend).
 For example, the matplotlib figure
