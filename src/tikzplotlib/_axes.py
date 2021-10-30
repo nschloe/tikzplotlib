@@ -830,7 +830,7 @@ def _gcd_array(X):
 
 def _gcd(a, b):
     """Euclidean algorithm for calculating the GCD of two numbers a, b.
-    This algoritm also works for real numbers:
+    This algorithm also works for real numbers:
     Find the greatest number h such that a and b are integer multiples of h.
     """
     # Keep the tolerance somewhat significantly above machine precision as otherwise

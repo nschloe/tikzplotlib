@@ -17,7 +17,7 @@ Requires \usetikzlibrary{patterns}
 
 import warnings
 
-BAD_MP_HATCH = ["o", "O"]  # Bad hatch/pattern correspondance
+BAD_MP_HATCH = ["o", "O"]  # Bad hatch/pattern correspondence
 UNUSED_PGF_PATTERN = ["dots"]
 _MP_HATCH2PGF_PATTERN = {
     "-": "horizontal lines",
@@ -80,7 +80,7 @@ def __validate_hatch(hatch):
 
 def _mpl_hatch2pgfp_pattern(data, hatch, color_name, color_rgba):
     r"""
-    Translates a hatch from matplotlib to the corresponding patten in PGFPlots.
+    Translates a hatch from matplotlib to the corresponding pattern in PGFPlots.
 
     Input:
         hatch - str, like {'/', '\', '|', '-', '+', 'x', 'o', 'O', '.', '*'}

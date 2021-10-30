@@ -364,7 +364,7 @@ class Test_plottypes:
 class Test_lineplot_markers:
     def test_line_no_markers(self):
         """test high-level usage for simple example.
-        Test is successfull if generated tikz code saves correct amount of lines
+        Test is successful if generated tikz code saves correct amount of lines
         """
         x = np.linspace(1, 100, 20)
         y = np.linspace(1, 100, 20)
@@ -390,7 +390,7 @@ class Test_lineplot_markers:
 
     def test_no_line_markers(self):
         """test high-level usage for simple example.
-        Test is successfull if generated tikz code saves correct amount of lines
+        Test is successful if generated tikz code saves correct amount of lines
         """
         x = np.linspace(1, 100, 20)
         y = np.linspace(1, 100, 20)
@@ -416,7 +416,7 @@ class Test_lineplot_markers:
 
     def test_line_markers(self):
         """test high-level usage for simple example.
-        Test is successfull if generated tikz code saves correct amount of lines
+        Test is successful if generated tikz code saves correct amount of lines
         """
         x = np.linspace(1, 100, 20)
         y = np.linspace(1, 100, 20)
