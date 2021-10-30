@@ -206,7 +206,7 @@ def draw_pathcollection(data, obj):
                     + "  }%\n"
                     + "  \\scope[draw=thispointdrawcolor, fill=thispointfillcolor]%\n"
                     + "}",
-                    "scatter/@post marker code/.code={%\n" "  \\endscope\n" "}",
+                    "scatter/@post marker code/.code={%\n  \\endscope\n" "}",
                 ]
             )
 
