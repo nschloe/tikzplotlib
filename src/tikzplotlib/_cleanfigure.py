@@ -479,7 +479,7 @@ def _diff(x, *args, **kwargs):
 
 
 def _remove_NaNs(data):
-    """Removes superflous NaNs in the data, i.e. those at the end/beginning of the data and consecutive ones.
+    """Removes superfluous NaNs in the data, i.e. those at the end/beginning of the data and consecutive ones.
 
     :param linehandle: matplotlib linehandle object
 
@@ -799,7 +799,7 @@ def _simplify_line(
     pixelization otherwise. Changes are visually negligible at the target
     resolution.
 
-    The target resolution is either specificed as the number of PPI or as
+    The target resolution is either specified as the number of PPI or as
     the [Width, Height] of the figure in pixels.
     A scalar value of INF or 0 disables path simplification.
     (default = 600)
@@ -849,7 +849,7 @@ def _simplify_line(
         yPixelWidth = 1 / yToPix
         tol = min(xPixelWidth, yPixelWidth)
 
-        # Split up lines which are seperated by NaNs
+        # Split up lines which are separated by NaNs
         id_nan = np.logical_or(np.isnan(xDataVis), np.isnan(yDataVis))
 
         # If lines were separated by a NaN, diff(~id_nan) would give 1 for
@@ -983,7 +983,7 @@ def _opheim_simplify(x, y, tol):
     :type x: np.ndarray
     :param y: y coordinates of path to simplify. Shape [N, ]
     :type y: np.ndarray
-    :param tol: scalar float specifiying the tolerance for path simplification
+    :param tol: scalar float specifying the tolerance for path simplification
     :type tol: float
     :returns: boolean array of shape [N, ] that masks out elements that need not be drawn
     :rtype: np.ndarray
@@ -1096,7 +1096,7 @@ def _segment_visible(data, dataIsInBox, xLim, yLim):
 
     :param data: array of data points. Shape [N, 2]
     :type data: np.ndarray
-    :param dataIsInBox: boolen mask that specifies if data point lies within visual box
+    :param dataIsInBox: boolean mask that specifies if data point lies within visual box
     :type dataIxInBox: np.ndarray
     :param xLim: x axes limits
     :type xLim: list, np.array
