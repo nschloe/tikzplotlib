@@ -64,7 +64,7 @@ def _patch_legend(obj, draw_options, legend_type):
 def zip_modulo(*seqs):
     n = max(len(seq) for seq in seqs)
     for i in range(n):
-        yield tuple((seq[i % len(seq)] if len(seq)!=0 else None) for seq in seqs)
+        yield tuple((seq[i % len(seq)] if len(seq) != 0 else None) for seq in seqs)
 
 
 def draw_patchcollection(data, obj):
