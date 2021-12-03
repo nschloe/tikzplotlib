@@ -16,4 +16,9 @@ def plot():
 def test():
     from .helpers import assert_equality
 
-    assert_equality(plot, __file__[:-3] + "_reference.tex")
+    # test relative data path
+    assert_equality(
+        plot,
+        __file__[:-3] + "_reference.tex",
+        # tex_relative_path_to_data="data/files"
+    )
