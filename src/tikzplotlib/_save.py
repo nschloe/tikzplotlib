@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import enum
-import pathlib
 import tempfile
 import warnings
+from pathlib import Path
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -18,7 +18,7 @@ from .__about__ import __version__
 
 def get_tikz_code(
     figure="gcf",
-    filepath: str | pathlib.Path | None = None,
+    filepath: str | Path | None = None,
     axis_width: str | None = None,
     axis_height: str | None = None,
     textsize: float = 10.0,
@@ -152,18 +152,20 @@ def get_tikz_code(
     data = {}
     data["axis width"] = axis_width
     data["axis height"] = axis_height
-    data["rel data path"] = tex_relative_path_to_data
+    data["rel data path"] = (
+        None if tex_relative_path_to_data is None else Path(tex_relative_path_to_data)
+    )
     data["externalize tables"] = externalize_tables
     data["override externals"] = override_externals
     data["externals search path"] = externals_search_path
 
     if filepath:
-        filepath = pathlib.Path(filepath)
+        filepath = Path(filepath)
         data["output dir"] = filepath.parent
         data["base name"] = filepath.stem
     else:
         directory = tempfile.mkdtemp()
-        data["output dir"] = pathlib.Path(directory)
+        data["output dir"] = Path(directory)
         data["base name"] = "tmp"
 
     data["strict"] = strict
@@ -247,7 +249,7 @@ def get_tikz_code(
     return code
 
 
-def save(filepath: str | pathlib.Path, *args, encoding: str | None = None, **kwargs):
+def save(filepath: str | Path, *args, encoding: str | None = None, **kwargs):
     """Same as `get_tikz_code()`, but actually saves the code to a file.
 
     :param filepath: The file to which the TikZ output will be written.
