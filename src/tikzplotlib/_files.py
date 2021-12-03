@@ -1,9 +1,13 @@
-import pathlib
+from pathlib import Path
 
 
 def _gen_filepath(data, nb_key, ext):
-    name = data["base name"] + f"-{data[nb_key]:03d}{ext}"
-    return pathlib.Path(data["output dir"]) / name
+    rel_filepath = Path(f"{data['base name']}-{data[nb_key]:03d}{ext}")
+
+    if data["rel data path"]:
+        rel_filepath = Path(data["rel data path"]) / rel_filepath
+
+    return Path(data["output dir"]) / rel_filepath, rel_filepath
 
 
 def new_filepath(data, file_kind, ext):
@@ -25,19 +29,12 @@ def new_filepath(data, file_kind, ext):
     if nb_key not in data.keys():
         data[nb_key] = -1
 
-    data[nb_key] = data[nb_key] + 1
-    filepath = _gen_filepath(data, nb_key, ext)
+    data[nb_key] += 1
+    filepath, rel_filepath = _gen_filepath(data, nb_key, ext)
     if not data["override externals"]:
         # Make sure not to overwrite anything.
-        file_exists = filepath.is_file()
-        while file_exists:
-            data[nb_key] = data[nb_key] + 1
-            filepath = _gen_filepath(data, nb_key, ext)
-            file_exists = filepath.is_file()
-
-    if data["rel data path"]:
-        rel_filepath = pathlib.Path(data["rel data path"]) / filepath
-    else:
-        rel_filepath = filepath.name
+        while filepath.is_file():
+            data[nb_key] += 1
+            filepath, rel_filepath = _gen_filepath(data, nb_key, ext)
 
     return filepath, rel_filepath

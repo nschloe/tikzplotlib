@@ -53,10 +53,11 @@ def draw_quadmesh(data, obj):
     # Explicitly use \pgfimage as includegrapics command, as the default
     # \includegraphics fails unexpectedly in some cases
     ff = data["float format"]
+    posix_filepath = rel_filepath.as_posix()
     content.append(
         "\\addplot graphics [includegraphics cmd=\\pgfimage,"
         f"xmin={extent[0]:{ff}}, xmax={extent[1]:{ff}}, "
-        f"ymin={extent[2]:{ff}}, ymax={extent[3]:{ff}}] {{{rel_filepath}}};\n"
+        f"ymin={extent[2]:{ff}}, ymax={extent[3]:{ff}}] {{{posix_filepath}}};\n"
     )
 
     return data, content
