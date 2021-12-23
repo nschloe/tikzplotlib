@@ -9,6 +9,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1173089.svg?style=flat-square)](https://doi.org/10.5281/zenodo.1173089)
 [![GitHub stars](https://img.shields.io/github/stars/nschloe/tikzplotlib.svg?style=flat-square&logo=github&label=Stars&logoColor=white)](https://github.com/nschloe/tikzplotlib)
 [![Downloads](https://pepy.tech/badge/tikzplotlib/month?style=flat-square)](https://pepy.tech/project/tikzplotlib)
+
 <!--[![PyPi downloads](https://img.shields.io/pypi/dm/tikzplotlib.svg?style=flat-square)](https://pypistats.org/packages/tikzplotlib)-->
 
 [![Documentation Status](https://readthedocs.org/projects/tikzplotlib/badge/?version=latest&style=flat-square)](https://readthedocs.org/projects/tikzplotlib/?badge=latest)
@@ -31,9 +32,9 @@ The output of tikzplotlib is in [PGFPlots](https://github.com/pgf-tikz/pgfplots/
 library that sits on top of [PGF/TikZ](https://en.wikipedia.org/wiki/PGF/TikZ) and
 describes graphs in terms of axes, data etc. Consequently, the output of tikzplotlib
 
-- retains more information,
-- can be more easily understood, and
-- is more easily editable
+-   retains more information,
+-   can be more easily understood, and
+-   is more easily editable
 
 than [raw TikZ output](https://matplotlib.org/users/whats_new.html#pgf-tikz-backend).
 For example, the matplotlib figure
