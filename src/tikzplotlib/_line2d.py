@@ -288,11 +288,9 @@ def _table(obj, data):  # noqa: C901
             esp = data["externals search path"]
             opts.append(f"search path={{{esp}}}")
 
-        if len(opts) > 0:
-            opts_str = ",".join(opts)
-            content.append(f"table [{opts_str}] {{{rel_filepath}}};\n")
-        else:
-            content.append(f"table {{{rel_filepath}}};\n")
+        opts_str = ("[" + ",".join(opts) + "] ") if len(opts) > 0 else ""
+        posix_filepath = rel_filepath.as_posix()
+        content.append(f"table {{opts_string}}{{{posix_filepath}}};\n")
     else:
         if len(opts) > 0:
             opts_str = ",".join(opts)
