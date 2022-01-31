@@ -602,7 +602,7 @@ class Test_logscale:
             num_lines_raw = raw.count("\n")
             num_lines_clean = clean.count("\n")
             assert num_lines_raw - num_lines_clean == 51
-            assert num_lines_clean == 71
+            assert num_lines_clean == 72
         plt.close("all")
 
     def test_loglog_2(self):

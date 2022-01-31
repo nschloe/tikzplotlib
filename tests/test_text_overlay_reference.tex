@@ -1,8 +1,10 @@
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0.12156863,0.46666667,0.70588235}
-\definecolor{color1}{rgb}{1,0.8,0.8}
-\definecolor{color2}{rgb}{1,0.5,0.5}
+\definecolor{gray069}{gray}{0.6901960784313725}
+\definecolor{gray080}{gray}{0.8}
+\definecolor{pink255204204}{RGB}{255,204,204}
+\definecolor{salmon255127127}{RGB}{255,127,127}
+\definecolor{steelblue31119180}{RGB}{31,119,180}
 
 \begin{axis}[
 legend cell align={left},
@@ -12,18 +14,18 @@ legend style={
   text opacity=1,
   at={(0.03,0.97)},
   anchor=north west,
-  draw=white!80!black
+  draw=gray080
 },
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={gray069},
 xmin=-0.25, xmax=5.25,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={gray069},
 ymin=-1.25, ymax=26.25,
 ytick style={color=black}
 ]
-\addplot [semithick, color0]
+\addplot [semithick, steelblue31119180]
 table {%
 0 0
 0.10204082 0.010412328
@@ -79,8 +81,8 @@ table {%
 \addlegendentry{a graph}
 \draw (axis cs:1,5) node[
   scale=2.5,
-  fill=color1,
-  draw=color2,
+  fill=pink255204204,
+  draw=salmon255127127,
   line width=0.4pt,
   inner sep=2pt,
   rounded corners,
@@ -91,16 +93,16 @@ table {%
 ]{\itshape test1};
 \draw (axis cs:3,6) node[
   scale=2.5,
-  fill=color1,
-  draw=color2,
+  fill=pink255204204,
+  draw=salmon255127127,
   line width=0.4pt,
   inner sep=3pt,
   text=blue,
   rotate=330.0
 ]{\bfseries test2};
 \draw (axis cs:4,8) node[
-  fill=color1,
-  draw=color2,
+  fill=pink255204204,
+  draw=salmon255127127,
   line width=0.4pt,
   inner sep=3pt,
   single arrow,
@@ -109,8 +111,8 @@ table {%
   rotate=90.0
 ]{\bfseries test3};
 \draw (axis cs:4,16) node[
-  fill=color1,
-  draw=color2,
+  fill=pink255204204,
+  draw=salmon255127127,
   line width=0.4pt,
   inner sep=3pt,
   single arrow,
@@ -120,8 +122,8 @@ table {%
   rotate=90.0
 ]{\bfseries test4};
 \draw (axis cs:2,18) node[
-  fill=color1,
-  draw=color2,
+  fill=pink255204204,
+  draw=salmon255127127,
   line width=0.4pt,
   inner sep=3pt,
   double arrow,
@@ -129,8 +131,8 @@ table {%
   rotate=0.0
 ]{test5};
 \draw (axis cs:1,20) node[
-  fill=color1,
-  draw=color2,
+  fill=pink255204204,
+  draw=salmon255127127,
   line width=0.4pt,
   inner sep=3pt,
   circle,
@@ -138,8 +140,8 @@ table {%
   rotate=0.0
 ]{test6};
 \draw (axis cs:3,23) node[
-  fill=color1,
-  draw=color2,
+  fill=pink255204204,
+  draw=salmon255127127,
   line width=0.4pt,
   inner sep=3pt,
   decorate,
@@ -148,8 +150,8 @@ table {%
   rotate=0.0
 ]{test7};
 \draw (axis cs:3,20) node[
-  fill=color1,
-  draw=color2,
+  fill=pink255204204,
+  draw=salmon255127127,
   line width=0.4pt,
   inner sep=3pt,
   decorate,
