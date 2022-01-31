@@ -1,6 +1,41 @@
 [build-system]
-requires = ["setuptools>=42", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
 
 [tool.isort]
 profile = "black"
+
+[project]
+name = "tikzplotlib"
+authors = [{name = "Nico Schlömer", email = "nico.schloemer@gmail.com"}]
+description = "Convert matplotlib figures into TikZ/PGFPlots"
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Framework :: Matplotlib",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Topic :: Multimedia :: Graphics :: Graphics Conversion",
+  "Topic :: Scientific/Engineering :: Visualization",
+]
+keywords = ["latex", "tikz", "matplotlib", "graphics"]
+dynamic = ["version"]
+requires-python = ">=3.7"
+dependencies = [
+  "matplotlib >= 1.4.0",
+  "numpy",
+  "Pillow",
+  "webcolors",
+]
+
+[project.urls]
+Code = "https://github.com/nschloe/tikzplotlib"
+Issues = "https://github.com/nschloe/tikzplotlib/issues"
+Funding = "https://github.com/sponsors/nschloe"
