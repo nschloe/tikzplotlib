@@ -6,8 +6,8 @@ def plot():
     ax = fig.add_subplot(1, 1, 1)
     ax.semilogy(a, color="blue", lw=0.25, base=2)
 
-    plt.grid(b=True, which="major", color="g", linestyle="-", linewidth=0.25)
-    plt.grid(b=True, which="minor", color="r", linestyle="--", linewidth=0.5)
+    plt.grid(visible=True, which="major", color="g", linestyle="-", linewidth=0.25)
+    plt.grid(visible=True, which="minor", color="r", linestyle="--", linewidth=0.5)
     return fig
 
 
