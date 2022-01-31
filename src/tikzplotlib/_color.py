@@ -4,25 +4,22 @@ import webcolors
 
 # RGB values (as taken from xcolor.dtx):
 builtin_colors = {
-    # List white first such that for gray values, the combination
-    # white!<x>!black is preferred over, e.g., gray!<y>!black. Note that
-    # the order of the dictionary is respected from Python 3.6 on.
-    "white": np.array([1, 1, 1]),
-    "lightgray": np.array([0.75, 0.75, 0.75]),
-    "gray": np.array([0.5, 0.5, 0.5]),
-    "darkgray": np.array([0.25, 0.25, 0.25]),
-    "black": np.array([0, 0, 0]),
+    "white": [1, 1, 1],
+    "lightgray": [0.75, 0.75, 0.75],
+    "gray": [0.5, 0.5, 0.5],
+    "darkgray": [0.25, 0.25, 0.25],
+    "black": [0, 0, 0],
     #
-    "red": np.array([1, 0, 0]),
-    "green": np.array([0, 1, 0]),
-    "blue": np.array([0, 0, 1]),
-    "brown": np.array([0.75, 0.5, 0.25]),
-    "lime": np.array([0.75, 1, 0]),
-    "orange": np.array([1, 0.5, 0]),
-    "pink": np.array([1, 0.75, 0.75]),
-    "purple": np.array([0.75, 0, 0.25]),
-    "teal": np.array([0, 0.5, 0.5]),
-    "violet": np.array([0.5, 0, 0.5]),
+    "red": [1, 0, 0],
+    "green": [0, 1, 0],
+    "blue": [0, 0, 1],
+    "brown": [0.75, 0.5, 0.25],
+    "lime": [0.75, 1, 0],
+    "orange": [1, 0.5, 0],
+    "pink": [1, 0.75, 0.75],
+    "purple": [0.75, 0, 0.25],
+    "teal": [0, 0.5, 0.5],
+    "violet": [0.5, 0, 0.5],
     # The colors cyan, magenta, yellow, and olive are also
     # predefined by xcolor, but their RGB approximation of the
     # native CMYK values is not very good. Don't use them here.
