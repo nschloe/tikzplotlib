@@ -66,20 +66,22 @@ def mpl_color2xcolor(data, matplotlib_color):
         if all(my_col[:3] == rgb):
             return data, name, my_col
 
-    if np.all(my_col[0] == my_col[:3]):
-        # gray
-        # my_col[0] = 0.70123112 -> gray070
-        name = f"gray{int(100 * my_col[0]):03d}"
-        if name not in data["custom colors"]:
-            data["custom colors"][name] = ("gray", str(my_col[0]))
-        return data, name, my_col
+    # Don't handle gray colors separately. They can be specified in xcolor as
+    #
+    #  {gray}{0.6901960784313725}
+    #
+    # but this float representation hides the fact that this is actually an
+    # RGB255 integer value, 176.
 
     # convert to RGB255
     rgb255 = np.array(my_col[:3] * 255, dtype=int)
 
     name, diff = _get_closest_colour_name(rgb255)
     if diff > 0:
-        name = f"{name}{rgb255[0]}{rgb255[1]}{rgb255[2]}"
+        if np.all(my_col[0] == my_col[:3]):
+            name = f"{name}{rgb255[0]}"
+        else:
+            name = f"{name}{rgb255[0]}{rgb255[1]}{rgb255[2]}"
     data["custom colors"][name] = ("RGB", ",".join([str(val) for val in rgb255]))
 
     return data, name, my_col
