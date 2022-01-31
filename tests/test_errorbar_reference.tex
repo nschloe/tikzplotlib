@@ -1,34 +1,35 @@
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0.12156863,0.46666667,0.70588235}
+\definecolor{darkgray176}{RGB}{176,176,176}
+\definecolor{steelblue31119180}{RGB}{31,119,180}
 
 \begin{axis}[
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=7.121, xmax=7.539,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=2.88, ymax=9.92,
 ytick style={color=black}
 ]
-\path [draw=color0, semithick]
+\path [draw=steelblue31119180, semithick]
 (axis cs:7.14,3.2)
 --(axis cs:7.14,3.4);
 
-\path [draw=color0, semithick]
+\path [draw=steelblue31119180, semithick]
 (axis cs:7.36,3.9)
 --(axis cs:7.36,4.9);
 
-\path [draw=color0, semithick]
+\path [draw=steelblue31119180, semithick]
 (axis cs:7.47,8)
 --(axis cs:7.47,9.6);
 
-\path [draw=color0, semithick]
+\path [draw=steelblue31119180, semithick]
 (axis cs:7.52,5.2)
 --(axis cs:7.52,5.8);
 
-\addplot [semithick, color0]
+\addplot [semithick, steelblue31119180]
 table {%
 7.14 3.3
 7.36 4.4

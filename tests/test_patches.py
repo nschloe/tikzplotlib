@@ -83,3 +83,6 @@ def test():
     from .helpers import assert_equality
 
     assert_equality(plot, __file__[:-3] + "_reference.tex")
+
+
+plot().savefig("out.svg")

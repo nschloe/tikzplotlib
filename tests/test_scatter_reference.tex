@@ -1,22 +1,24 @@
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0,0.56078431,0.83529412}
+\definecolor{dodgerblue0143213}{RGB}{0,143,213}
+\definecolor{lightgray203}{RGB}{203,203,203}
+\definecolor{whitesmoke240}{RGB}{240,240,240}
 
 \begin{axis}[
-axis background/.style={fill=white!94.117647!black},
-axis line style={white!94.117647!black},
+axis background/.style={fill=whitesmoke240},
+axis line style={whitesmoke240},
 tick align=outside,
 tick pos=left,
-x grid style={white!79.607843!black},
+x grid style={lightgray203},
 xmajorgrids,
 xmin=-5, xmax=105,
 xtick style={color=black},
-y grid style={white!79.607843!black},
+y grid style={lightgray203},
 ymajorgrids,
 ymin=0.17184841, ymax=112.81716,
 ytick style={color=black}
 ]
-\addplot [draw=color0, fill=color0, mark=*, only marks]
+\addplot [draw=dodgerblue0143213, fill=dodgerblue0143213, mark=*, only marks]
 table{%
 x  y
 0 10.447038

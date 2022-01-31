@@ -1,12 +1,14 @@
 \begin{tikzpicture}
 
+\definecolor{darkgray176}{RGB}{176,176,176}
+
 \begin{axis}[
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-1, xmax=5,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-4, ymax=3,
 ytick style={color=black}
 ]
@@ -40,20 +42,20 @@ table {%
 };
 \draw[->,draw=red] (axis cs:4.5,1.5) -- (axis cs:4,1);
 \draw (axis cs:4.5,1.5) node[
-  scale=0.5,
+  scale=0.65,
   anchor=base west,
   text=black,
   rotate=0.0
 ]{text};
 \draw[->,draw=black] (axis cs:0,1) ++(-50pt,30pt) -- (axis cs:0,1);
 \draw (axis cs:0,1) ++(-50pt,30pt) node[
-  scale=0.5,
+  scale=0.65,
   anchor=base west,
   text=black,
   rotate=0.0
 ]{arrowstyle};
 \draw (axis cs:50,-30) node[
-  scale=0.5,
+  scale=0.65,
   anchor=base west,
   text=black,
   rotate=0.0

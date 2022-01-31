@@ -1,22 +1,23 @@
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0.282623,0.140926,0.457517}
-\definecolor{color1}{rgb}{0.206756,0.371758,0.553117}
-\definecolor{color2}{rgb}{0.127568,0.566949,0.550556}
-\definecolor{color3}{rgb}{0.266941,0.748751,0.440573}
-\definecolor{color4}{rgb}{0.741388,0.873449,0.149561}
+\definecolor{darkcyan32144140}{RGB}{32,144,140}
+\definecolor{darkgray176}{RGB}{176,176,176}
+\definecolor{darkslateblue5294141}{RGB}{52,94,141}
+\definecolor{darkslateblue7235116}{RGB}{72,35,116}
+\definecolor{greenyellow18922238}{RGB}{189,222,38}
+\definecolor{mediumseagreen68190112}{RGB}{68,190,112}
 
 \begin{axis}[
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=0, xmax=2,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=0, ymax=2,
 ytick style={color=black}
 ]
-\addplot [draw=none, fill=color0]
+\addplot [draw=none, fill=darkslateblue7235116]
 table{%
 x  y
 0.26666667 0
@@ -24,7 +25,7 @@ x  y
 0 0.26666667
 0.26666667 0
 };
-\addplot [draw=none, fill=color0]
+\addplot [draw=none, fill=darkslateblue7235116]
 table{%
 x  y
 0 2
@@ -32,7 +33,7 @@ x  y
 0 1.7333333
 0 2
 };
-\addplot [draw=none, fill=color0]
+\addplot [draw=none, fill=darkslateblue7235116]
 table{%
 x  y
 2 0.26666667
@@ -40,7 +41,7 @@ x  y
 1.7333333 0
 2 0.26666667
 };
-\addplot [draw=none, fill=color0]
+\addplot [draw=none, fill=darkslateblue7235116]
 table{%
 x  y
 1.7333333 2
@@ -48,7 +49,7 @@ x  y
 2 1.7333333
 1.7333333 2
 };
-\addplot [draw=none, fill=color1]
+\addplot [draw=none, fill=darkslateblue5294141]
 table{%
 x  y
 0 0.5
@@ -61,7 +62,7 @@ x  y
 0 0.26666667
 0 0.5
 };
-\addplot [draw=none, fill=color1]
+\addplot [draw=none, fill=darkslateblue5294141]
 table{%
 x  y
 0 1.5
@@ -74,7 +75,7 @@ x  y
 0 1.4
 0 1.5
 };
-\addplot [draw=none, fill=color1]
+\addplot [draw=none, fill=darkslateblue5294141]
 table{%
 x  y
 1.5 0.033333333
@@ -87,7 +88,7 @@ x  y
 1.4 0
 1.5 0.033333333
 };
-\addplot [draw=none, fill=color1]
+\addplot [draw=none, fill=darkslateblue5294141]
 table{%
 x  y
 1.4 2
@@ -100,7 +101,7 @@ x  y
 1.5 1.9666667
 1.4 2
 };
-\addplot [draw=none, fill=color2]
+\addplot [draw=none, fill=darkcyan32144140]
 table{%
 x  y
 0.033333333 0.5
@@ -139,7 +140,7 @@ x  y
 0.3 0.5
 0.5 0.3
 };
-\addplot [draw=none, fill=color3]
+\addplot [draw=none, fill=mediumseagreen68190112]
 table{%
 x  y
 0.3 0.5
@@ -170,7 +171,7 @@ x  y
 0.4 1
 0.5 0.7
 };
-\addplot [draw=none, fill=color4]
+\addplot [draw=none, fill=greenyellow18922238]
 table{%
 x  y
 0.4 1

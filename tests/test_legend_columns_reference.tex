@@ -1,7 +1,9 @@
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0.12156863,0.46666667,0.70588235}
-\definecolor{color1}{rgb}{1,0.49803922,0.054901961}
+\definecolor{darkgray176}{RGB}{176,176,176}
+\definecolor{darkorange25512714}{RGB}{255,127,14}
+\definecolor{lightgray204}{RGB}{204,204,204}
+\definecolor{steelblue31119180}{RGB}{31,119,180}
 
 \begin{axis}[
 legend cell align={left},
@@ -12,24 +14,24 @@ legend style={
   text opacity=1,
   at={(0.5,0.91)},
   anchor=north,
-  draw=white!80!black
+  draw=lightgray204
 },
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.05, xmax=1.05,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=0.8, ymax=5.2,
 ytick style={color=black}
 ]
-\addplot [semithick, color0]
+\addplot [semithick, steelblue31119180]
 table {%
 0 1
 1 5
 };
 \addlegendentry{Test 1}
-\addplot [semithick, color1]
+\addplot [semithick, darkorange25512714]
 table {%
 0 5
 1 1

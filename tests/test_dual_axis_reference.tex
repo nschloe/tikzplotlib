@@ -1,19 +1,20 @@
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0.12156863,0.46666667,0.70588235}
+\definecolor{darkgray176}{RGB}{176,176,176}
+\definecolor{steelblue31119180}{RGB}{31,119,180}
 
 \begin{axis}[
 tick align=outside,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-10, xmax=210,
 xtick pos=right,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-5, ymax=105,
 ytick pos=left,
 ytick style={color=black}
 ]
-\addplot [semithick, color0]
+\addplot [semithick, steelblue31119180]
 table {%
 0 0
 0.52631579 0.27700831
@@ -41,17 +42,17 @@ table {%
 \begin{axis}[
 axis y line=right,
 tick align=outside,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-10, xmax=210,
 xtick pos=left,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-100, ymax=2100,
 ytick pos=right,
 ytick style={color=black},
 yticklabel style={anchor=west}
 ]
-\addplot [semithick, color0]
+\addplot [semithick, steelblue31119180]
 table {%
 0 0
 10.526316 5.5401662

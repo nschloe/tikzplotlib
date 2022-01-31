@@ -1,97 +1,111 @@
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0.12156863,0.46666667,0.70588235}
+\definecolor{darkgray176}{RGB}{176,176,176}
+\definecolor{steelblue31119180}{RGB}{31,119,180}
 
 \begin{axis}[
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=0, xmax=8,
 xtick style={color=black},
-y grid style={white!69.019608!black},
-ymin=0, ymax=7.5,
+y grid style={darkgray176},
+ymin=0, ymax=8.5,
 ytick style={color=black}
 ]
-\draw[draw=none,fill=color0] (axis cs:3.2,6.8) circle (0.2);
-\draw[draw=none,fill=color0] (axis cs:3.2,5.8) circle (0.2);
-\draw[draw=none,fill=color0] (axis cs:3.2,4.8) circle (0.2);
-\draw[draw=none,fill=color0] (axis cs:3.2,3.8) circle (0.2);
-\draw[draw=none,fill=color0] (axis cs:3.2,2.8) circle (0.2);
-\draw[draw=none,fill=color0] (axis cs:3.2,1.8) circle (0.2);
-\draw[draw=none,fill=color0] (axis cs:3.2,0.8) circle (0.2);
-\draw[draw=none,fill=color0] (axis cs:7.2,6.8) circle (0.2);
-\draw[draw=none,fill=color0] (axis cs:7.2,5.8) circle (0.2);
-\draw[draw=none,fill=color0] (axis cs:7.2,4.8) circle (0.2);
-\draw[draw=none,fill=color0] (axis cs:7.2,3.8) circle (0.2);
-\draw[draw=none,fill=color0] (axis cs:7.2,2.8) circle (0.2);
-\draw[draw=none,fill=color0] (axis cs:7.2,1.8) circle (0.2);
-\draw[draw=none,fill=color0] (axis cs:7.2,0.8) circle (0.2);
-\draw[-,draw=black] (axis cs:2,6.8) -- (axis cs:3.2,6.8);
+\draw[draw=none,fill=steelblue31119180] (axis cs:3.2,7.8) circle (0.2);
+\draw[draw=none,fill=steelblue31119180] (axis cs:3.2,6.8) circle (0.2);
+\draw[draw=none,fill=steelblue31119180] (axis cs:3.2,5.8) circle (0.2);
+\draw[draw=none,fill=steelblue31119180] (axis cs:3.2,4.8) circle (0.2);
+\draw[draw=none,fill=steelblue31119180] (axis cs:3.2,3.8) circle (0.2);
+\draw[draw=none,fill=steelblue31119180] (axis cs:3.2,2.8) circle (0.2);
+\draw[draw=none,fill=steelblue31119180] (axis cs:3.2,1.8) circle (0.2);
+\draw[draw=none,fill=steelblue31119180] (axis cs:3.2,0.8) circle (0.2);
+\draw[draw=none,fill=steelblue31119180] (axis cs:7.2,7.8) circle (0.2);
+\draw[draw=none,fill=steelblue31119180] (axis cs:7.2,6.8) circle (0.2);
+\draw[draw=none,fill=steelblue31119180] (axis cs:7.2,5.8) circle (0.2);
+\draw[draw=none,fill=steelblue31119180] (axis cs:7.2,4.8) circle (0.2);
+\draw[draw=none,fill=steelblue31119180] (axis cs:7.2,3.8) circle (0.2);
+\draw[draw=none,fill=steelblue31119180] (axis cs:7.2,2.8) circle (0.2);
+\draw[draw=none,fill=steelblue31119180] (axis cs:7.2,1.8) circle (0.2);
+\draw[draw=none,fill=steelblue31119180] (axis cs:7.2,0.8) circle (0.2);
+\draw[-,draw=black] (axis cs:2,7.8) -- (axis cs:3.2,7.8);
+\draw (axis cs:2,7.8) node[
+  scale=0.7,
+  fill=white,
+  draw=black,
+  line width=0.4pt,
+  inner sep=3pt,
+  anchor=east,
+  text=black,
+  rotate=0.0
+]{-};
+\draw[->,draw=black] (axis cs:2,6.8) -- (axis cs:3.2,6.8);
 \draw (axis cs:2,6.8) node[
   scale=0.7,
   fill=white,
   draw=black,
   line width=0.4pt,
   inner sep=3pt,
-  anchor= east,
+  anchor=east,
   text=black,
   rotate=0.0
-]{-};
-\draw[->,draw=black] (axis cs:2,5.8) -- (axis cs:3.2,5.8);
+]{-$>$};
+\draw[-|,draw=black] (axis cs:2,5.8) -- (axis cs:3.2,5.8);
 \draw (axis cs:2,5.8) node[
   scale=0.7,
   fill=white,
   draw=black,
   line width=0.4pt,
   inner sep=3pt,
-  anchor= east,
+  anchor=east,
   text=black,
   rotate=0.0
-]{-$>$};
-\draw[-|,draw=black] (axis cs:2,4.8) -- (axis cs:3.2,4.8);
+]{-[};
+\draw[-latex,draw=black] (axis cs:2,4.8) -- (axis cs:3.2,4.8);
 \draw (axis cs:2,4.8) node[
   scale=0.7,
   fill=white,
   draw=black,
   line width=0.4pt,
   inner sep=3pt,
-  anchor= east,
+  anchor=east,
   text=black,
   rotate=0.0
-]{-[};
-\draw[-latex,draw=black] (axis cs:2,3.8) -- (axis cs:3.2,3.8);
+]{-$|$$>$};
+\draw[<-,draw=black] (axis cs:2,3.8) -- (axis cs:3.2,3.8);
 \draw (axis cs:2,3.8) node[
   scale=0.7,
   fill=white,
   draw=black,
   line width=0.4pt,
   inner sep=3pt,
-  anchor= east,
+  anchor=east,
   text=black,
   rotate=0.0
-]{-$|$$>$};
-\draw[<-,draw=black] (axis cs:2,2.8) -- (axis cs:3.2,2.8);
+]{$<$-};
+\draw[<->,draw=black] (axis cs:2,2.8) -- (axis cs:3.2,2.8);
 \draw (axis cs:2,2.8) node[
   scale=0.7,
   fill=white,
   draw=black,
   line width=0.4pt,
   inner sep=3pt,
-  anchor= east,
+  anchor=east,
   text=black,
   rotate=0.0
-]{$<$-};
-\draw[<->,draw=black] (axis cs:2,1.8) -- (axis cs:3.2,1.8);
+]{$<$-$>$};
+\draw[<-[,draw=black] (axis cs:2,1.8) -- (axis cs:3.2,1.8);
 \draw (axis cs:2,1.8) node[
   scale=0.7,
   fill=white,
   draw=black,
   line width=0.4pt,
   inner sep=3pt,
-  anchor= east,
+  anchor=east,
   text=black,
   rotate=0.0
-]{$<$-$>$};
+]{$<$-[};
 \draw[latex-,draw=black] (axis cs:2,0.8) -- (axis cs:3.2,0.8);
 \draw (axis cs:2,0.8) node[
   scale=0.7,
@@ -99,32 +113,43 @@ ytick style={color=black}
   draw=black,
   line width=0.4pt,
   inner sep=3pt,
-  anchor= east,
+  anchor=east,
   text=black,
   rotate=0.0
 ]{$<$$|$-};
-\draw[latex-latex,draw=black] (axis cs:6,6.8) -- (axis cs:7.2,6.8);
+\draw[latex-latex,draw=black] (axis cs:6,7.8) -- (axis cs:7.2,7.8);
+\draw (axis cs:6,7.8) node[
+  scale=0.7,
+  fill=white,
+  draw=black,
+  line width=0.4pt,
+  inner sep=3pt,
+  anchor=east,
+  text=black,
+  rotate=0.0
+]{$<$$|$-$|$$>$};
+\draw[|-,draw=black] (axis cs:6,6.8) -- (axis cs:7.2,6.8);
 \draw (axis cs:6,6.8) node[
   scale=0.7,
   fill=white,
   draw=black,
   line width=0.4pt,
   inner sep=3pt,
-  anchor= east,
+  anchor=east,
   text=black,
   rotate=0.0
-]{$<$$|$-$|$$>$};
-\draw[|-,draw=black] (axis cs:6,5.8) -- (axis cs:7.2,5.8);
+]{]-};
+\draw[]->,draw=black] (axis cs:6,5.8) -- (axis cs:7.2,5.8);
 \draw (axis cs:6,5.8) node[
   scale=0.7,
   fill=white,
   draw=black,
   line width=0.4pt,
   inner sep=3pt,
-  anchor= east,
+  anchor=east,
   text=black,
   rotate=0.0
-]{]-};
+]{]-$>$};
 \draw[|-|,draw=black] (axis cs:6,4.8) -- (axis cs:7.2,4.8);
 \draw (axis cs:6,4.8) node[
   scale=0.7,
@@ -132,7 +157,7 @@ ytick style={color=black}
   draw=black,
   line width=0.4pt,
   inner sep=3pt,
-  anchor= east,
+  anchor=east,
   text=black,
   rotate=0.0
 ]{]-[};
@@ -143,7 +168,7 @@ ytick style={color=black}
   draw=black,
   line width=0.4pt,
   inner sep=3pt,
-  anchor= east,
+  anchor=east,
   text=black,
   rotate=0.0
 ]{fancy};
@@ -154,7 +179,7 @@ ytick style={color=black}
   draw=black,
   line width=0.4pt,
   inner sep=3pt,
-  anchor= east,
+  anchor=east,
   text=black,
   rotate=0.0
 ]{simple};
@@ -165,7 +190,7 @@ ytick style={color=black}
   draw=black,
   line width=0.4pt,
   inner sep=3pt,
-  anchor= east,
+  anchor=east,
   text=black,
   rotate=0.0
 ]{wedge};
@@ -176,7 +201,7 @@ ytick style={color=black}
   draw=black,
   line width=0.4pt,
   inner sep=3pt,
-  anchor= east,
+  anchor=east,
   text=black,
   rotate=0.0
 ]{$|$-$|$};
