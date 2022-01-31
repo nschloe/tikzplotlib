@@ -95,7 +95,7 @@ class Test_plottypes:
     def test_plot3d(self):
         theta = np.linspace(-4 * np.pi, 4 * np.pi, 100)
         z = np.linspace(-2, 2, 100)
-        r = z ** 2 + 1
+        r = z**2 + 1
         x = r * np.sin(theta)
         y = r * np.cos(theta)
 
@@ -121,7 +121,7 @@ class Test_plottypes:
     def test_scatter3d(self):
         theta = np.linspace(-4 * np.pi, 4 * np.pi, 100)
         z = np.linspace(-2, 2, 100)
-        r = z ** 2 + 1
+        r = z**2 + 1
         x = r * np.sin(theta)
         y = r * np.cos(theta)
 
@@ -169,7 +169,7 @@ class Test_plottypes:
         X = np.arange(-5, 5, 0.25)
         Y = np.arange(-5, 5, 0.25)
         X, Y = np.meshgrid(X, Y)
-        R = np.sqrt(X ** 2 + Y ** 2)
+        R = np.sqrt(X**2 + Y**2)
         Z = np.sin(R)
 
         with plt.rc_context(rc=RC_PARAMS):

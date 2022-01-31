@@ -6,7 +6,7 @@ def plot():
     fig = plt.figure()
 
     xxx = np.linspace(0, 5)
-    yyy = xxx ** 2
+    yyy = xxx**2
     plt.text(
         1,
         5,

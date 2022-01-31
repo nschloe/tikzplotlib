@@ -90,19 +90,15 @@ def draw_text(data, obj):
     # ‘light’, ‘normal’, ‘regular’, ‘book’, ‘medium’, ‘roman’, ‘semibold’,
     # ‘demibold’, ‘demi’, ‘bold’, ‘heavy’, ‘extra bold’, ‘black’
     weight = obj.get_weight()
-    if (
-        weight
-        in [
-            "semibold",
-            "demibold",
-            "demi",
-            "bold",
-            "heavy",
-            "extra bold",
-            "black",
-        ]
-        or (isinstance(weight, int) and weight > 550)
-    ):
+    if weight in [
+        "semibold",
+        "demibold",
+        "demi",
+        "bold",
+        "heavy",
+        "extra bold",
+        "black",
+    ] or (isinstance(weight, int) and weight > 550):
         style.append("\\bfseries")
 
     # \lfseries isn't that common yet

@@ -4,7 +4,7 @@ def plot():
     import numpy as np
 
     x, y = np.meshgrid(np.linspace(0, 1), np.linspace(0, 1))
-    z = x ** 2 - y ** 2
+    z = x**2 - y**2
 
     fig = plt.figure()
     plt.pcolormesh(x, y, z, cmap=cm.viridis, shading="gouraud")
