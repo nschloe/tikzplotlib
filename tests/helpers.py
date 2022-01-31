@@ -40,7 +40,7 @@ def assert_equality(
         flavor=flavor,
         **extra_get_tikz_code_args,
     )
-    plt.close()
+    plt.close("all")
 
     this_dir = pathlib.Path(__file__).resolve().parent
     with open(this_dir / filename, encoding="utf-8") as f:
@@ -55,7 +55,7 @@ def assert_equality(
             flavor=flavor,
             **extra_get_tikz_code_args,
         )
-        plt.close()
+        plt.close("all")
         assert _compile(code, flavor) is not None, code
 
 
@@ -94,7 +94,7 @@ def compare_mpl_tex(plot, flavor="latex"):
     directory = os.getcwd()
     filename = "test-0.png"
     plt.savefig(filename)
-    plt.close()
+    plt.close("all")
 
     pdf_file = _compile(code, flavor)
     pdf_dirname = os.path.dirname(pdf_file)
