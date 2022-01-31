@@ -271,10 +271,12 @@ def _tex_comment(comment):
 
 def _get_color_definitions(data):
     """Returns the list of custom color definitions for the TikZ file."""
-    ff = data["float format"]
+    # sort by key
+    sorted_keys = sorted(data["custom colors"].keys(), key=lambda x: x.lower())
+    d = {key: data["custom colors"][key] for key in sorted_keys}
     return [
-        f"\\definecolor{{{name}}}{{rgb}}{{{rgb[0]:{ff}},{rgb[1]:{ff}},{rgb[2]:{ff}}}}"
-        for name, rgb in data["custom colors"].items()
+        f"\\definecolor{{{name}}}{{{space}}}{{{val}}}"
+        for name, (space, val) in d.items()
     ]
 
 

@@ -1,26 +1,28 @@
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0.12156863,0.46666667,0.70588235}
-\definecolor{color1}{rgb}{1,0.49803922,0.054901961}
-\definecolor{color2}{rgb}{0.17254902,0.62745098,0.17254902}
-\definecolor{color3}{rgb}{0.83921569,0.15294118,0.15686275}
+\definecolor{crimson2143940}{RGB}{214,39,40}
+\definecolor{darkgray176}{RGB}{176,176,176}
+\definecolor{darkorange25512714}{RGB}{255,127,14}
+\definecolor{forestgreen4416044}{RGB}{44,160,44}
+\definecolor{lightgray204}{RGB}{204,204,204}
+\definecolor{steelblue31119180}{RGB}{31,119,180}
 
 \begin{groupplot}[group style={group size=3 by 3}]
 \nextgroupplot[
 legend cell align={left},
-legend style={fill opacity=0.8, draw opacity=1, text opacity=1, draw=white!80!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, draw=lightgray204},
 scaled x ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.3, xmax=6.3,
 xtick style={color=black},
 xticklabels={},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-1.8120665, ymax=2.5603856,
 ytick style={color=black}
 ]
-\addplot [very thin, color0]
+\addplot [very thin, steelblue31119180]
 table {%
 0 1
 0.4 0.61740565
@@ -49,22 +51,22 @@ legend style={
   text opacity=1,
   at={(0.5,0.91)},
   anchor=north,
-  draw=white!80!black
+  draw=lightgray204
 },
 scaled x ticks=manual:{}{\pgfmathparse{#1}},
 scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.3, xmax=6.3,
 xtick style={color=black},
 xticklabels={},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-1.8120665, ymax=2.5603856,
 ytick style={color=black},
 yticklabels={}
 ]
-\addplot [very thin, color0]
+\addplot [very thin, steelblue31119180]
 table {%
 0 1
 0.4 0.97801623
@@ -93,22 +95,22 @@ legend style={
   text opacity=1,
   at={(0.03,0.03)},
   anchor=south west,
-  draw=white!80!black
+  draw=lightgray204
 },
 scaled x ticks=manual:{}{\pgfmathparse{#1}},
 scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.3, xmax=6.3,
 xtick style={color=black},
 xticklabels={},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-1.8120665, ymax=2.5603856,
 ytick style={color=black},
 yticklabels={}
 ]
-\addplot [very thin, color0]
+\addplot [very thin, steelblue31119180]
 table {%
 0 2
 0.4 0.58385316
@@ -137,20 +139,20 @@ legend style={
   text opacity=1,
   at={(0.97,0.03)},
   anchor=south east,
-  draw=white!80!black
+  draw=lightgray204
 },
 scaled x ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.3, xmax=6.3,
 xtick style={color=black},
 xticklabels={},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-2.1214723, ymax=2.1962606,
 ytick style={color=black}
 ]
-\addplot [very thin, color0]
+\addplot [very thin, steelblue31119180]
 table {%
 0 2
 0.4 -0.60142443
@@ -179,22 +181,22 @@ legend style={
   text opacity=1,
   at={(0.91,0.5)},
   anchor=east,
-  draw=white!80!black
+  draw=lightgray204
 },
 scaled x ticks=manual:{}{\pgfmathparse{#1}},
 scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.3, xmax=6.3,
 xtick style={color=black},
 xticklabels={},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-2.1214723, ymax=2.1962606,
 ytick style={color=black},
 yticklabels={}
 ]
-\addplot [semithick, color1, forget plot]
+\addplot [semithick, darkorange25512714, forget plot]
 table {%
 0 -1.5
 0.4 -1.5
@@ -213,7 +215,7 @@ table {%
 5.6 -1.5
 6 -1.5
 };
-\addplot [semithick, color2, forget plot]
+\addplot [semithick, forestgreen4416044, forget plot]
 table {%
 0 1.5
 0.4 1.5
@@ -241,22 +243,22 @@ legend style={
   text opacity=1,
   at={(0.5,0.5)},
   anchor=center,
-  draw=white!80!black
+  draw=lightgray204
 },
 scaled x ticks=manual:{}{\pgfmathparse{#1}},
 scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.3, xmax=6.3,
 xtick style={color=black},
 xticklabels={},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-2.1214723, ymax=2.1962606,
 ytick style={color=black},
 yticklabels={}
 ]
-\addplot [very thin, color0]
+\addplot [very thin, steelblue31119180]
 table {%
 0 2
 0.4 -1.3072872
@@ -276,7 +278,7 @@ table {%
 6 -1.904826
 };
 \addlegendentry{CR}
-\addplot [semithick, color1, forget plot]
+\addplot [semithick, darkorange25512714, forget plot]
 table {%
 0 -1.5
 0.4 -1.5
@@ -295,7 +297,7 @@ table {%
 5.6 -1.5
 6 -1.5
 };
-\addplot [semithick, color2, forget plot]
+\addplot [semithick, forestgreen4416044, forget plot]
 table {%
 0 1.5
 0.4 1.5
@@ -323,18 +325,18 @@ legend style={
   text opacity=1,
   at={(0.97,0.03)},
   anchor=south east,
-  draw=white!80!black
+  draw=lightgray204
 },
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.3, xmax=6.3,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-3.3, ymax=3.3,
 ytick style={color=black}
 ]
-\addplot [very thin, color0]
+\addplot [very thin, steelblue31119180]
 table {%
 0 -3
 0.4 -2.654837
@@ -357,19 +359,19 @@ table {%
 
 \nextgroupplot[
 legend cell align={left},
-legend style={fill opacity=0.8, draw opacity=1, text opacity=1, draw=white!80!black},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, draw=lightgray204},
 scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.3, xmax=6.3,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-3.3, ymax=3.3,
 ytick style={color=black},
 yticklabels={}
 ]
-\addplot [very thin, color0]
+\addplot [very thin, steelblue31119180]
 table {%
 0 3
 0.4 2.654837
@@ -397,20 +399,20 @@ legend style={
   text opacity=1,
   at={(0.91,0.5)},
   anchor=east,
-  draw=white!80!black
+  draw=lightgray204
 },
 scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.3, xmax=6.3,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-3.3, ymax=3.3,
 ytick style={color=black},
 yticklabels={}
 ]
-\addplot [very thin, color0, forget plot]
+\addplot [very thin, steelblue31119180, forget plot]
 table {%
 0 2
 0.4 -1.3072872
@@ -423,7 +425,7 @@ table {%
 3.2 1.6684467
 3.6 -0.25592738
 };
-\addplot [very thin, color1, forget plot]
+\addplot [very thin, darkorange25512714, forget plot]
 table {%
 2.4 0.84835801
 2.8 -1.9252117
@@ -436,7 +438,7 @@ table {%
 5.6 1.7064402
 6 -1.904826
 };
-\addplot [semithick, color2, forget plot]
+\addplot [semithick, forestgreen4416044, forget plot]
 table {%
 0 -2
 0.4 -2
@@ -455,7 +457,7 @@ table {%
 5.6 -2
 6 -2
 };
-\addplot [semithick, color3, forget plot]
+\addplot [semithick, crimson2143940, forget plot]
 table {%
 0 2
 0.4 2

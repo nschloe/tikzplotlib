@@ -1,19 +1,20 @@
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0.12156863,0.46666667,0.70588235}
+\definecolor{darkgray176}{RGB}{176,176,176}
+\definecolor{steelblue31119180}{RGB}{31,119,180}
 
 \begin{axis}[
 date coordinates in=x,
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=2016-10-10 17:59, xmax=2016-10-10 18:15,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=49.999, ymax=50.021,
 ytick style={color=black}
 ]
-\addplot [semithick, color0]
+\addplot [semithick, steelblue31119180]
 table [header=false,col sep=comma] {%
 2016-10-10 18:00,50
 2016-10-10 18:15,50.02

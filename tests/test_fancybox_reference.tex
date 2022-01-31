@@ -1,21 +1,23 @@
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{1,0.5,1}
-\definecolor{color1}{rgb}{1,0.8,1}
+\definecolor{darkgray176}{RGB}{176,176,176}
+\definecolor{green01270}{RGB}{0,127,0}
+\definecolor{lavender255204255}{RGB}{255,204,255}
+\definecolor{violet255127255}{RGB}{255,127,255}
 
 \begin{groupplot}[group style={group size=2 by 2}]
 \nextgroupplot[
 tick align=outside,
 tick pos=left,
 title={box1},
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=0, xmax=1,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=0, ymax=1,
 ytick style={color=black}
 ]
-\path [draw=color0, fill=color1]
+\path [draw=violet255127255, fill=lavender255204255]
 (axis cs:0.3,0.3)
 --(axis cs:0.7,0.3)
 .. controls (axis cs:0.76666667,0.3) and (axis cs:0.8,0.33333333) .. (axis cs:0.8,0.4)
@@ -43,14 +45,14 @@ ytick style={color=black}
 tick align=outside,
 tick pos=left,
 title={box2},
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=0, xmax=1,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=0, ymax=1,
 ytick style={color=black}
 ]
-\path [draw=color0, fill=color1]
+\path [draw=violet255127255, fill=lavender255204255]
 (axis cs:0.4,0.3)
 --(axis cs:0.6,0.3)
 .. controls (axis cs:0.73333333,0.3) and (axis cs:0.8,0.36666667) .. (axis cs:0.8,0.5)
@@ -79,14 +81,14 @@ ytick style={color=black}
 tick align=outside,
 tick pos=left,
 title={box3},
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=0, xmax=1,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=0, ymax=1,
 ytick style={color=black}
 ]
-\path [draw=color0, fill=color1]
+\path [draw=violet255127255, fill=lavender255204255]
 (axis cs:0.3,0.2)
 --(axis cs:0.7,0.2)
 .. controls (axis cs:0.83333333,0.2) and (axis cs:0.9,0.26666667) .. (axis cs:0.9,0.4)
@@ -115,14 +117,14 @@ ytick style={color=black}
 tick align=outside,
 tick pos=left,
 title={box4},
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.5, xmax=1.5,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=0, ymax=1,
 ytick style={color=black}
 ]
-\path [draw=color0, fill=color1]
+\path [draw=violet255127255, fill=lavender255204255]
 (axis cs:0.3,0.25)
 --(axis cs:0.7,0.25)
 .. controls (axis cs:0.9,0.25) and (axis cs:1,0.3) .. (axis cs:1,0.4)
@@ -140,7 +142,7 @@ ytick style={color=black}
   rotate=0.0,
   align=left
 ]{boxstyle='round, pad=0.3'\\mutation\_aspect=.5};
-\path [draw=green!50!black]
+\path [draw=green01270]
 (axis cs:0.3,0.2)
 --(axis cs:0.7,0.2)
 .. controls (axis cs:0.83333333,0.2) and (axis cs:0.9,0.26666667) .. (axis cs:0.9,0.4)

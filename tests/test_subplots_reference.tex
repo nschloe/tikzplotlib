@@ -1,21 +1,24 @@
 \begin{tikzpicture}
 
+\definecolor{darkgray176}{RGB}{176,176,176}
+\definecolor{green}{RGB}{0,128,0}
+
 \begin{groupplot}[group style={group size=1 by 2}]
 \nextgroupplot[
 tick align=outside,
 tick pos=left,
 title={A tale of 2 subplots},
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmajorgrids,
 xmin=-0.245, xmax=5.145,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ylabel={Damped oscillation},
 ymajorgrids,
 ymin=-0.68685719, ymax=1.0803265,
 ytick style={color=black}
 ]
-\addplot [semithick, blue, mark=*, mark size=3, mark options={solid,fill=green!50.196078!black}, only marks]
+\addplot [semithick, blue, mark=*, mark size=3, mark options={solid,fill=green}, only marks]
 table {%
 0 1
 0.4 -0.54230031
@@ -88,12 +91,12 @@ table {%
 \nextgroupplot[
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xlabel={time (s)},
 xmajorgrids,
 xmin=-0.095, xmax=1.995,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ylabel={Undamped},
 ymajorgrids,
 ymin=-1.1, ymax=1.1,

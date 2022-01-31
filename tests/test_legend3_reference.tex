@@ -1,5 +1,8 @@
 \begin{tikzpicture}
 
+\definecolor{darkgray176}{RGB}{176,176,176}
+\definecolor{lightgray204}{RGB}{204,204,204}
+
 \begin{axis}[
 legend cell align={left},
 legend style={
@@ -8,15 +11,15 @@ legend style={
   text opacity=1,
   at={(0.03,0.97)},
   anchor=north west,
-  draw=white!80!black
+  draw=lightgray204
 },
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmajorgrids,
 xmin=0.95, xmax=2.05,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymajorgrids,
 ymin=1.85, ymax=5.15,
 ytick style={color=black}

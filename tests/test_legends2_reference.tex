@@ -1,7 +1,10 @@
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0.12156863,0.46666667,0.70588235}
-\definecolor{color1}{rgb}{1,0.49803922,0.054901961}
+\definecolor{darkgray176}{RGB}{176,176,176}
+\definecolor{darkorange25512714}{RGB}{255,127,14}
+\definecolor{green01270}{RGB}{0,127,0}
+\definecolor{lightgray204}{RGB}{204,204,204}
+\definecolor{steelblue31119180}{RGB}{31,119,180}
 
 \begin{groupplot}[group style={group size=3 by 3}]
 \nextgroupplot[
@@ -12,20 +15,20 @@ legend style={
   text opacity=1,
   at={(0.03,0.97)},
   anchor=north west,
-  draw=white!80!black
+  draw=lightgray204
 },
 scaled x ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.08, xmax=1.68,
 xtick style={color=black},
 xticklabels={},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-1.0486093, ymax=1.0975528,
 ytick style={color=black}
 ]
-\addplot [very thin, color0]
+\addplot [very thin, steelblue31119180]
 table {%
 0 1
 0.4 0.67032005
@@ -34,7 +37,7 @@ table {%
 1.6 0.20189652
 };
 \addlegendentry{loc 2}
-\addplot [semithick, green!50!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
+\addplot [semithick, green01270, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
 0.4 0.58778525
@@ -42,7 +45,7 @@ table {%
 1.2 0.95105652
 1.6 -0.58778525
 };
-\addplot [semithick, color1, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
+\addplot [semithick, darkorange25512714, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
 table {%
 0 0
 0.4 0.33647224
@@ -67,22 +70,22 @@ legend style={
   text opacity=1,
   at={(0.03,0.03)},
   anchor=south west,
-  draw=white!80!black
+  draw=lightgray204
 },
 scaled x ticks=manual:{}{\pgfmathparse{#1}},
 scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.08, xmax=1.68,
 xtick style={color=black},
 xticklabels={},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-1.0486093, ymax=1.0975528,
 ytick style={color=black},
 yticklabels={}
 ]
-\addplot [very thin, color0]
+\addplot [very thin, steelblue31119180]
 table {%
 0 1
 0.4 0.67032005
@@ -91,7 +94,7 @@ table {%
 1.6 0.20189652
 };
 \addlegendentry{loc 3}
-\addplot [semithick, green!50!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
+\addplot [semithick, green01270, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
 0.4 0.58778525
@@ -99,7 +102,7 @@ table {%
 1.2 0.95105652
 1.6 -0.58778525
 };
-\addplot [semithick, color1, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
+\addplot [semithick, darkorange25512714, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
 table {%
 0 0
 0.4 0.33647224
@@ -124,22 +127,22 @@ legend style={
   text opacity=1,
   at={(0.97,0.03)},
   anchor=south east,
-  draw=white!80!black
+  draw=lightgray204
 },
 scaled x ticks=manual:{}{\pgfmathparse{#1}},
 scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.08, xmax=1.68,
 xtick style={color=black},
 xticklabels={},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-1.0486093, ymax=1.0975528,
 ytick style={color=black},
 yticklabels={}
 ]
-\addplot [very thin, color0]
+\addplot [very thin, steelblue31119180]
 table {%
 0 1
 0.4 0.67032005
@@ -148,7 +151,7 @@ table {%
 1.6 0.20189652
 };
 \addlegendentry{loc 4}
-\addplot [semithick, green!50!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
+\addplot [semithick, green01270, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
 0.4 0.58778525
@@ -156,7 +159,7 @@ table {%
 1.2 0.95105652
 1.6 -0.58778525
 };
-\addplot [semithick, color1, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
+\addplot [semithick, darkorange25512714, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
 table {%
 0 0
 0.4 0.33647224
@@ -181,20 +184,20 @@ legend style={
   text opacity=1,
   at={(0.97,0.5)},
   anchor=east,
-  draw=white!80!black
+  draw=lightgray204
 },
 scaled x ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.08, xmax=1.68,
 xtick style={color=black},
 xticklabels={},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-1.0486093, ymax=1.0975528,
 ytick style={color=black}
 ]
-\addplot [very thin, color0]
+\addplot [very thin, steelblue31119180]
 table {%
 0 1
 0.4 0.67032005
@@ -203,7 +206,7 @@ table {%
 1.6 0.20189652
 };
 \addlegendentry{loc 5}
-\addplot [semithick, green!50!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
+\addplot [semithick, green01270, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
 0.4 0.58778525
@@ -211,7 +214,7 @@ table {%
 1.2 0.95105652
 1.6 -0.58778525
 };
-\addplot [semithick, color1, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
+\addplot [semithick, darkorange25512714, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
 table {%
 0 0
 0.4 0.33647224
@@ -236,22 +239,22 @@ legend style={
   text opacity=1,
   at={(0.09,0.5)},
   anchor=west,
-  draw=white!80!black
+  draw=lightgray204
 },
 scaled x ticks=manual:{}{\pgfmathparse{#1}},
 scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.08, xmax=1.68,
 xtick style={color=black},
 xticklabels={},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-1.0486093, ymax=1.0975528,
 ytick style={color=black},
 yticklabels={}
 ]
-\addplot [very thin, color0]
+\addplot [very thin, steelblue31119180]
 table {%
 0 1
 0.4 0.67032005
@@ -260,7 +263,7 @@ table {%
 1.6 0.20189652
 };
 \addlegendentry{loc 6}
-\addplot [semithick, green!50!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
+\addplot [semithick, green01270, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
 0.4 0.58778525
@@ -268,7 +271,7 @@ table {%
 1.2 0.95105652
 1.6 -0.58778525
 };
-\addplot [semithick, color1, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
+\addplot [semithick, darkorange25512714, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
 table {%
 0 0
 0.4 0.33647224
@@ -293,22 +296,22 @@ legend style={
   text opacity=1,
   at={(0.91,0.5)},
   anchor=east,
-  draw=white!80!black
+  draw=lightgray204
 },
 scaled x ticks=manual:{}{\pgfmathparse{#1}},
 scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.08, xmax=1.68,
 xtick style={color=black},
 xticklabels={},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-1.0486093, ymax=1.0975528,
 ytick style={color=black},
 yticklabels={}
 ]
-\addplot [very thin, color0]
+\addplot [very thin, steelblue31119180]
 table {%
 0 1
 0.4 0.67032005
@@ -317,7 +320,7 @@ table {%
 1.6 0.20189652
 };
 \addlegendentry{loc 7}
-\addplot [semithick, green!50!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
+\addplot [semithick, green01270, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
 0.4 0.58778525
@@ -325,7 +328,7 @@ table {%
 1.2 0.95105652
 1.6 -0.58778525
 };
-\addplot [semithick, color1, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
+\addplot [semithick, darkorange25512714, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
 table {%
 0 0
 0.4 0.33647224
@@ -350,18 +353,18 @@ legend style={
   text opacity=1,
   at={(0.5,0.09)},
   anchor=south,
-  draw=white!80!black
+  draw=lightgray204
 },
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.08, xmax=1.68,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-1.0486093, ymax=1.0975528,
 ytick style={color=black}
 ]
-\addplot [very thin, color0]
+\addplot [very thin, steelblue31119180]
 table {%
 0 1
 0.4 0.67032005
@@ -370,7 +373,7 @@ table {%
 1.6 0.20189652
 };
 \addlegendentry{loc 8}
-\addplot [semithick, green!50!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
+\addplot [semithick, green01270, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
 0.4 0.58778525
@@ -378,7 +381,7 @@ table {%
 1.2 0.95105652
 1.6 -0.58778525
 };
-\addplot [semithick, color1, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
+\addplot [semithick, darkorange25512714, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
 table {%
 0 0
 0.4 0.33647224
@@ -403,20 +406,20 @@ legend style={
   text opacity=1,
   at={(0.5,0.91)},
   anchor=north,
-  draw=white!80!black
+  draw=lightgray204
 },
 scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.08, xmax=1.68,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-1.0486093, ymax=1.0975528,
 ytick style={color=black},
 yticklabels={}
 ]
-\addplot [very thin, color0]
+\addplot [very thin, steelblue31119180]
 table {%
 0 1
 0.4 0.67032005
@@ -425,7 +428,7 @@ table {%
 1.6 0.20189652
 };
 \addlegendentry{loc 9}
-\addplot [semithick, green!50!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
+\addplot [semithick, green01270, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
 0.4 0.58778525
@@ -433,7 +436,7 @@ table {%
 1.2 0.95105652
 1.6 -0.58778525
 };
-\addplot [semithick, color1, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
+\addplot [semithick, darkorange25512714, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
 table {%
 0 0
 0.4 0.33647224
@@ -458,20 +461,20 @@ legend style={
   text opacity=1,
   at={(0.5,0.5)},
   anchor=center,
-  draw=white!80!black
+  draw=lightgray204
 },
 scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.08, xmax=1.68,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-1.0486093, ymax=1.0975528,
 ytick style={color=black},
 yticklabels={}
 ]
-\addplot [very thin, color0]
+\addplot [very thin, steelblue31119180]
 table {%
 0 1
 0.4 0.67032005
@@ -480,7 +483,7 @@ table {%
 1.6 0.20189652
 };
 \addlegendentry{loc 10}
-\addplot [semithick, green!50!black, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
+\addplot [semithick, green01270, dashed, mark=*, mark size=3, mark options={solid}, forget plot]
 table {%
 0 0
 0.4 0.58778525
@@ -488,7 +491,7 @@ table {%
 1.2 0.95105652
 1.6 -0.58778525
 };
-\addplot [semithick, color1, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
+\addplot [semithick, darkorange25512714, mark=*, mark size=3, mark options={solid}, only marks, forget plot]
 table {%
 0 0
 0.4 0.33647224

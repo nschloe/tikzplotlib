@@ -31,7 +31,7 @@ def _main():
         module.plot()
 
         code = tpl.get_tikz_code(include_disclaimer=False, float_format=".8g")
-        plt.close()
+        plt.close("all")
 
         tex_filename = mod + "_reference.tex"
         with open(this_dir / tex_filename, "w", encoding="utf8") as f:

@@ -1,54 +1,55 @@
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0.12156863,0.46666667,0.70588235}
-\definecolor{color1}{rgb}{1,0.49803922,0.054901961}
-\definecolor{color2}{rgb}{0.17254902,0.62745098,0.17254902}
-\definecolor{color3}{rgb}{0.83921569,0.15294118,0.15686275}
-\definecolor{color4}{rgb}{0.58039216,0.40392157,0.74117647}
-\definecolor{color5}{rgb}{0.54901961,0.3372549,0.29411765}
-\definecolor{color6}{rgb}{0.89019608,0.46666667,0.76078431}
+\definecolor{crimson2143940}{RGB}{214,39,40}
+\definecolor{darkgray176}{RGB}{176,176,176}
+\definecolor{darkorange25512714}{RGB}{255,127,14}
+\definecolor{forestgreen4416044}{RGB}{44,160,44}
+\definecolor{mediumpurple148103189}{RGB}{148,103,189}
+\definecolor{orchid227119194}{RGB}{227,119,194}
+\definecolor{sienna1408675}{RGB}{140,86,75}
+\definecolor{steelblue31119180}{RGB}{31,119,180}
 
 \begin{axis}[
 tick align=outside,
 tick pos=left,
-x grid style={white!69.019608!black},
+x grid style={darkgray176},
 xmin=-0.05, xmax=1.05,
 xtick style={color=black},
-y grid style={white!69.019608!black},
+y grid style={darkgray176},
 ymin=-0.35, ymax=7.35,
 ytick style={color=black}
 ]
-\addplot [semithick, color0]
+\addplot [semithick, steelblue31119180]
 table {%
 0 0
 1 1
 };
-\addplot [semithick, color1, dashed]
+\addplot [semithick, darkorange25512714, dashed]
 table {%
 0 1
 1 2
 };
-\addplot [semithick, color2, dash pattern=on 1pt off 3pt on 3pt off 3pt]
+\addplot [semithick, forestgreen4416044, dash pattern=on 1pt off 3pt on 3pt off 3pt]
 table {%
 0 2
 1 3
 };
-\addplot [semithick, color3, dotted]
+\addplot [semithick, crimson2143940, dotted]
 table {%
 0 3
 1 4
 };
-\addplot [semithick, color4, dash pattern=on 10pt off 1pt]
+\addplot [semithick, mediumpurple148103189, dash pattern=on 10pt off 1pt]
 table {%
 0 4
 1 5
 };
-\addplot [semithick, color5, dash pattern=on 10pt off 1pt, dash phase=5pt]
+\addplot [semithick, sienna1408675, dash pattern=on 10pt off 1pt, dash phase=5pt]
 table {%
 0 5
 1 6
 };
-\addplot [semithick, color6, dash pattern=on 1pt off 2pt on 3pt off 4pt]
+\addplot [semithick, orchid227119194, dash pattern=on 1pt off 2pt on 3pt off 4pt]
 table {%
 0 6
 1 7

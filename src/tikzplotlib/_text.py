@@ -90,19 +90,15 @@ def draw_text(data, obj):
     # ‘light’, ‘normal’, ‘regular’, ‘book’, ‘medium’, ‘roman’, ‘semibold’,
     # ‘demibold’, ‘demi’, ‘bold’, ‘heavy’, ‘extra bold’, ‘black’
     weight = obj.get_weight()
-    if (
-        weight
-        in [
-            "semibold",
-            "demibold",
-            "demi",
-            "bold",
-            "heavy",
-            "extra bold",
-            "black",
-        ]
-        or (isinstance(weight, int) and weight > 550)
-    ):
+    if weight in [
+        "semibold",
+        "demibold",
+        "demi",
+        "bold",
+        "heavy",
+        "extra bold",
+        "black",
+    ] or (isinstance(weight, int) and weight > 550):
         style.append("\\bfseries")
 
     # \lfseries isn't that common yet
@@ -171,29 +167,41 @@ def _parse_annotation_coords(ff, coords, xy):
 def _get_arrow_style(obj, data):
     # get a style string from a FancyArrowPatch
     arrow_translate = {
-        ArrowStyle._style_list["-"]: ["-"],
-        ArrowStyle._style_list["->"]: ["->"],
-        ArrowStyle._style_list["<-"]: ["<-"],
-        ArrowStyle._style_list["<->"]: ["<->"],
-        ArrowStyle._style_list["|-|"]: ["|-|"],
-        ArrowStyle._style_list["-|>"]: ["-latex"],
-        ArrowStyle._style_list["<|-"]: ["latex-"],
-        ArrowStyle._style_list["<|-|>"]: ["latex-latex"],
-        ArrowStyle._style_list["]-["]: ["|-|"],
-        ArrowStyle._style_list["-["]: ["-|"],
-        ArrowStyle._style_list["]-"]: ["|-"],
-        ArrowStyle._style_list["fancy"]: ["-latex", "very thick"],
-        ArrowStyle._style_list["simple"]: ["-latex", "very thick"],
-        ArrowStyle._style_list["wedge"]: ["-latex", "very thick"],
+        "-": ["-"],
+        "->": ["->"],
+        "<-": ["<-"],
+        "<->": ["<->"],
+        "<|-": ["latex-"],
+        "-|>": ["-latex"],
+        "<|-|>": ["latex-latex"],
+        "]-": ["|-"],
+        "-[": ["-|"],
+        "]-[": ["|-|"],
+        "|-|": ["|-|"],
+        "]->": ["]->"],
+        "<-[": ["<-["],
+        "simple": ["-latex", "very thick"],
+        "fancy": ["-latex", "very thick"],
+        "wedge": ["-latex", "very thick"],
     }
     style_cls = type(obj.get_arrowstyle())
-    try:
-        style = arrow_translate[style_cls]
-    except KeyError:
+
+    # Sometimes, mpl adds new arrow styles to the ArrowStyle._style_list dictionary.
+    # To support multiple mpl versions, check in a loop instead of a dictionary lookup.
+    latex_style = None
+    for key, value in arrow_translate.items():
+        if key not in ArrowStyle._style_list:
+            continue
+
+        if ArrowStyle._style_list[key] == style_cls:
+            latex_style = value
+            break
+
+    if latex_style is None:
         raise NotImplementedError(f"Unknown arrow style {style_cls}")
-    else:
-        data, col, _ = _color.mpl_color2xcolor(data, obj.get_ec())
-        return style + ["draw=" + col]
+
+    data, col, _ = _color.mpl_color2xcolor(data, obj.get_ec())
+    return latex_style + ["draw=" + col]
 
 
 def _annotation(obj, data, content):
