@@ -1,7 +1,5 @@
 \begin{tikzpicture}
 
-\definecolor{gray069}{gray}{0.6901960784313725}
-
 \begin{axis}[
 colorbar,
 colorbar style={ylabel={}},
@@ -10,14 +8,30 @@ point meta max=100,
 point meta min=-100,
 tick align=outside,
 tick pos=left,
-x grid style={gray069},
+x grid style={white!69.019608!black},
 xmin=-10, xmax=10,
 xtick style={color=black},
-y grid style={gray069},
+y grid style={white!69.019608!black},
 ymin=-10, ymax=10,
 ytick style={color=black}
 ]
 \addplot graphics [includegraphics cmd=\pgfimage,xmin=-10, xmax=10, ymin=-10, ymax=10] {tmp-000.png};
+\end{axis}
+
+\begin{axis}[
+axis y line=right,
+tick align=outside,
+xmin=0, xmax=1,
+xtick pos=left,
+y grid style={white!69.019608!black},
+ymin=-100, ymax=100,
+ytick pos=right,
+ytick style={color=black},
+yticklabel style={anchor=west}
+]
+\path [draw=white, fill=white, line width=0.004pt]
+;
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=0, xmax=1, ymin=-100, ymax=100] {tmp-001.png};
 \end{axis}
 
 \end{tikzpicture}
