@@ -630,13 +630,19 @@ def _get_ticks(data, xy, ticks, ticklabels):
 
 def _is_colorbar_heuristic(obj):
     """Find out if the object is in fact a color bar."""
-    # TODO come up with something more accurate here
+    # Not sure if these properties are always present
+    if hasattr(obj, "_colorbar") or hasattr(obj, "_colorbar_info"):
+        return True
+
+    # TODO come up with something more accurate here. See
+    # <https://discourse.matplotlib.org/t/find-out-if-an-axes-object-is-a-colorbar/22563>
     # Might help:
     # TODO Are the colorbars exactly the l.collections.PolyCollection's?
+
     try:
         aspect = float(obj.get_aspect())
     except ValueError:
-        # e.g., aspect == 'equal'
+        # e.g., aspect in ['equal', 'auto']
         return False
 
     # Assume that something is a colorbar if and only if the ratio is above 5.0
@@ -646,10 +652,10 @@ def _is_colorbar_heuristic(obj):
     #
     #    plt.colorbar(im, aspect=5)
     #
-    limit_ratio = 5.0
+    threshold_ratio = 5.0
 
-    return (aspect >= limit_ratio and len(obj.get_xticks()) == 0) or (
-        aspect <= 1.0 / limit_ratio and len(obj.get_yticks()) == 0
+    return (aspect >= threshold_ratio and len(obj.get_xticks()) == 0) or (
+        aspect <= 1.0 / threshold_ratio and len(obj.get_yticks()) == 0
     )
 
 
