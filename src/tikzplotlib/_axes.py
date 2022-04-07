@@ -1,15 +1,8 @@
 import matplotlib as mpl
 import numpy as np
-from matplotlib.backends.backend_pgf import (
-    common_texification as mpl_common_texification,
-)
 
 from . import _color
-
-
-def _common_texification(string):
-    # Work around <https://github.com/matplotlib/matplotlib/issues/15493>
-    return mpl_common_texification(string).replace("&", "\\&")
+from ._util import _common_texification
 
 
 class Axes:

@@ -4,10 +4,11 @@ import matplotlib.pyplot as plt
 
 def plot():
     fig = plt.figure()
-    plt.plot(0, 0, "kx")
+    plt.plot(0, 0, "kx", label="Foo & Bar Dogs_N_Cats")
     plt.title("Foo & Bar Dogs_N_Cats")
     plt.xlabel("Foo & Bar Dogs_N_Cats")
     plt.ylabel("Foo & Bar Dogs_N_Cats")
+    plt.gca().legend()
     return fig
 
 

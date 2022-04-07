@@ -2,6 +2,7 @@ import matplotlib as mpl
 
 from . import _path as mypath
 from ._text import _get_arrow_style
+from ._util import _common_texification
 
 
 def draw_patch(data, obj):
@@ -146,7 +147,7 @@ def _draw_rectangle(data, obj, draw_options):
         data["rectangle_legends"].add(label)
         draw_opts = ",".join(draw_options)
         cont += f"\\addlegendimage{{ybar,ybar legend,{draw_opts}}}\n"
-        cont += f"\\addlegendentry{{{label}}}\n\n"
+        cont += f"\\addlegendentry{{{_common_texification(label)}}}\n\n"
     return data, cont
 
 
