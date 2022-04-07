@@ -1,5 +1,8 @@
 import matplotlib.transforms
 import numpy as np
+from matplotlib.backends.backend_pgf import (
+    common_texification as mpl_common_texification,
+)
 
 
 def has_legend(axes):
@@ -39,3 +42,8 @@ def transform_to_data_coordinates(obj, xdata, ydata):
         )
         return transform.transform(points).T
     return xdata, ydata
+
+
+def _common_texification(string):
+    # Work around <https://github.com/matplotlib/matplotlib/issues/15493>
+    return mpl_common_texification(string).replace("&", "\\&")

@@ -7,10 +7,8 @@ from . import _color as mycol
 
 def draw_legend(data, obj):
     """Adds legend code."""
-    texts = []
     children_alignment = []
     for text in obj.texts:
-        texts.append(f"{text.get_text()}")
         children_alignment.append(f"{text.get_horizontalalignment()}")
 
     # Get the location.
