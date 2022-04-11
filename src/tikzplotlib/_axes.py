@@ -150,7 +150,7 @@ class Axes:
         bgcolor = obj.get_facecolor()
 
         data, col, _ = _color.mpl_color2xcolor(data, bgcolor)
-        if col != "white":
+        if col != "white" and obj.patch.get_visible():
             self.axis_options.append(f"axis background/.style={{fill={col}}}")
 
         # find color bar
@@ -306,6 +306,12 @@ class Axes:
         else:
             self.axis_options.append(x_tick_position_string)
             self.axis_options.append(y_tick_position_string)
+        
+        # Set global tick size to zero if mpl style does the same (e.g. seaborn-darkgrid)
+        xtick0 = obj.xaxis.get_major_ticks()[0]
+        ytick0 = obj.yaxis.get_major_ticks()[0]
+        if xtick0._size == ytick0._size == 0:
+            self.axis_options.append("major tick length=0")
 
     def _grid(self, obj, data):
         # Don't use get_{x,y}gridlines for gridlines; see discussion on
