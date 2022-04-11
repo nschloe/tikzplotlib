@@ -290,7 +290,7 @@ def _table(obj, data):  # noqa: C901
 
         opts_str = ("[" + ",".join(opts) + "] ") if len(opts) > 0 else ""
         posix_filepath = rel_filepath.as_posix()
-        content.append(f"table {{{opts_str}}}{{{posix_filepath}}};\n")
+        content.append(f"table {opts_str}{{{posix_filepath}}};\n")
     else:
         if len(opts) > 0:
             opts_str = ",".join(opts)
