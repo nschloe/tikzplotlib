@@ -1,0 +1,25 @@
+\begin{tikzpicture}
+
+\definecolor{green01270}{RGB}{0,127,0}
+\definecolor{steelblue31119180}{RGB}{31,119,180}
+
+\begin{axis}[
+tick align=outside,
+tick pos=left,
+x grid style={green01270, dashed},
+xmajorgrids,
+xmin=-0.05, xmax=1.05,
+xtick style={color=black},
+y grid style={green01270, dashed},
+ymajorgrids,
+ymin=-0.05, ymax=1.05,
+ytick style={color=black}
+]
+\addplot [semithick, steelblue31119180]
+table {%
+0 0
+1 1
+};
+\end{axis}
+
+\end{tikzpicture}

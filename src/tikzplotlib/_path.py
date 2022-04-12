@@ -4,7 +4,6 @@ from matplotlib.dates import DateConverter, num2date
 from matplotlib.markers import MarkerStyle
 
 from . import _color, _files
-from ._axes import _mpl_cmap2pgf_cmap
 from ._hatches import _mpl_hatch2pgfp_pattern
 from ._markers import _mpl_marker2pgfp_marker
 from ._util import get_legend_text, has_legend
@@ -137,7 +136,7 @@ def draw_pathcollection(data, obj):
         ls = None
         marker0 = None
         if obj.get_cmap():
-            mycolormap, is_custom_cmap = _mpl_cmap2pgf_cmap(obj.get_cmap(), data)
+            mycolormap, is_custom_cmap = _color._mpl_cmap2pgf_cmap(obj.get_cmap(), data)
             draw_options.append("scatter")
             draw_options.append(
                 "colormap" + ("=" if is_custom_cmap else "/") + mycolormap
