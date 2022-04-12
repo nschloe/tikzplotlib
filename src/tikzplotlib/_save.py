@@ -8,6 +8,7 @@ from pathlib import Path
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+from . import _container
 from . import _axes
 from . import _image as img
 from . import _legend, _line2d, _patch, _path
@@ -208,6 +209,10 @@ def get_tikz_code(
     # print message about necessary pgfplot libs to command line
     if show_info:
         _print_pgfplot_libs_message(data)
+    
+    # set of children that were already processed as part of a container and 
+    # can be skipped afterwards
+    data["container elements"] = set()
 
     # gather the file content
     data, content = _recurse(data, figure)
@@ -332,7 +337,7 @@ def _recurse(data, obj):
     for child in obj.get_children():
         # Some patches are Spines, too; skip those entirely.
         # See <https://github.com/nschloe/tikzplotlib/issues/277>.
-        if isinstance(child, mpl.spines.Spine):
+        if isinstance(child, mpl.spines.Spine) or child in data["container elements"]:
             continue
 
         if isinstance(child, mpl.axes.Axes):
@@ -347,6 +352,12 @@ def _recurse(data, obj):
 
             data["current mpl axes obj"] = child
             data["current axes"] = ax
+            
+            errorbar_content = []
+            for container in child.containers:
+                data, cont, zorder = _container.draw_container(data, container)
+                errorbar_content.extend(cont)
+                data["container elements"].update(container.get_children())
 
             # Run through the child objects, gather the content.
             data, children_content = _recurse(data, child)
@@ -354,7 +365,8 @@ def _recurse(data, obj):
             # populate content and add axis environment if desired
             if data["add axis environment"]:
                 content.extend(
-                    ax.get_begin_code() + children_content + [ax.get_end_code(data)], 0
+                    ax.get_begin_code() + errorbar_content 
+                    + children_content + [ax.get_end_code(data)], 0
                 )
             else:
                 content.extend(children_content, 0)
