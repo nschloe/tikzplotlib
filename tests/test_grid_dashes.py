@@ -42,4 +42,4 @@ def test_linestyle(mpl, pgfplots):
     if pgfplots:
         assert f"grid style={{green01270, {pgfplots}}}" in code
     else:
-        assert "grid style={{green01270}}" in code
+        assert "grid style={green01270}" in code
