@@ -4,6 +4,7 @@ from matplotlib.backends.backend_pgf import (
 )
 
 from . import _color
+from ._path import mpl_linestyle2pgfplots_linestyle
 
 
 def _common_texification(string):
@@ -329,12 +330,27 @@ class Axes:
         if has_minor_xgrid:
             self.axis_options.append("xminorgrids")
 
+        # Support gridline color and dashed style
+        def gridline_options(line, data):
+            gridline_options = []
+            gridcolor = line.get_color()
+            data, col, _ = _color.mpl_color2xcolor(data, gridcolor)
+            if col != "black":
+                gridline_options.append(col)
+
+            linestyle = mpl_linestyle2pgfplots_linestyle(
+                data, line.get_linestyle(), line=line
+            )
+            if linestyle is not None and linestyle != "solid":
+                gridline_options.append(linestyle)
+
+            return ", ".join(gridline_options)
+
         xlines = obj.get_xgridlines()
         if xlines:
-            xgridcolor = xlines[0].get_color()
-            data, col, _ = _color.mpl_color2xcolor(data, xgridcolor)
-            if col != "black":
-                self.axis_options.append(f"x grid style={{{col}}}")
+            opts = gridline_options(xlines[0], data)
+            if opts:
+                self.axis_options.append(f"x grid style={{{opts}}}")
 
         if has_major_ygrid:
             self.axis_options.append("ymajorgrids")
@@ -343,10 +359,9 @@ class Axes:
 
         ylines = obj.get_ygridlines()
         if ylines:
-            ygridcolor = ylines[0].get_color()
-            data, col, _ = _color.mpl_color2xcolor(data, ygridcolor)
-            if col != "black":
-                self.axis_options.append(f"y grid style={{{col}}}")
+            opts = gridline_options(ylines[0], data)
+            if opts:
+                self.axis_options.append(f"y grid style={{{opts}}}")
 
     def _colorbar(self, colorbar, data):
         colorbar_styles = []
