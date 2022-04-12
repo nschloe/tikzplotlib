@@ -330,7 +330,7 @@ class Axes:
         if has_minor_xgrid:
             self.axis_options.append("xminorgrids")
 
-        # Support gridline color and dashed style
+        # Support gridline color and linestyle
         def gridline_options(line, data):
             gridline_options = []
             gridcolor = line.get_color()
