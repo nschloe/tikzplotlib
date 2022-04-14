@@ -8,6 +8,7 @@ from pathlib import Path
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+from . import _container
 from . import _axes
 from . import _image as img
 from . import _legend, _line2d, _patch, _path
@@ -33,6 +34,7 @@ def get_tikz_code(
     extra_groupstyle_parameters: dict = {},
     extra_tikzpicture_parameters: list | set | None = None,
     extra_lines_start: list | set | None = None,
+    use_containers: bool = True,
     dpi: int | None = None,
     show_info: bool = False,
     include_disclaimer: bool = True,
@@ -108,6 +110,11 @@ def get_tikz_code(
     :param extra_tikzpicture_parameters: Extra tikzpicture options to be passed
                                          (as a set) to pgfplots.
     :type extra_tikzpicture_parameters: a set of strings for the pfgplots tikzpicture.
+    
+    :param use_containers: Enable or disable the use of mpl containers to create the
+                            corresponding pgfplots styles for errorbars, bar charts
+                            and stem plots.
+    :type use_containers: bool
 
     :param dpi: The resolution in dots per inch of the rendered image in case
                 of QuadMesh plots. If ``None`` it will default to the value
@@ -176,6 +183,7 @@ def get_tikz_code(
     data["legend colors"] = []
     data["add axis environment"] = add_axis_environment
     data["show_info"] = show_info
+    data["use containers"] = use_containers
     # rectangle_legends is used to keep track of which rectangles have already
     # had \addlegendimage added. There should be only one \addlegenimage per
     # bar chart data series.
@@ -208,6 +216,10 @@ def get_tikz_code(
     # print message about necessary pgfplot libs to command line
     if show_info:
         _print_pgfplot_libs_message(data)
+    
+    # set of children that were already processed as part of a container and 
+    # can be skipped afterwards
+    data["container elements"] = set()
 
     # gather the file content
     data, content = _recurse(data, figure)
@@ -323,16 +335,16 @@ def _draw_collection(data, child):
     else:
         return _patch.draw_patchcollection(data, child)
 
-
-def _recurse(data, obj):
+def _recurse(data, obj, containers=None):
     """Iterates over all children of the current object, gathers the contents
     contributing to the resulting PGFPlots file, and returns those.
     """
     content = _ContentManager()
-    for child in obj.get_children():
+    containers = [] if containers is None else containers
+    for child in containers + obj.get_children():
         # Some patches are Spines, too; skip those entirely.
         # See <https://github.com/nschloe/tikzplotlib/issues/277>.
-        if isinstance(child, mpl.spines.Spine):
+        if isinstance(child, mpl.spines.Spine) or child in data["container elements"]:
             continue
 
         if isinstance(child, mpl.axes.Axes):
@@ -347,9 +359,12 @@ def _recurse(data, obj):
 
             data["current mpl axes obj"] = child
             data["current axes"] = ax
-
+            
+            if data['use containers']:
+                containers = sorted(child.containers, key=_container.sort)
+            
             # Run through the child objects, gather the content.
-            data, children_content = _recurse(data, child)
+            data, children_content = _recurse(data, child, containers)
 
             # populate content and add axis environment if desired
             if data["add axis environment"]:
@@ -364,6 +379,9 @@ def _recurse(data, obj):
                     print("These would have been the properties of the environment:")
                     print("".join(ax.get_begin_code()[1:]))
                     print("=========================================================")
+        elif isinstance(child, mpl.container.Container):
+            data, cont, zorder = _container.draw_container(data, child)
+            content.extend(cont, zorder)
         elif isinstance(child, mpl.lines.Line2D):
             data, cont = _line2d.draw_line2d(data, child)
             content.extend(cont, child.get_zorder())
