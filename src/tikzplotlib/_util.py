@@ -6,9 +6,11 @@ def has_legend(axes):
     return axes.get_legend() is not None
 
 
-def get_legend_text(obj):
+def get_legend_text(obj, axes=None):
     """Check if line is in legend."""
-    leg = obj.axes.get_legend()
+    if axes is None:
+        axes = obj.axes
+    leg = axes.get_legend()
     if leg is None:
         return None
 
@@ -16,9 +18,9 @@ def get_legend_text(obj):
     values = [t.get_text() for t in leg.texts]
 
     label = obj.get_label()
-    d = dict(zip(keys, values))
-    if label in d:
-        return d[label]
+    for key,value in zip(keys,values):
+        if (label == key != "_nolegend_") or (key == "_nolegend_" and label == value):
+            return value
 
     return None
 
