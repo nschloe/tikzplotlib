@@ -10,7 +10,7 @@ from ._markers import _mpl_marker2pgfp_marker
 from ._util import get_legend_text, has_legend, transform_to_data_coordinates
 
 
-def draw_line2d(data, obj):
+def draw_line2d(data, obj, container=None):
     """Returns the PGFPlots code for an Line2D environment."""
     content = []
     addplot_options = []
@@ -86,19 +86,23 @@ def draw_line2d(data, obj):
 
     # Check if a line is in a legend and forget it if not.
     # Fixes <https://github.com/nschloe/tikzplotlib/issues/167>.
-    legend_text = get_legend_text(obj)
-    if legend_text is None and has_legend(obj.axes):
+    legend_text = get_legend_text(container, data["current mpl axes obj"]) if container else get_legend_text(obj)
+    if legend_text is None and has_legend(data["current mpl axes obj"]):
         addplot_options.append("forget plot")
 
     # process options
     content.append("\\addplot ")
-    if addplot_options:
-        opts = ", ".join(addplot_options)
-        content.append(f"[{opts}]\n")
-
-    c, axis_options = _table(obj, data)
+    if container:
+        addplot_options += container.extra_options + container.errorbar_options
+    opts = ", ".join(addplot_options)
+    content.append(f"[{opts}]\n")
+    
+    if container:
+        c, axis_options = _table(obj, data, container.error_data)
+    else:
+        c, axis_options = _table(obj, data)
     content += c
-
+    
     if legend_text is not None:
         content.append(f"\\addlegendentry{{{legend_text}}}\n")
 
@@ -187,7 +191,7 @@ def _marker(
     addplot_options.append(f"mark options={{{opts}}}")
 
 
-def _table(obj, data):  # noqa: C901
+def _table(obj, data, error_data=None):  # noqa: C901
     # get_xydata() always gives float data, no matter what
     xdata, ydata = obj.get_xydata().T
 
@@ -271,10 +275,21 @@ def _table(obj, data):  # noqa: C901
         # as well.
         if "unbounded coords=jump" not in data["current axes"].axis_options:
             data["current axes"].axis_options.append("unbounded coords=jump")
-
-    plot_table = [
-        f"{x:{xformat}}{col_sep}{y:{ff}}{table_row_sep}" for x, y in zip(xdata, ydata)
-    ]
+    
+    ydata_plus_err = [ydata]
+    plot_table = [""]
+    if error_data:
+        opts.extend(["x=x", "y=y"])
+        plot_table[0] += f"x{col_sep}y"
+        for key, value in error_data.items():
+            opts.append(f"{key}={key.replace(' ','')}")
+            plot_table[0] += f"{col_sep}{key.replace(' ','')}"
+            ydata_plus_err.append(value)
+        plot_table[0] += f"{table_row_sep}"
+    
+    for x, *y in zip(xdata, *ydata_plus_err):
+        plot_table.append(f"{x:{xformat}}{col_sep}"+f"{col_sep}".join(f"{y_:{ff}}" for y_ in y)+f"{table_row_sep}")
+        
 
     min_extern_length = 3
 
