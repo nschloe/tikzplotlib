@@ -163,6 +163,7 @@ class BarContainer(Container):
         line_obj.set_label(self.get_label())
         line_obj.axes = data["current mpl axes obj"]
         line_obj.set_transform(line_obj.axes.transData)
+        line_obj.set_color(self.mpl_container[0].get_facecolor())
         data, content = draw_line2d_errorbars(data, line_obj, self)
     
         return data, content
@@ -284,27 +285,15 @@ def _collect_error_marker_options(data, obj, marker, line_xcolor, extra_mark_opt
     marker_face_color = obj.get_markerfacecolor()
     marker_edge_color = obj.get_markeredgecolor()
     
-    if marker_face_color is None or (
-        isinstance(marker_face_color, str) and marker_face_color == "none"
-    ):
-        content.append("fill opacity=0")
-    else:
-        data, face_xcolor, _ = mycol.mpl_color2xcolor(data, marker_face_color)
-        if face_xcolor != line_xcolor:
-            content.append("fill=" + face_xcolor)
-
-    face_and_edge_have_equal_color = marker_edge_color == marker_face_color
-    # Sometimes, the colors are given as arrays. Collapse them into a
-    # single boolean.
-    try:
-        face_and_edge_have_equal_color = all(face_and_edge_have_equal_color)
-    except TypeError:
-        pass
-
-    if not face_and_edge_have_equal_color:
-        data, draw_xcolor, _ = mycol.mpl_color2xcolor(data, marker_edge_color)
-        if draw_xcolor != line_xcolor:
-            content.append("draw=" + draw_xcolor)
+    for color, filltype in zip([marker_face_color,marker_edge_color], ["fill","draw"]):
+        if color is None or (
+            isinstance(color, str) and color == "none"
+        ):
+            content.append("fill opacity=0")
+        else:
+            data, xcolor, _ = mycol.mpl_color2xcolor(data, color)
+            if xcolor != line_xcolor:
+                content.append(f"{filltype}=" + xcolor)
     return content
     
 
