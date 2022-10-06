@@ -141,9 +141,9 @@ def get_tikz_code(
     The following optional attributes of matplotlib's objects are recognized
     and handled:
 
-     - axes.Axes._tikzplotlib_anchors
+     - `axes.Axes._tikzplotlib_anchors`
        This attribute can be set to a list of ((x,y), anchor_name) tuples.
-       Invisible nodes at the respective location will be created which  can be
+       Invisible nodes at the respective location will be created which can be
        referenced from outside the axis environment.
     """
     # not as default value because gcf() would be evaluated at import time
