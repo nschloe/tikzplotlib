@@ -353,7 +353,7 @@ def _recurse(data, obj):
 
             if hasattr(child, "_tikzplotlib_anchors"):
                 for (x, y), anchor_name in child._tikzplotlib_anchors:
-                    children_content.append(f"\\coordinate ({anchor_name}) at ({x},{y});\n")
+                    children_content.append(f"\\coordinate ({anchor_name}) at (axis cs:{x},{y});\n")
 
             # populate content and add axis environment if desired
             if data["add axis environment"]:
