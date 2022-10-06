@@ -141,9 +141,9 @@ def get_tikz_code(
     The following optional attributes of matplotlib's objects are recognized
     and handled:
 
-     - axes.Axes._tikzplotlib_anchors
+     - `axes.Axes._tikzplotlib_anchors`
        This attribute can be set to a list of ((x,y), anchor_name) tuples.
-       Invisible nodes at the respective location will be created which  can be
+       Invisible nodes at the respective location will be created which can be
        referenced from outside the axis environment.
     """
     # not as default value because gcf() would be evaluated at import time
@@ -350,6 +350,10 @@ def _recurse(data, obj):
 
             # Run through the child objects, gather the content.
             data, children_content = _recurse(data, child)
+
+            if hasattr(child, "_tikzplotlib_anchors"):
+                for (x, y), anchor_name in child._tikzplotlib_anchors:
+                    children_content.append(f"\\coordinate ({anchor_name}) at (axis cs:{x},{y});\n")
 
             # populate content and add axis environment if desired
             if data["add axis environment"]:
