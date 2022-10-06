@@ -6,6 +6,7 @@ def plot():
     ax = plt.gca()
     ax._tikzplotlib_anchors = [
         ((1.5, 2.5), "foo"),
+        ((0.4, 1.3), "bar"),
     ]
     return fig
 
