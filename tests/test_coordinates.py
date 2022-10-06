@@ -4,7 +4,9 @@ def plot():
     fig = plt.figure()
     plt.plot([1, 2, 3], [4, -2, 3])
     ax = plt.gca()
-    ax._tikzplotlib_anchors = [((1.5, 2.5), "foo")]
+    ax._tikzplotlib_anchors = [
+        ((1.5, 2.5), "foo"),
+    ]
     return fig
 
 
