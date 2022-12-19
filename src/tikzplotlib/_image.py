@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import numpy as np
 import PIL
 
@@ -17,14 +18,24 @@ def draw_image(data, obj):
     dims = img_array.shape
     if len(dims) == 2:  # the values are given as one real number: look at cmap
         clims = obj.get_clim()
-        plt.imsave(
-            fname=filepath,
-            arr=img_array,
-            cmap=obj.get_cmap(),
-            vmin=clims[0],
-            vmax=clims[1],
-            origin=obj.origin,
-        )
+        if isinstance(obj.norm, mpl.colors.LogNorm):
+            plt.imsave(
+                fname=filepath,
+                arr=np.log(img_array),
+                cmap=obj.get_cmap(),
+                vmin=np.log(clims[0]),
+                vmax=np.log(clims[1]),
+                origin=obj.origin,
+            )
+        else:
+            plt.imsave(
+                fname=filepath,
+                arr=img_array,
+                cmap=obj.get_cmap(),
+                vmin=clims[0],
+                vmax=clims[1],
+                origin=obj.origin,
+            )
     else:
         # RGB (+alpha) information at each point
         assert len(dims) == 3 and dims[2] in [3, 4]
