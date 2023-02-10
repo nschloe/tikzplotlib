@@ -486,6 +486,8 @@ def _remove_NaNs(data):
     :returns: data without NaNs
     """
     id_nan = np.any(np.isnan(data), axis=1)
+    if np.all(id_nan):
+        return np.delete(data, np.arange(len(data)), axis=0)
     id_remove = np.argwhere(id_nan).reshape((-1,))
     if _isempty(id_remove):
         pass
