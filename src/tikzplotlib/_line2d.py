@@ -108,6 +108,8 @@ def draw_line2d(data, obj):
 def draw_linecollection(data, obj):
     """Returns Pgfplots code for a number of patch objects."""
     content = []
+    
+    obj.update_scalarmappable()
 
     edgecolors = obj.get_edgecolors()
     linestyles = obj.get_linestyles()
