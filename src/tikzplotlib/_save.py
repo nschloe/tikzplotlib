@@ -374,6 +374,8 @@ def _recurse(data, obj):
             data, cont = _patch.draw_patch(data, child)
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.collections.Collection):
+            if hasattr(child, "update_scalarmappable"):
+                child.update_scalarmappable()
             data, cont = _draw_collection(data, child)
             content.extend(cont, child.get_zorder())
         elif isinstance(child, mpl.legend.Legend):
